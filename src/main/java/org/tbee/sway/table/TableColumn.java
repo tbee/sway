@@ -50,10 +50,23 @@ public class TableColumn<TableType, ColumnType extends Object> {
     // =======================================================================
     // PROPERTIES
 
-    // TYPE
+    // Type
     final private Class<ColumnType> type;
     public Class<ColumnType> getType() {
         return type;
+    }
+
+    // Id: use to identify the column programatically
+    private String id = "";
+    public String getId() {
+        return id;
+    }
+    public void setId(String v) {
+        id = v;
+    }
+    public TableColumn<TableType, ColumnType> id(String v) {
+        setId(v);
+        return this;
     }
 
     // TITLE
