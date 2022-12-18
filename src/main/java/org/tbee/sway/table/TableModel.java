@@ -5,11 +5,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TableModel<TableType> extends AbstractTableModel {
+
+
+    // =======================================================================
+    // COLUMS
+
     final private List<TableColumn<TableType, ? extends Object>> tableColumns = new ArrayList<>();
+
     void addColumn(TableColumn<TableType, ? extends Object> tableColumn) {
+        tableColumn.tabelModel = this;
         this.tableColumns.add(tableColumn);
         fireTableStructureChanged();
     }
+
+    // =======================================================================
+    // DATA
 
     private List<TableType> data = List.of();
     void setData(List<TableType> v) {
@@ -19,6 +29,10 @@ public class TableModel<TableType> extends AbstractTableModel {
     List<TableType> getData() {
         return this.data;
     }
+
+
+    // =======================================================================
+    // TABLEMODEL
 
     @Override
     public int getRowCount() {
@@ -55,9 +69,6 @@ public class TableModel<TableType> extends AbstractTableModel {
     @Override
     public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
         TableColumn<TableType, ? extends Object> column = tableColumns.get(columnIndex);
-        if (column.getEditable() == false) {
-            return; // not editable, then we're not setting
-        }
         TableType record = data.get(rowIndex);
         column.setValue(record, aValue);
     }

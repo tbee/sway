@@ -25,10 +25,16 @@ public class JTable<TableType> extends javax.swing.JTable {
     }
 
     public <ColumnType extends Object> JTable<TableType> column(TableColumn<TableType, ColumnType> tableColumn) {
-        getTableModel().addColumn(tableColumn);
+        addColumn(tableColumn);
         return this;
     }
     public <ColumnType extends Object> void addColumn(TableColumn<TableType, ColumnType> tableColumn) {
+        tableColumn.table = this;
         getTableModel().addColumn(tableColumn);
+    }
+    public <ColumnType extends Object> TableColumn<TableType, ColumnType> column(Class<ColumnType> type) {
+        var tableColumn = new TableColumn<TableType, ColumnType>(type);
+        addColumn(tableColumn);
+        return tableColumn;
     }
 }

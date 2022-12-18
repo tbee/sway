@@ -9,12 +9,46 @@ public class TableColumn<TableType, ColumnType extends Object> {
         this.type = type;
     }
 
+
+    // =======================================================================
+    // TABLE(MODEL)
+
+    /**
+     * Needed for a fluent API
+     * @return
+     */
+    public JTable<TableType> table() {
+        return table;
+    }
+    JTable<TableType> table;
+    TableModel<TableType> tabelModel;
+
+    private void fireTableStructureChanged() {
+        if (tabelModel != null) {
+            tabelModel.fireTableStructureChanged();
+        }
+    }
+    private void fireTableDataChanged() {
+        if (tabelModel != null) {
+            tabelModel.fireTableDataChanged();
+        }
+    }
+
+    // =======================================================================
+    // VALUE
+
     ColumnType getValue(TableType record) {
         return valueSupplier.apply(record);
     }
     void setValue(TableType record, Object value) {
+        if (getEditable() == false) {
+            return; // not editable, then we're not setting
+        }
         valueConsumer.accept(record, (ColumnType) value);
     }
+
+    // =======================================================================
+    // PROPERTIES
 
     // TYPE
     final private Class<ColumnType> type;
@@ -29,6 +63,7 @@ public class TableColumn<TableType, ColumnType extends Object> {
     }
     public void setTitle(String v) {
         title = v;
+        fireTableStructureChanged();
     }
     public TableColumn<TableType, ColumnType> title(String v) {
         setTitle(v);
@@ -36,12 +71,13 @@ public class TableColumn<TableType, ColumnType extends Object> {
     }
 
     // EDITABLE
-    private Boolean editable = false;
+    private boolean editable = false;
     public boolean getEditable() {
         return editable;
     }
     public void setEditable(boolean v) {
         editable = v;
+        fireTableStructureChanged();
     }
     public TableColumn<TableType, ColumnType> editable(boolean v) {
         setEditable(v);
@@ -68,6 +104,7 @@ public class TableColumn<TableType, ColumnType extends Object> {
     }
     public void setValueSupplier(Function<TableType, ColumnType> v) {
         valueSupplier = v;
+        fireTableDataChanged();
     }
     public TableColumn<TableType, ColumnType> valueSupplier(Function<TableType, ColumnType> v) {
         setValueSupplier(v);
