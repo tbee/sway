@@ -1,5 +1,10 @@
 package org.tbee.sway.table;
 
+import org.tbee.sway.ColorUtil;
+
+import javax.swing.*;
+import javax.swing.table.TableCellRenderer;
+import java.awt.*;
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
@@ -127,5 +132,152 @@ public class STable<TableType> extends javax.swing.JTable {
             throw new RuntimeException(e);
         }
         return this;
+    }
+
+
+    // ===========================================================================
+    // RENDERING e.g. alternate row colors
+
+    /** alternate the background color for rows */
+    public void setAlternateRowColor(boolean value) {
+        alternateRowColor = value;
+    }
+    public boolean getAlternateRowColor() {
+        return alternateRowColor;
+    }
+    private boolean alternateRowColor = true;
+
+    /** the color to use for the alternating background color for rows */
+    public void setFirstAlternateRowColor(Color value) {
+        firstAlternateRowColor = value;
+    }
+    public Color getFirstAlternateRowColor() {
+        return firstAlternateRowColor;
+    }
+    private Color firstAlternateRowColor = new Color( UIManager.getColor("Table.background").getRGB() ); // creating a new color will remove the show-table background pattern thing in JTattoo LaF
+
+    /** the second color to use for the alternating background color for rows */
+    public void setSecondAlternateRowColor(Color value) {
+        secondAlternateRowColor = value;
+    }
+    public Color getSecondAlternateRowColor() {
+        return secondAlternateRowColor;
+    }
+    private Color secondAlternateRowColor = ColorUtil.brighterOrDarker(firstAlternateRowColor, 0.05);
+
+    /** UneditableCellsShowAsDisabled */
+    public boolean getUneditableCellsShowAsDisabled() {
+        return uneditableCellsShowAsDisabled;
+    }
+    public void setUneditableCellsShowAsDisabled(boolean value) {
+        uneditableCellsShowAsDisabled = value;
+    }
+    private boolean uneditableCellsShowAsDisabled = true;
+    public STable<TableType> uneditableCellsShowAsDisabled(boolean value) {
+        setUneditableCellsShowAsDisabled(value);
+        return this;
+    }
+
+    /** DisabledTableShowsCellsAsDisabled */
+    public boolean getDisabledTableShowsCellsAsDisabled() {
+        return disabledTableShowsCellsAsDisabled;
+    }
+    public void setDisabledTableShowsCellsAsDisabled(boolean value) {
+        disabledTableShowsCellsAsDisabled = value;
+    }
+    private boolean disabledTableShowsCellsAsDisabled = true;
+    public STable<TableType> disabledTableShowsCellsAsDisabled(boolean value) {
+        setDisabledTableShowsCellsAsDisabled(value);
+        return this;
+    }
+
+//    /** UneditableTableShowsCellsAsDisabled */
+//    public boolean getUneditableTableShowsCellsAsDisabled() {
+//        return uneditableTableShowsCellsAsDisabled;
+//    }
+//    public void setUneditableTableShowsCellsAsDisabled(boolean value) {
+//        uneditableTableShowsCellsAsDisabled = value;
+//    }
+    private boolean uneditableTableShowsCellsAsDisabled = true;
+//    public STable<TableType> uneditableTableShowsCellsAsDisabled(boolean value) {
+//        setUneditableTableShowsCellsAsDisabled(value);
+//        return this;
+//    }
+//
+//    /** must repaint because cells may be shown disabled */
+//    public void setEditable(boolean editable)
+//    {
+//        super.setEditable(editable);
+//        repaint();
+//    }
+
+    /** must repaint because cells may be shown disabled */
+    public void setEnabled(boolean editable)
+    {
+        super.setEnabled(editable);
+        repaint();
+    }
+
+    /**
+     * Update rendering
+     */
+    public Component prepareRenderer(TableCellRenderer renderer, int row, int col) {
+
+        // get the component
+        Component component = super.prepareRenderer(renderer, row, col);
+
+        // alternate the row color
+        if (getEditingRow() != row && alternateRowColor) {
+            if (!isRowSelected(row) || isPrinting) {
+                Color lColor = ((row % 2 != 0) ? getFirstAlternateRowColor() : getSecondAlternateRowColor());
+                if (component.getBackground() != lColor) {
+                    component.setBackground( lColor );
+                }
+            }
+        }
+
+        // render disabled cells
+        component.setEnabled(true);
+        if ( (disabledTableShowsCellsAsDisabled && component.isEnabled() != isEnabled())    // if table is disabled
+            // TBEERNOT JTable cannot be set to uneditable - JXTable feature? || (uneditableTableShowsCellsAsDisabled  && component.isEnabled() != isEditable()) // if table is marked uneditable
+        ) {
+            component.setEnabled(false);
+        }
+        // if the cell is not editable, show it as disabled
+        if (uneditableCellsShowAsDisabled && !isCellEditable(row, col)) {
+            component.setEnabled(false);
+        }
+
+        // optionally change the row height
+        // TBEERNOT autosetRowHeight(row, component);
+
+        // done
+        return component;
+    }
+
+
+    // ===========================================================================
+    // Printing
+
+    /**
+     * Remember if we are being printed
+     */
+    public void print(Graphics g) {
+        try {
+            isPrinting = true;
+            super.print(g);
+        }
+        finally {
+            isPrinting = false;
+        }
+    }
+    boolean isPrinting = false;
+
+    /**
+     * is the table currently being printed?
+     * @return
+     */
+    public boolean isPrinting() {
+        return isPrinting;
     }
 }
