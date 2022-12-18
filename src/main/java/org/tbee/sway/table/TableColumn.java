@@ -17,10 +17,10 @@ public class TableColumn<TableType, ColumnType extends Object> {
      * Needed for a fluent API
      * @return
      */
-    public JTable<TableType> table() {
+    public STable<TableType> table() {
         return table;
     }
-    JTable<TableType> table;
+    STable<TableType> table;
     TableModel<TableType> tabelModel;
 
     private void fireTableStructureChanged() {

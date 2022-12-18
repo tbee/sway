@@ -12,7 +12,8 @@ import java.util.stream.Collectors;
 
 // TODO
 // - alternating colors
-// - more editors and renderers
+// - more editors and renderers (LocalDate, etc)
+// - make primitive bean properties editable
 // - visualizing uneditable
 // - binding (listen to) bean properties
 // - sorting (map the row in the table model)
@@ -26,9 +27,9 @@ import java.util.stream.Collectors;
  *
  * @param <TableType>
  */
-public class JTable<TableType> extends javax.swing.JTable {
+public class STable<TableType> extends javax.swing.JTable {
 
-    public JTable() {
+    public STable() {
         super(new TableModel<TableType>());
     }
 
@@ -61,7 +62,7 @@ public class JTable<TableType> extends javax.swing.JTable {
      * @return
      * @param <ColumnType>
      */
-    public <ColumnType extends Object> JTable<TableType> column(TableColumn<TableType, ColumnType> tableColumn) {
+    public <ColumnType extends Object> STable<TableType> column(TableColumn<TableType, ColumnType> tableColumn) {
         addColumn(tableColumn);
         return this;
     }
@@ -85,38 +86,40 @@ public class JTable<TableType> extends javax.swing.JTable {
      * @param propertyNames
      * @return
      */
-    public JTable<TableType> columns(Class<TableType> tableTypeClass, String... propertyNames) {
+    public STable<TableType> columns(Class<TableType> tableTypeClass, String... propertyNames) {
         try {
+            // Use Java's bean inspection classes to analyse the bean
             BeanInfo beanInfo = Introspector.getBeanInfo(tableTypeClass);
             PropertyDescriptor[] propertyDescriptors = beanInfo.getPropertyDescriptors();
             Map<String, PropertyDescriptor> propertyDescriptorsMap = Arrays.stream(propertyDescriptors).collect(Collectors.toMap(pd -> pd.getName(), pd -> pd));
 
+            // For each property create a column
             for (String propertyName : propertyNames) {
                 PropertyDescriptor propertyDescriptor = propertyDescriptorsMap.get(propertyName);
                 if (propertyName == null) {
                     throw new IllegalArgumentException("Property '" + propertyName + "' not found in bean " + tableTypeClass);
                 }
-                column((Class<Object>)propertyDescriptor.getPropertyType())
+                column((Class<Object>)propertyDescriptor.getPropertyType()) // It's okay, JTable will still use the appropriate renderer and editor
                         .title(propertyName) //
-                        .valueSupplier(d -> {
+                        .valueSupplier(bean -> {
                             try {
-                                return propertyDescriptor.getReadMethod().invoke(d);
+                                return propertyDescriptor.getReadMethod().invoke(bean);
                             } catch (IllegalAccessException e) {
                                 throw new RuntimeException(e);
                             } catch (InvocationTargetException e) {
                                 throw new RuntimeException(e);
                             }
                         }) //
-                        .valueConsumer((d,v) -> {
+                        .valueConsumer((bean,value) -> {
                             try {
-                                propertyDescriptor.getWriteMethod().invoke(d, v);
+                                propertyDescriptor.getWriteMethod().invoke(bean, value);
                             } catch (IllegalAccessException e) {
                                 throw new RuntimeException(e);
                             } catch (InvocationTargetException e) {
                                 throw new RuntimeException(e);
                             }
                         }) //
-                        .editable(propertyDescriptor.getWriteMethod() != null) // if there is a write method
+                        .editable(propertyDescriptor.getWriteMethod() != null) // if there is a write method then it is editable
                 ;
             }
         }

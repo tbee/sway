@@ -3,12 +3,12 @@ package org.tbee.sway.table;
 import javax.swing.*;
 import java.util.List;
 
-public class JTableApp {
+public class STableApp {
 
     static public void main(String[] args) throws Exception {
         SwingUtilities.invokeAndWait(() -> {
 
-            JTable jTable = new JTable<Bean1>() //
+            STable sTable = new STable<Bean1>() //
                     // basic column creation, but the whole generics is not pretty; should we even make this public?
                     .column(new TableColumn<Bean1, String>(String.class).title("Name BSC").valueSupplier(d -> d.getName())) //
                     .column(new TableColumn<Bean1, Integer>(Integer.class).title("Age BSC").valueSupplier(d -> d.getAge())) //
@@ -22,13 +22,13 @@ public class JTableApp {
                     .column(Integer.class).title("Age MR").valueSupplier(Bean1::getAge).valueConsumer(Bean1::setAge).table() //
 
                     // Using reflection via BeanInfo
-                    .columns(Bean1.class, "name", "age", "ageInt", "calc") // TODO: primitive types are not editable
+                    .columns(Bean1.class, "name", "age", "ageInt", "calc")
              ;
 
-            jTable.setData(List.of(new Bean1("Tom", 52), new Bean1("Corine", 48)));
+            sTable.setData(List.of(new Bean1("Tom", 52), new Bean1("Corine", 48)));
 
             JFrame jFrame = new JFrame();
-            jFrame.setContentPane(new JScrollPane(jTable));
+            jFrame.setContentPane(new JScrollPane(sTable));
             jFrame.pack();
             jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             jFrame.setVisible(true);

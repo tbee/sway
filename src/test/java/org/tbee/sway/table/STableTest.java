@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import javax.swing.*;
 import java.util.List;
 
-public class JTableTest {
+public class STableTest {
 
     public static record Record1(String name, int age) {
     }
@@ -19,20 +19,20 @@ public class JTableTest {
         SwingUtilities.invokeAndWait(() -> {
 
             // GIVEN
-            JTable jTable = new JTable<Record1>() //
+            STable sTable = new STable<Record1>() //
                     .column(new TableColumn<Record1, String>(String.class).valueSupplier(d -> d.name())) // TBEERNOT can column creation be done compacter?
                     .column(new TableColumn<Record1, Integer>(Integer.class).valueSupplier(d -> d.age()));
-            jTable.setData(List.of(new Record1("Tom", 52), new Record1("Corine", 48)));
+            sTable.setData(List.of(new Record1("Tom", 52), new Record1("Corine", 48)));
             JFrame jFrame = new JFrame();
-            jFrame.setContentPane(new JScrollPane(jTable));
+            jFrame.setContentPane(new JScrollPane(sTable));
             jFrame.pack();
             jFrame.setVisible(true);
 
             // THEN
-            Assertions.assertEquals("Tom", jTable.getValueAt(0, 0));
-            Assertions.assertEquals(52, jTable.getValueAt(0, 1));
-            Assertions.assertEquals("Corine", jTable.getValueAt(1, 0));
-            Assertions.assertEquals(48, jTable.getValueAt(1, 1));
+            Assertions.assertEquals("Tom", sTable.getValueAt(0, 0));
+            Assertions.assertEquals(52, sTable.getValueAt(0, 1));
+            Assertions.assertEquals("Corine", sTable.getValueAt(1, 0));
+            Assertions.assertEquals(48, sTable.getValueAt(1, 1));
         });
     }
 
