@@ -4,7 +4,7 @@ import javax.swing.table.AbstractTableModel;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TableModel<TableType> extends AbstractTableModel {
+class TableModel<TableType> extends AbstractTableModel {
 
 
     // =======================================================================
@@ -56,7 +56,7 @@ public class TableModel<TableType> extends AbstractTableModel {
 
     @Override
     public boolean isCellEditable(int rowIndex, int columnIndex) {
-        return tableColumns.get(columnIndex).getEditable();
+        return tableColumns.get(columnIndex).determineEditable();
     }
 
     @Override
@@ -71,5 +71,6 @@ public class TableModel<TableType> extends AbstractTableModel {
         TableColumn<TableType, ? extends Object> column = tableColumns.get(columnIndex);
         TableType record = data.get(rowIndex);
         column.setValue(record, aValue);
+        fireTableCellUpdated(rowIndex, columnIndex);
     }
 }

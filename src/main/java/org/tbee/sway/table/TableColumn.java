@@ -41,7 +41,7 @@ public class TableColumn<TableType, ColumnType extends Object> {
         return valueSupplier.apply(record);
     }
     void setValue(TableType record, Object value) {
-        if (getEditable() == false) {
+        if (determineEditable() == false) {
             return; // not editable, then we're not setting
         }
         valueConsumer.accept(record, (ColumnType) value);
@@ -71,9 +71,9 @@ public class TableColumn<TableType, ColumnType extends Object> {
     }
 
     // EDITABLE
-    private boolean editable = false;
+    private Boolean editable = null;
     public boolean getEditable() {
-        return editable;
+        return editable == null ? false : editable;
     }
     public void setEditable(boolean v) {
         editable = v;
@@ -82,6 +82,12 @@ public class TableColumn<TableType, ColumnType extends Object> {
     public TableColumn<TableType, ColumnType> editable(boolean v) {
         setEditable(v);
         return this;
+    }
+    boolean determineEditable() {
+        if (editable != null) {
+            return editable;
+        }
+        return (valueConsumer != null);
     }
 
     // setValueFunction

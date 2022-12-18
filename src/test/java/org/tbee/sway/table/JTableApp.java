@@ -13,9 +13,14 @@ public class JTableApp {
                     // basic column creation, but the whole generics is not pretty; should we even make this public?
                     .column(new TableColumn<Bean1, String>(String.class).title("Name").valueSupplier(d -> d.getName())) //
                     .column(new TableColumn<Bean1, Integer>(Integer.class).title("Age").valueSupplier(d -> d.getAge())) //
-                    // using the columns-with-class method, no generics, but requires a close table() call for fluent api
-                    .column(String.class).title("Name").valueSupplier(d -> d.getName()).table() //
-                    .column(Integer.class).title("Age").valueSupplier(d -> d.getAge()).table() //
+
+                    // using the columns-with-class method, no generics, but requires a closing table() call for fluent api
+                    .column(String.class).title("Name CT").valueSupplier(d -> d.getName()).valueConsumer((d,v) -> d.setName(v)).table() //
+                    .column(Integer.class).title("Age CT").valueSupplier(d -> d.getAge()).valueConsumer((d,v) -> d.setAge(v)).table() //
+                    
+                    // using the columns-with-class method, no generics, but requires a closing table() call for fluent api
+                    .column(String.class).title("Name MR").valueSupplier(Bean1::getName).valueConsumer(Bean1::setName).table() //
+                    .column(Integer.class).title("Age MR").valueSupplier(Bean1::getAge).valueConsumer(Bean1::setAge).table() //
                     // TODO: bean property
              ;
 
@@ -43,6 +48,7 @@ public class JTableApp {
         }
 
         public void setName(String name) {
+            System.out.println("setName " + name);
             this.name = name;
         }
 
@@ -51,6 +57,7 @@ public class JTableApp {
         }
 
         public void setAge(int age) {
+            System.out.println("setAge " + age);
             this.age = age;
         }
     }
