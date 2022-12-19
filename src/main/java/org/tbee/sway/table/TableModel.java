@@ -2,6 +2,7 @@ package org.tbee.sway.table;
 
 import javax.swing.table.AbstractTableModel;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 class TableModel<TableType> extends AbstractTableModel {
@@ -23,7 +24,7 @@ class TableModel<TableType> extends AbstractTableModel {
 
     private List<TableType> data = List.of();
     void setData(List<TableType> v) {
-        this.data = v;
+        this.data = Collections.unmodifiableList(v); // We don't allow outside changes to the provided list
         fireTableDataChanged();
     }
     List<TableType> getData() {
