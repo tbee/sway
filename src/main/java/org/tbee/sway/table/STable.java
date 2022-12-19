@@ -191,25 +191,32 @@ public class STable<TableType> extends javax.swing.JTable {
         return this;
     }
 
-//    /** UneditableTableShowsCellsAsDisabled */
-//    public boolean getUneditableTableShowsCellsAsDisabled() {
-//        return uneditableTableShowsCellsAsDisabled;
-//    }
-//    public void setUneditableTableShowsCellsAsDisabled(boolean value) {
-//        uneditableTableShowsCellsAsDisabled = value;
-//    }
+    /** Editable */
+    public boolean isEditable() {
+        return editable;
+    }
+    public void setEditable(boolean value) {
+        editable = value;
+        repaint();
+    }
+    private boolean editable = true;
+    public STable<TableType> editable(boolean value) {
+        setEditable(value);
+        return this;
+    }
+
+    //    /** UneditableTableShowsCellsAsDisabled */
+    public boolean getUneditableTableShowsCellsAsDisabled() {
+        return uneditableTableShowsCellsAsDisabled;
+    }
+    public void setUneditableTableShowsCellsAsDisabled(boolean value) {
+        uneditableTableShowsCellsAsDisabled = value;
+    }
     private boolean uneditableTableShowsCellsAsDisabled = true;
-//    public STable<TableType> uneditableTableShowsCellsAsDisabled(boolean value) {
-//        setUneditableTableShowsCellsAsDisabled(value);
-//        return this;
-//    }
-//
-//    /** must repaint because cells may be shown disabled */
-//    public void setEditable(boolean editable)
-//    {
-//        super.setEditable(editable);
-//        repaint();
-//    }
+    public STable<TableType> uneditableTableShowsCellsAsDisabled(boolean value) {
+        setUneditableTableShowsCellsAsDisabled(value);
+        return this;
+    }
 
     /** must repaint because cells may be shown disabled */
     public void setEnabled(boolean editable)
@@ -238,8 +245,8 @@ public class STable<TableType> extends javax.swing.JTable {
 
         // render disabled cells
         component.setEnabled(true);
-        if ( (disabledTableShowsCellsAsDisabled && component.isEnabled() != isEnabled())    // if table is disabled
-            // TBEERNOT JTable cannot be set to uneditable - JXTable feature? || (uneditableTableShowsCellsAsDisabled  && component.isEnabled() != isEditable()) // if table is marked uneditable
+        if ( (disabledTableShowsCellsAsDisabled && component.isEnabled() != isEnabled())     // if table is disabled
+          || (uneditableTableShowsCellsAsDisabled  && component.isEnabled() != isEditable()) // if table is marked uneditable
         ) {
             component.setEnabled(false);
         }
