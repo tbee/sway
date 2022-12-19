@@ -396,7 +396,6 @@ public class STable<TableType> extends javax.swing.JTable {
         return component;
     }
 
-
     // ===========================================================================
     // Printing
 
@@ -420,5 +419,13 @@ public class STable<TableType> extends javax.swing.JTable {
      */
     public boolean isPrinting() {
         return isPrinting;
+    }
+
+    // ===========================================================================
+    // FLUENT API
+
+    public STable<TableType> name(String v) {
+        setName(v);
+        return this;
     }
 }

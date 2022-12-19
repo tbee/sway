@@ -34,14 +34,18 @@ public class STextField<T> extends javax.swing.JTextField {
         setColumns(format.columns());
     }
 
-    // Construct a table of known formatters
-    private static Map<Class<?>, Format<?>> formats = new HashMap<>();
+    /**
+     * Register additional formats. These will override predefined ones.
+     * @param clazz
+     * @param format
+     */
     static public void register(Class<?> clazz, Format<?> format) {
         formats.put(clazz, format);
     }
     static public boolean unregister(Format<?> format) {
         return formats.remove(format) != null;
     }
+    private static Map<Class<?>, Format<?>> formats = new HashMap<>();
 
     static private Format<?> determineFormat(Class<?> clazz) {
         Format<?> format = formats.get(clazz);
@@ -134,6 +138,12 @@ public class STextField<T> extends javax.swing.JTextField {
 
     // ==============================================
     // FLUENT API
+
+    /** */
+    public STextField<T> name(String v) {
+        setName(v);
+        return this;
+    }
 
     /**  */
     public STextField<T> columns(int value) {
