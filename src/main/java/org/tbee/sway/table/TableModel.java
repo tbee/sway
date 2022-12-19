@@ -9,14 +9,28 @@ class TableModel<TableType> extends AbstractTableModel {
 
 
     // =======================================================================
-    // COLUMS
+    // COLUMNS
 
-    final private List<TableColumn<TableType, ? extends Object>> tableColumns = new ArrayList<>();
+    final private List<TableColumn<TableType, ?>> tableColumns = new ArrayList<>();
+    List<TableColumn<TableType, ?>> getTableColumns() {
+        return Collections.unmodifiableList(tableColumns);
+    }
 
-    void addColumn(TableColumn<TableType, ? extends Object> tableColumn) {
+    TableColumn<TableType, ?> findTableColumnById(String id) {
+        return tableColumns.stream() //
+                .filter(tc -> id.equals(tc.getId())) //
+                .findFirst().orElse(null);
+    }
+
+    void addColumn(TableColumn<TableType, ?> tableColumn) {
         tableColumn.tabelModel = this;
         this.tableColumns.add(tableColumn);
         fireTableStructureChanged();
+    }
+    boolean removeColumn(TableColumn<TableType, ?> tableColumn) {
+        boolean removed = this.tableColumns.remove(tableColumn);
+        fireTableStructureChanged();
+        return removed;
     }
 
     // =======================================================================
@@ -62,14 +76,14 @@ class TableModel<TableType> extends AbstractTableModel {
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        TableColumn<TableType, ? extends Object> column = tableColumns.get(columnIndex);
+        TableColumn<TableType, ?> column = tableColumns.get(columnIndex);
         TableType record = data.get(rowIndex);
         return column.getValue(record);
     }
 
     @Override
     public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
-        TableColumn<TableType, ? extends Object> column = tableColumns.get(columnIndex);
+        TableColumn<TableType, ?> column = tableColumns.get(columnIndex);
         TableType record = data.get(rowIndex);
         column.setValue(record, aValue);
         fireTableCellUpdated(rowIndex, columnIndex);

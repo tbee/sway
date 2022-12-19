@@ -19,10 +19,13 @@ public class STableApp {
 
                     // using the columns-with-class method, no generics, but requires a closing table() call for fluent api
                     .column(String.class).title("Name MR").valueSupplier(Bean1::getName).valueConsumer(Bean1::setName).table() //
-                    .column(Integer.class).title("Age MR").valueSupplier(Bean1::getAge).valueConsumer(Bean1::setAge).table() //
+                    .column(Integer.class).title("Age MR").valueSupplier(Bean1::getAge).valueConsumer(Bean1::setAge).id("marker").table() //
 
                     // Using reflection via BeanInfo
                     .columns(Bean1.class, "name", "age", "ageInt", "calc")
+
+                    // find
+                    .findColumnById("marker").title("AgeMR*").table
              ;
 
             sTable.setData(List.of(new Bean1("Tom", 52), new Bean1("Corine", 48)));

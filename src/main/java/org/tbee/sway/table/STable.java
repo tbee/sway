@@ -16,17 +16,16 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 // TODO
-// - make separate component and per default wrap in JScrollPane?
+// - test using assertJ https://assertj.github.io/doc/#assertj-swing
 // - better javadoc
-// - access columns after creation (id? index?)
-// - per column editor and renderer
 // - more editors and renderers (LocalDate, etc)
+// - per column editor and renderer
 // - per cell renderer and editor
 // - make primitive bean properties editable
 // - visualizing uneditable
 // - error handling: display errors/exceptions coming from setValueAt
-// - binding (listen to) bean properties to update cells automatically
-// - binding (listen to) list changes
+// - binding (listen to) bean properties to update cells automatically: bindToBeanProperties(true)
+// - binding (listen to) list changes:
 // - sorting (map the row in the table model)
 // - pagination
 // - filter
@@ -42,12 +41,16 @@ import java.util.stream.Collectors;
 // - copy and paste -> get/setValueAtAsString
 // - remember column and row sizes, column order, hidden columns, etc until next opening of specific component
 // - table header
-// - fix known bugs (JXTable
-//   - focus handling
+// - fix known bugs (JXTable) like focus handling
+// - support row management; insert and delete rows
+//   - automatically add a new row at the end of the table when in the last cell and press enter (ForEdit)
+//   - insert / delete keys
+// - make separate component and per default wrap in JScrollPane?
 
 /**
  * This table implements an opinionated way how the table API should look.
  * Usage: new STable().column(<Type>.class).valueSupplier(d -> d.getValue())...
+ * It should still be wrapped in a JScrollPane.
  *
  * @param <TableType>
  */
@@ -56,10 +59,6 @@ public class STable<TableType> extends javax.swing.JTable {
     public STable() {
         super(new TableModel<TableType>());
         construct();
-    }
-
-    public TableModel<TableType> getTableModel() {
-        return (TableModel<TableType>) getModel();
     }
 
     private void construct()
@@ -89,11 +88,31 @@ public class STable<TableType> extends javax.swing.JTable {
     }
 
     // =======================================================================
+    // TABLEMODEL
+
+    /**
+     * Get the actual table model
+     * @return
+     */
+    public TableModel<TableType> getTableModel() {
+        return (TableModel<TableType>)super.getModel();
+    }
+
+    // =======================================================================
     // DATA
 
+    /**
+     * Set new data to show
+     * @param v
+     */
     public void setData(List<TableType> v) {
         getTableModel().setData(v);
     }
+
+    /**
+     * Get the currently shown data
+     * @return
+     */
     public List<TableType> getData() {
         return getTableModel().getData();
     }
@@ -132,9 +151,42 @@ public class STable<TableType> extends javax.swing.JTable {
     // =======================================================================
     // COLUMNS
 
-    private <ColumnType extends Object> void addColumn(TableColumn<TableType, ColumnType> tableColumn) {
+    /**
+     * Get the columns
+     * @return Unmodifiable list of colums
+     */
+    public List<TableColumn<TableType, ?>> getColumns() {
+        return getTableModel().getTableColumns();
+    }
+
+    /**
+     * Finds (the first!) column with the provided id.
+     * @param id
+     * @return
+     */
+    public TableColumn<TableType, ?> findColumnById(String id) {
+        return getTableModel().findTableColumnById(id);
+    }
+
+
+    /**
+     * Append a column
+     * @param tableColumn
+     * @param <ColumnType>
+     */
+    public <ColumnType extends Object> void addColumn(TableColumn<TableType, ColumnType> tableColumn) {
         tableColumn.table = this;
         getTableModel().addColumn(tableColumn);
+    }
+
+    /**
+     * Remove a column
+     * @param tableColumn
+     * @return Indicate if a remove actually took place.
+     * @param <ColumnType>
+     */
+    public <ColumnType extends Object> boolean removeColumn(TableColumn<TableType, ColumnType> tableColumn) {
+        return getTableModel().removeColumn(tableColumn);
     }
 
     /**
