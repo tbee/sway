@@ -16,19 +16,38 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 // TODO
-// - alternating colors
+// - make separate component and per default wrap in JScrollPane?
+// - better javadoc
+// - access columns after creation (id? index?)
+// - per column editor and renderer
 // - more editors and renderers (LocalDate, etc)
+// - per cell renderer and editor
 // - make primitive bean properties editable
 // - visualizing uneditable
-// - binding (listen to) bean properties
+// - error handling: display errors/exceptions coming from setValueAt
+// - binding (listen to) bean properties to update cells automatically
+// - binding (listen to) list changes
 // - sorting (map the row in the table model)
+// - pagination
+// - filter
+// - default footer showing active row/col etc
 // - column reordering (map the column in the table model)
 // - column hiding (map the column in the table model)
-// - fix known bugs (JXTable)
+// - TAB/enter key behavior: skip edit to next editable cell
+// - automatically resize row height to keep showing the value
+// - tooltips
+// - OnFocusStopEditHandler
+// - AligningTableHeaderRenderer
+// - Resizable rows and columns
+// - copy and paste -> get/setValueAtAsString
+// - remember column and row sizes, column order, hidden columns, etc until next opening of specific component
+// - table header
+// - fix known bugs (JXTable
+//   - focus handling
 
 /**
  * This table implements an opinionated way how the table API should look.
- * Use: new JTable().column(<Type>.class).valueSupplier(d -> d.getValue())...
+ * Usage: new STable().column(<Type>.class).valueSupplier(d -> d.getValue())...
  *
  * @param <TableType>
  */
@@ -36,10 +55,37 @@ public class STable<TableType> extends javax.swing.JTable {
 
     public STable() {
         super(new TableModel<TableType>());
+        construct();
     }
 
     public TableModel<TableType> getTableModel() {
         return (TableModel<TableType>) getModel();
+    }
+
+    private void construct()
+    {
+        // "Sets whether editors in this JTable get the keyboard focus when an editor is activated as a result of the JTable forwarding keyboard events for a cell."
+        // "By default, this property is false, and the JTable retains the focus unless the cell is clicked."
+        super.setSurrendersFocusOnKeystroke(true);
+
+        // upon keypress the editor is started automatically
+        // note: this behaviour deviates slightly from the normal behaviour
+        //       for example: pressing F2 first fires a "focus gained"
+        //                    typing directly first processes the character
+        putClientProperty("JTable.autoStartsEdit", Boolean.TRUE);
+
+        // default row height
+        if (UIManager.get("Table.RowHeight") != null) {
+            setRowHeight(UIManager.getInt("Table.RowHeight"));
+        }
+
+        // per default fill the viewport
+        setFillsViewportHeight(true);
+
+        // per default the table must have cellspacing, which means a visible grid (Nimbus does not)
+        if (getIntercellSpacing().width < 1 || getIntercellSpacing().height < 1) {
+            setIntercellSpacing(new Dimension(1,1));
+        }
     }
 
     // =======================================================================
@@ -53,6 +99,36 @@ public class STable<TableType> extends javax.swing.JTable {
     }
 
 
+    /**
+     * Stop the edit by either accepting or cancelling
+     */
+    public void stopEdit() {
+        if (!isEditing()) {
+            return;
+        }
+        try {
+            if (getCellEditor() != null) {
+                getCellEditor().stopCellEditing();
+            }
+        }
+        finally {
+            cancelEdit();
+        }
+    }
+
+    /**
+     * Cancel the edit
+     */
+    public void cancelEdit() {
+        if (!isEditing()) {
+            return;
+        }
+        if (getCellEditor() != null) {
+            getCellEditor().cancelCellEditing();
+        }
+    }
+
+
     // =======================================================================
     // COLUMNS
 
@@ -62,7 +138,9 @@ public class STable<TableType> extends javax.swing.JTable {
     }
 
     /**
-     * Basic method of adding a column, but generics make this unreadable
+     * Basic method of adding a column, but generics makes using this somewhat unreadable
+     * ...column(new TableColumn<Bean, String>(String.class).title("Property").valueSupplier(d -> d.getProperty()))
+     *
      * @param tableColumn
      * @return
      * @param <ColumnType>
@@ -73,7 +151,8 @@ public class STable<TableType> extends javax.swing.JTable {
     }
 
     /**
-     * A a column.
+     * Add a column. Requires the table() call at the end to continue the fluent API
+     * ...column(String.class).title("Property").valueSupplier(d -> d.getProperty())).table()
      * @param type
      * @return
      * @param <ColumnType>
@@ -84,9 +163,9 @@ public class STable<TableType> extends javax.swing.JTable {
         return tableColumn;
     }
 
-
     /**
-     * Generate columns based on bean info
+     * Generate columns based on bean info.
+     * ...columns(Bean.class, "property", "anotherProperty")
      * @param tableTypeClass
      * @param propertyNames
      * @return
@@ -104,23 +183,29 @@ public class STable<TableType> extends javax.swing.JTable {
                 if (propertyName == null) {
                     throw new IllegalArgumentException("Property '" + propertyName + "' not found in bean " + tableTypeClass);
                 }
+
+                // Add column
                 column((Class<Object>)propertyDescriptor.getPropertyType()) // It's okay, JTable will still use the appropriate renderer and editor
                         .title(propertyName) //
                         .valueSupplier(bean -> {
                             try {
                                 return propertyDescriptor.getReadMethod().invoke(bean);
-                            } catch (IllegalAccessException e) {
+                            }
+                            catch (IllegalAccessException e) {
                                 throw new RuntimeException(e);
-                            } catch (InvocationTargetException e) {
+                            }
+                            catch (InvocationTargetException e) {
                                 throw new RuntimeException(e);
                             }
                         }) //
                         .valueConsumer((bean,value) -> {
                             try {
                                 propertyDescriptor.getWriteMethod().invoke(bean, value);
-                            } catch (IllegalAccessException e) {
+                            }
+                            catch (IllegalAccessException e) {
                                 throw new RuntimeException(e);
-                            } catch (InvocationTargetException e) {
+                            }
+                            catch (InvocationTargetException e) {
                                 throw new RuntimeException(e);
                             }
                         }) //
@@ -138,7 +223,7 @@ public class STable<TableType> extends javax.swing.JTable {
     // ===========================================================================
     // RENDERING e.g. alternate row colors
 
-    /** alternate the background color for rows */
+    /** Alternate the background color for rows */
     public void setAlternateRowColor(boolean value) {
         alternateRowColor = value;
     }
@@ -147,7 +232,7 @@ public class STable<TableType> extends javax.swing.JTable {
     }
     private boolean alternateRowColor = true;
 
-    /** the color to use for the alternating background color for rows */
+    /** The color to use for the alternating background color for rows */
     public void setFirstAlternateRowColor(Color value) {
         firstAlternateRowColor = value;
     }
@@ -156,7 +241,7 @@ public class STable<TableType> extends javax.swing.JTable {
     }
     private Color firstAlternateRowColor = new Color( UIManager.getColor("Table.background").getRGB() ); // creating a new color will remove the show-table background pattern thing in JTattoo LaF
 
-    /** the second color to use for the alternating background color for rows */
+    /** The second color to use for the alternating background color for rows */
     public void setSecondAlternateRowColor(Color value) {
         secondAlternateRowColor = value;
     }
@@ -205,7 +290,7 @@ public class STable<TableType> extends javax.swing.JTable {
         return this;
     }
 
-    //    /** UneditableTableShowsCellsAsDisabled */
+    /** UneditableTableShowsCellsAsDisabled */
     public boolean getUneditableTableShowsCellsAsDisabled() {
         return uneditableTableShowsCellsAsDisabled;
     }
@@ -226,7 +311,7 @@ public class STable<TableType> extends javax.swing.JTable {
     }
 
     /**
-     * Update rendering
+     * Updated rendering
      */
     public Component prepareRenderer(TableCellRenderer renderer, int row, int col) {
 
@@ -254,9 +339,6 @@ public class STable<TableType> extends javax.swing.JTable {
         if (uneditableCellsShowAsDisabled && !isCellEditable(row, col)) {
             component.setEnabled(false);
         }
-
-        // optionally change the row height
-        // TBEERNOT autosetRowHeight(row, component);
 
         // done
         return component;
