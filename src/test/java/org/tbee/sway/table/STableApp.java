@@ -1,6 +1,7 @@
 package org.tbee.sway.table;
 
 import org.tbee.sway.Bean1;
+import org.tbee.sway.STable;
 
 import javax.swing.*;
 import java.util.List;
@@ -27,7 +28,7 @@ public class STableApp {
                     .columns(Bean1.class, "name", Bean1.NAME, Bean1.AGE, Bean1.AGEINT, Bean1.CALC)
 
                     // find
-                    .findColumnById("marker").title("AgeMR*").table
+                    .findColumnById("marker").title("AgeMR*").table()
              ;
 
             sTable.setData(List.of(new Bean1("Tom", 52), new Bean1("Corine", 48)));

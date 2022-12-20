@@ -1,9 +1,6 @@
-package org.tbee.sway;
+package org.tbee.sway.support;
 
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
-import java.beans.VetoableChangeListener;
-import java.beans.VetoableChangeSupport;
+import java.beans.*;
 import java.util.Objects;
 
 
@@ -93,7 +90,8 @@ implements PropertyChangeProvider, java.io.Serializable {
         }
 
         // do it
-        propertyChangeSupport.firePropertyChange(name, before, after);
+        // Does not fire if either value is null: propertyChangeSupport.firePropertyChange(name, before, after);
+        propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(this, name, before, after));
     }
 
     /**
@@ -108,7 +106,8 @@ implements PropertyChangeProvider, java.io.Serializable {
         }
 
         // do it
-        propertyChangeSupport.firePropertyChange(name, before, after);
+        // Does not fire if either value is null: propertyChangeSupport.firePropertyChange(name, before, after);
+        propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(this, name, before, after));
     }
 
 

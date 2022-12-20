@@ -1,5 +1,7 @@
 package org.tbee.sway.table;
 
+import org.tbee.sway.STable;
+
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
@@ -20,8 +22,26 @@ public class TableColumn<TableType, ColumnType extends Object> {
     public STable<TableType> table() {
         return table;
     }
-    STable<TableType> table;
-    TableModel<TableType> tabelModel;
+
+    /**
+     *
+     * @param v
+     */
+    public void setTable(STable<TableType> v) {
+        this.table = v;
+    }
+    public STable<TableType> getTable() {
+        return this.table;
+    }
+    private STable<TableType> table;
+
+    public void setTabelModel(TableModel<TableType> v) {
+        this.tabelModel = v;
+    }
+    public TableModel<TableType> getTabelModel() {
+        return this.tabelModel;
+    }
+    private TableModel<TableType> tabelModel;
 
     private void fireTableStructureChanged() {
         if (tabelModel != null) {

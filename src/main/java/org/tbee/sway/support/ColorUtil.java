@@ -1,7 +1,7 @@
 /*
  * Copyright: (c) TBEE.ORG
  */
-package org.tbee.sway;
+package org.tbee.sway.support;
 
 import java.awt.*;
 

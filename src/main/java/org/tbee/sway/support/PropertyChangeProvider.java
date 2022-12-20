@@ -1,4 +1,4 @@
-package org.tbee.sway;
+package org.tbee.sway.support;
 
 import java.beans.PropertyChangeListener;
 import java.beans.VetoableChangeListener;

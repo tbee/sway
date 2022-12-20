@@ -5,29 +5,29 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-class TableModel<TableType> extends AbstractTableModel {
+public class TableModel<TableType> extends AbstractTableModel {
 
 
     // =======================================================================
     // COLUMNS
 
     final private List<TableColumn<TableType, ?>> tableColumns = new ArrayList<>();
-    List<TableColumn<TableType, ?>> getTableColumns() {
+    public List<TableColumn<TableType, ?>> getTableColumns() {
         return Collections.unmodifiableList(tableColumns);
     }
 
-    TableColumn<TableType, ?> findTableColumnById(String id) {
+    public TableColumn<TableType, ?> findTableColumnById(String id) {
         return tableColumns.stream() //
                 .filter(tc -> id.equals(tc.getId())) //
                 .findFirst().orElse(null);
     }
 
-    void addColumn(TableColumn<TableType, ?> tableColumn) {
-        tableColumn.tabelModel = this;
+    public void addColumn(TableColumn<TableType, ?> tableColumn) {
+        tableColumn.setTabelModel(this);
         this.tableColumns.add(tableColumn);
         fireTableStructureChanged();
     }
-    boolean removeColumn(TableColumn<TableType, ?> tableColumn) {
+    public boolean removeColumn(TableColumn<TableType, ?> tableColumn) {
         boolean removed = this.tableColumns.remove(tableColumn);
         fireTableStructureChanged();
         return removed;
@@ -37,11 +37,11 @@ class TableModel<TableType> extends AbstractTableModel {
     // DATA
 
     private List<TableType> data = List.of();
-    void setData(List<TableType> v) {
+    public void setData(List<TableType> v) {
         this.data = Collections.unmodifiableList(v); // We don't allow outside changes to the provided list
         fireTableDataChanged();
     }
-    List<TableType> getData() {
+    public List<TableType> getData() {
         return this.data;
     }
 

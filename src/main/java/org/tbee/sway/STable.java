@@ -1,6 +1,8 @@
-package org.tbee.sway.table;
+package org.tbee.sway;
 
-import org.tbee.sway.SwayUtil;
+import org.tbee.sway.support.SwayUtil;
+import org.tbee.sway.table.TableColumn;
+import org.tbee.sway.table.TableModel;
 
 import javax.swing.*;
 import javax.swing.table.TableCellRenderer;
@@ -175,7 +177,7 @@ public class STable<TableType> extends javax.swing.JTable {
      * @param <ColumnType>
      */
     public <ColumnType extends Object> void addColumn(TableColumn<TableType, ColumnType> tableColumn) {
-        tableColumn.table = this;
+        tableColumn.setTable(this);
         getTableModel().addColumn(tableColumn);
     }
 

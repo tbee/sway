@@ -1,11 +1,12 @@
 package org.tbee.sway;
 
-import com.jgoodies.binding.beans.BeanAdapter;
 import com.jgoodies.binding.beans.PropertyConnector;
+import org.tbee.sway.binding.BeanBinder;
 import org.tbee.sway.format.Format;
 import org.tbee.sway.format.FormatRegistry;
 import org.tbee.sway.format.JavaFormat;
 import org.tbee.sway.format.StringFormat;
+import org.tbee.sway.support.FocusInterpreter;
 
 import javax.swing.*;
 import java.awt.*;
@@ -120,19 +121,20 @@ public class STextField<T> extends javax.swing.JTextField {
     }
 
     /** Value (through Format) */
-    public void setValue(T value) {
+    public void setValue(T v) {
+        System.out.println(getName() + " setValue " + v);
 
         // set value
         Object oldValue = this.value;
-        this.value = value;
+        this.value = v;
 
         // convert to text
-        setTextFromValue(value);
+        setTextFromValue(v);
 
         // fire PCE
         if (!Objects.equals(oldValue, this.value)) {
-            System.out.println(getName() + " firePropertyChange " + VALUE_PROPERTY + ": " + oldValue + " -> " + value);
-            firePropertyChange(VALUE_PROPERTY, oldValue, value); // fire a PCE for easy binding
+            System.out.println(getName() + " firePropertyChange " + VALUE_PROPERTY + ": " + oldValue + " -> " + v);
+            firePropertyChange(VALUE_PROPERTY, oldValue, v); // fire a PCE for easy binding
         }
     }
     public STextField<T> value(T value) {
@@ -147,7 +149,7 @@ public class STextField<T> extends javax.swing.JTextField {
     public T getValue() {
         try {
             T value = getValueFromText();
-            setValue(value); // This will validate nullAlowed, reformat, send events, update this.value, etc.
+            setValue(value); // This will validate, reformat, send events, update this.value, etc.
         }
         catch (Exception e) {
             // set the value back to the latest value
@@ -238,13 +240,13 @@ public class STextField<T> extends javax.swing.JTextField {
     }
 
     /**
-     * Beware: this binding cannot be unbound! You can change the bound bean by replacing the value in de beanAdapter.
-     * @param beanAdapter
+     * Beware: this binding cannot be unbound! You can change the bound bean by replacing the value in de beanBinder.
+     * @param beanBinder
      * @param propertyName
      * @return
      */
-    public STextField<T> bind(BeanAdapter beanAdapter, String propertyName) {
-        PropertyConnector.connectAndUpdate(beanAdapter.getValueModel(propertyName), this, VALUE_PROPERTY);
+    public STextField<T> bind(BeanBinder beanBinder, String propertyName) {
+        beanBinder.bind(propertyName, this, VALUE_PROPERTY);
         return this;
     }
 }

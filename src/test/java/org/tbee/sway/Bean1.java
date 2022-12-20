@@ -1,5 +1,7 @@
 package org.tbee.sway;
 
+import org.tbee.sway.support.AbstractBean;
+
 import java.util.Objects;
 
 public class Bean1 extends AbstractBean<Bean1> {
