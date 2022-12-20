@@ -5,7 +5,7 @@ import com.jgoodies.binding.beans.PropertyConnector;
 
 public class BeanBinder<T> {
 
-    final private BeanAdapter<T> beanAdapter = new BeanAdapter<>(null);
+    final private BeanAdapter<T> beanAdapter = new BeanAdapter<>(null, true);
 
     public BeanBinder(T bean) {
         beanAdapter.setBean(bean);
