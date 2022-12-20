@@ -1,15 +1,16 @@
 package org.tbee.sway;
 
-import org.tbee.sway.format.Format;
-import org.tbee.sway.format.JavaFormat;
-import org.tbee.sway.format.StringFormat;
+import org.tbee.sway.format.*;
 
 import javax.swing.*;
 import java.awt.*;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.text.NumberFormat;
 import java.util.*;
 
 // TODO
+// - move determineFormat to a FormatRegistry class? Can be reused in other settings?
 // - alignment based on format
 // - parse value on focus lost
 // - visualize errors
@@ -17,6 +18,8 @@ import java.util.*;
 // - enforce maximum length
 // - color the contents based on the content, e.g. < 0 is red > 0 is black for a IntegerFormat
 // - binding (to property and jgoodies)
+//   - fireVetoableChange("name", this.name, name);
+//   - firePropertyChange("name", this.name, this.name = name);
 
 /**
  *
@@ -41,6 +44,7 @@ public class STextField<T> extends javax.swing.JTextField {
 
     /**
      * Register additional formats. These will override predefined ones.
+     * This can be used to register once formats for e.g. ValueTypes.
      * @param clazz
      * @param format
      */
@@ -60,6 +64,8 @@ public class STextField<T> extends javax.swing.JTextField {
 
         if (clazz.equals(String.class)) return new StringFormat(false);
         if (clazz.equals(Integer.class)) return new JavaFormat<Integer>(NumberFormat.getIntegerInstance(), ("" + Integer.MIN_VALUE).length(), SwingConstants.TRAILING);
+        if (clazz.equals(BigInteger.class)) return new BigIntegerFormat();
+        if (clazz.equals(BigDecimal.class)) return new BigDecimalFormat();
         throw new IllegalStateException("No format found for " + clazz);
     }
 
@@ -79,6 +85,12 @@ public class STextField<T> extends javax.swing.JTextField {
     }
     static public STextField<Integer> ofInteger() {
         return of(Integer.class);
+    }
+    static public STextField<BigInteger> ofBigInteger() {
+        return of(BigInteger.class);
+    }
+    static public STextField<BigDecimal> ofBigDecimal() {
+        return of(BigDecimal.class);
     }
     static public STextField<Number> ofPercent() {
         return new STextField<Number>(new JavaFormat<Number>(NumberFormat.getPercentInstance(), ("" + Double.MIN_VALUE).length(), SwingConstants.TRAILING));
