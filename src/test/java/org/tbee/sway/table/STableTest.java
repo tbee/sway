@@ -5,6 +5,7 @@ import org.assertj.swing.edt.GuiActionRunner;
 import org.assertj.swing.fixture.FrameFixture;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.tbee.sway.Bean1;
 
 import javax.swing.*;
 import java.util.List;
@@ -36,54 +37,5 @@ public class STableTest {
         window.show(); // shows the frame to test
         window.table("table").enterValue(TableCell.row(0).column(0), "123");
         Assertions.assertEquals("123", sTableRef.get().getValueAt(0, 0));
-    }
-
-    private void sleep(int ms) {
-        try {
-            Thread.sleep(ms);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public static class Bean1 {
-        String name;
-        int age;
-
-        public Bean1(String name, int age) {
-            this.name = name;
-            this.age = age;
-        }
-
-        public String getName() {
-            return name;
-        }
-        public void setName(String name) {
-            System.out.println("setName " + name);
-            this.name = name;
-        }
-
-        public int getAge() {
-            return age;
-        }
-        public void setAge(int age) {
-            System.out.println("setAge " + age);
-            this.age = age;
-        }
-
-        public Integer getAgeInt() {
-            return getAge();
-        }
-        public void setAgeInt(Integer age) {
-            setAge(age);
-        }
-
-        public Integer getCalc() {
-            return age * 2;
-        }
-    }
-
-    public static class Bean2 {
-
     }
 }
