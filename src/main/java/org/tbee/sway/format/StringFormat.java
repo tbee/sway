@@ -4,18 +4,18 @@ import javax.swing.*;
 
 public class StringFormat implements Format<String> {
 
-    private final boolean emptyIsNull;
-    public StringFormat(boolean emptyIsNull) {
-        this.emptyIsNull = emptyIsNull;
+    private final boolean blankIsNull;
+    public StringFormat(boolean blankIsNull) {
+        this.blankIsNull = blankIsNull;
     }
     @Override
     public String toString(String value) {
-        return value == null && emptyIsNull ? "" : value;
+        return value == null && blankIsNull ? "" : value;
     }
 
     @Override
     public String toValue(String string) {
-        return string.isEmpty() && emptyIsNull ? null : string;
+        return string.isBlank() && blankIsNull ? null : string;
     }
 
     @Override

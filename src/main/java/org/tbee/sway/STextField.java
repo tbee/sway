@@ -74,7 +74,7 @@ public class STextField<T> extends javax.swing.JTextField {
     static public STextField<String> ofString() {
         return of(String.class);
     }
-    static public STextField<String> ofStringEmptyIsNull() {
+    static public STextField<String> ofStringBlankIsNull() {
         return new STextField<String>(new StringFormat(true));
     }
     static public STextField<Integer> ofInteger() {

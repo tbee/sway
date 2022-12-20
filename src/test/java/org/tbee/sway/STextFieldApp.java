@@ -13,7 +13,7 @@ public class STextFieldApp {
             JPanel jPanel = new JPanel();
             jPanel.setLayout(new FlowLayout());
             jPanel.add(STextField.ofString().value("abc"));
-            jPanel.add(STextField.ofStringEmptyIsNull().value("abc"));
+            jPanel.add(STextField.ofStringBlankIsNull().value("abc"));
             jPanel.add(STextField.ofInteger().value(123));
             jPanel.add(STextField.ofPercent().value(1.23));
             jPanel.add(STextField.ofCurrency().value(1.23));
