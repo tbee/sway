@@ -278,89 +278,106 @@ public class STable<TableType> extends javax.swing.JTable {
     // RENDERING e.g. alternate row colors
 
     /** Alternate the background color for rows */
-    public void setAlternateRowColor(boolean value) {
-        alternateRowColor = value;
+    public void setAlternateRowColor(boolean v) {
+        firePropertyChange(ALTERNATEROWCOLOR, this.alternateRowColor, this.alternateRowColor = v);
     }
     public boolean getAlternateRowColor() {
         return alternateRowColor;
     }
     private boolean alternateRowColor = true;
+    final static public String ALTERNATEROWCOLOR = "alternateRowColor";
+    public STable<TableType> alternateRowColor(boolean v) {
+        setAlternateRowColor(v);
+        return this;
+    }
 
     /** The color to use for the alternating background color for rows */
-    public void setFirstAlternateRowColor(Color value) {
-        firstAlternateRowColor = value;
+    public void setFirstAlternateRowColor(Color v) {
+        firePropertyChange(FIRSTALTERNATEROWCOLOR, this.firstAlternateRowColor, this.firstAlternateRowColor = v);
     }
     public Color getFirstAlternateRowColor() {
         return firstAlternateRowColor;
     }
     private Color firstAlternateRowColor = SwayUtil.getFirstAlternateRowColor();
+    final static public String FIRSTALTERNATEROWCOLOR = "firstAlternateRowColor";
+    public STable<TableType> firstAlternateRowColor(Color v) {
+        firstAlternateRowColor(v);
+        return this;
+    }
 
     /** The second color to use for the alternating background color for rows */
-    public void setSecondAlternateRowColor(Color value) {
-        secondAlternateRowColor = value;
+    public void setSecondAlternateRowColor(Color v) {
+        firePropertyChange(SECONDALTERNATEROWCOLOR, this.secondAlternateRowColor, this.secondAlternateRowColor = v);
     }
     public Color getSecondAlternateRowColor() {
         return secondAlternateRowColor;
     }
     private Color secondAlternateRowColor = SwayUtil.getSecondAlternateRowColor();
+    final static public String SECONDALTERNATEROWCOLOR = "secondAlternateRowColor";
+    public STable<TableType> secondAlternateRowColor(Color v) {
+        setSecondAlternateRowColor(v);
+        return this;
+    }
 
     /** UneditableCellsShowAsDisabled */
-    public void setUneditableCellsShowAsDisabled(boolean value) {
-        uneditableCellsShowAsDisabled = value;
+    public void setUneditableCellsShowAsDisabled(boolean v) {
+        firePropertyChange(UNEDITABLECELLSSHOWASDISABLED, this.uneditableCellsShowAsDisabled, this.uneditableCellsShowAsDisabled = v);
     }
     public boolean getUneditableCellsShowAsDisabled() {
         return uneditableCellsShowAsDisabled;
     }
     private boolean uneditableCellsShowAsDisabled = true;
-    public STable<TableType> uneditableCellsShowAsDisabled(boolean value) {
-        setUneditableCellsShowAsDisabled(value);
+    final static public String UNEDITABLECELLSSHOWASDISABLED = "uneditableCellsShowAsDisabled";
+    public STable<TableType> uneditableCellsShowAsDisabled(boolean v) {
+        setUneditableCellsShowAsDisabled(v);
         return this;
     }
 
     /** DisabledTableShowsCellsAsDisabled */
-    public void setDisabledTableShowsCellsAsDisabled(boolean value) {
-        disabledTableShowsCellsAsDisabled = value;
+    public void setDisabledTableShowsCellsAsDisabled(boolean v) {
+        firePropertyChange(DISABLEDTABLESHOWSCELLSASDISABLED, this.disabledTableShowsCellsAsDisabled, this.disabledTableShowsCellsAsDisabled = v);
     }
     public boolean getDisabledTableShowsCellsAsDisabled() {
         return disabledTableShowsCellsAsDisabled;
     }
     private boolean disabledTableShowsCellsAsDisabled = true;
-    public STable<TableType> disabledTableShowsCellsAsDisabled(boolean value) {
-        setDisabledTableShowsCellsAsDisabled(value);
+    final static public String DISABLEDTABLESHOWSCELLSASDISABLED = "disabledTableShowsCellsAsDisabled";
+    public STable<TableType> disabledTableShowsCellsAsDisabled(boolean v) {
+        setDisabledTableShowsCellsAsDisabled(v);
         return this;
     }
 
     /** Editable */
-    public void setEditable(boolean value) {
-        editable = value;
+    public void setEditable(boolean v) {
+        editable = v;
         repaint();
     }
     public boolean isEditable() {
         return editable;
     }
     private boolean editable = true;
-    public STable<TableType> editable(boolean value) {
-        setEditable(value);
+    public STable<TableType> editable(boolean v) {
+        setEditable(v);
         return this;
     }
 
     /** UneditableTableShowsCellsAsDisabled */
-    public void setUneditableTableShowsCellsAsDisabled(boolean value) {
-        uneditableTableShowsCellsAsDisabled = value;
+    public void setUneditableTableShowsCellsAsDisabled(boolean v) {
+        firePropertyChange(UNEDITABLETABLESHOWSCELLSASDISABLED, this.uneditableTableShowsCellsAsDisabled, this.uneditableTableShowsCellsAsDisabled = v);
     }
     public boolean getUneditableTableShowsCellsAsDisabled() {
         return uneditableTableShowsCellsAsDisabled;
     }
     private boolean uneditableTableShowsCellsAsDisabled = true;
-    public STable<TableType> uneditableTableShowsCellsAsDisabled(boolean value) {
-        setUneditableTableShowsCellsAsDisabled(value);
+    final static public String UNEDITABLETABLESHOWSCELLSASDISABLED = "uneditableTableShowsCellsAsDisabled";
+    public STable<TableType> uneditableTableShowsCellsAsDisabled(boolean v) {
+        setUneditableTableShowsCellsAsDisabled(v);
         return this;
     }
 
     /** must repaint because cells may be shown disabled */
-    public void setEnabled(boolean editable)
-    {
-        super.setEnabled(editable);
+    public void setEnabled(boolean v) {
+        super.setEnabled(v);
         repaint();
     }
 

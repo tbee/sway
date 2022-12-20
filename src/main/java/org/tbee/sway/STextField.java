@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.*;
 
 // TODO
-// - parse value on focus lost
 // - visualize errors
 // - error callback
 // - enforce maximum length
@@ -108,8 +107,7 @@ public class STextField<T> extends javax.swing.JTextField {
     // VALUE
 
     private T value = null;
-
-    final static public String VALUE_PROPERTY = "value";
+    final static public String VALUE = "value";
 
     protected void setTextFromValue(T value) {
         super.setText(format.toString(value));
@@ -133,8 +131,8 @@ public class STextField<T> extends javax.swing.JTextField {
 
         // fire PCE
         if (!Objects.equals(oldValue, this.value)) {
-            System.out.println(getName() + " firePropertyChange " + VALUE_PROPERTY + ": " + oldValue + " -> " + v);
-            firePropertyChange(VALUE_PROPERTY, oldValue, v); // fire a PCE for easy binding
+            System.out.println(getName() + " firePropertyChange " + VALUE + ": " + oldValue + " -> " + v);
+            firePropertyChange(VALUE, oldValue, v); // fire a PCE for easy binding
         }
     }
     public STextField<T> value(T value) {
@@ -209,10 +207,12 @@ public class STextField<T> extends javax.swing.JTextField {
      * @return
      */
     public STextField<T> bind(Object bean, String propertyName) {
-        PropertyConnector propertyConnector = PropertyConnector.connect(bean, propertyName, this, VALUE_PROPERTY);
+
+        // Bind
+        PropertyConnector propertyConnector = PropertyConnector.connect(bean, propertyName, this, VALUE);
         propertyConnector.updateProperty2();
 
-        // remember
+        // Remember binding (for unbinding)
         if (propertyConnectors == null) {
             propertyConnectors = new ArrayList<>();
         }
@@ -231,11 +231,17 @@ public class STextField<T> extends javax.swing.JTextField {
         if (propertyConnectors == null) {
             return false;
         }
+
+        // Find the PropertyConnector
         List<PropertyConnector> toBeRemovedPropertyConnectors = propertyConnectors.stream() //
                 .filter(pc -> pc.getBean1().equals(bean) && pc.getProperty1Name().equals(propertyName)) //
                 .toList();
+
+        // Unbind the PropertyConnector
         toBeRemovedPropertyConnectors.stream().forEach(pc -> pc.release());
         propertyConnectors.removeAll(toBeRemovedPropertyConnectors);
+
+        // Done
         return toBeRemovedPropertyConnectors.size() > 0;
     }
 
@@ -246,7 +252,7 @@ public class STextField<T> extends javax.swing.JTextField {
      * @return
      */
     public STextField<T> bind(BeanBinder beanBinder, String propertyName) {
-        beanBinder.bind(propertyName, this, VALUE_PROPERTY);
+        beanBinder.bind(propertyName, this, VALUE);
         return this;
     }
 }
