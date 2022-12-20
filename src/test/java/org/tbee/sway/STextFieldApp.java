@@ -2,6 +2,8 @@ package org.tbee.sway;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Currency;
+import java.util.Locale;
 
 public class STextFieldApp {
 
@@ -10,8 +12,13 @@ public class STextFieldApp {
 
             JPanel jPanel = new JPanel();
             jPanel.setLayout(new FlowLayout());
-            jPanel.add(STextField.of(String.class));
-            jPanel.add(STextField.of(Integer.class));
+            jPanel.add(STextField.ofString().value("abc"));
+            jPanel.add(STextField.ofStringEmptyIsNull().value("abc"));
+            jPanel.add(STextField.ofInteger().value(123));
+            jPanel.add(STextField.ofPercent().value(1.23));
+            jPanel.add(STextField.ofCurrency().value(1.23));
+            jPanel.add(STextField.ofCurrency(Locale.JAPAN).value(1.23));
+            jPanel.add(STextField.ofCurrency(Currency.getInstance("EUR")).value(1.23));
 
             JFrame jFrame = new JFrame();
             jFrame.setContentPane(jPanel);

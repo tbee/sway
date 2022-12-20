@@ -7,9 +7,7 @@ import org.tbee.sway.format.StringFormat;
 import javax.swing.*;
 import java.awt.*;
 import java.text.NumberFormat;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 // TODO
 // - alignment based on format
@@ -28,6 +26,10 @@ public class STextField<T> extends javax.swing.JTextField {
 
     final private Format<T> format;
 
+    /**
+     *
+     * @param format
+     */
     public STextField(Format<T> format) {
         if (format == null) {
             throw new IllegalArgumentException("Null not allowed for format");
@@ -56,7 +58,7 @@ public class STextField<T> extends javax.swing.JTextField {
             return format;
         }
 
-        if (clazz.equals(String.class)) return new StringFormat();
+        if (clazz.equals(String.class)) return new StringFormat(false);
         if (clazz.equals(Integer.class)) return new JavaFormat<Integer>(NumberFormat.getIntegerInstance(), ("" + Integer.MIN_VALUE).length(), SwingConstants.TRAILING);
         throw new IllegalStateException("No format found for " + clazz);
     }
@@ -64,6 +66,33 @@ public class STextField<T> extends javax.swing.JTextField {
     static public <T> STextField<T> of(Class<T> clazz) {
         Format<T> format = (Format<T>) determineFormat(clazz);
         return new STextField<T>(format);
+    }
+
+    // ========================================================
+    // CONVENIENCE METHODS
+
+    static public STextField<String> ofString() {
+        return of(String.class);
+    }
+    static public STextField<String> ofStringEmptyIsNull() {
+        return new STextField<String>(new StringFormat(true));
+    }
+    static public STextField<Integer> ofInteger() {
+        return of(Integer.class);
+    }
+    static public STextField<Number> ofPercent() {
+        return new STextField<Number>(new JavaFormat<Number>(NumberFormat.getPercentInstance(), ("" + Double.MIN_VALUE).length(), SwingConstants.TRAILING));
+    }
+    static public STextField<Number> ofCurrency() {
+        return new STextField<Number>(new JavaFormat<Number>(NumberFormat.getCurrencyInstance(), ("" + Double.MIN_VALUE).length() + 1, SwingConstants.TRAILING));
+    }
+    static public STextField<Number> ofCurrency(Locale locale) {
+        return new STextField<Number>(new JavaFormat<Number>(NumberFormat.getCurrencyInstance(locale), ("" + Double.MIN_VALUE).length() + 4, SwingConstants.TRAILING));
+    }
+    static public STextField<Number> ofCurrency(Currency currency) {
+        NumberFormat currencyInstance = NumberFormat.getCurrencyInstance();
+        currencyInstance.setCurrency(currency);
+        return new STextField<Number>(new JavaFormat<Number>(currencyInstance, ("" + Double.MIN_VALUE).length() + 4, SwingConstants.TRAILING));
     }
 
 
@@ -74,38 +103,18 @@ public class STextField<T> extends javax.swing.JTextField {
     final static public String VALUE_PROPERTY = "value";
 
     protected void setTextFromValue(T value) {
-        super.setText(value == null ? "" : format.toString(value));
+        super.setText(format.toString(value));
     }
     protected T getValueFromText() {
         String text = getText();
-        T value = (text == null || text.length() == 0 ? null : format.toValue(text));
+        T value = (format.toValue(text));
         return value;
-    }
-
-    /** emptyIsNull */
-    public void setEmptyIsNull(boolean value) {
-        emptyIsNull = value;
-    }
-    public boolean isEmptyIsNull() {
-        return emptyIsNull;
-    }
-    private boolean emptyIsNull = true;
-    public STextField<T> nullAllowed(boolean value) {
-        setEmptyIsNull(value);
-        return this;
     }
 
     /** Value (through Format) */
     public void setValue(T value) {
 
-        // check
-        if (value == null && emptyIsNull == false) {
-            setTextFromValue(value); // reset text
-            throw new IllegalArgumentException("Null is not allowed as a value");
-        }
-
         // set value
-        String text = getText();
         Object oldValue = this.value;
         this.value = value;
 
