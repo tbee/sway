@@ -2,6 +2,7 @@ package org.tbee.sway;
 
 import org.tbee.sway.support.AbstractBean;
 
+import java.util.List;
 import java.util.Objects;
 
 public class Bean1 extends AbstractBean<Bean1> {
@@ -28,8 +29,9 @@ public class Bean1 extends AbstractBean<Bean1> {
     static public String NAME = "name";
 
     public void setAge(int v) {
-        fireVetoableChange(NAME, this.age, v);
-        firePropertyChange(NAME, this.age, this.age = v);
+        fireVetoableChange(AGE, this.age, v);
+        firePropertyChange(List.of(cascade(CALC, getCalc(), () -> getCalc())) //
+                , AGE, this.age, this.age = v);
     }
     public int getAge() {
         return age;

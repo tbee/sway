@@ -1,7 +1,9 @@
 package org.tbee.sway.support;
 
 import java.beans.*;
+import java.util.List;
 import java.util.Objects;
+import java.util.function.Supplier;
 
 
 /**
@@ -110,8 +112,34 @@ implements PropertyChangeProvider, java.io.Serializable {
         propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(this, name, before, after));
     }
 
+    public record Cascade<T>(String name, T beforeValue, Supplier<T> afterCallable) {}
+    protected <T> Cascade<T> cascade(String name, T beforeValue, Supplier<T> afterCallable) {
+        return new Cascade(name, beforeValue, afterCallable);
+    }
 
-    // ===============================================================================================
+    /**
+     * Call PCE but prefix with possible derived properties.
+     * Example:
+     * Set a property 'prop' which has a derived / calculated property 'calc'.
+     *   firePropertyChange(List.of(cascade(CALC, getCalc(), () -> getCalc())) //
+     *                    , PROP, this.prop, this.prop = v);
+     *
+     * The sequence of parameters makes sure that evaluation and update happens in the right order.
+     *
+     * @param cascades
+     * @param name
+     * @param before
+     * @param after
+     * @param <T>
+     */
+    public <T> void firePropertyChange(List<Cascade<T>> cascades, String name, Object before, Object after) {
+        firePropertyChange(name, before, after);
+        for (Cascade<?> cascade : cascades) {
+            firePropertyChange(cascade.name(), cascade.beforeValue(), cascade.afterCallable().get());
+        }
+    }
+
+        // ===============================================================================================
     // VetoableChange
 
     transient volatile private VetoableChangeSupport vetoableChangeSupport = null;
