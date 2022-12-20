@@ -1,5 +1,7 @@
 package org.tbee.sway;
 
+import com.jgoodies.binding.beans.BeanAdapter;
+import com.jgoodies.binding.beans.PropertyConnector;
 import org.tbee.sway.format.Format;
 import org.tbee.sway.format.FormatRegistry;
 import org.tbee.sway.format.JavaFormat;
@@ -10,9 +12,8 @@ import java.awt.*;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.text.NumberFormat;
-import java.util.Currency;
-import java.util.Locale;
-import java.util.Objects;
+import java.util.List;
+import java.util.*;
 
 // TODO
 // - parse value on focus lost
@@ -23,6 +24,7 @@ import java.util.Objects;
 // - binding (to property and jgoodies)
 //   - fireVetoableChange("name", this.name, name);
 //   - firePropertyChange("name", this.name, this.name = name);
+// undo
 
 /**
  *
@@ -43,7 +45,21 @@ public class STextField<T> extends javax.swing.JTextField {
         this.format = format;
         setColumns(format.columns());
         setHorizontalAlignment(format.horizontalAlignment());
+        construct();
     }
+
+    private void construct() {
+        // the FocusInterpreterListener must be kept in an instance variable, otherwise it will be cleared by the WeakArrayList used in the FocusInterpreter
+        focusInterpreterListener = evt -> {
+            if (evt.getState() == FocusInterpreter.State.FOCUS_LOST) {
+                // force a validation
+                getValue();
+            }
+        };
+        focusInterpreter.addFocusListener(focusInterpreterListener);
+    }
+    private FocusInterpreter.FocusInterpreterListener focusInterpreterListener = null;
+    final private FocusInterpreter focusInterpreter = new FocusInterpreter(this);
 
     // ========================================================
     // OF
@@ -91,6 +107,7 @@ public class STextField<T> extends javax.swing.JTextField {
     // VALUE
 
     private T value = null;
+
     final static public String VALUE_PROPERTY = "value";
 
     protected void setTextFromValue(T value) {
@@ -114,8 +131,8 @@ public class STextField<T> extends javax.swing.JTextField {
 
         // fire PCE
         if (!Objects.equals(oldValue, this.value)) {
+            System.out.println(getName() + " firePropertyChange " + VALUE_PROPERTY + ": " + oldValue + " -> " + value);
             firePropertyChange(VALUE_PROPERTY, oldValue, value); // fire a PCE for easy binding
-
         }
     }
     public STextField<T> value(T value) {
@@ -178,4 +195,56 @@ public class STextField<T> extends javax.swing.JTextField {
         return this;
     }
 
+    // ========================================================
+    // BIND
+
+    private List<PropertyConnector> propertyConnectors;
+
+    /**
+     *
+     * @param bean
+     * @param propertyName
+     * @return
+     */
+    public STextField<T> bind(Object bean, String propertyName) {
+        PropertyConnector propertyConnector = PropertyConnector.connect(bean, propertyName, this, VALUE_PROPERTY);
+        propertyConnector.updateProperty2();
+
+        // remember
+        if (propertyConnectors == null) {
+            propertyConnectors = new ArrayList<>();
+        }
+        propertyConnectors.add(propertyConnector);
+
+        return this;
+    }
+
+    /**
+     *
+     * @param bean
+     * @param propertyName
+     * @return
+     */
+    public boolean unbind(Object bean, String propertyName) {
+        if (propertyConnectors == null) {
+            return false;
+        }
+        List<PropertyConnector> toBeRemovedPropertyConnectors = propertyConnectors.stream() //
+                .filter(pc -> pc.getBean1().equals(bean) && pc.getProperty1Name().equals(propertyName)) //
+                .toList();
+        toBeRemovedPropertyConnectors.stream().forEach(pc -> pc.release());
+        propertyConnectors.removeAll(toBeRemovedPropertyConnectors);
+        return toBeRemovedPropertyConnectors.size() > 0;
+    }
+
+    /**
+     * Beware: this binding cannot be unbound! You can change the bound bean by replacing the value in de beanAdapter.
+     * @param beanAdapter
+     * @param propertyName
+     * @return
+     */
+    public STextField<T> bind(BeanAdapter beanAdapter, String propertyName) {
+        PropertyConnector.connectAndUpdate(beanAdapter.getValueModel(propertyName), this, VALUE_PROPERTY);
+        return this;
+    }
 }

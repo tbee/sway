@@ -27,7 +27,6 @@
     </dependencyManagement>
 
     <dependencies>
-        <!-- https://wiki.eclipse.org/JFace_Data_Binding -->
         <!-- https://www.jgoodies.com/freeware/libraries/binding/ free versions -->
         <dependency>
             <groupId>com.jgoodies</groupId>

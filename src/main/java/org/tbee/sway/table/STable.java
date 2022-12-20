@@ -232,7 +232,7 @@ public class STable<TableType> extends javax.swing.JTable {
             // For each property create a column
             for (String propertyName : propertyNames) {
                 PropertyDescriptor propertyDescriptor = propertyDescriptorsMap.get(propertyName);
-                if (propertyName == null) {
+                if (propertyDescriptor == null) {
                     throw new IllegalArgumentException("Property '" + propertyName + "' not found in bean " + tableTypeClass);
                 }
 

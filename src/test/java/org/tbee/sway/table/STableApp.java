@@ -24,7 +24,7 @@ public class STableApp {
                     .column(Integer.class).title("Age MR").valueSupplier(Bean1::getAge).valueConsumer(Bean1::setAge).id("marker").table() //
 
                     // Using reflection via BeanInfo
-                    .columns(Bean1.class, "name", "age", "ageInt", "calc")
+                    .columns(Bean1.class, "name", Bean1.NAME, Bean1.AGE, Bean1.AGEINT, Bean1.CALC)
 
                     // find
                     .findColumnById("marker").title("AgeMR*").table

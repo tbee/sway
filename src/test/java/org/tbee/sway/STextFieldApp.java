@@ -1,5 +1,7 @@
 package org.tbee.sway;
 
+import com.jgoodies.binding.beans.BeanAdapter;
+
 import javax.swing.*;
 import java.awt.*;
 import java.math.BigDecimal;
@@ -12,10 +14,13 @@ public class STextFieldApp {
     static public void main(String[] args) throws Exception {
         SwingUtilities.invokeAndWait(() -> {
 
+            Bean1 bean1 = new Bean1("test", 12);
+            BeanAdapter<Bean1> beanAdapter = new BeanAdapter<>(bean1);
+
             JPanel jPanel = new JPanel();
             jPanel.setLayout(new FlowLayout());
-            jPanel.add(STextField.ofString().value("abc"));
-            jPanel.add(STextField.ofStringBlankIsNull().value("abc"));
+            jPanel.add(STextField.ofString().name("ofString").value("abc").bind(bean1, Bean1.NAME));
+            jPanel.add(STextField.ofStringBlankIsNull().name("ofStringBlankIsNull").value("abc").bind(beanAdapter, Bean1.NAME));
             jPanel.add(STextField.ofInteger().value(123));
             jPanel.add(STextField.ofPercent().value(1.23));
             jPanel.add(STextField.ofCurrency().value(1.23));
