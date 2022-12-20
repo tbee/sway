@@ -4,6 +4,7 @@ import org.tbee.sway.format.Format;
 import org.tbee.sway.format.JavaFormat;
 import org.tbee.sway.format.StringFormat;
 
+import javax.swing.*;
 import java.awt.*;
 import java.text.NumberFormat;
 import java.util.HashMap;
@@ -17,6 +18,7 @@ import java.util.Objects;
 // - error callback
 // - enforce maximum length
 // - color the contents based on the content, e.g. < 0 is red > 0 is black for a IntegerFormat
+// - binding (to property and jgoodies)
 
 /**
  *
@@ -32,6 +34,7 @@ public class STextField<T> extends javax.swing.JTextField {
         }
         this.format = format;
         setColumns(format.columns());
+        setHorizontalAlignment(format.horizontalAlignment());
     }
 
     /**
@@ -54,7 +57,7 @@ public class STextField<T> extends javax.swing.JTextField {
         }
 
         if (clazz.equals(String.class)) return new StringFormat();
-        if (clazz.equals(Integer.class)) return new JavaFormat<Integer>(NumberFormat.getIntegerInstance(), ("" + Integer.MIN_VALUE).length());
+        if (clazz.equals(Integer.class)) return new JavaFormat<Integer>(NumberFormat.getIntegerInstance(), ("" + Integer.MIN_VALUE).length(), SwingConstants.TRAILING);
         throw new IllegalStateException("No format found for " + clazz);
     }
 

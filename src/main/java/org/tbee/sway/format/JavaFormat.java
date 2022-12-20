@@ -6,10 +6,12 @@ public class JavaFormat<T> implements Format<T> {
 
     private final java.text.Format format;
     private final int columns;
+    private final int horizontalAlignment;
 
-    public JavaFormat(java.text.Format format, int columns) {
+    public JavaFormat(java.text.Format format, int columns, int horizontalAlignment) {
         this.format = format;
         this.columns = columns;
+        this.horizontalAlignment = horizontalAlignment;
     }
 
     @Override
@@ -30,5 +32,10 @@ public class JavaFormat<T> implements Format<T> {
     @Override
     public int columns() {
         return this.columns;
+    }
+
+    @Override
+    public int horizontalAlignment() {
+        return this.horizontalAlignment;
     }
 }

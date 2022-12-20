@@ -1,5 +1,7 @@
 package org.tbee.sway.format;
 
+import javax.swing.*;
+
 public class StringFormat implements Format<String> {
 
     @Override
@@ -15,5 +17,10 @@ public class StringFormat implements Format<String> {
     @Override
     public int columns() {
         return 25;
+    }
+
+    @Override
+    public int horizontalAlignment() {
+        return SwingConstants.LEADING;
     }
 }

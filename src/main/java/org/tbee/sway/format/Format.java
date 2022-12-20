@@ -5,4 +5,6 @@ public interface Format<T> {
     T toValue(String string);
 
     int columns();
+
+    int horizontalAlignment();
 }
