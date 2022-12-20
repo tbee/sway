@@ -1,17 +1,20 @@
 package org.tbee.sway;
 
-import org.tbee.sway.format.*;
+import org.tbee.sway.format.Format;
+import org.tbee.sway.format.FormatRegistry;
+import org.tbee.sway.format.JavaFormat;
+import org.tbee.sway.format.StringFormat;
 
 import javax.swing.*;
 import java.awt.*;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.text.NumberFormat;
-import java.util.*;
+import java.util.Currency;
+import java.util.Locale;
+import java.util.Objects;
 
 // TODO
-// - move determineFormat to a FormatRegistry class? Can be reused in other settings?
-// - alignment based on format
 // - parse value on focus lost
 // - visualize errors
 // - error callback
@@ -42,40 +45,16 @@ public class STextField<T> extends javax.swing.JTextField {
         setHorizontalAlignment(format.horizontalAlignment());
     }
 
-    /**
-     * Register additional formats. These will override predefined ones.
-     * This can be used to register once formats for e.g. ValueTypes.
-     * @param clazz
-     * @param format
-     */
-    static public void register(Class<?> clazz, Format<?> format) {
-        formats.put(clazz, format);
-    }
-    static public boolean unregister(Format<?> format) {
-        return formats.remove(format) != null;
-    }
-    private static Map<Class<?>, Format<?>> formats = new HashMap<>();
-
-    static private Format<?> determineFormat(Class<?> clazz) {
-        Format<?> format = formats.get(clazz);
-        if (format != null) {
-            return format;
-        }
-
-        if (clazz.equals(String.class)) return new StringFormat(false);
-        if (clazz.equals(Integer.class)) return new JavaFormat<Integer>(NumberFormat.getIntegerInstance(), ("" + Integer.MIN_VALUE).length(), SwingConstants.TRAILING);
-        if (clazz.equals(BigInteger.class)) return new BigIntegerFormat();
-        if (clazz.equals(BigDecimal.class)) return new BigDecimalFormat();
-        throw new IllegalStateException("No format found for " + clazz);
-    }
+    // ========================================================
+    // OF
 
     static public <T> STextField<T> of(Class<T> clazz) {
-        Format<T> format = (Format<T>) determineFormat(clazz);
+        Format<T> format = (Format<T>) FormatRegistry.findFor(clazz);
+        if (format == null) {
+            throw new IllegalArgumentException("No format found for " + clazz);
+        }
         return new STextField<T>(format);
     }
-
-    // ========================================================
-    // CONVENIENCE METHODS
 
     static public STextField<String> ofString() {
         return of(String.class);

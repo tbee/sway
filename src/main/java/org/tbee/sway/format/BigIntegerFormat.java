@@ -17,7 +17,7 @@ public class BigIntegerFormat implements Format<BigInteger> {
 
     @Override
     public int columns() {
-        return 25;
+        return 15;
     }
 
     @Override

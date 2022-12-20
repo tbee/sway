@@ -17,7 +17,7 @@ public class BigDecimalFormat implements Format<BigDecimal> {
 
     @Override
     public int columns() {
-        return 25;
+        return 15;
     }
 
     @Override
