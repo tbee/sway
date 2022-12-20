@@ -1,6 +1,6 @@
 package org.tbee.sway.table;
 
-import org.tbee.sway.ColorUtil;
+import org.tbee.sway.SwayUtil;
 
 import javax.swing.*;
 import javax.swing.table.TableCellRenderer;
@@ -291,7 +291,7 @@ public class STable<TableType> extends javax.swing.JTable {
     public Color getFirstAlternateRowColor() {
         return firstAlternateRowColor;
     }
-    private Color firstAlternateRowColor = new Color( UIManager.getColor("Table.background").getRGB() ); // creating a new color will remove the show-table background pattern thing in JTattoo LaF
+    private Color firstAlternateRowColor = SwayUtil.getFirstAlternateRowColor();
 
     /** The second color to use for the alternating background color for rows */
     public void setSecondAlternateRowColor(Color value) {
@@ -300,14 +300,14 @@ public class STable<TableType> extends javax.swing.JTable {
     public Color getSecondAlternateRowColor() {
         return secondAlternateRowColor;
     }
-    private Color secondAlternateRowColor = ColorUtil.brighterOrDarker(firstAlternateRowColor, 0.05);
+    private Color secondAlternateRowColor = SwayUtil.getSecondAlternateRowColor();
 
     /** UneditableCellsShowAsDisabled */
-    public boolean getUneditableCellsShowAsDisabled() {
-        return uneditableCellsShowAsDisabled;
-    }
     public void setUneditableCellsShowAsDisabled(boolean value) {
         uneditableCellsShowAsDisabled = value;
+    }
+    public boolean getUneditableCellsShowAsDisabled() {
+        return uneditableCellsShowAsDisabled;
     }
     private boolean uneditableCellsShowAsDisabled = true;
     public STable<TableType> uneditableCellsShowAsDisabled(boolean value) {
@@ -316,11 +316,11 @@ public class STable<TableType> extends javax.swing.JTable {
     }
 
     /** DisabledTableShowsCellsAsDisabled */
-    public boolean getDisabledTableShowsCellsAsDisabled() {
-        return disabledTableShowsCellsAsDisabled;
-    }
     public void setDisabledTableShowsCellsAsDisabled(boolean value) {
         disabledTableShowsCellsAsDisabled = value;
+    }
+    public boolean getDisabledTableShowsCellsAsDisabled() {
+        return disabledTableShowsCellsAsDisabled;
     }
     private boolean disabledTableShowsCellsAsDisabled = true;
     public STable<TableType> disabledTableShowsCellsAsDisabled(boolean value) {
@@ -329,12 +329,12 @@ public class STable<TableType> extends javax.swing.JTable {
     }
 
     /** Editable */
-    public boolean isEditable() {
-        return editable;
-    }
     public void setEditable(boolean value) {
         editable = value;
         repaint();
+    }
+    public boolean isEditable() {
+        return editable;
     }
     private boolean editable = true;
     public STable<TableType> editable(boolean value) {
@@ -343,11 +343,11 @@ public class STable<TableType> extends javax.swing.JTable {
     }
 
     /** UneditableTableShowsCellsAsDisabled */
-    public boolean getUneditableTableShowsCellsAsDisabled() {
-        return uneditableTableShowsCellsAsDisabled;
-    }
     public void setUneditableTableShowsCellsAsDisabled(boolean value) {
         uneditableTableShowsCellsAsDisabled = value;
+    }
+    public boolean getUneditableTableShowsCellsAsDisabled() {
+        return uneditableTableShowsCellsAsDisabled;
     }
     private boolean uneditableTableShowsCellsAsDisabled = true;
     public STable<TableType> uneditableTableShowsCellsAsDisabled(boolean value) {

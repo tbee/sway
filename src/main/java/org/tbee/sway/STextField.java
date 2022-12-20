@@ -79,16 +79,16 @@ public class STextField<T> extends javax.swing.JTextField {
         return value;
     }
 
-    /** NullAllowed */
-    public boolean isNullAllowed() {
-        return nullAllowed;
+    /** emptyIsNull */
+    public void setEmptyIsNull(boolean value) {
+        emptyIsNull = value;
     }
-    public void setNullAllowed(boolean value) {
-        nullAllowed = value;
+    public boolean isEmptyIsNull() {
+        return emptyIsNull;
     }
-    private boolean nullAllowed = true;
+    private boolean emptyIsNull = true;
     public STextField<T> nullAllowed(boolean value) {
-        setNullAllowed(value);
+        setEmptyIsNull(value);
         return this;
     }
 
@@ -96,7 +96,7 @@ public class STextField<T> extends javax.swing.JTextField {
     public void setValue(T value) {
 
         // check
-        if (value == null && nullAllowed == false) {
+        if (value == null && emptyIsNull == false) {
             setTextFromValue(value); // reset text
             throw new IllegalArgumentException("Null is not allowed as a value");
         }
