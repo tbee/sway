@@ -11,4 +11,9 @@ public class StringFormat implements Format<String> {
     public String toValue(String string) {
         return string;
     }
+
+    @Override
+    public int columns() {
+        return 25;
+    }
 }

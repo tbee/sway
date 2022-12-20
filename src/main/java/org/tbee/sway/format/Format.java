@@ -4,7 +4,5 @@ public interface Format<T> {
     String toString(T value);
     T toValue(String string);
 
-    default int columns() {
-        return 10;
-    }
+    int columns();
 }

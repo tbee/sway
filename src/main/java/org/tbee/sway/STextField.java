@@ -54,7 +54,7 @@ public class STextField<T> extends javax.swing.JTextField {
         }
 
         if (clazz.equals(String.class)) return new StringFormat();
-        if (clazz.equals(Integer.class)) return new JavaFormat<Integer>(NumberFormat.getIntegerInstance());
+        if (clazz.equals(Integer.class)) return new JavaFormat<Integer>(NumberFormat.getIntegerInstance(), ("" + Integer.MIN_VALUE).length());
         throw new IllegalStateException("No format found for " + clazz);
     }
 

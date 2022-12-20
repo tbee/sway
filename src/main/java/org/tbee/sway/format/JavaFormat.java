@@ -5,9 +5,11 @@ import java.text.ParseException;
 public class JavaFormat<T> implements Format<T> {
 
     private final java.text.Format format;
+    private final int columns;
 
-    public JavaFormat(java.text.Format format) {
+    public JavaFormat(java.text.Format format, int columns) {
         this.format = format;
+        this.columns = columns;
     }
 
     @Override
@@ -23,5 +25,10 @@ public class JavaFormat<T> implements Format<T> {
         catch (ParseException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public int columns() {
+        return this.columns;
     }
 }
