@@ -2,10 +2,7 @@ package org.tbee.sway;
 
 import com.jgoodies.binding.beans.PropertyConnector;
 import org.tbee.sway.binding.BeanBinder;
-import org.tbee.sway.format.Format;
-import org.tbee.sway.format.FormatRegistry;
-import org.tbee.sway.format.JavaFormat;
-import org.tbee.sway.format.StringFormat;
+import org.tbee.sway.format.*;
 import org.tbee.sway.support.FocusInterpreter;
 
 import javax.swing.*;
@@ -13,6 +10,8 @@ import java.awt.*;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.text.NumberFormat;
+import java.time.LocalDate;
+import java.time.format.FormatStyle;
 import java.util.List;
 import java.util.*;
 
@@ -22,12 +21,15 @@ import java.util.*;
 // - enforce maximum length
 // - color the contents based on the content, e.g. < 0 is red > 0 is black for a IntegerFormat
 // - undo
+// - popup
+// - format for: LocalDate, LocalDateTime, ZonedDate, ZonedDateTime, Double, Long
 
 /**
  *
  * @param <T>
  */
 public class STextField<T> extends javax.swing.JTextField {
+    static private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(STextField.class);
 
     final private Format<T> format;
 
@@ -98,6 +100,18 @@ public class STextField<T> extends javax.swing.JTextField {
         currencyInstance.setCurrency(currency);
         return new STextField<Number>(new JavaFormat<Number>(currencyInstance, ("" + Double.MIN_VALUE).length() + 4, SwingConstants.TRAILING));
     }
+    static public STextField<LocalDate> ofLocalDate() {
+        return of(LocalDate.class);
+    }
+    static public STextField<LocalDate> ofLocalDate(FormatStyle formatStyle, Locale locale) {
+        return new STextField<LocalDate>(new LocalDateFormat(formatStyle, locale));
+    }
+    static public STextField<LocalDate> ofLocalDate(FormatStyle formatStyle) {
+        return new STextField<LocalDate>(new LocalDateFormat(formatStyle));
+    }
+    static public STextField<LocalDate> ofLocalDate(Locale locale) {
+        return new STextField<LocalDate>(new LocalDateFormat(locale));
+    }
 
 
     // ========================================================
@@ -145,8 +159,11 @@ public class STextField<T> extends javax.swing.JTextField {
             setValue(value); // This will validate, reformat, send events, update this.value, etc.
         }
         catch (Exception e) {
+
             // set the value back to the latest value
             setValue(this.value);
+
+            e.printStackTrace(); // TBEERNOT display this error
         }
         return this.value;
     }

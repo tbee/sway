@@ -18,7 +18,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 // TODO
-// - test using assertJ https://assertj.github.io/doc/#assertj-swing
 // - better javadoc
 // - more editors and renderers (LocalDate, etc)
 // - per column editor and renderer
@@ -51,12 +50,15 @@ import java.util.stream.Collectors;
 
 /**
  * This table implements an opinionated way how the table API should look.
- * Usage: new STable().column(<Type>.class).valueSupplier(d -> d.getValue())...
+ * Usage: new STable<TableType>().column(<ColType>.class).valueSupplier(d -> d.getValue())...table()
+ * Or: new STable<TableType>().columns(<TableType>.class, "prop1", "prop2").table()
+ *
  * It should still be wrapped in a JScrollPane.
  *
  * @param <TableType>
  */
 public class STable<TableType> extends javax.swing.JTable {
+    static private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(STable.class);
 
     public STable() {
         super(new TableModel<TableType>());
