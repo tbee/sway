@@ -1,9 +1,10 @@
 package org.tbee.sway;
 
+import net.miginfocom.layout.CC;
+import net.miginfocom.swing.MigLayout;
 import org.tbee.sway.binding.BeanBinder;
 
 import javax.swing.*;
-import java.awt.*;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Currency;
@@ -18,21 +19,41 @@ public class STextFieldApp {
             BeanBinder<Bean1> beanBinder = new BeanBinder<>(bean1);
 
             JPanel jPanel = new JPanel();
-            jPanel.setLayout(new FlowLayout());
-            jPanel.add(STextField.ofString().value("abc").bind(bean1, Bean1.NAME));
-            jPanel.add(STextField.ofString().value("def").bind(bean1, Bean1.NAME));
-            jPanel.add(STextField.ofStringBlankIsNull().name("ofStringBlankIsNull").value("abc").bind(beanBinder, Bean1.NAME));
-            jPanel.add(STextField.ofInteger().value(123));
-            jPanel.add(STextField.ofPercent().value(1.23));
-            jPanel.add(STextField.ofCurrency().value(1.23));
-            jPanel.add(STextField.ofCurrency(Locale.JAPAN).value(1.23));
-            jPanel.add(STextField.ofCurrency(Currency.getInstance("EUR")).value(1.23));
-            jPanel.add(STextField.ofBigInteger().value(BigInteger.ONE));
-            jPanel.add(STextField.ofBigDecimal().value(BigDecimal.TEN.ONE));
+            jPanel.setLayout(new MigLayout());
+
+            jPanel.add(new JLabel("String"), new CC());
+            jPanel.add(STextField.ofString().value("abc"), new CC().wrap());
+
+            jPanel.add(new JLabel("String -> bean.name"), new CC());
+            jPanel.add(STextField.ofString().bind(bean1, Bean1.NAME), new CC().wrap());
+
+            jPanel.add(new JLabel("StringBlankIsNull -> bean.name"), new CC());
+            jPanel.add(STextField.ofStringBlankIsNull().bind(beanBinder, Bean1.NAME), new CC().wrap());
+
+            jPanel.add(new JLabel("Integer -> bean.age"), new CC());
+            jPanel.add(STextField.ofInteger().bind(bean1, Bean1.AGE), new CC().wrap());
+
+            jPanel.add(new JLabel("Percent"), new CC());
+            jPanel.add(STextField.ofPercent().value(1.23), new CC().wrap());
+
+            jPanel.add(new JLabel("Currency"), new CC());
+            jPanel.add(STextField.ofCurrency().value(1.23), new CC().wrap());
+
+            jPanel.add(new JLabel("Currency JAPAN"), new CC());
+            jPanel.add(STextField.ofCurrency(Locale.JAPAN).value(1.23), new CC().wrap());
+
+            jPanel.add(new JLabel("Currency EURO"), new CC());
+            jPanel.add(STextField.ofCurrency(Currency.getInstance("EUR")).value(1.23), new CC().wrap());
+
+            jPanel.add(new JLabel("BigInteger"), new CC());
+            jPanel.add(STextField.ofBigInteger().value(BigInteger.ONE), new CC().wrap());
+
+            jPanel.add(new JLabel("BigDecimal"), new CC());
+            jPanel.add(STextField.ofBigDecimal().value(BigDecimal.TEN.ONE), new CC().wrap());
 
             JButton jButton = new JButton("set name");
             jButton.addActionListener(e -> bean1.setName("name" + System.currentTimeMillis()));
-            jPanel.add(jButton);
+            jPanel.add(jButton, new CC().skip(1).wrap());
 
             JFrame jFrame = new JFrame();
             jFrame.setContentPane(jPanel);

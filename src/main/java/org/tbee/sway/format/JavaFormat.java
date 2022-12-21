@@ -16,11 +16,14 @@ public class JavaFormat<T> implements Format<T> {
 
     @Override
     public String toString(T value) {
-        return format.format(value);
+        return value == null ? "" : format.format(value);
     }
 
     @Override
     public T toValue(String string) {
+        if (string.isBlank()) {
+            return null;
+        }
         try {
             return (T)format.parseObject(string);
         }
