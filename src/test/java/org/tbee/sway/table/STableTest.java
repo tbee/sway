@@ -25,7 +25,7 @@ public class STableTest {
                     .column(new TableColumn<Bean1, Integer>(Integer.class).valueSupplier(d -> d.getAge()));
             sTableRef.set(sTable);
 
-            sTable.setData(List.of(new Bean1("Tom", 52), new Bean1("Corine", 48)));
+            sTable.setData(List.of(new Bean1().name("Tom").age(52), new Bean1().name("Corine").age(48)));
 
             JFrame jFrame = new JFrame();
             jFrame.setContentPane(new JScrollPane(sTable));

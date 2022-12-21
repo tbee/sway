@@ -120,7 +120,6 @@ public class STextField<T> extends javax.swing.JTextField {
 
     /** Value (through Format) */
     public void setValue(T v) {
-        System.out.println(getName() + " setValue " + v);
 
         // set value
         Object oldValue = this.value;
@@ -131,7 +130,6 @@ public class STextField<T> extends javax.swing.JTextField {
 
         // fire PCE
         if (!Objects.equals(oldValue, this.value)) {
-            System.out.println(getName() + " firePropertyChange " + VALUE + ": " + oldValue + " -> " + v);
             firePropertyChange(VALUE, oldValue, v); // fire a PCE for easy binding
         }
     }

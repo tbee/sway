@@ -1,4 +1,4 @@
-package org.tbee.sway.support;
+package org.tbee.util;
 
 import java.beans.PropertyChangeListener;
 import java.beans.VetoableChangeListener;
@@ -7,14 +7,14 @@ import java.beans.VetoableChangeListener;
  * The counterpart of the PropertyChangeListener interface.
  * You can use PropertyChangeSupport to easily implement this.
  */
-public interface PropertyChangeProvider
+public interface PropertyChangeProvider extends MinimalPropertyChangeProvider
 {
     PropertyChangeListener[] getPropertyChangeListeners();
     PropertyChangeListener[] getPropertyChangeListeners(String property);
     void addPropertyChangeListener(PropertyChangeListener listener);
-    void addPropertyChangeListener( String propertyName, PropertyChangeListener listener);
+    void addPropertyChangeListener(String propertyName, PropertyChangeListener listener);
     void removePropertyChangeListener(PropertyChangeListener listener);
-    void removePropertyChangeListener( String propertyName, PropertyChangeListener listener);
+    void removePropertyChangeListener(String propertyName, PropertyChangeListener listener);
     void firePropertyChange(String name, Object before, Object after);
 
     VetoableChangeListener[] getVetoableChangeListeners();

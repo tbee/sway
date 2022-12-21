@@ -1,4 +1,4 @@
-package org.tbee.sway.support;
+package org.tbee.util;
 
 import java.beans.*;
 import java.util.List;
@@ -112,34 +112,35 @@ implements PropertyChangeProvider, java.io.Serializable {
         propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(this, name, before, after));
     }
 
-    public record Cascade<T>(String name, T beforeValue, Supplier<T> afterCallable) {}
-    protected <T> Cascade<T> cascade(String name, T beforeValue, Supplier<T> afterCallable) {
-        return new Cascade(name, beforeValue, afterCallable);
-    }
-
     /**
      * Call PCE but prefix with possible derived properties.
      * Example:
      * Set a property 'prop' which has a derived / calculated property 'calc'.
-     *   firePropertyChange(List.of(cascade(CALC, getCalc(), () -> getCalc())) //
+     *   firePropertyChange(List.of(derived(CALC, getCalc(), () -> getCalc())) //
      *                    , PROP, this.prop, this.prop = v);
      *
      * The sequence of parameters makes sure that evaluation and update happens in the right order.
+     * Preferably the derived would be at the end (Derived...) but that won't work correctly.
      *
-     * @param cascades
+     * @param derivedList
      * @param name
      * @param before
      * @param after
      * @param <T>
      */
-    public <T> void firePropertyChange(List<Cascade<T>> cascades, String name, Object before, Object after) {
+    public <T> void firePropertyChange(List<Derived<T>> derivedList, String name, Object before, Object after) {
         firePropertyChange(name, before, after);
-        for (Cascade<?> cascade : cascades) {
-            firePropertyChange(cascade.name(), cascade.beforeValue(), cascade.afterCallable().get());
+        for (Derived<?> derived : derivedList) {
+            firePropertyChange(derived.name(), derived.beforeValue(), derived.afterCallable().get());
         }
     }
 
-        // ===============================================================================================
+    protected record Derived<T>(String name, T beforeValue, Supplier<T> afterCallable) {}
+    protected <T> Derived<T> derived(String name, T beforeValue, Supplier<T> afterCallable) {
+        return new Derived(name, beforeValue, afterCallable);
+    }
+
+    // ===============================================================================================
     // VetoableChange
 
     transient volatile private VetoableChangeSupport vetoableChangeSupport = null;

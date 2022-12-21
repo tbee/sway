@@ -31,7 +31,7 @@ public class STableApp {
                     .findColumnById("marker").title("AgeMR*").table()
              ;
 
-            sTable.setData(List.of(new Bean1("Tom", 52), new Bean1("Corine", 48)));
+            sTable.setData(List.of(new Bean1().name("Tom").age(52), new Bean1().name("Corine").age(48)));
 
             JFrame jFrame = new JFrame();
             jFrame.setContentPane(new JScrollPane(sTable));

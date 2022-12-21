@@ -14,13 +14,13 @@ public class STextFieldApp {
     static public void main(String[] args) throws Exception {
         SwingUtilities.invokeAndWait(() -> {
 
-            Bean1 bean1 = new Bean1("test", 12);
+            Bean1 bean1 = new Bean1().name("test").age(12);
             BeanBinder<Bean1> beanBinder = new BeanBinder<>(bean1);
 
             JPanel jPanel = new JPanel();
             jPanel.setLayout(new FlowLayout());
-            jPanel.add(STextField.ofString().name("ofString").value("abc").bind(bean1, Bean1.NAME));
-            jPanel.add(STextField.ofString().name("ofString2").value("def").bind(bean1, Bean1.NAME));
+            jPanel.add(STextField.ofString().value("abc").bind(bean1, Bean1.NAME));
+            jPanel.add(STextField.ofString().value("def").bind(bean1, Bean1.NAME));
             jPanel.add(STextField.ofStringBlankIsNull().name("ofStringBlankIsNull").value("abc").bind(beanBinder, Bean1.NAME));
             jPanel.add(STextField.ofInteger().value(123));
             jPanel.add(STextField.ofPercent().value(1.23));
@@ -30,8 +30,8 @@ public class STextFieldApp {
             jPanel.add(STextField.ofBigInteger().value(BigInteger.ONE));
             jPanel.add(STextField.ofBigDecimal().value(BigDecimal.TEN.ONE));
 
-            JButton jButton = new JButton("set");
-            jButton.addActionListener(e -> bean1.setName("" + System.currentTimeMillis()));
+            JButton jButton = new JButton("set name");
+            jButton.addActionListener(e -> bean1.setName("name" + System.currentTimeMillis()));
             jPanel.add(jButton);
 
             JFrame jFrame = new JFrame();
