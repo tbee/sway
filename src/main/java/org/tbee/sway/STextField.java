@@ -21,10 +21,7 @@ import java.util.*;
 // - error callback
 // - enforce maximum length
 // - color the contents based on the content, e.g. < 0 is red > 0 is black for a IntegerFormat
-// - binding (to property and jgoodies)
-//   - fireVetoableChange("name", this.name, name);
-//   - firePropertyChange("name", this.name, this.name = name);
-// undo
+// - undo
 
 /**
  *
@@ -199,6 +196,8 @@ public class STextField<T> extends javax.swing.JTextField {
     private List<PropertyConnector> propertyConnectors;
 
     /**
+     * Will create a binding to a specific bean/property.
+     * Use bind(BeanBinding, PropertyName) to be able to switch beans while keeping the bind.
      *
      * @param bean
      * @param propertyName
@@ -220,10 +219,11 @@ public class STextField<T> extends javax.swing.JTextField {
     }
 
     /**
+     * Will unbind all connection to the bean/property combination.
      *
      * @param bean
      * @param propertyName
-     * @return
+     * @return true if unbind was successful
      */
     public boolean unbind(Object bean, String propertyName) {
         if (propertyConnectors == null) {
@@ -244,7 +244,11 @@ public class STextField<T> extends javax.swing.JTextField {
     }
 
     /**
-     * Beware: this binding cannot be unbound! You can change the bound bean by replacing the value in de beanBinder.
+     * Bind to a bean wrapper's property.
+     * This will allow the swap the bean (in the BeanBinder) without having to rebind.
+     *
+     * Beware: this binding cannot be unbound! The bean in the BeanBinder can be set to null only.
+     *
      * @param beanBinder
      * @param propertyName
      * @return
