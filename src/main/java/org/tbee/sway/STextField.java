@@ -15,6 +15,7 @@ import java.math.BigInteger;
 import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.time.ZonedDateTime;
 import java.time.format.FormatStyle;
 import java.util.List;
@@ -130,6 +131,9 @@ public class STextField<T> extends javax.swing.JTextField {
     }
     static public STextField<ZonedDateTime> ofZonedDateTime() {
         return of(ZonedDateTime.class);
+    }
+    static public STextField<OffsetDateTime> ofOffsetDateTime() {
+        return of(OffsetDateTime.class);
     }
 
 

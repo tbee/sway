@@ -2,32 +2,32 @@ package org.tbee.sway.format;
 
 import javax.swing.*;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
 /**
  * This format always allows typing in iso notation.
  */
-public class ZonedDateTimeFormat implements Format<ZonedDateTime> {
+public class OffsetDateTimeFormat implements Format<OffsetDateTime> {
 
-    private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ISO_DATE_TIME;
-    static private ZonedDateTime longestValue = ZonedDateTime.of(LocalDateTime.of(8888,12, 23, 12, 58, 59), ZoneId.of("Europe/Amsterdam"));
+    private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
+    static private OffsetDateTime longestValue = OffsetDateTime.of(LocalDateTime.of(8888,12, 23, 12, 58, 59), ZoneOffset.ofHours(10));
 
     @Override
-    public String toString(ZonedDateTime value) {
+    public String toString(OffsetDateTime value) {
         return value == null ? "" : dateTimeFormatter.format(value);
     }
 
     @Override
-    public ZonedDateTime toValue(String string) {
+    public OffsetDateTime toValue(String string) {
         try {
-            return string.isBlank() ? null : ZonedDateTime.from(dateTimeFormatter.parse(string));
+            return string.isBlank() ? null : OffsetDateTime.from(dateTimeFormatter.parse(string));
         }
         catch (DateTimeParseException e) {
             // If that fails, throw the original exception with a typing hint
-            throw new DateTimeParseException(e.getMessage() + ", example: " + dateTimeFormatter.format(ZonedDateTime.now()), e.getParsedString(), e.getErrorIndex(), e);
+            throw new DateTimeParseException(e.getMessage() + ", example: " + dateTimeFormatter.format(OffsetDateTime.now()), e.getParsedString(), e.getErrorIndex(), e);
         }
     }
 

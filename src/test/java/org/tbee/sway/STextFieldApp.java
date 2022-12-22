@@ -9,6 +9,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.time.ZonedDateTime;
 import java.util.Currency;
 import java.util.Locale;
@@ -62,6 +63,9 @@ public class STextFieldApp {
 
             jPanel.add(new JLabel("ZonedDateTime"), new CC());
             jPanel.add(STextField.ofZonedDateTime().value(ZonedDateTime.now()), new CC().wrap());
+
+            jPanel.add(new JLabel("OffsetDateTime"), new CC());
+            jPanel.add(STextField.ofOffsetDateTime().value(OffsetDateTime.now()), new CC().wrap());
 
             JButton jButton = new JButton("set name");
             jButton.addActionListener(e -> bean1.setName("name" + System.currentTimeMillis()));
