@@ -28,5 +28,4 @@ public class BeanBinder<T> {
     public void bind(String propertyName, Object bean2, String propertyName2) {
         PropertyConnector.connectAndUpdate(beanAdapter.getValueModel(propertyName), bean2, propertyName2);
     }
-
 }

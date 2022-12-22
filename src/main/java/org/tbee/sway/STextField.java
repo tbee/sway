@@ -4,9 +4,12 @@ import com.jgoodies.binding.beans.PropertyConnector;
 import org.tbee.sway.binding.BeanBinder;
 import org.tbee.sway.format.*;
 import org.tbee.sway.support.FocusInterpreter;
+import org.tbee.util.ExceptionUtil;
+import org.tbee.util.MinimalPropertyChangeProvider;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyEvent;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.text.NumberFormat;
@@ -154,18 +157,30 @@ public class STextField<T> extends javax.swing.JTextField {
      * @return
      */
     public T getValue() {
+
         try {
             T value = getValueFromText();
             setValue(value); // This will validate, reformat, send events, update this.value, etc.
         }
         catch (Exception e) {
 
-            // set the value back to the latest value
-            setValue(this.value);
+            // Force focus back
+            SwingUtilities.invokeLater(() -> this.grabFocus());
 
-            e.printStackTrace(); // TBEERNOT display this error
+            // Display the error
+            if (logger.isInfoEnabled()) logger.info(e.getMessage(), e);
+            JOptionPane.showMessageDialog(this, ExceptionUtil.determineMessage(e), "ERROR", JOptionPane.ERROR_MESSAGE);
         }
+
         return this.value;
+    }
+
+    protected void processKeyEvent(KeyEvent e) {
+        // on ESC set the value back to the latest value
+        if (e.getKeyCode() == 27 && e.getID() == KeyEvent.KEY_PRESSED) {
+            setValue(this.value);
+        }
+        super.processKeyEvent(e);
     }
 
     // ==============================================
@@ -220,7 +235,7 @@ public class STextField<T> extends javax.swing.JTextField {
      * @param propertyName
      * @return
      */
-    public STextField<T> bind(Object bean, String propertyName) {
+    public STextField<T> bind(MinimalPropertyChangeProvider bean, String propertyName) {
 
         // Bind
         PropertyConnector propertyConnector = PropertyConnector.connect(bean, propertyName, this, VALUE);
