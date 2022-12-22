@@ -1,12 +1,11 @@
-package org.tbee.sway.table;
+package org.tbee.sway;
 
 import org.assertj.swing.data.TableCell;
 import org.assertj.swing.edt.GuiActionRunner;
 import org.assertj.swing.fixture.FrameFixture;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.tbee.sway.Bean1;
-import org.tbee.sway.STable;
+import org.tbee.sway.table.TableColumn;
 
 import javax.swing.*;
 import java.util.List;

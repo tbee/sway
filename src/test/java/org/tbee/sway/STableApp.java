@@ -1,7 +1,6 @@
-package org.tbee.sway.table;
+package org.tbee.sway;
 
-import org.tbee.sway.Bean1;
-import org.tbee.sway.STable;
+import org.tbee.sway.table.TableColumn;
 
 import javax.swing.*;
 import java.util.List;

@@ -8,6 +8,7 @@ import javax.swing.*;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Currency;
 import java.util.Locale;
 
@@ -54,6 +55,9 @@ public class STextFieldApp {
 
             jPanel.add(new JLabel("LocalDate"), new CC());
             jPanel.add(STextField.ofLocalDate().value(LocalDate.now()), new CC().wrap());
+
+            jPanel.add(new JLabel("LocalDateTime"), new CC());
+            jPanel.add(STextField.ofLocalDateTime().value(LocalDateTime.now()), new CC().wrap());
 
             JButton jButton = new JButton("set name");
             jButton.addActionListener(e -> bean1.setName("name" + System.currentTimeMillis()));

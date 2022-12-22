@@ -14,18 +14,18 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.text.NumberFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.FormatStyle;
 import java.util.List;
 import java.util.*;
 
 // TODO
-// - visualize errors
 // - error callback
 // - enforce maximum length
 // - color the contents based on the content, e.g. < 0 is red > 0 is black for a IntegerFormat
 // - undo
 // - popup
-// - format for: LocalDate, LocalDateTime, ZonedDate, ZonedDateTime, Double, Long
+// - format for: LocalDateTime, ZonedDate, ZonedDateTime, Double, Long
 
 /**
  *
@@ -114,6 +114,18 @@ public class STextField<T> extends javax.swing.JTextField {
     }
     static public STextField<LocalDate> ofLocalDate(Locale locale) {
         return new STextField<LocalDate>(new LocalDateFormat(locale));
+    }
+    static public STextField<LocalDateTime> ofLocalDateTime() {
+        return of(LocalDateTime.class);
+    }
+    static public STextField<LocalDateTime> ofLocalDateTime(FormatStyle formatStyle, Locale locale) {
+        return new STextField<LocalDateTime>(new LocalDateTimeFormat(formatStyle, locale));
+    }
+    static public STextField<LocalDateTime> ofLocalDateTime(FormatStyle formatStyle) {
+        return new STextField<LocalDateTime>(new LocalDateTimeFormat(formatStyle));
+    }
+    static public STextField<LocalDateTime> ofLocalDateTime(Locale locale) {
+        return new STextField<LocalDateTime>(new LocalDateTimeFormat(locale));
     }
 
 
