@@ -15,6 +15,7 @@ import java.math.BigInteger;
 import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.time.format.FormatStyle;
 import java.util.List;
 import java.util.*;
@@ -25,7 +26,7 @@ import java.util.*;
 // - color the contents based on the content, e.g. < 0 is red > 0 is black for a IntegerFormat
 // - undo
 // - popup
-// - format for: LocalDateTime, ZonedDate, ZonedDateTime, Double, Long
+// - format for: Double, Long
 
 /**
  *
@@ -126,6 +127,9 @@ public class STextField<T> extends javax.swing.JTextField {
     }
     static public STextField<LocalDateTime> ofLocalDateTime(Locale locale) {
         return new STextField<LocalDateTime>(new LocalDateTimeFormat(locale));
+    }
+    static public STextField<ZonedDateTime> ofZonedDateTime() {
+        return of(ZonedDateTime.class);
     }
 
 

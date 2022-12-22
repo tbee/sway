@@ -49,7 +49,7 @@ public class LocalDateTimeFormat implements Format<LocalDateTime> {
 
             // try the fallback ISO notation
             try {
-                return LocalDateTime.from(DateTimeFormatter.ISO_DATE_TIME.parse(string));
+                return LocalDateTime.from(DateTimeFormatter.ISO_LOCAL_DATE_TIME.parse(string));
             }
             catch (DateTimeParseException e2) {
 
