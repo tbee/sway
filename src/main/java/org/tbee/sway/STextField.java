@@ -22,12 +22,10 @@ import java.util.List;
 import java.util.*;
 
 // TODO
-// - error callback
+// - popup
 // - enforce maximum length
 // - color the contents based on the content, e.g. < 0 is red > 0 is black for a IntegerFormat
 // - undo
-// - popup
-// - format for: Double, Long
 
 /**
  *
@@ -84,6 +82,12 @@ public class STextField<T> extends javax.swing.JTextField {
     }
     static public STextField<Integer> ofInteger() {
         return of(Integer.class);
+    }
+    static public STextField<Long> ofLong() {
+        return of(Long.class);
+    }
+    static public STextField<Double> ofDouble() {
+        return of(Double.class);
     }
     static public STextField<BigInteger> ofBigInteger() {
         return of(BigInteger.class);

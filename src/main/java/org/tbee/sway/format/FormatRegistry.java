@@ -39,6 +39,8 @@ public class FormatRegistry {
 
         if (clazz.equals(String.class)) return new StringFormat(false);
         if (clazz.equals(Integer.class)) return new IntegerFormat();
+        if (clazz.equals(Long.class)) return new LongFormat();
+        if (clazz.equals(Double.class)) return new DoubleFormat();
         if (clazz.equals(BigInteger.class)) return new BigIntegerFormat();
         if (clazz.equals(BigDecimal.class)) return new BigDecimalFormat();
         if (clazz.equals(LocalDate.class)) return new LocalDateFormat();

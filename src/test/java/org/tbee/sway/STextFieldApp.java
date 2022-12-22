@@ -25,46 +25,52 @@ public class STextFieldApp {
             JPanel jPanel = new JPanel();
             jPanel.setLayout(new MigLayout());
 
-            jPanel.add(new JLabel("String"), new CC());
+            jPanel.add(new JLabel("String"), new CC().alignX("right"));
             jPanel.add(STextField.ofString().value("abc"), new CC().wrap());
 
-            jPanel.add(new JLabel("String -> bean.name"), new CC());
+            jPanel.add(new JLabel("String -> bean.name"), new CC().alignX("right"));
             jPanel.add(STextField.ofString().bind(bean1, Bean1.NAME), new CC().wrap());
 
-            jPanel.add(new JLabel("StringBlankIsNull -> bean.name"), new CC());
+            jPanel.add(new JLabel("StringBlankIsNull -> bean.name"), new CC().alignX("right"));
             jPanel.add(STextField.ofStringBlankIsNull().bind(beanBinder, Bean1.NAME), new CC().wrap());
 
-            jPanel.add(new JLabel("Integer -> bean.age"), new CC());
+            jPanel.add(new JLabel("Integer -> bean.age"), new CC().alignX("right"));
             jPanel.add(STextField.ofInteger().bind(bean1, Bean1.AGE), new CC().wrap());
 
-            jPanel.add(new JLabel("Percent"), new CC());
+            jPanel.add(new JLabel("Long"), new CC().alignX("right"));
+            jPanel.add(STextField.ofLong().value(123l), new CC().wrap());
+
+            jPanel.add(new JLabel("Double"), new CC().alignX("right"));
+            jPanel.add(STextField.ofDouble().value(1.23), new CC().wrap());
+
+            jPanel.add(new JLabel("Percent"), new CC().alignX("right"));
             jPanel.add(STextField.ofPercent().value(1.23), new CC().wrap());
 
-            jPanel.add(new JLabel("Currency"), new CC());
+            jPanel.add(new JLabel("Currency"), new CC().alignX("right"));
             jPanel.add(STextField.ofCurrency().value(1.23), new CC().wrap());
 
-            jPanel.add(new JLabel("Currency JAPAN"), new CC());
+            jPanel.add(new JLabel("Currency JAPAN"), new CC().alignX("right"));
             jPanel.add(STextField.ofCurrency(Locale.JAPAN).value(1.23), new CC().wrap());
 
-            jPanel.add(new JLabel("Currency EURO"), new CC());
+            jPanel.add(new JLabel("Currency EURO"), new CC().alignX("right"));
             jPanel.add(STextField.ofCurrency(Currency.getInstance("EUR")).value(1.23), new CC().wrap());
 
-            jPanel.add(new JLabel("BigInteger"), new CC());
+            jPanel.add(new JLabel("BigInteger"), new CC().alignX("right"));
             jPanel.add(STextField.ofBigInteger().value(BigInteger.ONE), new CC().wrap());
 
-            jPanel.add(new JLabel("BigDecimal"), new CC());
+            jPanel.add(new JLabel("BigDecimal"), new CC().alignX("right"));
             jPanel.add(STextField.ofBigDecimal().value(BigDecimal.TEN.ONE), new CC().wrap());
 
-            jPanel.add(new JLabel("LocalDate"), new CC());
+            jPanel.add(new JLabel("LocalDate"), new CC().alignX("right"));
             jPanel.add(STextField.ofLocalDate().value(LocalDate.now()), new CC().wrap());
 
-            jPanel.add(new JLabel("LocalDateTime"), new CC());
+            jPanel.add(new JLabel("LocalDateTime"), new CC().alignX("right"));
             jPanel.add(STextField.ofLocalDateTime().value(LocalDateTime.now()), new CC().wrap());
 
-            jPanel.add(new JLabel("ZonedDateTime"), new CC());
+            jPanel.add(new JLabel("ZonedDateTime"), new CC().alignX("right"));
             jPanel.add(STextField.ofZonedDateTime().value(ZonedDateTime.now()), new CC().wrap());
 
-            jPanel.add(new JLabel("OffsetDateTime"), new CC());
+            jPanel.add(new JLabel("OffsetDateTime"), new CC().alignX("right"));
             jPanel.add(STextField.ofOffsetDateTime().value(OffsetDateTime.now()), new CC().wrap());
 
             JButton jButton = new JButton("set name");
