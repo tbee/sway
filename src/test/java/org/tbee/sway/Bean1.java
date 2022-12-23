@@ -34,6 +34,9 @@ public class Bean1 extends AbstractBean<Bean1> {
 
     /** age: integer property */
     public void setAge(int v) {
+        if (v < 0) {
+            throw new IllegalArgumentException("Age must be >= 0");
+        }
         fireVetoableChange(AGE, this.age, v);
         firePropertyChange(List.of(derived(CALC, getCalc(), () -> getCalc())) // TBEERNOT is there a better way to do this? Binding?
                 , AGE, this.age, this.age = v);

@@ -5,7 +5,6 @@ import org.tbee.sway.binding.BeanBinder;
 import org.tbee.sway.format.*;
 import org.tbee.sway.support.FocusInterpreter;
 import org.tbee.util.ExceptionUtil;
-import org.tbee.util.MinimalPropertyChangeProvider;
 
 import javax.swing.*;
 import java.awt.*;
@@ -22,6 +21,7 @@ import java.util.List;
 import java.util.*;
 
 // TODO
+// - error when setValue when bound
 // - popup
 // - enforce maximum length
 // - color the contents based on the content, e.g. < 0 is red > 0 is black for a IntegerFormat
@@ -259,7 +259,7 @@ public class STextField<T> extends javax.swing.JTextField {
      * @param propertyName
      * @return
      */
-    public STextField<T> bind(MinimalPropertyChangeProvider bean, String propertyName) {
+    public STextField<T> bind(Object bean, String propertyName) {
 
         // Bind
         PropertyConnector propertyConnector = PropertyConnector.connect(bean, propertyName, this, VALUE);
@@ -271,11 +271,12 @@ public class STextField<T> extends javax.swing.JTextField {
         }
         propertyConnectors.add(propertyConnector);
 
+        // Done
         return this;
     }
 
     /**
-     * Will unbind all connection to the bean/property combination.
+     * Will unbind the connection to the bean/property combination.
      *
      * @param bean
      * @param propertyName
@@ -302,15 +303,22 @@ public class STextField<T> extends javax.swing.JTextField {
     /**
      * Bind to a bean wrapper's property.
      * This will allow the swap the bean (in the BeanBinder) without having to rebind.
-     *
-     * Beware: this binding cannot be unbound! The bean in the BeanBinder can be set to null only.
-     *
      * @param beanBinder
      * @param propertyName
      * @return
      */
     public STextField<T> bind(BeanBinder beanBinder, String propertyName) {
-        beanBinder.bind(propertyName, this, VALUE);
-        return this;
+        return bind(beanBinder.getBeanAdapter().getValueModel(propertyName), "value");
+    }
+
+    /**
+     * Will unbind the connection to the beanBinder/property combination.
+     *
+     * @param beanBinder
+     * @param propertyName
+     * @return true if unbind was successful
+     */
+    public boolean unbind(BeanBinder beanBinder, String propertyName) {
+        return unbind(beanBinder.getBeanAdapter().getValueModel(propertyName), "value");
     }
 }
