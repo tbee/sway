@@ -2,7 +2,11 @@ package org.tbee.sway;
 
 import com.jgoodies.binding.beans.PropertyConnector;
 import org.tbee.sway.binding.BeanBinder;
-import org.tbee.sway.format.*;
+import org.tbee.sway.binding.ExceptionCatcher;
+import org.tbee.sway.format.Format;
+import org.tbee.sway.format.FormatRegistry;
+import org.tbee.sway.format.JavaFormat;
+import org.tbee.sway.format.StringFormat;
 import org.tbee.sway.support.FocusInterpreter;
 import org.tbee.util.ExceptionUtil;
 
@@ -16,9 +20,10 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZonedDateTime;
-import java.time.format.FormatStyle;
+import java.util.ArrayList;
+import java.util.Currency;
 import java.util.List;
-import java.util.*;
+import java.util.Locale;
 
 // TODO
 // - error when setValue when bound
@@ -53,9 +58,8 @@ public class STextField<T> extends javax.swing.JTextField {
     private void construct() {
         // the FocusInterpreterListener must be kept in an instance variable, otherwise it will be cleared by the WeakArrayList used in the FocusInterpreter
         focusInterpreterListener = evt -> {
-            if (evt.getState() == FocusInterpreter.State.FOCUS_LOST) {
-                // force a validation
-                getValue();
+            if (evt.getState() == FocusInterpreter.State.LOSING_FOCUS) {
+                setValueFromText();
             }
         };
         focusInterpreter.addFocusListener(focusInterpreterListener);
@@ -98,6 +102,9 @@ public class STextField<T> extends javax.swing.JTextField {
     static public STextField<Number> ofPercent() {
         return new STextField<Number>(new JavaFormat<Number>(NumberFormat.getPercentInstance(), ("" + Double.MIN_VALUE).length(), SwingConstants.TRAILING));
     }
+    static public STextField<Number> ofPercent(Locale locale) {
+        return new STextField<Number>(new JavaFormat<Number>(NumberFormat.getPercentInstance(locale), ("" + Double.MIN_VALUE).length(), SwingConstants.TRAILING));
+    }
     static public STextField<Number> ofCurrency() {
         return new STextField<Number>(new JavaFormat<Number>(NumberFormat.getCurrencyInstance(), ("" + Double.MIN_VALUE).length() + 1, SwingConstants.TRAILING));
     }
@@ -112,26 +119,8 @@ public class STextField<T> extends javax.swing.JTextField {
     static public STextField<LocalDate> ofLocalDate() {
         return of(LocalDate.class);
     }
-    static public STextField<LocalDate> ofLocalDate(FormatStyle formatStyle, Locale locale) {
-        return new STextField<LocalDate>(new LocalDateFormat(formatStyle, locale));
-    }
-    static public STextField<LocalDate> ofLocalDate(FormatStyle formatStyle) {
-        return new STextField<LocalDate>(new LocalDateFormat(formatStyle));
-    }
-    static public STextField<LocalDate> ofLocalDate(Locale locale) {
-        return new STextField<LocalDate>(new LocalDateFormat(locale));
-    }
     static public STextField<LocalDateTime> ofLocalDateTime() {
         return of(LocalDateTime.class);
-    }
-    static public STextField<LocalDateTime> ofLocalDateTime(FormatStyle formatStyle, Locale locale) {
-        return new STextField<LocalDateTime>(new LocalDateTimeFormat(formatStyle, locale));
-    }
-    static public STextField<LocalDateTime> ofLocalDateTime(FormatStyle formatStyle) {
-        return new STextField<LocalDateTime>(new LocalDateTimeFormat(formatStyle));
-    }
-    static public STextField<LocalDateTime> ofLocalDateTime(Locale locale) {
-        return new STextField<LocalDateTime>(new LocalDateTimeFormat(locale));
     }
     static public STextField<ZonedDateTime> ofZonedDateTime() {
         return of(ZonedDateTime.class);
@@ -148,27 +137,45 @@ public class STextField<T> extends javax.swing.JTextField {
     final static public String VALUE = "value";
 
     protected void setTextFromValue(T value) {
-        super.setText(format.toString(value));
+        String text = format.toString(value);
+        super.setText(text);
     }
-    protected T getValueFromText() {
-        String text = getText();
-        T value = (format.toValue(text));
-        return value;
+    protected T setValueFromText() {
+        try {
+            String text = getText();
+            T value = format.toValue(text);
+            setValue(value); // This will validate, reformat, send events, update this.value, etc.
+        }
+        catch (RuntimeException e) {
+            handleException(e);
+        }
+        return this.value;
+    }
+
+    protected boolean handleException(Throwable e, Object oldValue, Object newValue) {
+        return handleException(e);
+    }
+    protected boolean handleException(Throwable e) {
+
+        // Force focus back
+        SwingUtilities.invokeLater(() -> this.grabFocus());
+
+        // Display the error
+        if (logger.isDebugEnabled()) logger.debug(e.getMessage(), e);
+        JOptionPane.showMessageDialog(this, ExceptionUtil.determineMessage(e), "ERROR", JOptionPane.ERROR_MESSAGE);
+
+        // Mark exception as handled
+        return true;
     }
 
     /** Value (through Format) */
     public void setValue(T v) {
-
-        // set value
-        Object oldValue = this.value;
-        this.value = v;
-
-        // convert to text
         setTextFromValue(v);
-
-        // fire PCE
-        if (!Objects.equals(oldValue, this.value)) {
-            firePropertyChange(VALUE, oldValue, v); // fire a PCE for easy binding
+        try {
+            firePropertyChange(VALUE, this.value, this.value = v);
+        }
+        catch (RuntimeException e) {
+            handleException(e);
         }
     }
     public STextField<T> value(T value) {
@@ -181,21 +188,6 @@ public class STextField<T> extends javax.swing.JTextField {
      * @return
      */
     public T getValue() {
-
-        try {
-            T value = getValueFromText();
-            setValue(value); // This will validate, reformat, send events, update this.value, etc.
-        }
-        catch (Exception e) {
-
-            // Force focus back
-            SwingUtilities.invokeLater(() -> this.grabFocus());
-
-            // Display the error
-            if (logger.isInfoEnabled()) logger.info(e.getMessage(), e);
-            JOptionPane.showMessageDialog(this, ExceptionUtil.determineMessage(e), "ERROR", JOptionPane.ERROR_MESSAGE);
-        }
-
         return this.value;
     }
 
@@ -262,7 +254,7 @@ public class STextField<T> extends javax.swing.JTextField {
     public STextField<T> bind(Object bean, String propertyName) {
 
         // Bind
-        PropertyConnector propertyConnector = PropertyConnector.connect(bean, propertyName, this, VALUE);
+        PropertyConnector propertyConnector = PropertyConnector.connect(new ExceptionCatcher(bean, propertyName, this::handleException), ExceptionCatcher.VALUE, this, VALUE);
         propertyConnector.updateProperty2();
 
         // Remember binding (for unbinding)

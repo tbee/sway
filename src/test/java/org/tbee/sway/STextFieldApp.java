@@ -21,6 +21,7 @@ public class STextFieldApp {
 
             Bean1 bean1 = new Bean1().name("test").age(12);
             BeanBinder<Bean1> beanBinder = new BeanBinder<>(bean1);
+
             STextField.ofStringBlankIsNull().bind(beanBinder, Bean1.NAME).unbind(beanBinder, Bean1.NAME);
 
             JPanel jPanel = new JPanel();

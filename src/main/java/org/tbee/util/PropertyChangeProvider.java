@@ -7,8 +7,8 @@ import java.beans.VetoableChangeListener;
  * The counterpart of the PropertyChangeListener interface.
  * You can use PropertyChangeSupport to easily implement this.
  */
-public interface PropertyChangeProvider extends MinimalPropertyChangeProvider
-{
+public interface PropertyChangeProvider {
+
     PropertyChangeListener[] getPropertyChangeListeners();
     PropertyChangeListener[] getPropertyChangeListeners(String property);
     void addPropertyChangeListener(PropertyChangeListener listener);
@@ -16,6 +16,7 @@ public interface PropertyChangeProvider extends MinimalPropertyChangeProvider
     void removePropertyChangeListener(PropertyChangeListener listener);
     void removePropertyChangeListener(String propertyName, PropertyChangeListener listener);
     void firePropertyChange(String name, Object before, Object after);
+    void fireIndexedPropertyChange(String name, int index, Object before, Object after);
 
     VetoableChangeListener[] getVetoableChangeListeners();
     VetoableChangeListener[] getVetoableChangeListeners(String property);

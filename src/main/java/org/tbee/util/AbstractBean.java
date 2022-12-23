@@ -33,7 +33,7 @@ implements PropertyChangeProvider, java.io.Serializable {
     }
 
     @Override
-    public PropertyChangeListener[] getPropertyChangeListeners() {
+    synchronized public PropertyChangeListener[] getPropertyChangeListeners() {
         if (propertyChangeSupport == null) {
             return new PropertyChangeListener[]{};
         }
@@ -41,7 +41,7 @@ implements PropertyChangeProvider, java.io.Serializable {
     }
 
     @Override
-    public PropertyChangeListener[] getPropertyChangeListeners(String propertyName) {
+    synchronized public PropertyChangeListener[] getPropertyChangeListeners(String propertyName) {
         if (propertyChangeSupport == null) {
             return new PropertyChangeListener[]{};
         }
@@ -65,7 +65,7 @@ implements PropertyChangeProvider, java.io.Serializable {
     }
 
     @Override
-    public void removePropertyChangeListener(PropertyChangeListener o) {
+    synchronized public void removePropertyChangeListener(PropertyChangeListener o) {
         if (propertyChangeSupport == null) {
             return;
         }
@@ -73,7 +73,7 @@ implements PropertyChangeProvider, java.io.Serializable {
     }
 
     @Override
-    public void removePropertyChangeListener(String propertyName, PropertyChangeListener o) {
+    synchronized public void removePropertyChangeListener(String propertyName, PropertyChangeListener o) {
         if (propertyChangeSupport == null) {
             return;
         }
@@ -110,6 +110,19 @@ implements PropertyChangeProvider, java.io.Serializable {
         // do it
         // Does not fire if either value is null: propertyChangeSupport.firePropertyChange(name, before, after);
         propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(this, name, before, after));
+    }
+
+    public void fireMultiplePropertiesChanged() {
+        this.firePropertyChange((String)null, (Object)null, (Object)null);
+    }
+
+    @Override
+    public void fireIndexedPropertyChange(String name, int index, Object before, Object after) {
+        if (propertyChangeSupport == null) {
+            return;
+        }
+        // Does not fire if either value is null: propertyChangeSupport.fireIndexedPropertyChange(name, index, before, after);
+        propertyChangeSupport.firePropertyChange(new IndexedPropertyChangeEvent(this, name, before, after, index));
     }
 
     /**
@@ -157,7 +170,7 @@ implements PropertyChangeProvider, java.io.Serializable {
     }
 
     @Override
-    public VetoableChangeListener[] getVetoableChangeListeners() {
+    synchronized public VetoableChangeListener[] getVetoableChangeListeners() {
         if (vetoableChangeSupport == null) {
             return new VetoableChangeListener[]{};
         }
@@ -165,7 +178,7 @@ implements PropertyChangeProvider, java.io.Serializable {
     }
 
     @Override
-    public VetoableChangeListener[] getVetoableChangeListeners(String propertyName) {
+    synchronized public VetoableChangeListener[] getVetoableChangeListeners(String propertyName) {
         if (vetoableChangeSupport == null) {
             return new VetoableChangeListener[]{};
         }
@@ -189,7 +202,7 @@ implements PropertyChangeProvider, java.io.Serializable {
     }
 
     @Override
-    public void removeVetoableChangeListener(VetoableChangeListener o) {
+    synchronized public void removeVetoableChangeListener(VetoableChangeListener o) {
         if (vetoableChangeSupport == null) {
             return;
         }
@@ -197,7 +210,7 @@ implements PropertyChangeProvider, java.io.Serializable {
     }
 
     @Override
-    public void removeVetoableChangeListener(String property, VetoableChangeListener o) {
+    synchronized public void removeVetoableChangeListener(String property, VetoableChangeListener o) {
         if (vetoableChangeSupport == null) {
             return;
         }
