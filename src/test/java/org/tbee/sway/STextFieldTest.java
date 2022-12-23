@@ -83,6 +83,84 @@ public class STextFieldTest extends AssertJSwingTestCaseTemplate {
         Assertions.assertEquals(null, sTextField.getValue());
     }
 
+
+    @Test
+    public void stringBindHappyTest() throws Exception {
+
+        // GIVEN
+        final Bean1 bean1 = new Bean1();
+        construct(() -> {
+            sTextField = STextField.ofString().name("sTextField").bind(bean1, Bean1.NAME);
+            return TestUtil.inJFrame(sTextField, focusMeComponent());
+        });
+
+        // WHEN
+        frameFixture.textBox("sTextField").enterText("abc");
+        frameFixture.button(FOCUS_ME).click();
+
+        // THEN
+        Assertions.assertEquals("abc", bean1.getName());
+
+        // WHEN
+        SwingUtilities.invokeAndWait(() -> {
+            bean1.setName("def");
+        });
+
+        // THEN
+        Assertions.assertEquals("def", sTextField.getText());
+        Assertions.assertEquals("def", sTextField.getValue());
+    }
+
+    @Test
+    public void integerBindHappyTest() throws Exception {
+
+        // GIVEN
+        final Bean1 bean1 = new Bean1();
+        construct(() -> {
+            sTextField = STextField.ofInteger().name("sTextField").bind(bean1, Bean1.AGE);
+            return TestUtil.inJFrame(sTextField, focusMeComponent());
+        });
+
+        // WHEN
+        frameFixture.textBox("sTextField").enterText("123");
+        frameFixture.button(FOCUS_ME).click();
+
+        // THEN
+        Assertions.assertEquals(123, bean1.getAge());
+
+        // WHEN
+        SwingUtilities.invokeAndWait(() -> {
+            bean1.setAge(456);
+        });
+
+        // THEN
+        Assertions.assertEquals("456", sTextField.getText());
+        Assertions.assertEquals( 456, sTextField.getValue());
+    }
+
+    @Test
+    public void integerBindSetterFailureTest() throws Exception {
+
+        // GIVEN
+        final Bean1 bean1 = new Bean1();
+        construct(() -> {
+            sTextField = STextField.ofInteger().name("sTextField").bind(bean1, Bean1.AGE);
+            return TestUtil.inJFrame(sTextField, focusMeComponent());
+        });
+
+        // WHEN
+        frameFixture.textBox("sTextField").deleteText().enterText("-12");
+        frameFixture.button(FOCUS_ME).click();
+
+        // THEN
+        JOptionPaneFixture optionPaneFixture = JOptionPaneFinder.findOptionPane().using(frameFixture.robot());
+        optionPaneFixture.requireErrorMessage().requireMessage("Age must be >= 0");
+        optionPaneFixture.okButton().click();
+        Assertions.assertTrue(sTextField.hasFocus());
+        Assertions.assertEquals("0", sTextField.getText());
+        Assertions.assertEquals(0, sTextField.getValue());
+    }
+
     private void construct(Callable<JFrame> callable) {
         JFrame frame = GuiActionRunner.execute(() -> {
             return callable.call();
