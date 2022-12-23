@@ -55,7 +55,7 @@ public class STextFieldTest extends AssertJSwingTestCaseTemplate {
 
         // WHEN
         frameFixture.textBox("sTextField").enterText("123");
-        frameFixture.button(FOCUS_ME).click();
+        moveFocus();
 
         // THEN
         Assertions.assertEquals(123, sTextField.getValue());
@@ -72,7 +72,7 @@ public class STextFieldTest extends AssertJSwingTestCaseTemplate {
 
         // WHEN
         frameFixture.textBox("sTextField").enterText("abc");
-        frameFixture.button(FOCUS_ME).click();
+        moveFocus();
 
         // THEN
         JOptionPaneFixture optionPaneFixture = JOptionPaneFinder.findOptionPane().using(frameFixture.robot());
@@ -96,7 +96,7 @@ public class STextFieldTest extends AssertJSwingTestCaseTemplate {
 
         // WHEN
         frameFixture.textBox("sTextField").enterText("abc");
-        frameFixture.button(FOCUS_ME).click();
+        moveFocus();
 
         // THEN
         Assertions.assertEquals("abc", bean1.getName());
@@ -123,7 +123,7 @@ public class STextFieldTest extends AssertJSwingTestCaseTemplate {
 
         // WHEN
         frameFixture.textBox("sTextField").enterText("123");
-        frameFixture.button(FOCUS_ME).click();
+        moveFocus();
 
         // THEN
         Assertions.assertEquals(123, bean1.getAge());
@@ -150,7 +150,7 @@ public class STextFieldTest extends AssertJSwingTestCaseTemplate {
 
         // WHEN
         frameFixture.textBox("sTextField").deleteText().enterText("-12");
-        frameFixture.button(FOCUS_ME).click();
+        moveFocus();
 
         // THEN
         JOptionPaneFixture optionPaneFixture = JOptionPaneFinder.findOptionPane().using(frameFixture.robot());
@@ -160,6 +160,9 @@ public class STextFieldTest extends AssertJSwingTestCaseTemplate {
         Assertions.assertEquals("0", sTextField.getText());
         Assertions.assertEquals(0, sTextField.getValue());
     }
+
+    // TBEERNOT TODO BeanBinder tests
+
 
     private void construct(Callable<JFrame> callable) {
         JFrame frame = GuiActionRunner.execute(() -> {
@@ -171,5 +174,8 @@ public class STextFieldTest extends AssertJSwingTestCaseTemplate {
 
     private SButton focusMeComponent() {
         return new SButton("focus me").name(FOCUS_ME);
+    }
+    private void moveFocus() {
+        frameFixture.button(FOCUS_ME).click();
     }
 }
