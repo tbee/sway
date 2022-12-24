@@ -33,8 +33,67 @@ import java.util.Locale;
 // - undo
 
 /**
+ * A strongly typed text field with optional binding to JavaBeans.
+ * The value (not the text) in the textfield can be accessed via getValue/setValue.
+ * This textfield uses a format to convert between the text and the value.
+ * <br/>
+ * <br/>
+ * Basic use:
+ * <pre>{@code
+ * var sTextField = new STextField<Integer>(new IntegerFormat());
+ * sTextField.setValue(123);
+ * }
+ * </pre>
  *
- * @param <T>
+ * <h2>Convenience methods</h2>
+ * STextField has a number of convenience methods.
+ * These for the most part rely on a central administration of formats (see org.tbee.sway.format.FormatRegistry).
+ * Some the methods contain hardcoded formats, e.g. percent and currency, because there are no dedicated types registered.
+ * However, it is possible to implement a ValueObject 'Currency' in your domain model and register a Format for it.
+ * (The Currency in the JRE is not a ValueObject).
+ * <br/>
+ * <br/>
+ * Example:
+ * <pre>{@code
+ * var sTextField1 = STextField.of(Integer.class);
+ * var sTextField2 = STextField.ofInteger();
+ * var sTextField3 = STextField.ofString();
+ * var sTextField4 = STextField.ofLocalDate();
+ * var sTextField4 = STextField.ofCurrency(Currency.getInstance("EUR"));
+ * ...
+ * }
+ * </pre>
+ *
+ * <h2>Binding</h2>
+ * STextFields can be bound to objects implementing the JavaBeans standard,
+ * most notably addPropertyChangeListener, removePropertyChangeListener, and it should fire appropriate PropertyChangeEvents.
+ * Binding can be done in two ways.
+ * <br/>
+ * <br/>
+ * Directly to a bean:
+ * <pre>{@code
+ * var someBean = new SomeBean();
+ * var sTextField = STextField.ofInteger().bind(someBean, "distance");
+ * }
+ * </pre>
+ *
+ * Or via a BeanBinder:
+ * <pre>{@code
+ * var someBean = new SomeBean();
+ * var someBeanBinder = new BeanBinder<SomeBean>(someBean);
+ * var sTextField = STextField.ofInteger().bind(someBeanBinder, "distance");
+ * ...
+ * var someBean2 = new SomeBean();
+ * someBeanBinder.set(someBean2);
+ * }
+ * </pre>
+ * The BeanBinder allows for changing the bean the STextField is bound to, without having to change the binding.
+ *
+ * <h2>Convenience methods</h2>
+ * Errors when typing an incorrect value will be displayed, and the incorrect text will remain in the textfield.
+ * Errors when setting a value through binding will be displayed, but the text will revert to the last valid value.
+ *
+ * @param <T> the type of value the textfield holds.
  */
 public class STextField<T> extends javax.swing.JTextField {
     static private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(STextField.class);

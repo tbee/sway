@@ -1,0 +1,1 @@
+mvnw javadoc:javadoc -DskipTests
