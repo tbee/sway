@@ -174,15 +174,15 @@ public class TableColumn<TableType, ColumnType extends Object> {
     /**
      * bindToProperty
      */
-    public void setBindToProperty(String v) {
-        bindToProperty = v;
+    public void setMonitorProperty(String v) {
+        monitorProperty = v;
     }
-    public String getBindToProperty() {
-        return bindToProperty;
+    public String getMonitorProperty() {
+        return monitorProperty;
     }
-    private String bindToProperty = null;
-    public TableColumn<TableType, ColumnType> bindToProperty(String v) {
-        setBindToProperty(v);
+    private String monitorProperty = null;
+    public TableColumn<TableType, ColumnType> monitorProperty(String v) {
+        setMonitorProperty(v);
         return this;
     }
 }

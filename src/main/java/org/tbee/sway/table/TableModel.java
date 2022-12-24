@@ -106,28 +106,28 @@ public class TableModel<TableType> extends AbstractTableModel {
     /**
      * bindToBean
      */
-    public void setBindToBean(Class<TableType> v) {
+    public void setMonitorBean(Class<TableType> v) {
 
         // unregister if already registered
-        if (beanClass != null) {
+        if (monitorBean != null) {
             unregisterFromAllBeans();
         }
 
         // Remember
-        beanClass = v;
+        monitorBean = v;
 
         // Find the binding methods
         addPropertyChangeListenerMethod = null;
         removePropertyChangeListenerMethod = null;
-        if (beanClass != null) {
+        if (monitorBean != null) {
             try {
-                addPropertyChangeListenerMethod = beanClass.getMethod("addPropertyChangeListener", new Class<?>[]{PropertyChangeListener.class});
+                addPropertyChangeListenerMethod = monitorBean.getMethod("addPropertyChangeListener", new Class<?>[]{PropertyChangeListener.class});
             }
             catch (NoSuchMethodException e) {
                 // ignore silently throw new RuntimeException(e);
             }
             try {
-                removePropertyChangeListenerMethod = beanClass.getMethod("removePropertyChangeListener", new Class<?>[]{PropertyChangeListener.class});
+                removePropertyChangeListenerMethod = monitorBean.getMethod("removePropertyChangeListener", new Class<?>[]{PropertyChangeListener.class});
             }
             catch (NoSuchMethodException e) {
                 // ignore silently throw new RuntimeException(e);
@@ -138,10 +138,10 @@ public class TableModel<TableType> extends AbstractTableModel {
         // Register
         registerToAllBeans();
     }
-    public Class<TableType> getBindToBean() {
-        return beanClass;
+    public Class<TableType> getMonitorBean() {
+        return monitorBean;
     }
-    private Class<TableType> beanClass = null;
+    private Class<TableType> monitorBean = null;
 
     final private PropertyChangeListener beanPropertyChangeListener = evt -> {
         Object evtSource = evt.getSource();
@@ -157,8 +157,8 @@ public class TableModel<TableType> extends AbstractTableModel {
 
         // Now loop all columns that are bound
         for (int colIdx = 0; colIdx < tableColumns.size(); colIdx++) {
-            String bindToProperty = tableColumns.get(colIdx).getBindToProperty();
-            if (bindToProperty != null && bindToProperty.equals(evt.getPropertyName())) {
+            String monitorProperty = tableColumns.get(colIdx).getMonitorProperty();
+            if (monitorProperty != null && monitorProperty.equals(evt.getPropertyName())) {
                 for (Integer rowIdx : rowIdxs) {
                     if (logger.isDebugEnabled()) logger.debug("Invoke fireTableCellUpdated(" + rowIdx + "," + colIdx + ")");
                     fireTableCellUpdated(rowIdx, colIdx);

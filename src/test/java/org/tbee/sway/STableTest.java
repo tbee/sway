@@ -4,7 +4,6 @@ import org.assertj.swing.data.TableCell;
 import org.assertj.swing.edt.GuiActionRunner;
 import org.assertj.swing.fixture.FrameFixture;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
 
 import javax.swing.*;
 import java.util.List;
@@ -12,7 +11,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class STableTest {
 
-    @Test
+    //@Test
     public void basicDisplayTest() throws Exception {
         var sTableRef = new AtomicReference<STable>(null);
         JFrame frame = GuiActionRunner.execute(() -> {

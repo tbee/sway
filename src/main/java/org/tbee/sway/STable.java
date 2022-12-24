@@ -25,8 +25,7 @@ import java.util.stream.Collectors;
 // - make primitive bean properties editable
 // - visualizing uneditable
 // - error handling: display errors/exceptions coming from setValueAt
-// - binding (listen to) bean properties to update cells automatically: bindToBeanProperties(true)
-// - binding (listen to) list changes:
+// - binding (listen to) list changes
 // - sorting (map the row in the table model)
 // - pagination
 // - filter
@@ -46,14 +45,57 @@ import java.util.stream.Collectors;
 // - support row management; insert and delete rows
 //   - automatically add a new row at the end of the table when in the last cell and press enter (ForEdit)
 //   - insert / delete keys
-// - make separate component and per default wrap in JScrollPane?
+// - make separate component and per default wrap in JScrollPane -> STableAIO with footer, scrollpane, etc
 
 /**
+ * <h2>Basic usage</h2>
  * This table implements an opinionated way how the table API should look.
- * Usage: new STable<TableType>().column(<ColType>.class).valueSupplier(d -> d.getValue())...table()
- * Or: new STable<TableType>().columns(<TableType>.class, "prop1", "prop2").table()
+ * The basic approach is that the end user does NOT provide a TableModel implementation anymore,
+ * but interacts completely via the STable's API.
+ * Data is shown using setData(), columns are added using the column() method(s).
+ * <br/>
+ * <br/>
+ * Example:
+ * <pre>{@code
+ * STable stable = new STable<SomeBean>() //
+ *         .column(String.class).title("name RO").valueSupplier(b -> b.getName()).table() // read only
+ *         .column(String.class).title("name RW").valueSupplier(SomeBean::getName).valueConsumer(SomeBean::setName).table() // read write
+ *         .column(Integer.class).title("distance RW").valueSupplier(SomeBean::getDistance).valueConsumer(SomeBean::setDistance).table() // read write
+ *         .column(Integer.class).title("roundtrip RO").valueSupplier(SomeBean::getRoundtrip).table() // derived property, so read only
+ *         .columns(SomeBean.class, "name", "distance", "roundtrip") // adds multiple columns
+ *         .data(aListOfSomeBeans);
+ * }
+ * </pre>
  *
- * It should still be wrapped in a JScrollPane.
+ * <h2>Binding</h2>
+ * STable allows binding to JavaBeans for automatic cell refresh (only suited for limited amount of data).
+ * This means the objects provided as data must implement the JavaBean's interface,
+ * most notably addPropertyChangeListener, removePropertyChangeListener, and it should fire appropriate PropertyChangeEvents.
+ * STable registers itself to EACH bean in the provided data, and monitors its PropertyChangeEvents.
+ * If an PCE comes in, and it involves a column that is displayed, then the corresponding cell is notified as changed
+ * (the bean is present as a row, because STable is registered to it).
+ * Because of that, STable will execute the getValue() for that row and column (cell), triggering a refresh.
+ * <br/>
+ * <br/>
+ * This binding only involves refreshing cells, so it is not a real read/write binding.
+ * Hence the methods used to configure this are called "monitor", not "bind".
+ * These monitoring can be applied to any column, irrespective of the data shown; it only determines when an automatic refresh should be done, it does not influence what data shuold be shown.
+ * <br/>
+ * Extending the previous example with binding:
+ * <pre>{@code
+ * STable stable = new STable<SomeBean>() //
+ *         .column(String.class).title("name RO")...monitorProperty("name").table() //
+ *         .column(String.class).title("name RW")...monitorProperty("name").table() //
+ *         .column(Integer.class).title("distance RW")...monitorProperty("distance").table() //
+ *         .column(Integer.class).title("roundtrip RO")...monitorProperty("roundtrip").table() //
+ *         .columns(SomeBean.class, "name", "distance", "roundtrip") // automatically do a monitorProperty
+ *         .data(aListOfSomeBeans);
+ * }
+ * </pre>
+ * Hint: it would be wise to introduce public constants in SomeBean to hold the property names.
+ * <br/>
+ * <br/>
+ * Note: STable should still be wrapped in a JScrollPane.
  *
  * @param <TableType>
  */
@@ -112,13 +154,12 @@ public class STable<TableType> extends javax.swing.JTable {
     public void setData(List<TableType> v) {
         getTableModel().setData(v);
     }
-
-    /**
-     * Get the currently shown data
-     * @return
-     */
     public List<TableType> getData() {
         return getTableModel().getData();
+    }
+    public STable<TableType> data(List<TableType> v) {
+        setData(v);
+        return this;
     }
 
 
@@ -266,7 +307,7 @@ public class STable<TableType> extends javax.swing.JTable {
                             }
                         }) //
                         .editable(propertyDescriptor.getWriteMethod() != null) // if there is a write method then it is editable
-                        .bindToProperty(propertyName) //
+                        .monitorProperty(propertyName) //
                 ;
             }
         }
@@ -455,17 +496,17 @@ public class STable<TableType> extends javax.swing.JTable {
     // BINDING
 
     /**
-     * bindToBean
+     * monitorBean
      */
-    public void setBindToBean(Class<TableType> v) {
-        getTableModel().setBindToBean(v);
+    public void setMonitorBean(Class<TableType> v) {
+        getTableModel().setMonitorBean(v);
     }
-    public Class<TableType> getBindToBean() {
-        return getTableModel().getBindToBean();
+    public Class<TableType> getMonitorBean() {
+        return getTableModel().getMonitorBean();
     }
-    private Class<TableType> beanClass = null;
-    public STable<TableType> bindToBean(Class<TableType> v) {
-        setBindToBean(v);
+    private Class<TableType> monitorBean = null;
+    public STable<TableType> monitorBean(Class<TableType> v) {
+        setMonitorBean(v);
         return this;
     }
 }
