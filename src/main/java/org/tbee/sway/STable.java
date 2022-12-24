@@ -3,8 +3,10 @@ package org.tbee.sway;
 import org.tbee.sway.support.SwayUtil;
 import org.tbee.sway.table.TableColumn;
 import org.tbee.sway.table.TableModel;
+import org.tbee.sway.table.UseTableCellEditorAsTableCellRenderer;
 
 import javax.swing.*;
+import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 import java.awt.*;
 import java.beans.BeanInfo;
@@ -13,23 +15,21 @@ import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 // TODO
-// - better javadoc
-// - more editors and renderers (LocalDate, etc)
-// - per column editor and renderer
-// - per cell renderer and editor
-// - make primitive bean properties editable
-// - visualizing uneditable
-// - error handling: display errors/exceptions coming from setValueAt
-// - binding (listen to) list changes
 // - sorting (map the row in the table model)
+// - more editors and renderers (LocalDate, etc)
+// - better javadoc
+// - per cell renderer and editor
+// - binding (listen to) list changes
 // - pagination
 // - filter
-// - default footer showing active row/col etc
+// - default footer showing active row/col etc -> STableAIO
 // - column reordering (map the column in the table model)
 // - column hiding (map the column in the table model)
 // - TAB/enter key behavior: skip edit to next editable cell
@@ -103,6 +103,18 @@ import java.util.stream.Collectors;
 public class STable<TableType> extends javax.swing.JTable {
     static private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(STable.class);
 
+    public final static Map<Class<?>, Class<?>> primitiveToClassMap = new HashMap<>();
+    static {
+        primitiveToClassMap.put(boolean.class, Boolean.class);
+        primitiveToClassMap.put(byte.class, Byte.class);
+        primitiveToClassMap.put(short.class, Short.class);
+        primitiveToClassMap.put(char.class, Character.class);
+        primitiveToClassMap.put(int.class, Integer.class);
+        primitiveToClassMap.put(long.class, Long.class);
+        primitiveToClassMap.put(float.class, Float.class);
+        primitiveToClassMap.put(double.class, Double.class);
+    }
+
     public STable() {
         super(new TableModel<TableType>());
         construct();
@@ -131,6 +143,21 @@ public class STable<TableType> extends javax.swing.JTable {
         // per default the table must have cellspacing, which means a visible grid (Nimbus does not)
         if (getIntercellSpacing().width < 1 || getIntercellSpacing().height < 1) {
             setIntercellSpacing(new Dimension(1,1));
+        }
+
+        // incorporate TableColumn settings
+        var model = getTableModel();
+        var tableColumns = model.getTableColumns();
+        for (int colIdx = 0; colIdx < tableColumns.size(); colIdx++) {
+            TableColumn tableColumn = tableColumns.get(colIdx);
+            TableCellEditor tableCellEditor = tableColumn.getEditor();
+            TableCellRenderer tableCellRenderer = tableColumn.getRenderer();
+            if (tableCellEditor != null) {
+                setColumnEditor(convertColumnIndexToView(colIdx), tableCellEditor);
+            }
+            if (tableCellRenderer != null) {
+                setColumnRenderer(convertColumnIndexToView(colIdx), tableCellRenderer);
+            }
         }
     }
 
@@ -282,8 +309,14 @@ public class STable<TableType> extends javax.swing.JTable {
                     throw new IllegalArgumentException("Property '" + propertyName + "' not found in bean " + tableTypeClass);
                 }
 
+                // Handle primitive types
+                Class<?> propertyType = propertyDescriptor.getPropertyType();
+                if (propertyType.isPrimitive()) {
+                    propertyType = primitiveToClassMap.get(propertyType);
+                }
+
                 // Add column
-                column((Class<Object>)propertyDescriptor.getPropertyType()) // It's okay, JTable will still use the appropriate renderer and editor
+                column((Class<Object>) propertyType) // It's okay, JTable will still use the appropriate renderer and editor
                         .title(propertyName) //
                         .valueSupplier(bean -> {
                             try {
@@ -508,6 +541,47 @@ public class STable<TableType> extends javax.swing.JTable {
     private Class<TableType> monitorBean = null;
     public STable<TableType> monitorBean(Class<TableType> v) {
         setMonitorBean(v);
+        return this;
+    }
+
+    // ===========================================================================
+    // cell renderer and editor helpers
+
+    /** set a renderer for a whole column */
+    public void setColumnRenderer(int column, TableCellRenderer renderer) {
+        getColumnModel().getColumn(column).setCellRenderer(renderer);
+    }
+    public TableCellRenderer getColumnRenderer(int column) {
+        return getColumnModel().getColumn(column).getCellRenderer();
+    }
+    public STable<TableType> columnRenderer(int column, TableCellRenderer renderer) {
+        setColumnRenderer(column, renderer);
+        return this;
+    }
+
+    /** set a editor for a whole column */
+    public void setColumnEditor(int column, TableCellEditor cellEditor) {
+        getColumnModel().getColumn(column).setCellEditor(cellEditor);
+    }
+    public TableCellEditor getColumnEditor(int column)
+    {
+        return getColumnModel().getColumn(column).getCellEditor();
+    }
+    public STable<TableType> columnEditor(int column, TableCellEditor cellEditor) {
+        setColumnEditor(column, cellEditor);
+        return this;
+    }
+
+
+    /**
+     * Generate two editors, and wrap one for renderer
+     *
+     * @param value
+     * @return
+     */
+    public STable<TableType> defaultEditorAndRenderer(Class<?> columnClass, Supplier<TableCellEditor> value) {
+        setDefaultEditor(columnClass, value.get());
+        setDefaultRenderer(columnClass, new UseTableCellEditorAsTableCellRenderer(value.get()));
         return this;
     }
 }

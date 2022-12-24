@@ -92,4 +92,6 @@ public class STableTest extends TestBase {
         Assertions.assertEquals("def", sTable.getValueAt(0, 0));
         Assertions.assertEquals("Corine", bean2.getName());
     }
+
+    // test per column editor/renderer
 }

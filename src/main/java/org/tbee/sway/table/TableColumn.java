@@ -2,8 +2,11 @@ package org.tbee.sway.table;
 
 import org.tbee.sway.STable;
 
+import javax.swing.table.TableCellEditor;
+import javax.swing.table.TableCellRenderer;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 public class TableColumn<TableType, ColumnType extends Object> {
 
@@ -185,4 +188,45 @@ public class TableColumn<TableType, ColumnType extends Object> {
         setMonitorProperty(v);
         return this;
     }
+
+    /** Editor: */
+    public void setEditor(TableCellEditor value) {
+        editor = value;
+    }
+    public TableCellEditor getEditor() { return editor; }
+    public TableColumn<TableType, ColumnType> editor(TableCellEditor value) {
+        setEditor(value);
+        return this;
+    }
+    volatile private TableCellEditor editor = null;
+    final static public String EDITOR = "editor";
+
+    /** Renderer: */
+    public void setRenderer(TableCellRenderer value) {
+        renderer = value;
+    }
+    public TableCellRenderer getRenderer() { return renderer; }
+    public TableColumn<TableType, ColumnType> renderer(TableCellRenderer value) { setRenderer(value); return this; }
+    volatile private TableCellRenderer renderer = null;
+    final static public String RENDERER = "renderer";
+    /**
+     * Shortcut for withRenderer(new UseTableCellEditorAsTableCellRenderer(editor)) 
+     */
+    public TableColumn<TableType, ColumnType> renderer(TableCellEditor value) {
+        // note: in order to use an editor as renderer it needs to be a separate instance, and they don't implement clonable
+        setRenderer(new UseTableCellEditorAsTableCellRenderer(value));
+        return this;
+    }
+
+    /**
+     * Generate two editors, and wrap one for renderer
+     * @param value
+     * @return
+     */
+    public TableColumn<TableType, ColumnType> editorAndRenderer(Supplier<TableCellEditor> value) {
+        editor(value.get());
+        renderer(value.get());
+        return this;
+    }
+
 }
