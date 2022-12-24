@@ -89,6 +89,7 @@ import java.util.stream.Collectors;
  *         .column(Integer.class).title("distance RW")...monitorProperty("distance").table() //
  *         .column(Integer.class).title("roundtrip RO")...monitorProperty("roundtrip").table() //
  *         .columns(SomeBean.class, "name", "distance", "roundtrip") // automatically do a monitorProperty
+ *         .monitorBean(SomeBean.class) // this activates the monitoring of all the beans in the data
  *         .data(aListOfSomeBeans);
  * }
  * </pre>
