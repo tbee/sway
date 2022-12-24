@@ -1,48 +1,14 @@
 package org.tbee.sway;
 
-import org.assertj.swing.edt.FailOnThreadViolationRepaintManager;
-import org.assertj.swing.edt.GuiActionRunner;
 import org.assertj.swing.finder.JOptionPaneFinder;
-import org.assertj.swing.fixture.FrameFixture;
 import org.assertj.swing.fixture.JOptionPaneFixture;
-import org.assertj.swing.testing.AssertJSwingTestCaseTemplate;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import javax.swing.*;
-import java.awt.*;
-import java.util.concurrent.Callable;
 
-public class STextFieldTest extends AssertJSwingTestCaseTemplate {
-
-    // https://stackoverflow.com/questions/46676726/how-to-get-started-testing-java-swing-gui-with-assertj-swing
-
-    static private final String FOCUS_ME = "focusMe";
-
-    private FrameFixture frameFixture;
+public class STextFieldTest extends TestBase {
     private STextField sTextField;
-
-    @BeforeAll
-    public static final void beforeAll() {
-        // avoid UI test execution in a headless environment (e.g. when building in CI environment like Jenkins or TravisCI)
-        Assertions.assertFalse(GraphicsEnvironment.isHeadless(), "Automated UI Test cannot be executed in headless environment");
-        FailOnThreadViolationRepaintManager.install();
-    }
-
-    @BeforeEach
-    public final void beforeEach() throws Exception {
-        this.setUpRobot();
-    }
-
-    @AfterEach
-    public final void afterEach() throws Exception {
-        frameFixture.close();
-        this.cleanUp();
-    }
-
-    @AfterAll
-    public static final void afterClass() {
-        FailOnThreadViolationRepaintManager.uninstall();
-    }
 
     @Test
     public void integerHappyTest() throws Exception {
@@ -162,20 +128,4 @@ public class STextFieldTest extends AssertJSwingTestCaseTemplate {
     }
 
     // TBEERNOT TODO BeanBinder tests
-
-
-    private void construct(Callable<JFrame> callable) {
-        JFrame frame = GuiActionRunner.execute(() -> {
-            return callable.call();
-        });
-        frameFixture = new FrameFixture(robot(), frame);
-        frameFixture.show();
-    }
-
-    private SButton focusMeComponent() {
-        return new SButton("focus me").name(FOCUS_ME);
-    }
-    private void moveFocus() {
-        frameFixture.button(FOCUS_ME).click();
-    }
 }
