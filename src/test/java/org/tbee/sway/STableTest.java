@@ -5,7 +5,6 @@ import org.assertj.swing.edt.GuiActionRunner;
 import org.assertj.swing.fixture.FrameFixture;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.tbee.sway.table.TableColumn;
 
 import javax.swing.*;
 import java.util.List;
@@ -20,11 +19,11 @@ public class STableTest {
             // GIVEN
             STable sTable = new STable<Bean1>() //
                     .name("table") //
-                    .column(new TableColumn<Bean1, String>(String.class).valueSupplier(Bean1::getName).valueConsumer(Bean1::setName))
-                    .column(new TableColumn<Bean1, Integer>(Integer.class).valueSupplier(d -> d.getAge()));
+                    .column(String.class).valueSupplier(Bean1::getName).valueConsumer(Bean1::setName).table()
+                    .column(Integer.class).valueSupplier(d -> d.getDistance()).table();
             sTableRef.set(sTable);
 
-            sTable.setData(List.of(new Bean1().name("Tom").age(52), new Bean1().name("Corine").age(48)));
+            sTable.setData(List.of(new Bean1().name("Tom").distance(52), new Bean1().name("Corine").distance(48)));
 
             JFrame jFrame = new JFrame();
             jFrame.setContentPane(new JScrollPane(sTable));

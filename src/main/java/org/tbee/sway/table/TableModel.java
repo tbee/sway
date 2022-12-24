@@ -1,12 +1,17 @@
 package org.tbee.sway.table;
 
+import org.tbee.sway.STable;
+
 import javax.swing.table.AbstractTableModel;
+import java.beans.PropertyChangeListener;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 public class TableModel<TableType> extends AbstractTableModel {
-
+    static private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(STable.class);
 
     // =======================================================================
     // COLUMNS
@@ -38,7 +43,9 @@ public class TableModel<TableType> extends AbstractTableModel {
 
     private List<TableType> data = List.of();
     public void setData(List<TableType> v) {
+        unregisterFromAllBeans();
         this.data = Collections.unmodifiableList(v); // We don't allow outside changes to the provided list
+        registerToAllBeans();
         fireTableDataChanged();
     }
     public List<TableType> getData() {
@@ -88,4 +95,111 @@ public class TableModel<TableType> extends AbstractTableModel {
         column.setValue(record, aValue);
         fireTableCellUpdated(rowIndex, columnIndex);
     }
+
+    // ===========================================================================
+    // BINDING
+
+    private Method addPropertyChangeListenerMethod = null;
+    private Method removePropertyChangeListenerMethod = null;
+    private boolean boundToBean = false;
+
+    /**
+     * bindToBean
+     */
+    public void setBindToBean(Class<TableType> v) {
+
+        // unregister if already registered
+        if (beanClass != null) {
+            unregisterFromAllBeans();
+        }
+
+        // Remember
+        beanClass = v;
+
+        // Find the binding methods
+        addPropertyChangeListenerMethod = null;
+        removePropertyChangeListenerMethod = null;
+        if (beanClass != null) {
+            try {
+                addPropertyChangeListenerMethod = beanClass.getMethod("addPropertyChangeListener", new Class<?>[]{PropertyChangeListener.class});
+            }
+            catch (NoSuchMethodException e) {
+                // ignore silently throw new RuntimeException(e);
+            }
+            try {
+                removePropertyChangeListenerMethod = beanClass.getMethod("removePropertyChangeListener", new Class<?>[]{PropertyChangeListener.class});
+            }
+            catch (NoSuchMethodException e) {
+                // ignore silently throw new RuntimeException(e);
+            }
+            boundToBean = (addPropertyChangeListenerMethod != null && removePropertyChangeListenerMethod != null);
+        }
+
+        // Register
+        registerToAllBeans();
+    }
+    public Class<TableType> getBindToBean() {
+        return beanClass;
+    }
+    private Class<TableType> beanClass = null;
+
+    final private PropertyChangeListener beanPropertyChangeListener = evt -> {
+        Object evtSource = evt.getSource();
+
+        // Find the bean in the data
+        var rowIdxs = new ArrayList<Integer>();
+        for (int rowIdx = 0; rowIdx < data.size(); rowIdx++) {
+            if (evtSource.equals(data.get(rowIdx))) {
+                rowIdxs.add(rowIdx);
+            }
+        }
+        if (logger.isDebugEnabled()) logger.debug("Found bean at row(s) " + rowIdxs);
+
+        // Now loop all columns that are bound
+        for (int colIdx = 0; colIdx < tableColumns.size(); colIdx++) {
+            String bindToProperty = tableColumns.get(colIdx).getBindToProperty();
+            if (bindToProperty != null && bindToProperty.equals(evt.getPropertyName())) {
+                for (Integer rowIdx : rowIdxs) {
+                    if (logger.isDebugEnabled()) logger.debug("Invoke fireTableCellUpdated(" + rowIdx + "," + colIdx + ")");
+                    fireTableCellUpdated(rowIdx, colIdx);
+                }
+            }
+        }
+    };
+
+    protected void registerToAllBeans() {
+        if (!boundToBean) {
+            return;
+        }
+        for (Object record : data) {
+            try {
+                if (logger.isDebugEnabled()) logger.debug("Register to " + record);
+                addPropertyChangeListenerMethod.invoke(record, beanPropertyChangeListener);
+            }
+            catch (IllegalAccessException e) {
+                throw new RuntimeException(e);
+            }
+            catch (InvocationTargetException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+    protected void unregisterFromAllBeans() {
+        if (!boundToBean) {
+            return;
+        }
+        for (Object record : data) {
+            try {
+                if (logger.isDebugEnabled()) logger.debug("Unregister from " + record);
+                removePropertyChangeListenerMethod.invoke(record, beanPropertyChangeListener);
+            }
+            catch (IllegalAccessException e) {
+                throw new RuntimeException(e);
+            }
+            catch (InvocationTargetException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
 }

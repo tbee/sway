@@ -15,16 +15,9 @@ public class TableColumn<TableType, ColumnType extends Object> {
     // =======================================================================
     // TABLE(MODEL)
 
-    /**
-     * Needed for a fluent API
-     * @return
-     */
-    public STable<TableType> table() {
-        return table;
-    }
 
     /**
-     *
+     * Table
      * @param v
      */
     public void setTable(STable<TableType> v) {
@@ -34,6 +27,10 @@ public class TableColumn<TableType, ColumnType extends Object> {
         return this.table;
     }
     private STable<TableType> table;
+    // Needed for a fluent API
+    public STable<TableType> table() {
+        return table;
+    }
 
     public void setTabelModel(TableModel<TableType> v) {
         this.tabelModel = v;
@@ -70,48 +67,64 @@ public class TableColumn<TableType, ColumnType extends Object> {
     // =======================================================================
     // PROPERTIES
 
-    // Type
-    final private Class<ColumnType> type;
+    /**
+     * Type
+     *
+     * @return
+     */
     public Class<ColumnType> getType() {
         return type;
     }
+    final private Class<ColumnType> type;
 
-    // Id: use to identify the column programatically
-    private String id = "";
-    public String getId() {
-        return id;
-    }
+    /**
+     * Id: use to identify the column programmatically
+     *
+     * @param v
+     */
     public void setId(String v) {
         id = v;
     }
+    public String getId() {
+        return id;
+    }
+    private String id = "";
     public TableColumn<TableType, ColumnType> id(String v) {
         setId(v);
         return this;
     }
 
-    // TITLE
-    private String title = "";
-    public String getTitle() {
-        return title;
-    }
+    /**
+     * title
+     *
+     * @param v
+     */
     public void setTitle(String v) {
         title = v;
         fireTableStructureChanged();
     }
+    public String getTitle() {
+        return title;
+    }
+    private String title = "";
     public TableColumn<TableType, ColumnType> title(String v) {
         setTitle(v);
         return this;
     }
 
-    // EDITABLE
-    private Boolean editable = null;
-    public boolean getEditable() {
-        return editable == null ? false : editable;
-    }
+    /**
+     * editable
+     *
+     * @param v
+     */
     public void setEditable(boolean v) {
         editable = v;
         fireTableStructureChanged();
     }
+    public boolean getEditable() {
+        return editable == null ? false : editable;
+    }
+    private Boolean editable = null;
     public TableColumn<TableType, ColumnType> editable(boolean v) {
         setEditable(v);
         return this;
@@ -123,30 +136,53 @@ public class TableColumn<TableType, ColumnType extends Object> {
         return (valueConsumer != null);
     }
 
-    // setValueFunction
-    private BiConsumer<TableType, ColumnType> valueConsumer = null;
-    public BiConsumer<TableType, ColumnType> getValueConsumer() {
-        return valueConsumer;
-    }
+    /**
+     * setValueFunction
+     *
+     * @param v
+     */
     public void setValueConsumer(BiConsumer<TableType, ColumnType> v) {
         valueConsumer = v;
     }
+    public BiConsumer<TableType, ColumnType> getValueConsumer() {
+        return valueConsumer;
+    }
+    private BiConsumer<TableType, ColumnType> valueConsumer = null;
     public TableColumn<TableType, ColumnType> valueConsumer(BiConsumer<TableType, ColumnType> v) {
         setValueConsumer(v);
         return this;
     }
 
-    // getValueFunction
-    private Function<TableType, ColumnType> valueSupplier = null;
-    public Function<TableType, ColumnType> getValueSupplier() {
-        return valueSupplier;
-    }
+    /**
+     * getValueFunction
+     *
+     * @param v
+     */
     public void setValueSupplier(Function<TableType, ColumnType> v) {
         valueSupplier = v;
         fireTableDataChanged();
     }
+    public Function<TableType, ColumnType> getValueSupplier() {
+        return valueSupplier;
+    }
+    private Function<TableType, ColumnType> valueSupplier = null;
     public TableColumn<TableType, ColumnType> valueSupplier(Function<TableType, ColumnType> v) {
         setValueSupplier(v);
+        return this;
+    }
+
+    /**
+     * bindToProperty
+     */
+    public void setBindToProperty(String v) {
+        bindToProperty = v;
+    }
+    public String getBindToProperty() {
+        return bindToProperty;
+    }
+    private String bindToProperty = null;
+    public TableColumn<TableType, ColumnType> bindToProperty(String v) {
+        setBindToProperty(v);
         return this;
     }
 }

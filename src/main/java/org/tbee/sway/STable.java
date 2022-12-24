@@ -201,7 +201,7 @@ public class STable<TableType> extends javax.swing.JTable {
      * @return
      * @param <ColumnType>
      */
-    public <ColumnType extends Object> STable<TableType> column(TableColumn<TableType, ColumnType> tableColumn) {
+    private <ColumnType extends Object> STable<TableType> column(TableColumn<TableType, ColumnType> tableColumn) {
         addColumn(tableColumn);
         return this;
     }
@@ -266,6 +266,7 @@ public class STable<TableType> extends javax.swing.JTable {
                             }
                         }) //
                         .editable(propertyDescriptor.getWriteMethod() != null) // if there is a write method then it is editable
+                        .bindToProperty(propertyName) //
                 ;
             }
         }
@@ -447,6 +448,24 @@ public class STable<TableType> extends javax.swing.JTable {
 
     public STable<TableType> name(String v) {
         setName(v);
+        return this;
+    }
+
+    // ===========================================================================
+    // BINDING
+
+    /**
+     * bindToBean
+     */
+    public void setBindToBean(Class<TableType> v) {
+        getTableModel().setBindToBean(v);
+    }
+    public Class<TableType> getBindToBean() {
+        return getTableModel().getBindToBean();
+    }
+    private Class<TableType> beanClass = null;
+    public STable<TableType> bindToBean(Class<TableType> v) {
+        setBindToBean(v);
         return this;
     }
 }

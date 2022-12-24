@@ -117,7 +117,7 @@ public class STextFieldTest extends AssertJSwingTestCaseTemplate {
         // GIVEN
         final Bean1 bean1 = new Bean1();
         construct(() -> {
-            sTextField = STextField.ofInteger().name("sTextField").bind(bean1, Bean1.AGE);
+            sTextField = STextField.ofInteger().name("sTextField").bind(bean1, Bean1.DISTANCE);
             return TestUtil.inJFrame(sTextField, focusMeComponent());
         });
 
@@ -126,11 +126,11 @@ public class STextFieldTest extends AssertJSwingTestCaseTemplate {
         moveFocus();
 
         // THEN
-        Assertions.assertEquals(123, bean1.getAge());
+        Assertions.assertEquals(123, bean1.getDistance());
 
         // WHEN
         SwingUtilities.invokeAndWait(() -> {
-            bean1.setAge(456);
+            bean1.setDistance(456);
         });
 
         // THEN
@@ -144,7 +144,7 @@ public class STextFieldTest extends AssertJSwingTestCaseTemplate {
         // GIVEN
         final Bean1 bean1 = new Bean1();
         construct(() -> {
-            sTextField = STextField.ofInteger().name("sTextField").bind(bean1, Bean1.AGE);
+            sTextField = STextField.ofInteger().name("sTextField").bind(bean1, Bean1.DISTANCE);
             return TestUtil.inJFrame(sTextField, focusMeComponent());
         });
 

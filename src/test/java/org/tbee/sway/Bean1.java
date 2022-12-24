@@ -32,43 +32,43 @@ public class Bean1 extends AbstractBean<Bean1> {
         return this;
     }
 
-    /** age: integer property */
-    public void setAge(int v) {
+    /** distance: integer property */
+    public void setDistance(int v) {
         if (v < 0) {
             throw new IllegalArgumentException("Age must be >= 0");
         }
-        fireVetoableChange(AGE, this.age, v);
-        firePropertyChange(List.of(derived(CALC, getCalc(), () -> getCalc())) // TBEERNOT is there a better way to do this? Binding?
-                , AGE, this.age, this.age = v);
+        fireVetoableChange(DISTANCE, this.distance, v);
+        firePropertyChange(List.of(derived(ROUNDTRIP, getRoundTrip(), () -> getRoundTrip())) // TBEERNOT is there a better way to do this? Binding?
+                         , DISTANCE, this.distance, this.distance = v);
     }
-    public int getAge() {
-        return age;
+    public int getDistance() {
+        return distance;
     }
-    private int age;
-    static public String AGE = "age";
-    public Bean1 age(int v) {
-        setAge(v);
+    private int distance;
+    static public String DISTANCE = "distance";
+    public Bean1 distance(int v) {
+        setDistance(v);
         return this;
     }
 
-    /** ageInt: a property without actual storage, but forwarding to age */
-    public void setAgeInt(Integer v) {
-        setAge(v);
+    /** distanceInt: a property without actual storage, but forwarding to age */
+    public void setDistanceInt(Integer v) {
+        setDistance(v);
     }
-    public Integer getAgeInt() {
-        return getAge();
+    public Integer getDistanceInt() {
+        return getDistance();
     }
-    static public String AGEINT = "ageInt";
-    public Bean1 ageInt(Integer v) {
-        setAgeInt(v);
+    static public String DISTANCEINT = "distanceInt";
+    public Bean1 distanceInt(Integer v) {
+        setDistanceInt(v);
         return this;
     }
 
     /** calc: a derived property */
-    public Integer getCalc() {
-        return age * 2;
+    public Integer getRoundTrip() {
+        return distance * 2;
     }
-    static public String CALC = "calc";
+    static public String ROUNDTRIP = "roundTrip";
 
     /** length: BigDecimal property */
     public void setLength(BigDecimal v) {
@@ -89,14 +89,14 @@ public class Bean1 extends AbstractBean<Bean1> {
     public String toString() {
         return super.toString() //
                 + ",name=" + name
-                + ",age=" + age
+                + ",age=" + distance
                 + ",length=" + length
                 ;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, age);
+        return Objects.hash(name, distance);
     }
 
     @Override
@@ -106,7 +106,8 @@ public class Bean1 extends AbstractBean<Bean1> {
         if (getClass() != obj.getClass()) return false;
         Bean1 other = (Bean1) obj;
         return Objects.equals(name, other.name) //
-            && Objects.equals(age, other.age) //
+            && Objects.equals(distance, other.distance) //
+            && Objects.equals(length, other.length) //
         ;
     }
 }

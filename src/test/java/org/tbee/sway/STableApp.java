@@ -1,7 +1,5 @@
 package org.tbee.sway;
 
-import org.tbee.sway.table.TableColumn;
-
 import javax.swing.*;
 import java.util.List;
 
@@ -11,26 +9,26 @@ public class STableApp {
         SwingUtilities.invokeAndWait(() -> {
 
             STable sTable = new STable<Bean1>() //
-                    // basic column creation, but the whole generics is not pretty; should we even make this public?
-                    .column(new TableColumn<Bean1, String>(String.class).title("Name BSC").valueSupplier(d -> d.getName())) //
-                    .column(new TableColumn<Bean1, Integer>(Integer.class).title("Age BSC").valueSupplier(d -> d.getAge())) //
 
-                    // using the columns-with-class method, no generics, but requires a closing table() call for fluent api
-                    .column(String.class).title("Name CT").valueSupplier(d -> d.getName()).valueConsumer((d,v) -> d.setName(v)).table() //
-                    .column(Integer.class).title("Age CT").valueSupplier(d -> d.getAge()).valueConsumer((d,v) -> d.setAge(v)).table() //
+                    // add columns via lambda's (no reflection)
+                    .column(String.class).title("Name CT").valueSupplier(d -> d.getName()).valueConsumer((d,v) -> d.setName(v)).bindToProperty(Bean1.NAME).table() //
+                    .column(Integer.class).title("Distance CT").valueSupplier(d -> d.getDistance()).valueConsumer((d, v) -> d.setDistance(v)).bindToProperty(Bean1.DISTANCE).table() //
 
-                    // using the columns-with-class method, no generics, but requires a closing table() call for fluent api
-                    .column(String.class).title("Name MR").valueSupplier(Bean1::getName).valueConsumer(Bean1::setName).table() //
-                    .column(Integer.class).title("Age MR").valueSupplier(Bean1::getAge).valueConsumer(Bean1::setAge).id("marker").table() //
+                    // add columns via method references (no reflection)
+                    .column(String.class).title("Name MR").valueSupplier(Bean1::getName).valueConsumer(Bean1::setName).bindToProperty(Bean1.NAME).table() //
+                    .column(Integer.class).title("Distance MR").valueSupplier(Bean1::getDistance).valueConsumer(Bean1::setDistance).bindToProperty(Bean1.DISTANCE).id("marker").table() //
 
-                    // Using reflection via BeanInfo
-                    .columns(Bean1.class, "name", Bean1.NAME, Bean1.AGE, Bean1.AGEINT, Bean1.CALC)
+                    // add columns using BeanInfo (uses reflection)
+                    .columns(Bean1.class, "name", Bean1.NAME, Bean1.DISTANCE, Bean1.DISTANCEINT, Bean1.ROUNDTRIP)
 
-                    // find
-                    .findColumnById("marker").title("AgeMR*").table()
+                    // automatically update (uses reflection)
+                    .bindToBean(Bean1.class)
+
+                    // find column
+                    .findColumnById("marker").title("DistanceMR*").table()
              ;
 
-            sTable.setData(List.of(new Bean1().name("Tom").age(52), new Bean1().name("Corine").age(48)));
+            sTable.setData(List.of(new Bean1().name("Tom").distance(52), new Bean1().name("Corine").distance(48)));
 
             JFrame jFrame = new JFrame();
             jFrame.setContentPane(new JScrollPane(sTable));
