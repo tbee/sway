@@ -1,6 +1,6 @@
 package org.tbee.sway.table;
 
-import org.tbee.sway.STable;
+import org.tbee.sway.STableCore;
 
 import javax.swing.table.AbstractTableModel;
 import java.beans.PropertyChangeListener;
@@ -11,7 +11,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class TableModel<TableType> extends AbstractTableModel {
-    static private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(STable.class);
+    static private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(STableCore.class);
 
     // =======================================================================
     // COLUMNS

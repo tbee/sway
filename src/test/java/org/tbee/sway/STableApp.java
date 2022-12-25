@@ -1,7 +1,6 @@
 package org.tbee.sway;
 
 import javax.swing.JFrame;
-import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 import java.util.List;
 
@@ -10,7 +9,7 @@ public class STableApp {
     static public void main(String[] args) throws Exception {
         SwingUtilities.invokeAndWait(() -> {
 
-            STable sTable = new STable<Bean1>() //
+            var sTable = new STable<Bean1>() //
 
                     // add columns via lambda's (no reflection)
                     .column(String.class).title("Name CT").valueSupplier(d -> d.getName()).valueConsumer((d,v) -> d.setName(v)).monitorProperty(Bean1.NAME).table() //
@@ -34,7 +33,7 @@ public class STableApp {
              ;
 
             JFrame jFrame = new JFrame();
-            jFrame.setContentPane(new JScrollPane(sTable));
+            jFrame.setContentPane(sTable);
             jFrame.pack();
             jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             jFrame.setVisible(true);

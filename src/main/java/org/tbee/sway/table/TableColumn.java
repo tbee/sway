@@ -1,7 +1,6 @@
 package org.tbee.sway.table;
 
 import org.tbee.sway.STable;
-import org.tbee.sway.STableAIO;
 
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
@@ -20,23 +19,7 @@ public class TableColumn<TableType, ColumnType extends Object> {
     // TABLE(MODEL)
 
     /**
-     * tableAOI
-     * @param v
-     */
-    public void setTableAOI(STableAIO<TableType> v) {
-        this.tableAOI = v;
-    }
-    public STableAIO<TableType> getTableAOI() {
-        return this.tableAOI;
-    }
-    private STableAIO<TableType> tableAOI;
-    // Needed for a fluent API
-    public STableAIO<TableType> tableAIO() {
-        return tableAOI;
-    }
-
-    /**
-     * Table
+     * table
      * @param v
      */
     public void setTable(STable<TableType> v) {

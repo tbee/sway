@@ -1,7 +1,7 @@
 package org.tbee.sway.table;
 
 
-import org.tbee.sway.STable;
+import org.tbee.sway.STableCore;
 import org.tbee.sway.SwingUtil;
 import org.tbee.sway.comedia.text.CNumericDocument;
 import org.tbee.sway.comedia.ui.CEncodedIcon;
@@ -43,7 +43,7 @@ public class STableNavigator extends JPanel implements ListSelectionListener, Ta
     /**
      * The related table control.
      */
-    STable table = null;
+    STableCore table = null;
 
     /**
      * The last selection row.
@@ -60,7 +60,7 @@ public class STableNavigator extends JPanel implements ListSelectionListener, Ta
      *
      * @param table a related table control.
      */
-    public STableNavigator(STable table) {
+    public STableNavigator(STableCore table) {
         construct();
         setTable(table);
     }
@@ -166,7 +166,7 @@ public class STableNavigator extends JPanel implements ListSelectionListener, Ta
      *
      * @result the related table control.
      */
-    public STable getTable() {
+    public STableCore getTable() {
         return table;
     }
 
@@ -175,7 +175,7 @@ public class STableNavigator extends JPanel implements ListSelectionListener, Ta
      *
      * @param table a related table control.
      */
-    public void setTable(STable table) {
+    public void setTable(STableCore table) {
         if (this.table != null) {
             // TBEERNOT this.table.removePropertyChangeListener(STable.SORTERCHANGED_PROPERTYID, this);
             this.table.getSelectionModel().removeListSelectionListener(this);
