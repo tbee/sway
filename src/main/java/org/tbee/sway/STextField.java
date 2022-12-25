@@ -10,8 +10,10 @@ import org.tbee.sway.format.StringFormat;
 import org.tbee.sway.support.FocusInterpreter;
 import org.tbee.util.ExceptionUtil;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JOptionPane;
+import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
+import java.awt.Font;
 import java.awt.event.KeyEvent;
 import java.math.BigDecimal;
 import java.math.BigInteger;

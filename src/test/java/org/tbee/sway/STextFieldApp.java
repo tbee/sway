@@ -4,7 +4,11 @@ import net.miginfocom.layout.CC;
 import net.miginfocom.swing.MigLayout;
 import org.tbee.sway.binding.BeanBinder;
 
-import javax.swing.*;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDate;

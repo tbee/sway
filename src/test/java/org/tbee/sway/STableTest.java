@@ -4,7 +4,7 @@ import org.assertj.swing.data.TableCell;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import javax.swing.*;
+import javax.swing.SwingUtilities;
 import java.util.List;
 
 public class STableTest extends TestBase {

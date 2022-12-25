@@ -5,7 +5,7 @@ import org.assertj.swing.fixture.JOptionPaneFixture;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import javax.swing.*;
+import javax.swing.SwingUtilities;
 
 public class STextFieldTest extends TestBase {
     private STextField sTextField;
