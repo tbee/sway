@@ -163,7 +163,7 @@ public class STableNavigator extends JPanel implements ListSelectionListener, Ta
     /**
      * Gets the related table control.
      *
-     * @result the related table control.
+     * @return the related table control.
      */
     public STableCore getTable() {
         return table;

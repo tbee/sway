@@ -49,8 +49,24 @@ import java.util.List;
  *         .data(aListOfSomeBeans);
  * }
  * </pre>
- * Tip: it would be wise to introduce public constants in SomeBean to hold the property names.
+ * Note: it would be wise to introduce public constants in SomeBean to hold the property names.
  * <br/>
+ * <br/>
+ * If SomeBean has implemented the JavaBean specification correctly, this will give you a table with:
+ * <ul>
+ *     <li>A navigation footer</li>
+ *     <li>Scrollbars</li>
+ *     <li>Automatic refresh of cells</li>
+ *     <li>Sorting (TODO)</li>
+ *     <li>Filtering (TODO)</li>
+ *     <li>Pagination (TODO)</li>
+ *     <li>Tooltips per cell (TODO)</li>
+ *     <li>Copy / paste functionality (TODO)</li>
+ *     <li>Column reordering and hiding (TODO)</li>
+ *     <li>Resizable rows and columns (TODO)</li>
+ *     <li>Automatically sizing row (TODO)</li>
+ *     <li>Quick data entry using the enter key (TODO)</li>
+ * </ul>
  * <br/>
  * A more elaborate example:
  * <pre>{@code
@@ -62,7 +78,7 @@ import java.util.List;
  *         .data(aListOfSomeBeans);
  * }
  * </pre>
- * Hint: the columns() method uses Java's BeanInfo class to generate columns similar to the example above.
+ * Note: the columns() method uses Java's BeanInfo class to generate columns similar to the example above.
  * <br/>
  *
  * <h2>Binding</h2>
@@ -90,7 +106,7 @@ import java.util.List;
  *         .data(aListOfSomeBeans);
  * }
  * </pre>
- * Hint: the columns() method calls monitorBean, and monitorProperty on each column.
+ * Note: the columns() method calls monitorBean, and monitorProperty on each column.
  * <br/>
  *
  * @param <TableType>

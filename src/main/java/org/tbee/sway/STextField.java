@@ -91,8 +91,9 @@ import java.util.Locale;
  * </pre>
  * The BeanBinder allows for changing the bean the STextField is bound to, without having to change the binding.
  *
- * <h2>Convenience methods</h2>
+ * <h2>Error handling</h2>
  * Errors when typing an incorrect value will be displayed, and the incorrect text will remain in the textfield.
+ * <br/>
  * Errors when setting a value through binding will be displayed, but the text will revert to the last valid value.
  *
  * @param <T> the type of value the textfield holds.
