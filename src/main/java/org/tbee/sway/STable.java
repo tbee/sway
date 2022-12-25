@@ -42,7 +42,17 @@ import java.util.List;
  * Data is shown using setData(), columns are added using the column() method(s).
  * <br/>
  * <br/>
- * Example:
+ * The main focus of Sway is simplicity, the simplest example of this component is:
+ * <pre>{@code
+ * STable stable = new STable<SomeBean>() //
+ *         .columns(SomeBean.class, "name", "distance", "roundtrip") //
+ *         .data(aListOfSomeBeans);
+ * }
+ * </pre>
+ * Hint: it would be wise to introduce public constants in SomeBean to hold the property names.
+ * <br/>
+ * <br/>
+ * A more elaborate example:
  * <pre>{@code
  * STable stable = new STable<SomeBean>() //
  *         .column(String.class).title("name RO").valueSupplier(b -> b.getName()).table() // read only
@@ -60,13 +70,13 @@ import java.util.List;
  * most notably addPropertyChangeListener, removePropertyChangeListener, and it should fire appropriate PropertyChangeEvents.
  * STable registers itself to EACH bean in the provided data, and monitors its PropertyChangeEvents.
  * If an PCE comes in, and it involves a column that is displayed, then the corresponding cell is notified as changed
- * (the bean is present as a row, because STable is registered to it).
+ * (the bean for a fact is present as a row, because STable is registered to it).
  * Because of that, STable will execute the getValue() for that row and column (cell), triggering a refresh.
  * <br/>
  * <br/>
  * This binding only involves refreshing cells, so it is not a real read/write binding.
  * Hence the methods used to configure this are called "monitor", not "bind".
- * These monitoring can be applied to any column, irrespective of the data shown; it only determines when an automatic refresh should be done, it does not influence what data shuold be shown.
+ * This monitoring can be applied to any column, irrespective of the data shown; it only determines when an automatic refresh should be done, it does not influence what data is shown.
  * <br/>
  * Extending the previous example with binding:
  * <pre>{@code
@@ -75,13 +85,10 @@ import java.util.List;
  *         .column(String.class).title("name RW")...monitorProperty("name").table() //
  *         .column(Integer.class).title("distance RW")...monitorProperty("distance").table() //
  *         .column(Integer.class).title("roundtrip RO")...monitorProperty("roundtrip").table() //
- *         .columns(SomeBean.class, "name", "distance", "roundtrip") // already calls monitorProperty and monitorBean
+ *         .columns(SomeBean.class, "name", "distance", "roundtrip") // calls monitorProperty and monitorBean
  *         .data(aListOfSomeBeans);
  * }
  * </pre>
- * Hint: it would be wise to introduce public constants in SomeBean to hold the property names.
- * <br/>
- * <br/>
  *
  * @param <TableType>
  */
