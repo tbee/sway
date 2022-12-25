@@ -29,10 +29,16 @@ public class STableAIO<TableType> extends JPanel {
         return sTable;
     }
 
+    // ===========================================================================
+    // DATA
+
     public STableAIO<TableType> data(List<TableType> v) {
         sTable.data(v);
         return this;
     }
+
+    // ===========================================================================
+    // COLUMNS
 
     public <ColumnType extends Object> TableColumn<TableType, ColumnType> column(Class<ColumnType> type) {
         TableColumn<TableType, ColumnType> column = sTable.column(type);
@@ -45,12 +51,27 @@ public class STableAIO<TableType> extends JPanel {
         return this;
     }
 
+    public TableColumn<TableType, ?> findColumnById(String id) {
+        return sTable.findColumnById(id);
+    }
+
+    // ===========================================================================
+    // BINDING
+
     public STableAIO<TableType> monitorBean(Class<TableType> v) {
         sTable.monitorBean(v);
         return this;
     }
 
-    public TableColumn<TableType, ?> findColumnById(String id) {
-        return sTable.findColumnById(id);
+
+    // ===========================================================================
+    // FLUENT API
+
+    public STableAIO<TableType> name(String v) {
+        setName(v);
+        sTable.name(v + ".sTable"); // For tests we need to address the actual table
+        return this;
     }
+
+
 }

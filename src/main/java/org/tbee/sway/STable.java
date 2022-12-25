@@ -5,10 +5,13 @@ import org.tbee.sway.table.TableColumn;
 import org.tbee.sway.table.TableModel;
 import org.tbee.sway.table.UseTableCellEditorAsTableCellRenderer;
 
-import javax.swing.*;
+import javax.swing.UIManager;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Graphics;
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
@@ -22,7 +25,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 // TODO
-// - sorting (map the row in the table model)
+// - sorting (map the row in the table model) GlazedLists?
 // - more editors and renderers (LocalDate, etc)
 // - better javadoc
 // - per cell renderer and editor
