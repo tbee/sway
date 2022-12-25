@@ -1,5 +1,6 @@
 package org.tbee.sway;
 
+import org.tbee.sway.table.STableCore;
 import org.tbee.sway.table.STableNavigator;
 import org.tbee.sway.table.TableColumn;
 

@@ -1,7 +1,5 @@
 package org.tbee.sway.table;
 
-import org.tbee.sway.STableCore;
-
 import javax.swing.table.AbstractTableModel;
 import java.beans.PropertyChangeListener;
 import java.lang.reflect.InvocationTargetException;

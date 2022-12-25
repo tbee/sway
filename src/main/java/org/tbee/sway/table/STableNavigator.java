@@ -1,7 +1,6 @@
 package org.tbee.sway.table;
 
 
-import org.tbee.sway.STableCore;
 import org.tbee.sway.SwingUtil;
 import org.tbee.sway.comedia.text.CNumericDocument;
 import org.tbee.sway.comedia.ui.CEncodedIcon;

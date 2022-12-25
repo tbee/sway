@@ -1,9 +1,6 @@
-package org.tbee.sway;
+package org.tbee.sway.table;
 
 import org.tbee.sway.support.SwayUtil;
-import org.tbee.sway.table.TableColumn;
-import org.tbee.sway.table.TableModel;
-import org.tbee.sway.table.UseTableCellEditorAsTableCellRenderer;
 
 import javax.swing.UIManager;
 import javax.swing.table.TableCellEditor;
