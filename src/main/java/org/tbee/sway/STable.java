@@ -49,7 +49,7 @@ import java.util.List;
  *         .data(aListOfSomeBeans);
  * }
  * </pre>
- * Hint: it would be wise to introduce public constants in SomeBean to hold the property names.
+ * Tip: it would be wise to introduce public constants in SomeBean to hold the property names.
  * <br/>
  * <br/>
  * A more elaborate example:
@@ -59,10 +59,11 @@ import java.util.List;
  *         .column(String.class).title("name RW").valueSupplier(SomeBean::getName).valueConsumer(SomeBean::setName).table() // read write
  *         .column(Integer.class).title("distance RW").valueSupplier(SomeBean::getDistance).valueConsumer(SomeBean::setDistance).table() // read write
  *         .column(Integer.class).title("roundtrip RO").valueSupplier(SomeBean::getRoundtrip).table() // derived property, so read only
- *         .columns(SomeBean.class, "name", "distance", "roundtrip") // adds multiple columns
  *         .data(aListOfSomeBeans);
  * }
  * </pre>
+ * Hint: the columns() method uses Java's BeanInfo class to generate columns similar to the example above.
+ * <br/>
  *
  * <h2>Binding</h2>
  * STable allows binding to JavaBeans for automatic cell refresh (only suited for limited amount of data).
@@ -85,10 +86,12 @@ import java.util.List;
  *         .column(String.class).title("name RW")...monitorProperty("name").table() //
  *         .column(Integer.class).title("distance RW")...monitorProperty("distance").table() //
  *         .column(Integer.class).title("roundtrip RO")...monitorProperty("roundtrip").table() //
- *         .columns(SomeBean.class, "name", "distance", "roundtrip") // calls monitorProperty and monitorBean
+ *         .monitorBean(SomeBean.class) //
  *         .data(aListOfSomeBeans);
  * }
  * </pre>
+ * Hint: the columns() method calls monitorBean, and monitorProperty on each column.
+ * <br/>
  *
  * @param <TableType>
  */
