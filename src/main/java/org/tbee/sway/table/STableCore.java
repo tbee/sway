@@ -6,6 +6,7 @@ import org.tbee.util.ClassUtil;
 import javax.swing.UIManager;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableRowSorter;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -16,6 +17,7 @@ import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
@@ -56,13 +58,29 @@ import java.util.stream.Collectors;
 public class STableCore<TableType> extends javax.swing.JTable {
     static private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(STableCore.class);
 
+    final private TableRowSorter<TableModel<TableType>> tableRowSorter;
+
     public STableCore() {
         super(new TableModel<TableType>());
+        tableRowSorter = new TableRowSorter<>(getTableModel()){
+            public Comparator<?> getComparator(int column) {
+                // TBEERNOT why is setCompatator not working?
+                // Is that bad?
+                Comparator<?> comparator = getTableModel().getTableColumns().get(column).getSortBy();
+                if (comparator != null) {
+                    return comparator;
+                }
+                return super.getComparator(column);
+            }
+        };
         construct();
     }
 
-    private void construct()
-    {
+    private void construct() {
+
+        // Sorting
+        setRowSorter(tableRowSorter);
+
         // "Sets whether editors in this JTable get the keyboard focus when an editor is activated as a result of the JTable forwarding keyboard events for a cell."
         // "By default, this property is false, and the JTable retains the focus unless the cell is clicked."
         super.setSurrendersFocusOnKeystroke(true);
@@ -83,22 +101,7 @@ public class STableCore<TableType> extends javax.swing.JTable {
 
         // per default the table must have cellspacing, which means a visible grid (Nimbus does not)
         if (getIntercellSpacing().width < 1 || getIntercellSpacing().height < 1) {
-            setIntercellSpacing(new Dimension(1,1));
-        }
-
-        // incorporate TableColumn settings
-        var model = getTableModel();
-        var tableColumns = model.getTableColumns();
-        for (int colIdx = 0; colIdx < tableColumns.size(); colIdx++) {
-            TableColumn tableColumn = tableColumns.get(colIdx);
-            TableCellEditor tableCellEditor = tableColumn.getEditor();
-            TableCellRenderer tableCellRenderer = tableColumn.getRenderer();
-            if (tableCellEditor != null) {
-                setColumnEditor(convertColumnIndexToView(colIdx), tableCellEditor);
-            }
-            if (tableCellRenderer != null) {
-                setColumnRenderer(convertColumnIndexToView(colIdx), tableCellRenderer);
-            }
+            setIntercellSpacing(new Dimension(1, 1));
         }
     }
 
@@ -165,6 +168,23 @@ public class STableCore<TableType> extends javax.swing.JTable {
     // =======================================================================
     // COLUMNS
 
+    // TODO: can we optimize this like comparator and intercept the getter?
+    private void applyTableColumnSettings() {
+        var model = getTableModel();
+        var tableColumns = model.getTableColumns();
+        for (int colIdx = 0; colIdx < tableColumns.size(); colIdx++) {
+            TableColumn tableColumn = tableColumns.get(colIdx);
+            TableCellEditor tableCellEditor = tableColumn.getEditor();
+            TableCellRenderer tableCellRenderer = tableColumn.getRenderer();
+            if (tableCellEditor != null) {
+                setColumnEditor(convertColumnIndexToView(colIdx), tableCellEditor);
+            }
+            if (tableCellRenderer != null) {
+                setColumnRenderer(convertColumnIndexToView(colIdx), tableCellRenderer);
+            }
+        }
+    }
+
     /**
      * Get the columns
      * @return Unmodifiable list of colums
@@ -190,6 +210,7 @@ public class STableCore<TableType> extends javax.swing.JTable {
      */
     public <ColumnType extends Object> void addColumn(TableColumn<TableType, ColumnType> tableColumn) {
         getTableModel().addColumn(tableColumn);
+        applyTableColumnSettings();
     }
 
     /**
@@ -199,7 +220,9 @@ public class STableCore<TableType> extends javax.swing.JTable {
      * @param <ColumnType>
      */
     public <ColumnType extends Object> boolean removeColumn(TableColumn<TableType, ColumnType> tableColumn) {
-        return getTableModel().removeColumn(tableColumn);
+        boolean success = getTableModel().removeColumn(tableColumn);
+        applyTableColumnSettings();
+        return success;
     }
 
     /**
@@ -507,8 +530,7 @@ public class STableCore<TableType> extends javax.swing.JTable {
     public void setColumnEditor(int column, TableCellEditor cellEditor) {
         getColumnModel().getColumn(column).setCellEditor(cellEditor);
     }
-    public TableCellEditor getColumnEditor(int column)
-    {
+    public TableCellEditor getColumnEditor(int column) {
         return getColumnModel().getColumn(column).getCellEditor();
     }
     public STableCore<TableType> columnEditor(int column, TableCellEditor cellEditor) {

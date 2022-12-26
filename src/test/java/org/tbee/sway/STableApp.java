@@ -2,6 +2,7 @@ package org.tbee.sway;
 
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
+import java.util.Comparator;
 import java.util.List;
 
 public class STableApp {
@@ -16,7 +17,7 @@ public class STableApp {
                     .column(Integer.class).title("Distance CT").valueSupplier(d -> d.getDistance()).valueConsumer((d, v) -> d.setDistance(v)).monitorProperty(City.DISTANCE).table() //
 
                     // add columns via method references (no reflection)
-                    .column(String.class).title("Name MR").valueSupplier(City::getName).valueConsumer(City::setName).monitorProperty(City.NAME).table() //
+                    .column(String.class).title("Name MR sort2e").valueSupplier(City::getName).valueConsumer(City::setName).monitorProperty(City.NAME).sortBy(Comparator.comparing(o -> o.substring(1))).table() //
                     .column(Integer.class).title("Distance MR").valueSupplier(City::getDistance).valueConsumer(City::setDistance).monitorProperty(City.DISTANCE).id("marker").table() //
 
                     // add columns using BeanInfo (uses reflection)

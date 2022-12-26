@@ -14,9 +14,9 @@ import java.util.List;
 import java.util.function.Consumer;
 
 // TODO
-// - selection and selection mode API
-// - sorting (map the row in the table model) GlazedLists?
-// - more editors and renderers (LocalDate, etc)
+// - sorting: issue: row stays the same thus selection changes
+// - tests for editor and sorting
+// - more editors and renderers (a.o. based on Format)
 // - better javadoc
 // - per cell renderer and editor
 // - binding (listen to) list changes
@@ -125,6 +125,7 @@ import java.util.function.Consumer;
  * @param <TableType>
  */
 public class STable<TableType> extends JPanel {
+    static private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(STable.class);
 
     private final STableCore<TableType> sTable;
 

@@ -4,6 +4,7 @@ import org.tbee.sway.STable;
 
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
+import java.util.Comparator;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -231,5 +232,19 @@ public class TableColumn<TableType, ColumnType extends Object> {
         renderer(value.get());
         return this;
     }
+
+    /** sortBy: */
+    public void setSortBy(Comparator<ColumnType> value) {
+        sortBy = value;
+    }
+    public Comparator<ColumnType> getSortBy() {
+        return sortBy;
+    }
+    public TableColumn<TableType, ColumnType> sortBy(Comparator<ColumnType> value) {
+        setSortBy(value);
+        return this;
+    }
+    volatile private Comparator<ColumnType> sortBy = null;
+    final static public String SORTBY = "sortBy";
 
 }
