@@ -92,6 +92,7 @@ import java.util.Locale;
  * var someBean = new SomeBean();
  * var someBeanBinder = new BeanBinder<SomeBean>(someBean);
  * var sTextField = STextField.ofInteger().bind(someBeanBinder, "distance");
+ * var sTextField = STextField.ofBind(someBeanBinder, "distance"); // determines property type and binds to it
  * ...
  * var someBean2 = new SomeBean();
  * someBeanBinder.set(someBean2);
@@ -174,6 +175,32 @@ public class STextField<T> extends javax.swing.JTextField {
 
             // Create TextField
             return (STextField<T>) of(propertyType).bind(bean, propertyName);
+        }
+        catch (IntrospectionException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    static public <T> STextField<T> ofBind(BeanBinder<T> beanBinder, String propertyName) {
+        try {
+            // Use Java's bean inspection classes to analyse the bean
+            BeanInfo beanInfo = Introspector.getBeanInfo(beanBinder.get().getClass());
+            PropertyDescriptor[] propertyDescriptors = beanInfo.getPropertyDescriptors();
+            PropertyDescriptor propertyDescriptor = Arrays.stream(propertyDescriptors) //
+                    .filter(pd -> pd.getName().equals(propertyName)) //
+                    .findFirst().orElse(null);
+            if (propertyDescriptor == null) {
+                throw new IllegalArgumentException("Property '" + propertyName + "' not found in bean " + beanBinder.get().getClass());
+            }
+
+            // Handle primitive types
+            Class<?> propertyType = propertyDescriptor.getPropertyType();
+            if (propertyType.isPrimitive()) {
+                propertyType = ClassUtil.primitiveToClass(propertyType);
+            }
+
+            // Create TextField
+            return (STextField<T>) of(propertyType).bind(beanBinder, propertyName);
         }
         catch (IntrospectionException e) {
             throw new RuntimeException(e);
