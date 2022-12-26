@@ -20,6 +20,7 @@ var sTextField = STextField.ofBind(city, "name");
 
 Well, you've come to the right place. 
 Take a look at the components present in org.tbee.sway and see if they are easy enough to use.
+We're not there yet, but the idea of what Sway is trying to do should be clear.
 
 ## Compatibility
 The components are still the standard Swing components, only with an opinionated API, but they should blend-in nicely in existing applications.
