@@ -8,6 +8,7 @@ import org.tbee.sway.format.FormatRegistry;
 import org.tbee.sway.format.JavaFormat;
 import org.tbee.sway.format.StringFormat;
 import org.tbee.sway.support.FocusInterpreter;
+import org.tbee.util.ClassUtil;
 import org.tbee.util.ExceptionUtil;
 
 import javax.swing.JOptionPane;
@@ -15,6 +16,10 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import java.awt.Font;
 import java.awt.event.KeyEvent;
+import java.beans.BeanInfo;
+import java.beans.IntrospectionException;
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.text.NumberFormat;
@@ -23,6 +28,7 @@ import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Currency;
 import java.util.List;
 import java.util.Locale;
@@ -90,7 +96,14 @@ import java.util.Locale;
  * someBeanBinder.set(someBean2);
  * }
  * </pre>
- * The BeanBinder allows for changing the bean the STextField is bound to, without having to change the binding.
+ * And this can be written even shorter
+ * <br/>
+ * <br/>
+ * Example:
+ * <pre>{@code
+ * var sTextField = STextField.ofBind(someBean, "distance"); // determines property type and binds to it
+ * }
+ * </pre>
  *
  * <h2>Error handling</h2>
  * Errors when typing an incorrect value will be displayed, and the incorrect text will remain in the textfield.
@@ -139,6 +152,39 @@ public class STextField<T> extends javax.swing.JTextField {
             throw new IllegalArgumentException("No format found for " + clazz);
         }
         return new STextField<T>(format);
+    }
+
+    /**
+     * Determines the correct class, creates a TextField, and binds it to the property.
+     * @param bean
+     * @param propertyName
+     * @return
+     * @param <T>
+     */
+    static public <T> STextField<T> ofBind(Object bean, String propertyName) {
+        try {
+            // Use Java's bean inspection classes to analyse the bean
+            BeanInfo beanInfo = Introspector.getBeanInfo(bean.getClass());
+            PropertyDescriptor[] propertyDescriptors = beanInfo.getPropertyDescriptors();
+            PropertyDescriptor propertyDescriptor = Arrays.stream(propertyDescriptors) //
+                    .filter(pd -> pd.getName().equals(propertyName)) //
+                    .findFirst().orElse(null);
+            if (propertyDescriptor == null) {
+                throw new IllegalArgumentException("Property '" + propertyName + "' not found in bean " + bean.getClass());
+            }
+
+            // Handle primitive types
+            Class<?> propertyType = propertyDescriptor.getPropertyType();
+            if (propertyType.isPrimitive()) {
+                propertyType = ClassUtil.primitiveToClass(propertyType);
+            }
+
+            // Create TextField
+            return (STextField<T>) of(propertyType).bind(bean, propertyName);
+        }
+        catch (IntrospectionException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     static public STextField<String> ofString() {

@@ -1,6 +1,7 @@
 package org.tbee.sway.table;
 
 import org.tbee.sway.support.SwayUtil;
+import org.tbee.util.ClassUtil;
 
 import javax.swing.UIManager;
 import javax.swing.table.TableCellEditor;
@@ -15,7 +16,6 @@ import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
@@ -55,18 +55,6 @@ import java.util.stream.Collectors;
  */
 public class STableCore<TableType> extends javax.swing.JTable {
     static private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(STableCore.class);
-
-    public final static Map<Class<?>, Class<?>> primitiveToClassMap = new HashMap<>();
-    static {
-        primitiveToClassMap.put(boolean.class, Boolean.class);
-        primitiveToClassMap.put(byte.class, Byte.class);
-        primitiveToClassMap.put(short.class, Short.class);
-        primitiveToClassMap.put(char.class, Character.class);
-        primitiveToClassMap.put(int.class, Integer.class);
-        primitiveToClassMap.put(long.class, Long.class);
-        primitiveToClassMap.put(float.class, Float.class);
-        primitiveToClassMap.put(double.class, Double.class);
-    }
 
     public STableCore() {
         super(new TableModel<TableType>());
@@ -267,7 +255,7 @@ public class STableCore<TableType> extends javax.swing.JTable {
                 // Handle primitive types
                 Class<?> propertyType = propertyDescriptor.getPropertyType();
                 if (propertyType.isPrimitive()) {
-                    propertyType = primitiveToClassMap.get(propertyType);
+                    propertyType = ClassUtil.primitiveToClass(propertyType);
                 }
 
                 // Add column

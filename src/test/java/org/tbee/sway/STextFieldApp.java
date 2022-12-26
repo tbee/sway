@@ -43,6 +43,9 @@ public class STextFieldApp {
             jPanel.add(new JLabel("Integer -> bean.age"), new CC().alignX("right"));
             jPanel.add(STextField.ofInteger().bind(bean, City.DISTANCE), new CC().wrap());
 
+            jPanel.add(new JLabel("Integer -> ofBind bean.age"), new CC().alignX("right"));
+            jPanel.add(STextField.ofBind(bean, City.DISTANCE), new CC().wrap());
+
             jPanel.add(new JLabel("Long"), new CC().alignX("right"));
             jPanel.add(STextField.ofLong().value(123l), new CC().wrap());
 
