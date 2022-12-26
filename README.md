@@ -8,7 +8,7 @@ What if creating a table with sorting, filtering, automatic updates of cells whe
 
 ``` java
 var sTable = new STable<City>() //
-        .columns(City.class, "name", "distance", "roundtrip") // probably should use constants for these
+        .columns(City.class, "name", "distance", "roundtrip")
         .data(cities); // cities is a List<City>
 ```
 
