@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.function.Consumer;
 
 // TODO
-// - sorting: issue: row stays the same thus selection changes
 // - tests for editor and sorting
 // - more editors and renderers (a.o. based on Format)
 // - better javadoc

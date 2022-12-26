@@ -23,32 +23,6 @@ import java.util.Map;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-// TODO
-// - sorting (map the row in the table model) GlazedLists?
-// - more editors and renderers (LocalDate, etc)
-// - better javadoc
-// - per cell renderer and editor
-// - binding (listen to) list changes
-// - pagination
-// - filter
-// - default footer showing active row/col etc -> STableAIO
-// - column reordering (map the column in the table model)
-// - column hiding (map the column in the table model)
-// - TAB/enter key behavior: skip edit to next editable cell
-// - automatically resize row height to keep showing the value
-// - tooltips
-// - OnFocusStopEditHandler
-// - AligningTableHeaderRenderer
-// - Resizable rows and columns
-// - copy and paste -> get/setValueAtAsString
-// - remember column and row sizes, column order, hidden columns, etc until next opening of specific component
-// - table header
-// - fix known bugs (JXTable) like focus handling
-// - support row management; insert and delete rows
-//   - automatically add a new row at the end of the table when in the last cell and press enter (ForEdit)
-//   - insert / delete keys
-// - make separate component and per default wrap in JScrollPane -> STableAIO with footer, scrollpane, etc
-
 /**
  * This is an extended JTable, that is used by STable.
  * You probably want to use STable.
@@ -64,8 +38,6 @@ public class STableCore<TableType> extends javax.swing.JTable {
         super(new TableModel<TableType>());
         tableRowSorter = new TableRowSorter<>(getTableModel()){
             public Comparator<?> getComparator(int column) {
-                // TBEERNOT why is setCompatator not working?
-                // Is that bad?
                 Comparator<?> comparator = getTableModel().getTableColumns().get(column).getSortBy();
                 if (comparator != null) {
                     return comparator;
@@ -80,6 +52,12 @@ public class STableCore<TableType> extends javax.swing.JTable {
 
         // Sorting
         setRowSorter(tableRowSorter);
+        tableRowSorter.addRowSorterListener(e -> {
+            // Clear the selection, because in the new sort it may not be feasible to maintain it
+            // And the selected rows will change position.
+            // (A more intelligent algorithme could maintain the selection if possible)
+            STableCore.this.clearSelection();
+        });
 
         // "Sets whether editors in this JTable get the keyboard focus when an editor is activated as a result of the JTable forwarding keyboard events for a cell."
         // "By default, this property is false, and the JTable retains the focus unless the cell is clicked."
