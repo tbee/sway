@@ -113,6 +113,15 @@ import java.util.function.Consumer;
  * Note: the columns() method calls monitorBean, and monitorProperty on each column.
  * <br/>
  *
+ * <h2>Selection</h2>
+ * Selection still has the three modes, but set via an enum, and the listener gets a list of selected items.
+ * <pre>{@code
+ * STable stable = new STable<SomeBean>() //
+ *         .selectionMode(STable.SelectionMode.MULTIPLE) //
+ *         .onSelectionChanged(selection -> System.out.println("onSelectionChanged: " + selection)) //
+ * }
+ * </pre>
+ *
  * @param <TableType>
  */
 public class STable<TableType> extends JPanel {
