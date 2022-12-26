@@ -82,7 +82,8 @@ import java.util.Locale;
  * Directly to a bean:
  * <pre>{@code
  * var someBean = new SomeBean();
- * var sTextField = STextField.ofInteger().bind(someBean, "distance");
+ * var sTextField1 = STextField.ofInteger().bind(someBean, "distance");
+ * var sTextField2 = STextField.ofBind(someBean, "distance"); // determines property type and binds to it
  * }
  * </pre>
  *
@@ -94,14 +95,6 @@ import java.util.Locale;
  * ...
  * var someBean2 = new SomeBean();
  * someBeanBinder.set(someBean2);
- * }
- * </pre>
- * And this can be written even shorter
- * <br/>
- * <br/>
- * Example:
- * <pre>{@code
- * var sTextField = STextField.ofBind(someBean, "distance"); // determines property type and binds to it
  * }
  * </pre>
  *
