@@ -6,7 +6,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
 
-public class Bean1 extends AbstractBean<Bean1> {
+public class City extends AbstractBean<City> {
 
     @Override
     public void firePropertyChange(String name, Object before, Object after) {
@@ -14,7 +14,12 @@ public class Bean1 extends AbstractBean<Bean1> {
         super.firePropertyChange(name, before, after);
     }
 
-    public Bean1() {
+    public City() {
+    }
+
+    public City(String name, int distance) {
+        this.name = name;
+        this.distance = distance;
     }
 
     /** name: string property */
@@ -27,7 +32,7 @@ public class Bean1 extends AbstractBean<Bean1> {
     }
     private String name;
     static public String NAME = "name";
-    public Bean1 name(String v) {
+    public City name(String v) {
         setName(v);
         return this;
     }
@@ -46,7 +51,7 @@ public class Bean1 extends AbstractBean<Bean1> {
     }
     private int distance;
     static public String DISTANCE = "distance";
-    public Bean1 distance(int v) {
+    public City distance(int v) {
         setDistance(v);
         return this;
     }
@@ -59,7 +64,7 @@ public class Bean1 extends AbstractBean<Bean1> {
         return getDistance();
     }
     static public String DISTANCEINT = "distanceInt";
-    public Bean1 distanceInt(Integer v) {
+    public City distanceInt(Integer v) {
         setDistanceInt(v);
         return this;
     }
@@ -71,17 +76,17 @@ public class Bean1 extends AbstractBean<Bean1> {
     static public String ROUNDTRIP = "roundTrip";
 
     /** length: BigDecimal property */
-    public void setLength(BigDecimal v) {
-        fireVetoableChange(LENGTH, this.length, v);
-        firePropertyChange(LENGTH, this.length, this.length = v);
+    public void setSurfaceInKM2(BigDecimal v) {
+        fireVetoableChange(SURFACEINKM2, this.surfaceInKM2, v);
+        firePropertyChange(SURFACEINKM2, this.surfaceInKM2, this.surfaceInKM2 = v);
     }
-    public BigDecimal getLength() {
-        return length;
+    public BigDecimal getSurfaceInKM2() {
+        return surfaceInKM2;
     }
-    private BigDecimal length;
-    static public String LENGTH = "length";
-    public Bean1 length(BigDecimal v) {
-        setLength(v);
+    private BigDecimal surfaceInKM2;
+    static public String SURFACEINKM2 = "surfaceInKM2";
+    public City surfaceInKM2(BigDecimal v) {
+        setSurfaceInKM2(v);
         return this;
     }
 
@@ -90,13 +95,13 @@ public class Bean1 extends AbstractBean<Bean1> {
         return super.toString() //
                 + ",name=" + name
                 + ",age=" + distance
-                + ",length=" + length
+                + ",length=" + surfaceInKM2
                 ;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, distance);
+        return Objects.hash(name, distance, surfaceInKM2);
     }
 
     @Override
@@ -104,10 +109,10 @@ public class Bean1 extends AbstractBean<Bean1> {
         if (this == obj) return true;
         if (obj == null) return false;
         if (getClass() != obj.getClass()) return false;
-        Bean1 other = (Bean1) obj;
+        City other = (City) obj;
         return Objects.equals(name, other.name) //
             && Objects.equals(distance, other.distance) //
-            && Objects.equals(length, other.length) //
+            && Objects.equals(surfaceInKM2, other.surfaceInKM2) //
         ;
     }
 }

@@ -15,13 +15,13 @@ public class STableTest extends TestBase {
     public void happyStringBindingTest() throws Exception {
 
         // GIVEN
-        Bean1 bean1 = new Bean1().name("Tom").distance(52);
-        Bean1 bean2 = new Bean1().name("Corine").distance(48);
-        List<Bean1> data = List.of(bean1, bean2);
+        City amsterdam = new City("Amsterdam", 150);
+        City berlin = new City("Berlin", 560);
+        List<City> data = List.of(amsterdam, berlin);
         construct(() -> {
-            sTable = new STable<Bean1>() //
+            sTable = new STable<City>() //
                     .name("table") //
-                    .column(String.class).valueSupplier(Bean1::getName).valueConsumer(Bean1::setName).table()
+                    .column(String.class).valueSupplier(City::getName).valueConsumer(City::setName).table()
                     .column(Integer.class).valueSupplier(d -> d.getDistance()).table();
 
             sTable.data(data);
@@ -30,26 +30,26 @@ public class STableTest extends TestBase {
         });
 
         // WHEN
-        frameFixture.table("table.sTable").enterValue(TableCell.row(0).column(0), "abc");
+        frameFixture.table("table.sTable").enterValue(TableCell.row(0).column(0), "Rotterdam");
         moveFocus();
 
         // THEN
-        Assertions.assertEquals("abc", sTable.sTable().getValueAt(0, 0));
-        Assertions.assertEquals("abc", bean1.getName());
-        Assertions.assertEquals("Corine", bean2.getName());
+        Assertions.assertEquals("Rotterdam", sTable.sTable().getValueAt(0, 0));
+        Assertions.assertEquals("Rotterdam", amsterdam.getName());
+        Assertions.assertEquals("Berlin", berlin.getName());
     }
 
     @Test
     public void happyStringPropertyTest() throws Exception {
 
         // GIVEN
-        Bean1 bean1 = new Bean1().name("Tom").distance(52);
-        Bean1 bean2 = new Bean1().name("Corine").distance(48);
-        List<Bean1> data = List.of(bean1, bean2);
+        City amsterdam = new City("Amsterdam", 150);
+        City berlin = new City("Berlin", 560);
+        List<City> data = List.of(amsterdam, berlin);
         construct(() -> {
-            sTable = new STable<Bean1>() //
+            sTable = new STable<City>() //
                     .name("table") //
-                    .columns(Bean1.class, Bean1.NAME, Bean1.DISTANCE);
+                    .columns(City.class, City.NAME, City.DISTANCE);
 
             sTable.data(data);
 
@@ -57,26 +57,26 @@ public class STableTest extends TestBase {
         });
 
         // WHEN
-        frameFixture.table("table.sTable").enterValue(TableCell.row(0).column(0), "abc");
+        frameFixture.table("table.sTable").enterValue(TableCell.row(0).column(0), "Rotterdam");
         moveFocus();
 
         // THEN
-        Assertions.assertEquals("abc", sTable.sTable().getValueAt(0, 0));
-        Assertions.assertEquals("abc", bean1.getName());
-        Assertions.assertEquals("Corine", bean2.getName());
+        Assertions.assertEquals("Rotterdam", sTable.sTable().getValueAt(0, 0));
+        Assertions.assertEquals("Rotterdam", amsterdam.getName());
+        Assertions.assertEquals("Berlin", berlin.getName());
     }
 
     @Test
     public void happyStringMonitorTest() throws Exception {
 
         // GIVEN
-        Bean1 bean1 = new Bean1().name("Tom").distance(52);
-        Bean1 bean2 = new Bean1().name("Corine").distance(48);
-        List<Bean1> data = List.of(bean1, bean2);
+        City amsterdam = new City("Amsterdam", 150);
+        City berlin = new City("Berlin", 560);
+        List<City> data = List.of(amsterdam, berlin);
         construct(() -> {
             sTable = new STable() //
                     .name("table") //
-                    .columns(Bean1.class, Bean1.NAME, Bean1.DISTANCE);
+                    .columns(City.class, City.NAME, City.DISTANCE);
 
             sTable.data(data);
 
@@ -85,12 +85,12 @@ public class STableTest extends TestBase {
 
         // WHEN
         SwingUtilities.invokeAndWait(() -> {
-            bean1.setName("def");
+            amsterdam.setName("Rome");
         });
 
         // THEN
-        Assertions.assertEquals("def", sTable.sTable().getValueAt(0, 0));
-        Assertions.assertEquals("Corine", bean2.getName());
+        Assertions.assertEquals("Rome", sTable.sTable().getValueAt(0, 0));
+        Assertions.assertEquals("Berlin", berlin.getName());
     }
 
     // test per column editor/renderer

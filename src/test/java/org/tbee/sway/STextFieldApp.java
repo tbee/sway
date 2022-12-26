@@ -23,10 +23,10 @@ public class STextFieldApp {
     static public void main(String[] args) throws Exception {
         SwingUtilities.invokeAndWait(() -> {
 
-            Bean1 bean1 = new Bean1().name("test").distance(12);
-            BeanBinder<Bean1> beanBinder = new BeanBinder<>(bean1);
+            City bean = new City("test",12);
+            BeanBinder<City> beanBinder = new BeanBinder<>(bean);
 
-            STextField.ofStringBlankIsNull().bind(beanBinder, Bean1.NAME).unbind(beanBinder, Bean1.NAME);
+            STextField.ofStringBlankIsNull().bind(beanBinder, City.NAME).unbind(beanBinder, City.NAME);
 
             JPanel jPanel = new JPanel();
             jPanel.setLayout(new MigLayout());
@@ -35,13 +35,13 @@ public class STextFieldApp {
             jPanel.add(STextField.ofString().value("abc"), new CC().wrap());
 
             jPanel.add(new JLabel("String -> bean.name"), new CC().alignX("right"));
-            jPanel.add(STextField.ofString().bind(bean1, Bean1.NAME), new CC().wrap());
+            jPanel.add(STextField.ofString().bind(bean, City.NAME), new CC().wrap());
 
             jPanel.add(new JLabel("StringBlankIsNull -> bean.name"), new CC().alignX("right"));
-            jPanel.add(STextField.ofStringBlankIsNull().bind(beanBinder, Bean1.NAME), new CC().wrap());
+            jPanel.add(STextField.ofStringBlankIsNull().bind(beanBinder, City.NAME), new CC().wrap());
 
             jPanel.add(new JLabel("Integer -> bean.age"), new CC().alignX("right"));
-            jPanel.add(STextField.ofInteger().bind(bean1, Bean1.DISTANCE), new CC().wrap());
+            jPanel.add(STextField.ofInteger().bind(bean, City.DISTANCE), new CC().wrap());
 
             jPanel.add(new JLabel("Long"), new CC().alignX("right"));
             jPanel.add(STextField.ofLong().value(123l), new CC().wrap());
@@ -80,7 +80,7 @@ public class STextFieldApp {
             jPanel.add(STextField.ofOffsetDateTime().value(OffsetDateTime.now()), new CC().wrap());
 
             JButton jButton = new JButton("set name");
-            jButton.addActionListener(e -> bean1.setName("name" + System.currentTimeMillis()));
+            jButton.addActionListener(e -> bean.setName("name" + System.currentTimeMillis()));
             jPanel.add(jButton, new CC().skip(1).wrap());
 
             JFrame jFrame = new JFrame();

@@ -29,6 +29,7 @@ import java.util.Locale;
 
 // TODO
 // - error when setValue when bound
+// - ofBind()
 // - popup
 // - enforce maximum length
 // - color the contents based on the content, e.g. < 0 is red > 0 is black for a IntegerFormat
