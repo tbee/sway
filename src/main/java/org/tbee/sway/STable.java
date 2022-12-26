@@ -6,8 +6,12 @@ import org.tbee.sway.table.TableColumn;
 
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.ListSelectionModel;
 import java.awt.BorderLayout;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.function.Consumer;
 
 // TODO
 // - selection and selection mode API
@@ -241,6 +245,87 @@ public class STable<TableType> extends JPanel {
         return this;
     }
 
+    // ===========================================================================
+    // SELECTION
+
+    enum SelectionMode{ SINGLE(ListSelectionModel.SINGLE_SELECTION), INTERVAL(ListSelectionModel.SINGLE_INTERVAL_SELECTION), MULTIPLE(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+         private int code;
+         private SelectionMode(int code) {
+             this.code = code;
+         }
+
+         static SelectionMode of(int code) {
+             for (SelectionMode selectionMode : values()) {
+                 if (selectionMode.code == code) {
+                     return selectionMode;
+                 }
+             }
+             throw new IllegalArgumentException("Code does not exist " + code);
+         }
+    }
+
+    /**
+     *
+     * @param v
+     */
+    public void setSelectionMode(SelectionMode v) {
+        sTable.setSelectionMode(v.code);
+    }
+    public SelectionMode getSelectionMode() {
+        return SelectionMode.of(sTable.getSelectionModel().getSelectionMode());
+    }
+    public STable<TableType> selectionMode(SelectionMode v) {
+        setSelectionMode(v);
+        return this;
+    }
+
+    /**
+     *
+     */
+    public void clearSelection() {
+         sTable.clearSelection();
+    }
+
+    /**
+     *
+     * @param listener
+     */
+    synchronized public void addSelectionChangedListener(Consumer<List<TableType>> listener) {
+        if (selectionChangedListeners == null) {
+            selectionChangedListeners = new ArrayList<>();
+
+            // Start listening
+            sTable.getSelectionModel().addListSelectionListener(e -> {
+                if (!e.getValueIsAdjusting()) {
+                    // Collect data
+                    var selectedItems = new ArrayList<TableType>(sTable.getSelectionModel().getSelectionMode());
+                    for (int rowIdx : sTable.getSelectionModel().getSelectedIndices()) {
+                        selectedItems.add(getData().get(rowIdx));
+                    }
+                    // Call listeners
+                    List<TableType> unmodifiableList = Collections.unmodifiableList(selectedItems);
+                    selectionChangedListeners.forEach(l -> l.accept(unmodifiableList));
+                }
+            });
+        }
+        selectionChangedListeners.add(listener);
+    }
+    synchronized public boolean removeSelectionChangedListener(Consumer<List<TableType>> listener) {
+        if (selectionChangedListeners == null) {
+            return false;
+        }
+        return selectionChangedListeners.remove(listener);
+    }
+    private List<Consumer<List<TableType>>> selectionChangedListeners;
+
+    /**
+     * @param onSelectionChangedListener
+     * @return
+     */
+    public STable<TableType> onSelectionChanged(Consumer<List<TableType>> onSelectionChangedListener) {
+        addSelectionChangedListener(onSelectionChangedListener);
+        return this;
+    }
 
     // ===========================================================================
     // BINDING

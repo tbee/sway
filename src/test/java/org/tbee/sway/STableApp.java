@@ -23,13 +23,17 @@ public class STableApp {
                     .columns(City.class, "name", City.NAME, City.DISTANCE, City.DISTANCEINT, City.ROUNDTRIP)
 
                     // automatically update (uses reflection)
-                    .monitorBean(City.class)
+                    .monitorBean(City.class) //
 
                     // find column
-                    .findColumnById("marker").title("DistanceMR*").table()
+                    .findColumnById("marker").title("DistanceMR*").table() //
+
+                    // selection
+                    .selectionMode(STable.SelectionMode.MULTIPLE) //
+                    .onSelectionChanged(selection -> System.out.println("onSelectionChanged: " + selection)) //
 
                     // data
-                    .data(List.of(new City("Amsterdam", 150), new City("Berlin", 560)));
+                    .data(List.of(new City("Amsterdam", 150), new City("Berlin", 560), new City("Rome", 1560), new City("Paris", 575))) //
              ;
 
             JFrame jFrame = new JFrame();
