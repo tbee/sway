@@ -19,7 +19,7 @@ public class FormatCellEditor<T> extends javax.swing.DefaultCellEditor {
     public Component getTableCellEditorComponent(JTable table, Object value,
                                                  boolean isSelected,
                                                  int row, int column) {
-        STextField<T> sTextField = (STextField<T>) getComponent();
+        STextField<T> sTextField = (STextField<T>) super.getTableCellEditorComponent(table, value, isSelected, row, column);
         sTextField.setValue((T)value);
         return sTextField;
     }
@@ -27,7 +27,7 @@ public class FormatCellEditor<T> extends javax.swing.DefaultCellEditor {
     @Override
     public Object getCellEditorValue() {
         STextField<T> sTextField = (STextField<T>) getComponent();
-        sTextField.setValueFromText(); // force the textfield to parse the value, since it has not had a lost focus and done so itself
+        sTextField.setValueFromText(); // force the textfield to parse the value, since it has not had a lost focus event and done so itself
         T value = sTextField.getValue();
         return value;
     }
