@@ -30,7 +30,7 @@ public class STableTest extends TestBase {
         });
 
         // WHEN
-        frameFixture.table("table.sTable").enterValue(TableCell.row(0).column(0), "Rotterdam");
+        frameFixture.table("table.sTableCore").enterValue(TableCell.row(0).column(0), "Rotterdam");
         moveFocus();
 
         // THEN
@@ -57,7 +57,7 @@ public class STableTest extends TestBase {
         });
 
         // WHEN
-        frameFixture.table("table.sTable").enterValue(TableCell.row(0).column(0), "Rotterdam");
+        frameFixture.table("table.sTableCore").enterValue(TableCell.row(0).column(0), "Rotterdam");
         moveFocus();
 
         // THEN
@@ -93,5 +93,38 @@ public class STableTest extends TestBase {
         Assertions.assertEquals("Berlin", berlin.getName());
     }
 
-    // test per column editor/renderer
+
+    @Test
+    public void happyEditorTest() throws Exception {
+
+        // GIVEN
+        City amsterdam = new City("Amsterdam", 150);
+        City berlin = new City("Berlin", 560);
+        City rome = new City("Rome", 1560);
+        City paris = new City("Paris", 575);
+        amsterdam.sisterCity(berlin);
+        List<City> data = List.of(amsterdam, berlin, rome, paris);
+
+        CityFormat cityFormat = new CityFormat(data);
+
+        construct(() -> {
+            sTable = new STable() //
+                    .name("table") //
+                    .columns(City.class, City.NAME, City.SISTERCITY) //
+                    .<City>findColumnById(City.SISTERCITY).renderer(cityFormat).editor(cityFormat).table()
+            ;
+
+            sTable.data(data);
+
+            return TestUtil.inJFrame(sTable, focusMeComponent());
+        });
+
+        // WHEN
+        frameFixture.table("table.sTableCore").enterValue(TableCell.row(0).column(1), "Rome");
+        moveFocus();
+
+        // THEN
+        Assertions.assertEquals(rome, sTable.sTable().getValueAt(0, 1));
+    }
+
 }

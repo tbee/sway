@@ -135,14 +135,14 @@ import java.util.stream.Collectors;
 public class STable<TableType> extends JPanel {
     static private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(STable.class);
 
-    private final STableCore<TableType> sTable;
+    private final STableCore<TableType> sTableCore;
 
     public STable() {
 
         // Create components
-        sTable = new STableCore<TableType>();
-        JScrollPane scrollPane = new JScrollPane(sTable);
-        STableNavigator tableNavigator = new STableNavigator(sTable);
+        sTableCore = new STableCore<TableType>();
+        JScrollPane scrollPane = new JScrollPane(sTableCore);
+        STableNavigator tableNavigator = new STableNavigator(sTableCore);
 
         // Layout
         setLayout(new BorderLayout());
@@ -151,7 +151,7 @@ public class STable<TableType> extends JPanel {
     }
 
     public STableCore<TableType> sTable() {
-        return sTable;
+        return sTableCore;
     }
 
     // ===========================================================================
@@ -163,11 +163,11 @@ public class STable<TableType> extends JPanel {
      * @param v
      */
     public void setData(List<TableType> v) {
-        sTable.setData(v);
+        sTableCore.setData(v);
     }
 
     public List<TableType> getData() {
-        return sTable.getData();
+        return sTableCore.getData();
     }
 
     public STable<TableType> data(List<TableType> v) {
@@ -179,21 +179,21 @@ public class STable<TableType> extends JPanel {
      * Stop the edit by either accepting or cancelling
      */
     public void stopEdit() {
-        sTable.stopEdit();
+        sTableCore.stopEdit();
     }
 
     /**
      * Cancel the edit
      */
     public void cancelEdit() {
-        sTable.cancelEdit();
+        sTableCore.cancelEdit();
     }
 
     /**
      * Has this table currently a cell with an active editor
      */
     public boolean isEditing() {
-        return sTable.isEditing();
+        return sTableCore.isEditing();
     }
 
     // ===========================================================================
@@ -204,7 +204,7 @@ public class STable<TableType> extends JPanel {
      * @return Unmodifiable list of colums
      */
     public List<TableColumn<TableType, ?>> getColumns() {
-        return sTable.getColumns();
+        return sTableCore.getColumns();
     }
 
     /**
@@ -224,7 +224,7 @@ public class STable<TableType> extends JPanel {
      * @param <ColumnType>
      */
     public <ColumnType extends Object> void addColumn(TableColumn<TableType, ColumnType> tableColumn) {
-        sTable.addColumn(tableColumn);
+        sTableCore.addColumn(tableColumn);
     }
 
     /**
@@ -234,7 +234,7 @@ public class STable<TableType> extends JPanel {
      * @param <ColumnType>
      */
     public <ColumnType extends Object> boolean removeColumn(TableColumn<TableType, ColumnType> tableColumn) {
-        return sTable.removeColumn(tableColumn);
+        return sTableCore.removeColumn(tableColumn);
     }
 
     /**
@@ -245,7 +245,7 @@ public class STable<TableType> extends JPanel {
      * @param <ColumnType>
      */
     public <ColumnType extends Object> TableColumn<TableType, ColumnType> column(Class<ColumnType> type) {
-        TableColumn<TableType, ColumnType> column = sTable.column(type);
+        TableColumn<TableType, ColumnType> column = sTableCore.column(type);
         column.setTable(this);
         return column;
     }
@@ -351,10 +351,10 @@ public class STable<TableType> extends JPanel {
      * @param v
      */
     public void setSelectionMode(SelectionMode v) {
-        sTable.setSelectionMode(v.code);
+        sTableCore.setSelectionMode(v.code);
     }
     public SelectionMode getSelectionMode() {
-        return SelectionMode.of(sTable.getSelectionModel().getSelectionMode());
+        return SelectionMode.of(sTableCore.getSelectionModel().getSelectionMode());
     }
     public STable<TableType> selectionMode(SelectionMode v) {
         setSelectionMode(v);
@@ -365,7 +365,7 @@ public class STable<TableType> extends JPanel {
      *
      */
     public void clearSelection() {
-         sTable.clearSelection();
+         sTableCore.clearSelection();
     }
 
     /**
@@ -377,11 +377,11 @@ public class STable<TableType> extends JPanel {
             selectionChangedListeners = new ArrayList<>();
 
             // Start listening
-            sTable.getSelectionModel().addListSelectionListener(e -> {
+            sTableCore.getSelectionModel().addListSelectionListener(e -> {
                 if (!e.getValueIsAdjusting()) {
                     // Collect data
-                    var selectedItems = new ArrayList<TableType>(sTable.getSelectionModel().getSelectionMode());
-                    for (int rowIdx : sTable.getSelectionModel().getSelectedIndices()) {
+                    var selectedItems = new ArrayList<TableType>(sTableCore.getSelectionModel().getSelectionMode());
+                    for (int rowIdx : sTableCore.getSelectionModel().getSelectedIndices()) {
                         selectedItems.add(getData().get(rowIdx));
                     }
                     // Call listeners
@@ -416,10 +416,10 @@ public class STable<TableType> extends JPanel {
      * monitorBean
      */
     public void setMonitorBean(Class<TableType> v) {
-        sTable.setMonitorBean(v);
+        sTableCore.setMonitorBean(v);
     }
     public Class<TableType> getMonitorBean() {
-        return sTable.getMonitorBean();
+        return sTableCore.getMonitorBean();
     }
     public STable<TableType> monitorBean(Class<TableType> v) {
         setMonitorBean(v);
@@ -431,7 +431,7 @@ public class STable<TableType> extends JPanel {
 
     public STable<TableType> name(String v) {
         setName(v);
-        sTable.name(v + ".sTable"); // For tests we need to address the actual table
+        sTableCore.name(v + ".sTableCore"); // For tests we need to address the actual table
         return this;
     }
 }

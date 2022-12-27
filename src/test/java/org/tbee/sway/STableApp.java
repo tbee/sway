@@ -20,17 +20,7 @@ public class STableApp {
             rome.sisterCity(paris);
             var cities = List.of(amsterdam, berlin, rome, paris);
 
-            Format<City> cityFormat = new Format<City>() {
-                @Override
-                public String toString(City value) {
-                    return value == null ? "" : value.getName();
-                }
-
-                @Override
-                public City toValue(String string) {
-                    return string.isBlank() ? null : cities.stream().filter(c -> c.getName().equals(string)).findFirst().orElseThrow(() -> new IllegalArgumentException("No city found with that name: " + string));
-                }
-            };
+            Format<City> cityFormat = new CityFormat(cities);
 
             var sTable = new STable<City>() //
 
