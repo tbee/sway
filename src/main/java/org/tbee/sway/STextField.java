@@ -269,7 +269,12 @@ public class STextField<T> extends javax.swing.JTextField {
         String text = format.toString(value);
         super.setText(text);
     }
-    protected T setValueFromText() {
+
+    /**
+     * Parses the text into the value.
+     * @return true is the value was set, false if there was an error
+     */
+    public boolean setValueFromText() {
         try {
             String text = getText();
             T value = format.toValue(text);
@@ -277,25 +282,37 @@ public class STextField<T> extends javax.swing.JTextField {
         }
         catch (RuntimeException e) {
             handleException(e);
+            return false;
         }
-        return this.value;
+        return true;
     }
 
     protected boolean handleException(Throwable e, Object oldValue, Object newValue) {
         return handleException(e);
     }
     protected boolean handleException(Throwable e) {
+        if (handlingExceptionCnt > 0) {
+            return false;
+        }
 
-        // Force focus back
-        SwingUtilities.invokeLater(() -> this.grabFocus());
+        try {
+            handlingExceptionCnt++;
 
-        // Display the error
-        if (logger.isDebugEnabled()) logger.debug(e.getMessage(), e);
-        JOptionPane.showMessageDialog(this, ExceptionUtil.determineMessage(e), "ERROR", JOptionPane.ERROR_MESSAGE);
+            // Force focus back
+            SwingUtilities.invokeLater(() -> this.grabFocus());
 
-        // Mark exception as handled
-        return true;
+            // Display the error
+            if (logger.isDebugEnabled()) logger.debug(e.getMessage(), e);
+            JOptionPane.showMessageDialog(this, ExceptionUtil.determineMessage(e), "ERROR", JOptionPane.ERROR_MESSAGE);
+
+            // Mark exception as handled
+            return true;
+        }
+        finally {
+            handlingExceptionCnt--;
+        }
     }
+    private int handlingExceptionCnt = 0;
 
     /** Value (through Format) */
     public void setValue(T v) {
@@ -317,7 +334,6 @@ public class STextField<T> extends javax.swing.JTextField {
      * @return
      */
     public T getValue() {
-        setValueFromText();
         return this.value;
     }
 

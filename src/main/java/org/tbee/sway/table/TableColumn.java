@@ -260,5 +260,5 @@ public class TableColumn<TableType, ColumnType extends Object> {
         return this;
     }
     volatile private Comparator<ColumnType> sorting = null;
-    final static public String SORTING = "sorting";
+    final static public String SORTBY = "sorting";
 }

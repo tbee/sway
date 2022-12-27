@@ -28,7 +28,7 @@ public class STableApp {
 
                 @Override
                 public City toValue(String string) {
-                    return string.isBlank() ? null : cities.stream().filter(c -> c.getName().equals(string)).findFirst().orElse(null);
+                    return string.isBlank() ? null : cities.stream().filter(c -> c.getName().equals(string)).findFirst().orElseThrow(() -> new IllegalArgumentException("No city found with that name: " + string));
                 }
             };
 
