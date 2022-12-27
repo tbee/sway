@@ -75,7 +75,7 @@ public class City extends AbstractBean<City> {
     }
     static public String ROUNDTRIP = "roundTrip";
 
-    /** length: BigDecimal property */
+    /** surface: BigDecimal property */
     public void setSurfaceInKM2(BigDecimal v) {
         fireVetoableChange(SURFACEINKM2, this.surfaceInKM2, v);
         firePropertyChange(SURFACEINKM2, this.surfaceInKM2, this.surfaceInKM2 = v);
@@ -86,7 +86,23 @@ public class City extends AbstractBean<City> {
     private BigDecimal surfaceInKM2;
     static public String SURFACEINKM2 = "surfaceInKM2";
     public City surfaceInKM2(BigDecimal v) {
-        setSurfaceInKM2(v);
+        this.setSurfaceInKM2(v);
+        return this;
+    }
+
+
+    /** sisterCity: City property */
+    public void setSisterCity(City v) {
+        fireVetoableChange(SISTERCITY, this.sisterCity, v);
+        firePropertyChange(SISTERCITY, this.sisterCity, this.sisterCity = v);
+    }
+    public City getSisterCity() {
+        return sisterCity;
+    }
+    private City sisterCity;
+    static public String SISTERCITY = "sisterCity";
+    public City sisterCity(City v) {
+        setSisterCity(v);
         return this;
     }
 
@@ -95,7 +111,7 @@ public class City extends AbstractBean<City> {
         return super.toString() //
                 + ",name=" + name
                 + ",age=" + distance
-                + ",length=" + surfaceInKM2
+                + ",surfaceInKM2=" + surfaceInKM2
                 ;
     }
 
@@ -112,7 +128,7 @@ public class City extends AbstractBean<City> {
         City other = (City) obj;
         return Objects.equals(name, other.name) //
             && Objects.equals(distance, other.distance) //
-            && Objects.equals(surfaceInKM2, other.surfaceInKM2) //
+            && Objects.equals(sisterCity, other.sisterCity) //
         ;
     }
 }

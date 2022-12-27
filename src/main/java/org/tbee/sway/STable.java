@@ -3,15 +3,24 @@ package org.tbee.sway;
 import org.tbee.sway.table.STableCore;
 import org.tbee.sway.table.STableNavigator;
 import org.tbee.sway.table.TableColumn;
+import org.tbee.util.ClassUtil;
 
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
 import java.awt.BorderLayout;
+import java.beans.BeanInfo;
+import java.beans.IntrospectionException;
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 // TODO
 // - tests for editor and sorting
@@ -200,10 +209,11 @@ public class STable<TableType> extends JPanel {
 
     /**
      * Finds (the first!) column with the provided id.
+     * Usage: ...<ColumType>findColumnById(id)
      * @param id
      * @return
      */
-    public TableColumn<TableType, ?> findColumnById(String id) {
+    public <ColumnType> TableColumn<TableType, ColumnType> findColumnById(String id) {
         return sTable().findColumnById(id);
     }
 
@@ -243,16 +253,79 @@ public class STable<TableType> extends JPanel {
     /**
      * Generate columns based on bean info.
      * ...columns(Bean.class, "property", "anotherProperty")
-     *
+     * <p>
      * This method will set monitorProperty() on each column, and monitorBean() on this class.
      *
      * @param tableTypeClass
-     * @param propertyNames
+     * @param propertyNames  the properties to show. If none are specified all discovered properties are show, in an undefined order.
      * @return
-     */    public STable<TableType> columns(Class<TableType> tableTypeClass, String... propertyNames) {
-        sTable.columns(tableTypeClass, propertyNames);
+     */
+    public STable<TableType> columns(Class<TableType> tableTypeClass, String... propertyNames) {
+        try {
+            // Use Java's bean inspection classes to analyse the bean
+            BeanInfo beanInfo = Introspector.getBeanInfo(tableTypeClass);
+            PropertyDescriptor[] propertyDescriptors = beanInfo.getPropertyDescriptors();
+            Map<String, PropertyDescriptor> propertyDescriptorsMap = Arrays.stream(propertyDescriptors).collect(Collectors.toMap(pd -> pd.getName(), pd -> pd));
+
+            // If no properties are specified, assume all. Order is undefined.
+            if (propertyNames.length == 0) {
+                var excludedPropertyNames = List.of("class", "propertyChangeListeners", "vetoableChangeListeners");
+                propertyNames = propertyDescriptorsMap.keySet() //
+                        .stream().filter(pn -> !excludedPropertyNames.contains(pn)) //
+                        .toList().toArray(new String[]{});
+            }
+
+            // For each property create a column
+            for (String propertyName : propertyNames) {
+                PropertyDescriptor propertyDescriptor = propertyDescriptorsMap.get(propertyName);
+                if (propertyDescriptor == null) {
+                    throw new IllegalArgumentException("Property '" + propertyName + "' not found in bean " + tableTypeClass);
+                }
+
+                // Handle primitive types
+                Class<?> propertyType = propertyDescriptor.getPropertyType();
+                if (propertyType.isPrimitive()) {
+                    propertyType = ClassUtil.primitiveToClass(propertyType);
+                }
+
+                // Add column
+                column((Class<Object>) propertyType) // It's okay, JTable will still use the appropriate renderer and editor
+                        .id(propertyName) //
+                        .title(propertyName) //
+                        .valueSupplier(bean -> {
+                            try {
+                                return propertyDescriptor.getReadMethod().invoke(bean);
+                            }
+                            catch (IllegalAccessException e) {
+                                throw new RuntimeException(e);
+                            }
+                            catch (InvocationTargetException e) {
+                                throw new RuntimeException(e);
+                            }
+                        }) //
+                        .valueConsumer((bean,value) -> {
+                            try {
+                                propertyDescriptor.getWriteMethod().invoke(bean, value);
+                            }
+                            catch (IllegalAccessException e) {
+                                throw new RuntimeException(e);
+                            }
+                            catch (InvocationTargetException e) {
+                                throw new RuntimeException(e);
+                            }
+                        }) //
+                        .editable(propertyDescriptor.getWriteMethod() != null) // if there is a write method then it is editable
+                        .monitorProperty(propertyName) //
+                ;
+            }
+        }
+        catch (IntrospectionException e) {
+            throw new RuntimeException(e);
+        }
+        monitorBean(tableTypeClass);
         return this;
     }
+
 
     // ===========================================================================
     // SELECTION

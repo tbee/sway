@@ -19,8 +19,8 @@ public class TableModel<TableType> extends AbstractTableModel {
         return Collections.unmodifiableList(tableColumns);
     }
 
-    public TableColumn<TableType, ?> findTableColumnById(String id) {
-        return tableColumns.stream() //
+    public <ColumnType> TableColumn<TableType, ColumnType> findTableColumnById(String id) {
+        return (TableColumn<TableType, ColumnType>) tableColumns.stream() //
                 .filter(tc -> id.equals(tc.getId())) //
                 .findFirst().orElse(null);
     }

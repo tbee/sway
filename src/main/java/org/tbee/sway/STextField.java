@@ -317,6 +317,7 @@ public class STextField<T> extends javax.swing.JTextField {
      * @return
      */
     public T getValue() {
+        setValueFromText();
         return this.value;
     }
 

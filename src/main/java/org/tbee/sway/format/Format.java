@@ -1,10 +1,17 @@
 package org.tbee.sway.format;
 
+import javax.swing.SwingUtilities;
+
 public interface Format<T> {
     String toString(T value);
+
     T toValue(String string);
 
-    int columns();
+    default int columns() {
+        return 20;
+    }
 
-    int horizontalAlignment();
+    default int horizontalAlignment() {
+        return SwingUtilities.LEADING;
+    }
 }

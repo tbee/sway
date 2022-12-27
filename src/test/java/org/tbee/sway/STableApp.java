@@ -1,5 +1,7 @@
 package org.tbee.sway;
 
+import org.tbee.sway.format.Format;
+
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import java.util.Comparator;
@@ -9,6 +11,26 @@ public class STableApp {
 
     static public void main(String[] args) throws Exception {
         SwingUtilities.invokeAndWait(() -> {
+
+            City amsterdam = new City("Amsterdam", 150);
+            City berlin = new City("Berlin", 560);
+            City rome = new City("Rome", 1560);
+            City paris = new City("Paris", 575);
+            amsterdam.sisterCity(berlin);
+            rome.sisterCity(paris);
+            var cities = List.of(amsterdam, berlin, rome, paris);
+
+            Format<City> cityFormat = new Format<City>() {
+                @Override
+                public String toString(City value) {
+                    return value == null ? "" : value.getName();
+                }
+
+                @Override
+                public City toValue(String string) {
+                    return string.isBlank() ? null : cities.stream().filter(c -> c.getName().equals(string)).findFirst().orElse(null);
+                }
+            };
 
             var sTable = new STable<City>() //
 
@@ -21,25 +43,29 @@ public class STableApp {
                     .column(Integer.class).title("Distance MR").valueSupplier(City::getDistance).valueConsumer(City::setDistance).monitorProperty(City.DISTANCE).id("marker").table() //
 
                     // add columns using BeanInfo (uses reflection)
-                    .columns(City.class, "name", City.NAME, City.DISTANCE, City.DISTANCEINT, City.ROUNDTRIP)
+                    .columns(City.class, City.NAME)
+
+                    // add columns using BeanInfo (uses reflection)
+                    .columns(City.class)
 
                     // automatically update (uses reflection)
                     .monitorBean(City.class) //
 
                     // find column
-                    .findColumnById("marker").title("DistanceMR*").table() //
+                    .<Integer>findColumnById("marker").title("DistanceMR*").table() //
+                    .<City>findColumnById("sisterCity").title("Sister City").renderer(cityFormat).editor(cityFormat).table() //
 
                     // selection
                     .selectionMode(STable.SelectionMode.MULTIPLE) //
                     .onSelectionChanged(selection -> System.out.println("onSelectionChanged: " + selection)) //
 
                     // data
-                    .data(List.of(new City("Amsterdam", 150), new City("Berlin", 560), new City("Rome", 1560), new City("Paris", 575))) //
+                    .data(cities) //
              ;
 
             JFrame jFrame = new JFrame();
             jFrame.setContentPane(sTable);
-            jFrame.pack();
+            jFrame.setSize(1600, 800);
             jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             jFrame.setVisible(true);
         });

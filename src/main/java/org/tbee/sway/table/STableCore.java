@@ -1,7 +1,6 @@
 package org.tbee.sway.table;
 
 import org.tbee.sway.support.SwayUtil;
-import org.tbee.util.ClassUtil;
 
 import javax.swing.UIManager;
 import javax.swing.table.TableCellEditor;
@@ -11,17 +10,9 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
-import java.beans.BeanInfo;
-import java.beans.IntrospectionException;
-import java.beans.Introspector;
-import java.beans.PropertyDescriptor;
-import java.lang.reflect.InvocationTargetException;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 /**
  * This is an extended JTable, that is used by STable.
@@ -146,23 +137,6 @@ public class STableCore<TableType> extends javax.swing.JTable {
     // =======================================================================
     // COLUMNS
 
-    // TODO: can we optimize this like comparator and intercept the getter?
-    private void applyTableColumnSettings() {
-        var model = getTableModel();
-        var tableColumns = model.getTableColumns();
-        for (int colIdx = 0; colIdx < tableColumns.size(); colIdx++) {
-            TableColumn tableColumn = tableColumns.get(colIdx);
-            TableCellEditor tableCellEditor = tableColumn.getEditor();
-            TableCellRenderer tableCellRenderer = tableColumn.getRenderer();
-            if (tableCellEditor != null) {
-                setColumnEditor(convertColumnIndexToView(colIdx), tableCellEditor);
-            }
-            if (tableCellRenderer != null) {
-                setColumnRenderer(convertColumnIndexToView(colIdx), tableCellRenderer);
-            }
-        }
-    }
-
     /**
      * Get the columns
      * @return Unmodifiable list of colums
@@ -176,7 +150,7 @@ public class STableCore<TableType> extends javax.swing.JTable {
      * @param id
      * @return
      */
-    public TableColumn<TableType, ?> findColumnById(String id) {
+    public <ColumnType> TableColumn<TableType, ColumnType> findColumnById(String id) {
         return getTableModel().findTableColumnById(id);
     }
 
@@ -188,7 +162,6 @@ public class STableCore<TableType> extends javax.swing.JTable {
      */
     public <ColumnType extends Object> void addColumn(TableColumn<TableType, ColumnType> tableColumn) {
         getTableModel().addColumn(tableColumn);
-        applyTableColumnSettings();
     }
 
     /**
@@ -198,22 +171,7 @@ public class STableCore<TableType> extends javax.swing.JTable {
      * @param <ColumnType>
      */
     public <ColumnType extends Object> boolean removeColumn(TableColumn<TableType, ColumnType> tableColumn) {
-        boolean success = getTableModel().removeColumn(tableColumn);
-        applyTableColumnSettings();
-        return success;
-    }
-
-    /**
-     * Basic method of adding a column, but generics makes using this somewhat unreadable
-     * ...column(new TableColumn<Bean, String>(String.class).title("Property").valueSupplier(d -> d.getProperty()))
-     *
-     * @param tableColumn
-     * @return
-     * @param <ColumnType>
-     */
-    private <ColumnType extends Object> STableCore<TableType> column(TableColumn<TableType, ColumnType> tableColumn) {
-        addColumn(tableColumn);
-        return this;
+        return getTableModel().removeColumn(tableColumn);
     }
 
     /**
@@ -229,73 +187,26 @@ public class STableCore<TableType> extends javax.swing.JTable {
         return tableColumn;
     }
 
-    /**
-     * Generate columns based on bean info.
-     * ...columns(Bean.class, "property", "anotherProperty")
-     *
-     * This method will set monitorProperty() on each column, and monitorBean() on this class.
-     *
-     * @param tableTypeClass
-     * @param propertyNames
-     * @return
-     */
-    public STableCore<TableType> columns(Class<TableType> tableTypeClass, String... propertyNames) {
-        try {
-            // Use Java's bean inspection classes to analyse the bean
-            BeanInfo beanInfo = Introspector.getBeanInfo(tableTypeClass);
-            PropertyDescriptor[] propertyDescriptors = beanInfo.getPropertyDescriptors();
-            Map<String, PropertyDescriptor> propertyDescriptorsMap = Arrays.stream(propertyDescriptors).collect(Collectors.toMap(pd -> pd.getName(), pd -> pd));
-
-            // For each property create a column
-            for (String propertyName : propertyNames) {
-                PropertyDescriptor propertyDescriptor = propertyDescriptorsMap.get(propertyName);
-                if (propertyDescriptor == null) {
-                    throw new IllegalArgumentException("Property '" + propertyName + "' not found in bean " + tableTypeClass);
-                }
-
-                // Handle primitive types
-                Class<?> propertyType = propertyDescriptor.getPropertyType();
-                if (propertyType.isPrimitive()) {
-                    propertyType = ClassUtil.primitiveToClass(propertyType);
-                }
-
-                // Add column
-                column((Class<Object>) propertyType) // It's okay, JTable will still use the appropriate renderer and editor
-                        .title(propertyName) //
-                        .valueSupplier(bean -> {
-                            try {
-                                return propertyDescriptor.getReadMethod().invoke(bean);
-                            }
-                            catch (IllegalAccessException e) {
-                                throw new RuntimeException(e);
-                            }
-                            catch (InvocationTargetException e) {
-                                throw new RuntimeException(e);
-                            }
-                        }) //
-                        .valueConsumer((bean,value) -> {
-                            try {
-                                propertyDescriptor.getWriteMethod().invoke(bean, value);
-                            }
-                            catch (IllegalAccessException e) {
-                                throw new RuntimeException(e);
-                            }
-                            catch (InvocationTargetException e) {
-                                throw new RuntimeException(e);
-                            }
-                        }) //
-                        .editable(propertyDescriptor.getWriteMethod() != null) // if there is a write method then it is editable
-                        .monitorProperty(propertyName) //
-                ;
-            }
+    @Override
+    public TableCellRenderer getCellRenderer(int row, int column) {
+        TableCellRenderer renderer = getTableModel().getTableColumns().get(column).getRenderer();
+        if (renderer != null) {
+            return renderer;
         }
-        catch (IntrospectionException e) {
-            throw new RuntimeException(e);
-        }
-        monitorBean(tableTypeClass);
-        return this;
+        renderer = super.getCellRenderer(row, column);
+        return renderer;
     }
 
+
+    @Override
+    public TableCellEditor getCellEditor(int row, int column) {
+        TableCellEditor editor = getTableModel().getTableColumns().get(column).getEditor();
+        if (editor != null) {
+            return editor;
+        }
+        editor = super.getCellEditor(row, column);
+        return editor;
+    }
 
     // ===========================================================================
     // RENDERING e.g. alternate row colors

@@ -1,6 +1,7 @@
 package org.tbee.sway.table;
 
 import org.tbee.sway.STable;
+import org.tbee.sway.format.Format;
 
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
@@ -204,6 +205,13 @@ public class TableColumn<TableType, ColumnType extends Object> {
     }
     volatile private TableCellEditor editor = null;
     final static public String EDITOR = "editor";
+    /**
+     * Shortcut for editor(new FormatCellEditor(format))
+     */
+    public TableColumn<TableType, ColumnType> editor(Format<ColumnType> format) {
+        editor(new FormatCellEditor(format));
+        return this;
+    }
 
     /** Renderer: */
     public void setRenderer(TableCellRenderer value) {
@@ -214,7 +222,14 @@ public class TableColumn<TableType, ColumnType extends Object> {
     volatile private TableCellRenderer renderer = null;
     final static public String RENDERER = "renderer";
     /**
-     * Shortcut for withRenderer(new UseTableCellEditorAsTableCellRenderer(editor)) 
+     * Shortcut for renderer(new FormatCellRenderer(format))
+     */
+    public TableColumn<TableType, ColumnType> renderer(Format<ColumnType> format) {
+        setRenderer(new FormatCellRenderer(format));
+        return this;
+    }
+    /**
+     * Shortcut for renderer(new UseTableCellEditorAsTableCellRenderer(editor))
      */
     public TableColumn<TableType, ColumnType> renderer(TableCellEditor value) {
         // note: in order to use an editor as renderer it needs to be a separate instance, and they don't implement clonable
@@ -246,5 +261,4 @@ public class TableColumn<TableType, ColumnType extends Object> {
     }
     volatile private Comparator<ColumnType> sortBy = null;
     final static public String SORTBY = "sortBy";
-
 }
