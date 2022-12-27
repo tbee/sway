@@ -27,13 +27,24 @@ public class STableCore<TableType> extends javax.swing.JTable {
 
     public STableCore() {
         super(new TableModel<TableType>());
+
+        // TODO: somehow the setComparator is forgotten, so we override the relevant methods. But we should figure out why this is.
         tableRowSorter = new TableRowSorter<>(getTableModel()){
+            @Override
             public Comparator<?> getComparator(int column) {
                 Comparator<?> comparator = getTableModel().getTableColumns().get(column).getSorting();
                 if (comparator != null) {
                     return comparator;
                 }
                 return super.getComparator(column);
+            }
+            @Override
+            protected boolean useToString(int column) {
+                Comparator<?> comparator = getTableModel().getTableColumns().get(column).getSorting();
+                if (comparator != null) {
+                    return false;
+                }
+                return super.useToString(column);
             }
         };
         construct();
