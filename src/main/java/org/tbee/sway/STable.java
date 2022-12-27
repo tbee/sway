@@ -23,8 +23,8 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 // TODO
-// - tests for editor and sorting
-// - more editors and renderers (a.o. based on Format)
+// - lose the border in the textfield editor
+// - more editors and renderers (a.o. based on Format) -> can we create automatic editors and sorting for everything in formatRegistry?                                                                                                                                                 d                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               2221
 // - better javadoc
 // - per cell renderer and editor
 // - binding (listen to) list changes

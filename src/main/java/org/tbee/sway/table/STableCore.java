@@ -1,5 +1,8 @@
 package org.tbee.sway.table;
 
+import org.tbee.sway.format.Format;
+import org.tbee.sway.format.FormatRegistry;
+import org.tbee.sway.support.FocusInterpreter;
 import org.tbee.sway.support.SwayUtil;
 
 import javax.swing.UIManager;
@@ -11,7 +14,9 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Supplier;
 
 /**
@@ -52,6 +57,14 @@ public class STableCore<TableType> extends javax.swing.JTable {
 
     private void construct() {
 
+        // the FocusInterpreterListener must be kept in an instance variable, otherwise it will be cleared by the WeakArrayList used in the FocusInterpreter
+        focusInterpreterListener = evt -> {
+            if (evt.getState() == FocusInterpreter.State.FOCUS_LOST) {
+                stopEdit();
+            }
+        };
+        focusInterpreter.addFocusListener(focusInterpreterListener);
+
         // Sorting
         setRowSorter(tableRowSorter);
         tableRowSorter.addRowSorterListener(e -> {
@@ -84,6 +97,8 @@ public class STableCore<TableType> extends javax.swing.JTable {
             setIntercellSpacing(new Dimension(1, 1));
         }
     }
+    private FocusInterpreter.FocusInterpreterListener focusInterpreterListener = null;
+    final private FocusInterpreter focusInterpreter = new FocusInterpreter(this);
 
     // =======================================================================
     // TABLEMODEL
@@ -200,24 +215,62 @@ public class STableCore<TableType> extends javax.swing.JTable {
 
     @Override
     public TableCellRenderer getCellRenderer(int row, int column) {
+        // TableColumn based
         TableCellRenderer renderer = getTableModel().getTableColumns().get(column).getRenderer();
         if (renderer != null) {
             return renderer;
         }
+
+        // Default behavior
         renderer = super.getCellRenderer(row, column);
+
+        // Adhoc based on FormatRegistry
+        if (renderer.getClass().getName().startsWith("javax.swing.table.DefaultTableCellRenderer$UIResource")) {
+            Format<?> format = FormatRegistry.findFor(getTableModel().getColumnClass(column));
+            if (format != null) {
+                if (adhocTableCellRendererCache == null) {
+                    adhocTableCellRendererCache = new HashMap<>();
+                }
+                renderer = adhocTableCellRendererCache.get(format);
+                if (renderer == null) {
+                    renderer = new FormatCellRenderer<>(format);
+                    adhocTableCellRendererCache.put(format, renderer);
+                }
+            }
+        }
         return renderer;
     }
+    private Map<Format<?>, TableCellRenderer> adhocTableCellRendererCache;
 
 
     @Override
     public TableCellEditor getCellEditor(int row, int column) {
+        // TableColumn based
         TableCellEditor editor = getTableModel().getTableColumns().get(column).getEditor();
         if (editor != null) {
             return editor;
         }
+
+        // Default behavior
         editor = super.getCellEditor(row, column);
+
+        // Adhoc based on FormatRegistry
+        if (editor.getClass().getName().startsWith("javax.swing.JTable$GenericEditor")) {
+            Format<?> format = FormatRegistry.findFor(getTableModel().getColumnClass(column));
+            if (format != null) {
+                if (adhocTableCellEditorCache == null) {
+                    adhocTableCellEditorCache = new HashMap<>();
+                }
+                editor = adhocTableCellEditorCache.get(format);
+                if (editor == null) {
+                    editor = new FormatCellEditor(format);
+                    adhocTableCellEditorCache.put(format, editor);
+                }
+            }
+        }
         return editor;
     }
+    private Map<Format<?>, TableCellEditor> adhocTableCellEditorCache;
 
     // ===========================================================================
     // RENDERING e.g. alternate row colors

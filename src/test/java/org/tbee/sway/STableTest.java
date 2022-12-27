@@ -3,6 +3,7 @@ package org.tbee.sway;
 import org.assertj.swing.data.TableCell;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.tbee.sway.format.FormatRegistry;
 
 import javax.swing.SwingUtilities;
 import java.util.Comparator;
@@ -98,7 +99,6 @@ public class STableTest extends TestBase {
         Assertions.assertEquals("Berlin", berlin.getName());
     }
 
-
     @Test
     public void happyEditorTest() throws Exception {
 
@@ -130,6 +130,43 @@ public class STableTest extends TestBase {
 
         // THEN
         Assertions.assertEquals(rome, sTable.sTable().getValueAt(0, 1));
+    }
+
+    @Test
+    public void happyEditorViaFormatRegistryTest() throws Exception {
+
+        // GIVEN
+        City amsterdam = new City("Amsterdam", 150);
+        City berlin = new City("Berlin", 560);
+        City rome = new City("Rome", 1560);
+        City paris = new City("Paris", 575);
+        amsterdam.sisterCity(berlin);
+        List<City> data = List.of(amsterdam, berlin, rome, paris);
+
+        FormatRegistry.register(City.class, new CityFormat(data));
+        try {
+            construct(() -> {
+                sTable = new STable<City>() //
+                        .name("table") //
+                        .columns(City.class, City.NAME, City.SISTERCITY) //
+                        .<City>findColumnById(City.SISTERCITY).table()
+                ;
+
+                sTable.data(data);
+
+                return TestUtil.inJFrame(sTable, focusMeComponent());
+            });
+
+            // WHEN
+            frameFixture.table("table.sTableCore").enterValue(TableCell.row(0).column(1), "Rome");
+            moveFocus();
+
+            // THEN
+            Assertions.assertEquals(rome, sTable.sTable().getValueAt(0, 1));
+        }
+        finally {
+            Assertions.assertTrue(FormatRegistry.unregister(City.class));
+        }
     }
 
     @Test

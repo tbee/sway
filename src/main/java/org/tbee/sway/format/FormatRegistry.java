@@ -22,8 +22,8 @@ public class FormatRegistry {
     static public void register(Class<?> clazz, Format<?> format) {
         formats.put(clazz, format);
     }
-    static public boolean unregister(Format<?> format) {
-        return formats.remove(format) != null;
+    static public boolean unregister(Class<?> clazz) {
+        return formats.remove(clazz) != null;
     }
 
     /**
