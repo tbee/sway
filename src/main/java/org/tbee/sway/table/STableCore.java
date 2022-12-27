@@ -29,7 +29,7 @@ public class STableCore<TableType> extends javax.swing.JTable {
         super(new TableModel<TableType>());
         tableRowSorter = new TableRowSorter<>(getTableModel()){
             public Comparator<?> getComparator(int column) {
-                Comparator<?> comparator = getTableModel().getTableColumns().get(column).getSortBy();
+                Comparator<?> comparator = getTableModel().getTableColumns().get(column).getSorting();
                 if (comparator != null) {
                     return comparator;
                 }

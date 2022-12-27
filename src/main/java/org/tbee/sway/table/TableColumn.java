@@ -249,16 +249,16 @@ public class TableColumn<TableType, ColumnType extends Object> {
     }
 
     /** sortBy: */
-    public void setSortBy(Comparator<ColumnType> value) {
-        sortBy = value;
+    public void setSorting(Comparator<ColumnType> value) {
+        sorting = value;
     }
-    public Comparator<ColumnType> getSortBy() {
-        return sortBy;
+    public Comparator<ColumnType> getSorting() {
+        return sorting;
     }
-    public TableColumn<TableType, ColumnType> sortBy(Comparator<ColumnType> value) {
-        setSortBy(value);
+    public TableColumn<TableType, ColumnType> sorting(Comparator<ColumnType> value) {
+        setSorting(value);
         return this;
     }
-    volatile private Comparator<ColumnType> sortBy = null;
-    final static public String SORTBY = "sortBy";
+    volatile private Comparator<ColumnType> sorting = null;
+    final static public String SORTING = "sorting";
 }
