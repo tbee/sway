@@ -1,6 +1,7 @@
 package org.tbee.sway.support;
 
 import javax.swing.JComponent;
+import javax.swing.JTable;
 import javax.swing.UIManager;
 import java.awt.Color;
 import java.awt.Component;
@@ -36,7 +37,7 @@ public class SwayUtil {
             return UIManager.getColor("Table.focusCellHighlightBorder");
         }
         catch (NullPointerException e) { // if key is undefined
-            return Color.BLACK; // default value
+            return new JTable().getSelectionForeground();
         }
     }
 

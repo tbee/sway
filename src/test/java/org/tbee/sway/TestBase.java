@@ -4,10 +4,14 @@ import org.assertj.swing.edt.FailOnThreadViolationRepaintManager;
 import org.assertj.swing.edt.GuiActionRunner;
 import org.assertj.swing.fixture.FrameFixture;
 import org.assertj.swing.testing.AssertJSwingTestCaseTemplate;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JFrame;
+import java.awt.GraphicsEnvironment;
 import java.util.concurrent.Callable;
 
 public class TestBase extends AssertJSwingTestCaseTemplate {
@@ -54,5 +58,9 @@ public class TestBase extends AssertJSwingTestCaseTemplate {
     }
     protected void moveFocus() {
         frameFixture.button(FOCUS_ME).click();
+    }
+
+    protected void sleep(int ms) {
+        TestUtil.sleep(ms);
     }
 }

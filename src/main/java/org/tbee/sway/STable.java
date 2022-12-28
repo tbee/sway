@@ -23,6 +23,7 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 // TODO
+// - getSelection -> test selection during sort
 // - filter
 // - column reordering (map the column in the table model)
 // - column hiding (map the column in the table model)
@@ -362,6 +363,19 @@ public class STable<TableType> extends JPanel {
 
     /**
      *
+     * @return
+     */
+    public List<TableType> getSelection() {
+        var selectedItems = new ArrayList<TableType>(sTableCore.getSelectionModel().getSelectionMode());
+        for (int rowIdx : sTableCore.getSelectionModel().getSelectedIndices()) {
+            rowIdx = sTableCore.convertRowIndexToModel(rowIdx);
+            selectedItems.add(getData().get(rowIdx));
+        }
+        return Collections.unmodifiableList(selectedItems);
+    }
+
+    /**
+     *
      */
     public void clearSelection() {
          sTableCore.clearSelection();
@@ -378,14 +392,8 @@ public class STable<TableType> extends JPanel {
             // Start listening
             sTableCore.getSelectionModel().addListSelectionListener(e -> {
                 if (!e.getValueIsAdjusting()) {
-                    // Collect data
-                    var selectedItems = new ArrayList<TableType>(sTableCore.getSelectionModel().getSelectionMode());
-                    for (int rowIdx : sTableCore.getSelectionModel().getSelectedIndices()) {
-                        selectedItems.add(getData().get(rowIdx));
-                    }
-                    // Call listeners
-                    List<TableType> unmodifiableList = Collections.unmodifiableList(selectedItems);
-                    selectionChangedListeners.forEach(l -> l.accept(unmodifiableList));
+                    var selectedItems = getSelection();
+                    selectionChangedListeners.forEach(l -> l.accept(selectedItems));
                 }
             });
         }

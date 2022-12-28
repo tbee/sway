@@ -1,11 +1,14 @@
 package org.tbee.sway;
 
+import org.assertj.swing.core.MouseButton;
 import org.assertj.swing.data.TableCell;
+import org.assertj.swing.fixture.JTableFixture;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.tbee.sway.format.FormatRegistry;
 
 import javax.swing.SwingUtilities;
+import java.awt.event.KeyEvent;
 import java.util.Comparator;
 import java.util.List;
 
@@ -27,10 +30,8 @@ public class STableTest extends TestBase {
             sTable = new STable<City>() //
                     .name("table") //
                     .column(String.class).valueSupplier(City::getName).valueConsumer(City::setName).table()
-                    .column(Integer.class).valueSupplier(d -> d.getDistance()).table();
-
-            sTable.data(data);
-
+                    .column(Integer.class).valueSupplier(d -> d.getDistance()).table() //
+                    .data(data);
             return TestUtil.inJFrame(sTable, focusMeComponent());
         });
 
@@ -55,10 +56,8 @@ public class STableTest extends TestBase {
         construct(() -> {
             sTable = new STable<City>() //
                     .name("table") //
-                    .columns(City.class, City.NAME, City.DISTANCE);
-
-            sTable.data(data);
-
+                    .columns(City.class, City.NAME, City.DISTANCE) //
+                    .data(data);
             return TestUtil.inJFrame(sTable, focusMeComponent());
         });
 
@@ -82,10 +81,8 @@ public class STableTest extends TestBase {
         construct(() -> {
             sTable = new STable<City>() //
                     .name("table") //
-                    .columns(City.class, City.NAME, City.DISTANCE);
-
-            sTable.data(data);
-
+                    .columns(City.class, City.NAME, City.DISTANCE)
+                    .data(data);
             return TestUtil.inJFrame(sTable, focusMeComponent());
         });
 
@@ -116,11 +113,8 @@ public class STableTest extends TestBase {
             sTable = new STable<City>() //
                     .name("table") //
                     .columns(City.class, City.NAME, City.SISTERCITY) //
-                    .<City>findColumnById(City.SISTERCITY).renderer(cityFormat).editor(cityFormat).table()
-            ;
-
-            sTable.data(data);
-
+                    .<City>findColumnById(City.SISTERCITY).renderer(cityFormat).editor(cityFormat).table() //
+                    .data(data);
             return TestUtil.inJFrame(sTable, focusMeComponent());
         });
 
@@ -149,11 +143,8 @@ public class STableTest extends TestBase {
                 sTable = new STable<City>() //
                         .name("table") //
                         .columns(City.class, City.NAME, City.SISTERCITY) //
-                        .<City>findColumnById(City.SISTERCITY).table()
-                ;
-
-                sTable.data(data);
-
+                        .<City>findColumnById(City.SISTERCITY).table() //
+                        .data(data);
                 return TestUtil.inJFrame(sTable, focusMeComponent());
             });
 
@@ -188,17 +179,9 @@ public class STableTest extends TestBase {
             sTable = new STable<City>() //
                     .name("table") //
                     .columns(City.class, City.NAME, City.DISTANCE, City.SISTERCITY) //
-                    .<City>findColumnById(City.SISTERCITY).renderer(cityFormat).editor(cityFormat).sorting(new Comparator<City>() {
-                        @Override
-                        public int compare(City o1, City o2) {
-                            return 0;
-                        }
-                    }).table() // Sort on name
+                    .<City>findColumnById(City.SISTERCITY).renderer(cityFormat).editor(cityFormat).sorting(Comparator.comparing(City::getName)).table() // Sort on name
                     .column(String.class).title("Name sort 2nd").valueSupplier(City::getName).sorting(Comparator.comparing(o -> o.substring(1))).table() // sort starting on the 2nd letter of the name
-            ;
-
-            sTable.data(data);
-
+                    .data(data);
             return TestUtil.inJFrame(sTable, focusMeComponent());
         });
 
@@ -216,9 +199,10 @@ public class STableTest extends TestBase {
 
         // WHEN Sort on sisterCity
         frameFixture.table("table.sTableCore").tableHeader().clickColumn(2);
+
         // THEN
         Assertions.assertEquals(berlin.getName(), sTable.sTable().getValueAt(0, 0)); // first row
-        Assertions.assertEquals(amsterdam.getName(), sTable.sTable().getValueAt(4, 0)); // last row
+        Assertions.assertEquals(bredevoort.getName(), sTable.sTable().getValueAt(4, 0)); // last row
 
         // WHEN Sort on 2nd letter of name
         frameFixture.table("table.sTableCore").tableHeader().clickColumn(3);
@@ -231,5 +215,110 @@ public class STableTest extends TestBase {
         // THEN
         Assertions.assertEquals(bredevoort.getName(), sTable.sTable().getValueAt(0, 0)); // first row
         Assertions.assertEquals(paris.getName(), sTable.sTable().getValueAt(4, 0)); // last row
+    }
+
+    @Test
+    public void selectionWhileSortedSingleTest() throws Exception {
+
+        // GIVEN
+        City amsterdam = new City("Amsterdam", 150);
+        City berlin = new City("Berlin", 560);
+        City bredevoort = new City("Bredevoort", 5);
+        City paris = new City("Paris", 575);
+        City rome = new City("Rome", 1560);
+        amsterdam.sisterCity(berlin);
+        bredevoort.sisterCity(rome);
+        List<City> data = List.of(berlin, bredevoort, amsterdam, rome, paris);
+
+        CityFormat cityFormat = new CityFormat(data);
+
+        construct(() -> {
+            sTable = new STable<City>() //
+                    .name("table") //
+                    .columns(City.class, City.NAME, City.DISTANCE, City.SISTERCITY) //
+                    .<City>findColumnById(City.SISTERCITY).renderer(cityFormat).editor(cityFormat).sorting(Comparator.comparing(City::getName)).table() // Sort on name
+                    .selectionMode(STable.SelectionMode.SINGLE)
+                    .data(data);
+            return TestUtil.inJFrame(sTable, focusMeComponent());
+        });
+        JTableFixture tableFixture = frameFixture.table("table.sTableCore");
+        List<City> selection;
+
+        // WHEN
+        tableFixture.tableHeader().clickColumn(0); // Sort on name
+        tableFixture.click(TableCell.row(1).column(1), MouseButton.LEFT_BUTTON); // Select 2nd row
+        // THEN
+        selection = sTable.getSelection();
+        Assertions.assertEquals(1, selection.size());
+        Assertions.assertEquals(berlin, selection.get(0));
+
+        // WHEN
+        tableFixture.click(TableCell.row(2).column(0), MouseButton.LEFT_BUTTON); // Select 3rd row
+        // THEN
+        selection = sTable.getSelection();
+        Assertions.assertEquals(1, selection.size());
+        Assertions.assertEquals(bredevoort, selection.get(0));
+
+        // WHEN
+        tableFixture.tableHeader().clickColumn(2); // Sort on sister city
+        tableFixture.click(TableCell.row(4).column(1), MouseButton.LEFT_BUTTON); // Select last row
+        // THEN
+        selection = sTable.getSelection();
+        Assertions.assertEquals(1, selection.size());
+        Assertions.assertEquals(bredevoort, selection.get(0));
+    }
+
+
+    @Test
+    public void selectionWhileSortedMultipleTest() throws Exception {
+
+        // GIVEN
+        City amsterdam = new City("Amsterdam", 150);
+        City berlin = new City("Berlin", 560);
+        City bredevoort = new City("Bredevoort", 5);
+        City paris = new City("Paris", 575);
+        City rome = new City("Rome", 1560);
+        amsterdam.sisterCity(berlin);
+        bredevoort.sisterCity(rome);
+        List<City> data = List.of(berlin, bredevoort, amsterdam, rome, paris);
+
+        CityFormat cityFormat = new CityFormat(data);
+
+        construct(() -> {
+            sTable = new STable<City>() //
+                    .name("table") //
+                    .columns(City.class, City.NAME, City.DISTANCE, City.SISTERCITY) //
+                    .<City>findColumnById(City.SISTERCITY).renderer(cityFormat).editor(cityFormat).sorting(Comparator.comparing(City::getName)).table() // Sort on name
+                    .selectionMode(STable.SelectionMode.MULTIPLE)
+                    .data(data);
+            return TestUtil.inJFrame(sTable, focusMeComponent());
+        });
+        JTableFixture tableFixture = frameFixture.table("table.sTableCore");
+        List<City> selection;
+
+        // WHEN
+        tableFixture.tableHeader().clickColumn(0); // Sort on name
+        tableFixture.click(TableCell.row(1).column(1), MouseButton.LEFT_BUTTON); // Select 2nd row
+        // THEN
+        selection = sTable.getSelection();
+        Assertions.assertEquals(1, selection.size());
+        Assertions.assertEquals(berlin, selection.get(0));
+
+        // WHEN
+        tableFixture.pressKey(KeyEvent.VK_CONTROL);
+        tableFixture.click(TableCell.row(3).column(0), MouseButton.LEFT_BUTTON); // ALSO Select 4th row
+        tableFixture.releaseKey(KeyEvent.VK_CONTROL);
+        // THEN
+        selection = sTable.getSelection();
+        Assertions.assertEquals(2, selection.size());
+        Assertions.assertEquals(berlin, selection.get(0));
+        Assertions.assertEquals(paris, selection.get(1));
+
+        // WHEN
+        tableFixture.click(TableCell.row(4).column(1), MouseButton.LEFT_BUTTON); // Select last row
+        // THEN
+        selection = sTable.getSelection();
+        Assertions.assertEquals(1, selection.size());
+        Assertions.assertEquals(rome, selection.get(0));
     }
 }
