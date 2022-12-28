@@ -36,32 +36,37 @@ public class SButton extends JButton {
         return this;
     }
 
-    public JButton toolTipText(String t) {
+    public SButton toolTipText(String t) {
         super.setToolTipText(t);
         return this;
     }
 
-    public JButton enabled(boolean v) {
+    public SButton enabled(boolean v) {
         super.setEnabled(v);
         return this;
     }
 
-    public JButton margin(Insets m) {
+    public SButton margin(Insets m) {
         super.setMargin(m);
         return this;
     }
 
-    public JButton actionListener(ActionListener l) {
+    public SButton actionListener(ActionListener l) {
         super.addActionListener(l);
         return this;
     }
 
-    public JButton icon(Icon i) {
-        super.setIcon(i);
+    public SButton icon(Icon v) {
+        super.setIcon(v);
         return this;
     }
 
-    public JButton action(Action v) {
+    public SButton text(String v) {
+        super.setText(v);
+        return this;
+    }
+
+    public SButton action(Action v) {
         super.setAction(v);
         return this;
     }
