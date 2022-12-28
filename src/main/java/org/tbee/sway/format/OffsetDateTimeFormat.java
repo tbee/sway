@@ -1,6 +1,7 @@
 package org.tbee.sway.format;
 
-import javax.swing.*;
+import org.tbee.sway.support.HorizontalAlignment;
+
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
@@ -37,7 +38,7 @@ public class OffsetDateTimeFormat implements Format<OffsetDateTime> {
     }
 
     @Override
-    public int horizontalAlignment() {
-        return SwingConstants.LEADING;
+    public HorizontalAlignment horizontalAlignment() {
+        return HorizontalAlignment.LEADING;
     }
 }

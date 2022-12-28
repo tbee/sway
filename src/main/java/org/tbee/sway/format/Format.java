@@ -1,6 +1,6 @@
 package org.tbee.sway.format;
 
-import javax.swing.SwingUtilities;
+import org.tbee.sway.support.HorizontalAlignment;
 
 public interface Format<T> {
     String toString(T value);
@@ -11,7 +11,7 @@ public interface Format<T> {
         return 20;
     }
 
-    default int horizontalAlignment() {
-        return SwingUtilities.LEADING;
+    default HorizontalAlignment horizontalAlignment() {
+        return HorizontalAlignment.LEADING;
     }
 }

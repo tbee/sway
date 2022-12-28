@@ -1,6 +1,7 @@
 package org.tbee.sway.format;
 
-import javax.swing.*;
+import org.tbee.sway.support.HorizontalAlignment;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -65,7 +66,7 @@ public class LocalDateTimeFormat implements Format<LocalDateTime> {
     }
 
     @Override
-    public int horizontalAlignment() {
-        return SwingConstants.LEADING;
+    public HorizontalAlignment horizontalAlignment() {
+        return HorizontalAlignment.LEADING;
     }
 }

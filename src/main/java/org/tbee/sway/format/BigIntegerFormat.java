@@ -1,6 +1,7 @@
 package org.tbee.sway.format;
 
-import javax.swing.*;
+import org.tbee.sway.support.HorizontalAlignment;
+
 import java.math.BigInteger;
 
 public class BigIntegerFormat implements Format<BigInteger> {
@@ -21,7 +22,7 @@ public class BigIntegerFormat implements Format<BigInteger> {
     }
 
     @Override
-    public int horizontalAlignment() {
-        return SwingConstants.TRAILING;
+    public HorizontalAlignment horizontalAlignment() {
+        return HorizontalAlignment.TRAILING;
     }
 }

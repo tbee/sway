@@ -1,6 +1,6 @@
 package org.tbee.sway.format;
 
-import javax.swing.*;
+import org.tbee.sway.support.HorizontalAlignment;
 
 public class StringFormat implements Format<String> {
 
@@ -24,7 +24,7 @@ public class StringFormat implements Format<String> {
     }
 
     @Override
-    public int horizontalAlignment() {
-        return SwingConstants.LEADING;
+    public HorizontalAlignment horizontalAlignment() {
+        return HorizontalAlignment.LEADING;
     }
 }

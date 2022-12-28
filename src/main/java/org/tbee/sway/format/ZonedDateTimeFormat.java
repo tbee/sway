@@ -1,6 +1,7 @@
 package org.tbee.sway.format;
 
-import javax.swing.*;
+import org.tbee.sway.support.HorizontalAlignment;
+
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -37,7 +38,7 @@ public class ZonedDateTimeFormat implements Format<ZonedDateTime> {
     }
 
     @Override
-    public int horizontalAlignment() {
-        return SwingConstants.LEADING;
+    public HorizontalAlignment horizontalAlignment() {
+        return HorizontalAlignment.LEADING;
     }
 }

@@ -1,5 +1,8 @@
 package org.tbee.sway;
 
+import org.tbee.sway.support.HorizontalAlignment;
+import org.tbee.sway.support.VerticalAlignment;
+
 import javax.swing.Action;
 import javax.swing.Icon;
 import javax.swing.JButton;
@@ -68,6 +71,16 @@ public class SButton extends JButton {
 
     public SButton action(Action v) {
         super.setAction(v);
+        return this;
+    }
+
+    public SButton horizontalAlignment(HorizontalAlignment v) {
+        setHorizontalAlignment(v.getSwingConstant());
+        return this;
+    }
+
+    public SButton verticalAlignment(VerticalAlignment v) {
+        setVerticalAlignment(v.getSwingConstant());
         return this;
     }
 }

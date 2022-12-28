@@ -1,6 +1,6 @@
 package org.tbee.sway.format;
 
-import javax.swing.*;
+import org.tbee.sway.support.HorizontalAlignment;
 
 public class LongFormat implements Format<Long> {
 
@@ -20,7 +20,7 @@ public class LongFormat implements Format<Long> {
     }
 
     @Override
-    public int horizontalAlignment() {
-        return SwingConstants.TRAILING;
+    public HorizontalAlignment horizontalAlignment() {
+        return HorizontalAlignment.TRAILING;
     }
 }
