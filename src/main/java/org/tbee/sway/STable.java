@@ -130,6 +130,20 @@ import java.util.stream.Collectors;
  * }
  * </pre>
  *
+ * Selection uses the table type:
+ * <pre>{@code
+ * STable stable = new STable<SomeBean>() //
+ *         .selectionMode(STable.SelectionMode.MULTIPLE) //
+ *         .data(aListOfSomeBeans); //
+ *
+ *  stable.setSelection(List.of(bean1, bean3, bean12));
+ *  List<SomeBean> selection = stable.getSelection();
+ * }
+ * </pre>
+ * Note: if the selection mode does not match the selection
+ * (e.g. selection mode is single, but the to-be-set selection has multiple items),
+ * the last possible selection is what is selected (so the last item in the selection will be selected).
+ *
  * @param <TableType>
  */
 public class STable<TableType> extends JPanel {
