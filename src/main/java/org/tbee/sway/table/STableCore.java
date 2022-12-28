@@ -1,7 +1,5 @@
 package org.tbee.sway.table;
 
-import org.tbee.sway.format.Format;
-import org.tbee.sway.format.FormatRegistry;
 import org.tbee.sway.support.FocusInterpreter;
 import org.tbee.sway.support.SwayUtil;
 
@@ -14,9 +12,7 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Supplier;
 
 /**
@@ -222,25 +218,8 @@ public class STableCore<TableType> extends javax.swing.JTable {
         }
 
         // Default behavior
-        renderer = super.getCellRenderer(row, column);
-
-        // Adhoc based on FormatRegistry
-        if (renderer.getClass().getName().startsWith("javax.swing.table.DefaultTableCellRenderer$UIResource")) {
-            Format<?> format = FormatRegistry.findFor(getTableModel().getColumnClass(column));
-            if (format != null) {
-                if (adhocTableCellRendererCache == null) {
-                    adhocTableCellRendererCache = new HashMap<>();
-                }
-                renderer = adhocTableCellRendererCache.get(format);
-                if (renderer == null) {
-                    renderer = new FormatCellRenderer<>(format);
-                    adhocTableCellRendererCache.put(format, renderer);
-                }
-            }
-        }
-        return renderer;
+        return super.getCellRenderer(row, column);
     }
-    private Map<Format<?>, TableCellRenderer> adhocTableCellRendererCache;
 
 
     @Override
@@ -252,25 +231,8 @@ public class STableCore<TableType> extends javax.swing.JTable {
         }
 
         // Default behavior
-        editor = super.getCellEditor(row, column);
-
-        // Adhoc based on FormatRegistry
-        if (editor.getClass().getName().startsWith("javax.swing.JTable$GenericEditor")) {
-            Format<?> format = FormatRegistry.findFor(getTableModel().getColumnClass(column));
-            if (format != null) {
-                if (adhocTableCellEditorCache == null) {
-                    adhocTableCellEditorCache = new HashMap<>();
-                }
-                editor = adhocTableCellEditorCache.get(format);
-                if (editor == null) {
-                    editor = new FormatCellEditor(format);
-                    adhocTableCellEditorCache.put(format, editor);
-                }
-            }
-        }
-        return editor;
+        return super.getCellEditor(row, column);
     }
-    private Map<Format<?>, TableCellEditor> adhocTableCellEditorCache;
 
     // ===========================================================================
     // RENDERING e.g. alternate row colors

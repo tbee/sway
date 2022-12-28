@@ -48,6 +48,6 @@ public class FormatRegistry {
         if (clazz.equals(OffsetDateTime.class)) return new OffsetDateTimeFormat();
         if (clazz.equals(ZonedDateTime.class)) return new ZonedDateTimeFormat();
 //        if (clazz.equals(Integer.class)) return new JavaFormat<Integer>(NumberFormat.getIntegerInstance(), ("" + Integer.MIN_VALUE).length(), SwingConstants.TRAILING);
-        throw new IllegalStateException("No format found for " + clazz);
+        return null;
     }
 }

@@ -2,6 +2,7 @@ package org.tbee.sway.table;
 
 import org.tbee.sway.STable;
 import org.tbee.sway.format.Format;
+import org.tbee.sway.format.FormatRegistry;
 
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
@@ -14,6 +15,13 @@ public class TableColumn<TableType, ColumnType extends Object> {
 
     public TableColumn(Class<ColumnType> type) {
         this.type = type;
+
+        // Per default use the format that was registered.
+        Format<ColumnType> format = (Format<ColumnType>) FormatRegistry.findFor(type);
+        if (format != null) {
+            editor(format);
+            renderer(format);
+        }
     }
 
 
