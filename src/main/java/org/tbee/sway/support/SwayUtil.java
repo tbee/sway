@@ -1,7 +1,10 @@
 package org.tbee.sway.support;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JComponent;
+import javax.swing.UIManager;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Window;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,18 +12,32 @@ public class SwayUtil {
 
     static public Color getErrorColor() {
         try {
-            return new Color(UIManager.getColor("Error.color").getRGB());
+            return UIManager.getColor("Error.color");
         }
         catch (NullPointerException e) { // if key is undefined
             return Color.RED; // default value
         }
     }
     static public Color getFirstAlternateRowColor() {
-        return new Color(UIManager.getColor("Table.background").getRGB());
+        try {
+            return UIManager.getColor("Table.background");
+        }
+        catch (NullPointerException e) { // if key is undefined
+            return Color.GRAY; // default value
+        }
     }
 
     static public Color getSecondAlternateRowColor() {
         return ColorUtil.brighterOrDarker(getFirstAlternateRowColor(), 0.05);
+    }
+
+    static public Color getHighlightColor() {
+        try {
+            return UIManager.getColor("Table.focusCellHighlightBorder");
+        }
+        catch (NullPointerException e) { // if key is undefined
+            return Color.BLACK; // default value
+        }
     }
 
     /**

@@ -231,6 +231,7 @@ public class STableCore<TableType> extends javax.swing.JTable {
         }
 
         // Default behavior
+        System.out.println("!!!!" + super.getCellEditor(row, column));
         return super.getCellEditor(row, column);
     }
 

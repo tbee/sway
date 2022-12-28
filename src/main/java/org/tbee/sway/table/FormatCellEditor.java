@@ -2,8 +2,11 @@ package org.tbee.sway.table;
 
 import org.tbee.sway.STextField;
 import org.tbee.sway.format.Format;
+import org.tbee.sway.support.SwayUtil;
 
+import javax.swing.JComponent;
 import javax.swing.JTable;
+import javax.swing.border.LineBorder;
 import java.awt.Component;
 
 public class FormatCellEditor<T> extends javax.swing.DefaultCellEditor {
@@ -13,6 +16,7 @@ public class FormatCellEditor<T> extends javax.swing.DefaultCellEditor {
     public FormatCellEditor(Format<T> format) {
         super(new STextField(format));
         this.format = format;
+        ((JComponent)getComponent()).setBorder(new LineBorder(SwayUtil.getHighlightColor()));
     }
 
     @Override
