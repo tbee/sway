@@ -218,7 +218,7 @@ public class STableTest extends TestBase {
     }
 
     @Test
-    public void selectionWhileSortedSingleTest() throws Exception {
+    public void happyGetSelectionSingleWhileSortedTest() throws Exception {
 
         // GIVEN
         City amsterdam = new City("Amsterdam", 150);
@@ -268,9 +268,8 @@ public class STableTest extends TestBase {
         Assertions.assertEquals(bredevoort, selection.get(0));
     }
 
-
     @Test
-    public void selectionWhileSortedMultipleTest() throws Exception {
+    public void happyGetSelectionMultipleWhileSortedTest() throws Exception {
 
         // GIVEN
         City amsterdam = new City("Amsterdam", 150);
@@ -278,8 +277,6 @@ public class STableTest extends TestBase {
         City bredevoort = new City("Bredevoort", 5);
         City paris = new City("Paris", 575);
         City rome = new City("Rome", 1560);
-        amsterdam.sisterCity(berlin);
-        bredevoort.sisterCity(rome);
         List<City> data = List.of(berlin, bredevoort, amsterdam, rome, paris);
 
         CityFormat cityFormat = new CityFormat(data);
@@ -287,8 +284,7 @@ public class STableTest extends TestBase {
         construct(() -> {
             sTable = new STable<City>() //
                     .name("table") //
-                    .columns(City.class, City.NAME, City.DISTANCE, City.SISTERCITY) //
-                    .<City>findColumnById(City.SISTERCITY).renderer(cityFormat).editor(cityFormat).sorting(Comparator.comparing(City::getName)).table() // Sort on name
+                    .columns(City.class, City.NAME, City.DISTANCE) //
                     .selectionMode(STable.SelectionMode.MULTIPLE)
                     .data(data);
             return TestUtil.inJFrame(sTable, focusMeComponent());
@@ -320,5 +316,142 @@ public class STableTest extends TestBase {
         selection = sTable.getSelection();
         Assertions.assertEquals(1, selection.size());
         Assertions.assertEquals(rome, selection.get(0));
+    }
+
+    @Test
+    public void happySetSelectionSingleWhileSortedTest() throws Exception {
+
+        // GIVEN
+        City amsterdam = new City("Amsterdam", 150);
+        City berlin = new City("Berlin", 560);
+        City bredevoort = new City("Bredevoort", 5);
+        City paris = new City("Paris", 575);
+        City rome = new City("Rome", 1560);
+        List<City> data = List.of(berlin, bredevoort, amsterdam, rome, paris);
+
+        construct(() -> {
+            sTable = new STable<City>() //
+                    .name("table") //
+                    .columns(City.class, City.NAME, City.DISTANCE) //
+                    .selectionMode(STable.SelectionMode.SINGLE)
+                    .data(data);
+            return TestUtil.inJFrame(sTable, focusMeComponent());
+        });
+        JTableFixture tableFixture = frameFixture.table("table.sTableCore");
+        List<City> selection;
+
+        // GIVEN
+        tableFixture.tableHeader().clickColumn(0); // Sort on name
+
+        // WHEN
+        SwingUtilities.invokeAndWait(() -> sTable.setSelection(List.of(berlin)));
+        // THEN
+        selection = sTable.getSelection();
+        Assertions.assertEquals(1, selection.size());
+        Assertions.assertEquals(berlin, selection.get(0));
+
+        // WHEN
+        SwingUtilities.invokeAndWait(() -> sTable.setSelection(List.of(paris)));
+        // THEN
+        selection = sTable.getSelection();
+        Assertions.assertEquals(1, selection.size());
+        Assertions.assertEquals(paris, selection.get(0));
+
+        // WHEN
+        SwingUtilities.invokeAndWait(() -> sTable.setSelection(List.of(bredevoort, rome)));
+        // THEN
+        selection = sTable.getSelection();
+        Assertions.assertEquals(1, selection.size());
+        Assertions.assertEquals(rome, selection.get(0)); // Last one is selected
+    }
+
+    @Test
+    public void happySetSelectionMultipleWhileSortedTest() throws Exception {
+
+        // GIVEN
+        City amsterdam = new City("Amsterdam", 150);
+        City berlin = new City("Berlin", 560);
+        City bredevoort = new City("Bredevoort", 5);
+        City paris = new City("Paris", 575);
+        City rome = new City("Rome", 1560);
+        List<City> data = List.of(berlin, bredevoort, amsterdam, rome, paris);
+
+        construct(() -> {
+            sTable = new STable<City>() //
+                    .name("table") //
+                    .columns(City.class, City.NAME, City.DISTANCE) //
+                    .selectionMode(STable.SelectionMode.MULTIPLE)
+                    .data(data);
+            return TestUtil.inJFrame(sTable, focusMeComponent());
+        });
+        JTableFixture tableFixture = frameFixture.table("table.sTableCore");
+        List<City> selection;
+
+        // GIVEN
+        tableFixture.tableHeader().clickColumn(0); // Sort on name
+
+        // WHEN
+        SwingUtilities.invokeAndWait(() -> sTable.setSelection(List.of(amsterdam, rome)));
+        // THEN
+        selection = sTable.getSelection();
+        Assertions.assertEquals(2, selection.size());
+        Assertions.assertEquals(amsterdam, selection.get(0));
+        Assertions.assertEquals(rome, selection.get(1));
+
+        // WHEN
+        SwingUtilities.invokeAndWait(() -> sTable.setSelection(List.of(paris)));
+        // THEN
+        selection = sTable.getSelection();
+        Assertions.assertEquals(1, selection.size());
+        Assertions.assertEquals(paris, selection.get(0));
+    }
+
+    @Test
+    public void happySetSelectionIntervalWhileSortedTest() throws Exception {
+
+        // GIVEN
+        City amsterdam = new City("Amsterdam", 150);
+        City berlin = new City("Berlin", 560);
+        City bredevoort = new City("Bredevoort", 5);
+        City paris = new City("Paris", 575);
+        City rome = new City("Rome", 1560);
+        List<City> data = List.of(berlin, bredevoort, amsterdam, rome, paris);
+
+        construct(() -> {
+            sTable = new STable<City>() //
+                    .name("table") //
+                    .columns(City.class, City.NAME, City.DISTANCE) //
+                    .selectionMode(STable.SelectionMode.INTERVAL)
+                    .data(data);
+            return TestUtil.inJFrame(sTable, focusMeComponent());
+        });
+        JTableFixture tableFixture = frameFixture.table("table.sTableCore");
+        List<City> selection;
+
+        // GIVEN
+        tableFixture.tableHeader().clickColumn(0); // Sort on name
+
+        // WHEN not interval able selection is provided
+        SwingUtilities.invokeAndWait(() -> sTable.setSelection(List.of(amsterdam, paris, rome)));
+        // THEN
+        selection = sTable.getSelection();
+        Assertions.assertEquals(2, selection.size());  // only last interval is selected
+        Assertions.assertEquals(paris, selection.get(0));
+        Assertions.assertEquals(rome, selection.get(1));
+
+        // WHEN
+        SwingUtilities.invokeAndWait(() -> sTable.setSelection(List.of(berlin, bredevoort)));
+        // THEN
+        selection = sTable.getSelection();
+        Assertions.assertEquals(2, selection.size());
+        Assertions.assertEquals(berlin, selection.get(0));
+        Assertions.assertEquals(bredevoort, selection.get(1));
+
+        // WHEN
+        SwingUtilities.invokeAndWait(() -> sTable.setSelection(List.of(amsterdam)));
+        // THEN
+        selection = sTable.getSelection();
+        Assertions.assertEquals(1, selection.size());
+        Assertions.assertEquals(amsterdam, selection.get(0));
     }
 }

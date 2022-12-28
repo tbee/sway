@@ -23,7 +23,6 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 // TODO
-// - getSelection -> test selection during sort
 // - filter
 // - column reordering (map the column in the table model)
 // - column hiding (map the column in the table model)
@@ -45,6 +44,7 @@ import java.util.stream.Collectors;
 // - support row management; insert and delete rows
 //   - automatically add a new row at the end of the table when in the last cell and press enter (ForEdit)
 //   - insert / delete keys
+// - set sort programmatically
 
 /**
  * <h2>Basic usage</h2>
@@ -372,6 +372,20 @@ public class STable<TableType> extends JPanel {
             selectedItems.add(getData().get(rowIdx));
         }
         return Collections.unmodifiableList(selectedItems);
+    }
+
+    /**
+     *
+     * @return
+     */
+    public void setSelection(List<TableType> values) {
+        clearSelection();
+        List<TableType> data = getData();
+        for (TableType value : values) {
+            int index = data.indexOf(value);
+            int rowIdx = sTableCore.convertRowIndexToView(index);
+            sTableCore.getSelectionModel().addSelectionInterval(rowIdx, rowIdx);
+        }
     }
 
     /**
