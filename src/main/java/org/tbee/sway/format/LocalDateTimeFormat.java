@@ -1,6 +1,6 @@
 package org.tbee.sway.format;
 
-import org.tbee.sway.support.HorizontalAlignment;
+import org.tbee.sway.support.HAlign;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -66,7 +66,7 @@ public class LocalDateTimeFormat implements Format<LocalDateTime> {
     }
 
     @Override
-    public HorizontalAlignment horizontalAlignment() {
-        return HorizontalAlignment.LEADING;
+    public HAlign horizontalAlignment() {
+        return HAlign.LEADING;
     }
 }

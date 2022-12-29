@@ -1,7 +1,7 @@
 package org.tbee.sway;
 
-import org.tbee.sway.support.HorizontalAlignment;
-import org.tbee.sway.support.VerticalAlignment;
+import org.tbee.sway.support.HAlign;
+import org.tbee.sway.support.VAlign;
 
 import javax.swing.Action;
 import javax.swing.Icon;
@@ -29,6 +29,45 @@ public class SButton extends JButton {
     public SButton(String text, Icon icon) {
         super(text, icon);
     }
+
+    // ==============================================
+    // JavaBaan
+
+    /**
+     * Enum variant of HorizontalAlignment
+     * @param v
+     */
+    public void setHAlign(HAlign v) {
+        HAlign old = getHAlign();
+        setHorizontalAlignment(v.getSwingConstant());
+        firePropertyChange(HALIGN, old, v);
+    }
+    public HAlign getHAlign() {
+        return HAlign.of(getHorizontalAlignment());
+    }
+    public SButton hAlign(HAlign v) {
+        setHAlign(v);
+        return this;
+    }
+    final static public String HALIGN = "hAlign";
+
+    /**
+     * Enum variant of VerticalAlignment
+     * @param v
+     */
+    public void setVAlign(VAlign v) {
+        VAlign old = getVAlign();
+        setVerticalAlignment(v.getSwingConstant());
+        firePropertyChange(VALIGN, old, v);
+    }
+    public VAlign getVAlign() {
+        return VAlign.of(getHorizontalAlignment());
+    }
+    public SButton VAlign(VAlign v) {
+        setVAlign(v);
+        return this;
+    }
+    final static public String VALIGN = "vAlign";
 
     // ==============================================
     // FLUENT API
@@ -71,16 +110,6 @@ public class SButton extends JButton {
 
     public SButton action(Action v) {
         super.setAction(v);
-        return this;
-    }
-
-    public SButton horizontalAlignment(HorizontalAlignment v) {
-        setHorizontalAlignment(v.getSwingConstant());
-        return this;
-    }
-
-    public SButton verticalAlignment(VerticalAlignment v) {
-        setVerticalAlignment(v.getSwingConstant());
         return this;
     }
 }

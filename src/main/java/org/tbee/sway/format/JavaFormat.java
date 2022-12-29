@@ -1,6 +1,6 @@
 package org.tbee.sway.format;
 
-import org.tbee.sway.support.HorizontalAlignment;
+import org.tbee.sway.support.HAlign;
 
 import java.text.ParseException;
 
@@ -8,12 +8,12 @@ public class JavaFormat<T> implements Format<T> {
 
     private final java.text.Format format;
     private final int columns;
-    private final HorizontalAlignment horizontalAlignment;
+    private final HAlign HAlign;
 
-    public JavaFormat(java.text.Format format, int columns, HorizontalAlignment horizontalAlignment) {
+    public JavaFormat(java.text.Format format, int columns, HAlign HAlign) {
         this.format = format;
         this.columns = columns;
-        this.horizontalAlignment = horizontalAlignment;
+        this.HAlign = HAlign;
     }
 
     @Override
@@ -40,7 +40,7 @@ public class JavaFormat<T> implements Format<T> {
     }
 
     @Override
-    public HorizontalAlignment horizontalAlignment() {
-        return this.horizontalAlignment;
+    public HAlign horizontalAlignment() {
+        return this.HAlign;
     }
 }

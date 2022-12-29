@@ -8,7 +8,7 @@ import org.tbee.sway.format.FormatRegistry;
 import org.tbee.sway.format.JavaFormat;
 import org.tbee.sway.format.StringFormat;
 import org.tbee.sway.support.FocusInterpreter;
-import org.tbee.sway.support.HorizontalAlignment;
+import org.tbee.sway.support.HAlign;
 import org.tbee.util.ClassUtil;
 import org.tbee.util.ExceptionUtil;
 
@@ -121,7 +121,7 @@ public class STextField<T> extends javax.swing.JTextField {
         }
         this.format = format;
         setColumns(format.columns());
-        horizontalAlignment(format.horizontalAlignment());
+        setHAlign(format.horizontalAlignment());
         construct();
     }
 
@@ -229,21 +229,21 @@ public class STextField<T> extends javax.swing.JTextField {
         return of(BigDecimal.class);
     }
     static public STextField<Number> ofPercent() {
-        return new STextField<Number>(new JavaFormat<Number>(NumberFormat.getPercentInstance(), ("" + Double.MIN_VALUE).length(), HorizontalAlignment.TRAILING));
+        return new STextField<Number>(new JavaFormat<Number>(NumberFormat.getPercentInstance(), ("" + Double.MIN_VALUE).length(), HAlign.TRAILING));
     }
     static public STextField<Number> ofPercent(Locale locale) {
-        return new STextField<Number>(new JavaFormat<Number>(NumberFormat.getPercentInstance(locale), ("" + Double.MIN_VALUE).length(), HorizontalAlignment.TRAILING));
+        return new STextField<Number>(new JavaFormat<Number>(NumberFormat.getPercentInstance(locale), ("" + Double.MIN_VALUE).length(), HAlign.TRAILING));
     }
     static public STextField<Number> ofCurrency() {
-        return new STextField<Number>(new JavaFormat<Number>(NumberFormat.getCurrencyInstance(), ("" + Double.MIN_VALUE).length() + 1, HorizontalAlignment.TRAILING));
+        return new STextField<Number>(new JavaFormat<Number>(NumberFormat.getCurrencyInstance(), ("" + Double.MIN_VALUE).length() + 1, HAlign.TRAILING));
     }
     static public STextField<Number> ofCurrency(Locale locale) {
-        return new STextField<Number>(new JavaFormat<Number>(NumberFormat.getCurrencyInstance(locale), ("" + Double.MIN_VALUE).length() + 4, HorizontalAlignment.TRAILING));
+        return new STextField<Number>(new JavaFormat<Number>(NumberFormat.getCurrencyInstance(locale), ("" + Double.MIN_VALUE).length() + 4, HAlign.TRAILING));
     }
     static public STextField<Number> ofCurrency(Currency currency) {
         NumberFormat currencyInstance = NumberFormat.getCurrencyInstance();
         currencyInstance.setCurrency(currency);
-        return new STextField<Number>(new JavaFormat<Number>(currencyInstance, ("" + Double.MIN_VALUE).length() + 4, HorizontalAlignment.TRAILING));
+        return new STextField<Number>(new JavaFormat<Number>(currencyInstance, ("" + Double.MIN_VALUE).length() + 4, HAlign.TRAILING));
     }
     static public STextField<LocalDate> ofLocalDate() {
         return of(LocalDate.class);
@@ -346,6 +346,28 @@ public class STextField<T> extends javax.swing.JTextField {
     }
 
     // ==============================================
+    // JavaBean
+
+    /**
+     * Enum variant of HorizontalAlignment
+     * @param v
+     */
+    public void setHAlign(HAlign v) {
+        HAlign old = getHAlign();
+        setHorizontalAlignment(v.getSwingConstant());
+        firePropertyChange(HALIGN, old, v);
+    }
+    public HAlign getHAlign() {
+        return HAlign.of(getHorizontalAlignment());
+    }
+    public STextField<T> hAlign(HAlign v) {
+        setHAlign(v);
+        return this;
+    }
+    final static public String HALIGN = "hAlign";
+
+
+    // ==============================================
     // FLUENT API
 
     /** */
@@ -381,12 +403,6 @@ public class STextField<T> extends javax.swing.JTextField {
     /**  */
     public STextField<T> editable(boolean enabled) {
         setEditable(enabled);
-        return this;
-    }
-
-
-    public STextField<T> horizontalAlignment(HorizontalAlignment v) {
-        setHorizontalAlignment(v.getSwingConstant());
         return this;
     }
 

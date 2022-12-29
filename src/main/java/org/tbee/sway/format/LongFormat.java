@@ -1,6 +1,6 @@
 package org.tbee.sway.format;
 
-import org.tbee.sway.support.HorizontalAlignment;
+import org.tbee.sway.support.HAlign;
 
 public class LongFormat implements Format<Long> {
 
@@ -20,7 +20,7 @@ public class LongFormat implements Format<Long> {
     }
 
     @Override
-    public HorizontalAlignment horizontalAlignment() {
-        return HorizontalAlignment.TRAILING;
+    public HAlign horizontalAlignment() {
+        return HAlign.TRAILING;
     }
 }

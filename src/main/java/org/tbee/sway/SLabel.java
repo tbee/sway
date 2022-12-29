@@ -1,7 +1,7 @@
 package org.tbee.sway;
 
-import org.tbee.sway.support.HorizontalAlignment;
-import org.tbee.sway.support.VerticalAlignment;
+import org.tbee.sway.support.HAlign;
+import org.tbee.sway.support.VAlign;
 
 import javax.swing.Icon;
 import javax.swing.JLabel;
@@ -49,6 +49,42 @@ public class SLabel extends JLabel {
     }
     final static public String TEXT = "text";
 
+    /**
+     * Enum variant of HorizontalAlignment
+     * @param v
+     */
+    public void setHAlign(HAlign v) {
+        HAlign old = getHAlign();
+        setHorizontalAlignment(v.getSwingConstant());
+        firePropertyChange(HALIGN, old, v);
+    }
+    public HAlign getHAlign() {
+        return HAlign.of(getHorizontalAlignment());
+    }
+    public SLabel hAlign(HAlign v) {
+        setHAlign(v);
+        return this;
+    }
+    final static public String HALIGN = "hAlign";
+
+    /**
+     * Enum variant of VerticalAlignment
+     * @param v
+     */
+    public void setVAlign(VAlign v) {
+        VAlign old = getVAlign();
+        setVerticalAlignment(v.getSwingConstant());
+        firePropertyChange(VALIGN, old, v);
+    }
+    public VAlign getVAlign() {
+        return VAlign.of(getHorizontalAlignment());
+    }
+    public SLabel VAlign(VAlign v) {
+        setVAlign(v);
+        return this;
+    }
+    final static public String VALIGN = "vAlign";
+
     // ===========================================================================================================================
     // FLUENT API
 
@@ -74,16 +110,6 @@ public class SLabel extends JLabel {
 
     public SLabel foreground(Color value) {
         setForeground(value);
-        return this;
-    }
-
-    public SLabel horizontalAlignment(HorizontalAlignment v) {
-        setHorizontalAlignment(v.getSwingConstant());
-        return this;
-    }
-
-    public SLabel verticalAlignment(VerticalAlignment v) {
-        setVerticalAlignment(v.getSwingConstant());
         return this;
     }
 }
