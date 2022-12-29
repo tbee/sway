@@ -88,6 +88,16 @@ public class SLabel extends JLabel {
     // ===========================================================================================================================
     // FLUENT API
 
+    public SLabel name(String v) {
+        setName(v);
+        return this;
+    }
+
+    public SLabel text(String value) {
+        setText(value);
+        return this;
+    }
+
     public SLabel icon(Icon value) {
         setIcon(value);
         return this;
@@ -103,13 +113,13 @@ public class SLabel extends JLabel {
         return this;
     }
 
-    public SLabel text(String value) {
-        setText(value);
+    public SLabel foreground(Color value) {
+        setForeground(value);
         return this;
     }
 
-    public SLabel foreground(Color value) {
-        setForeground(value);
+    public SLabel toolTipText(String text) {
+        setToolTipText(text);
         return this;
     }
 }

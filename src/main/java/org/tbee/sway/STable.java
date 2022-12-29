@@ -469,4 +469,9 @@ public class STable<TableType> extends JPanel {
         sTableCore.name(v + ".sTableCore"); // For tests we need to address the actual table
         return this;
     }
+
+    public STable<TableType> visible(boolean value) {
+        setVisible(value);
+        return this;
+    }
 }

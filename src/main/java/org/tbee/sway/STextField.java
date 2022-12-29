@@ -370,37 +370,31 @@ public class STextField<T> extends javax.swing.JTextField {
     // ==============================================
     // FLUENT API
 
-    /** */
     public STextField<T> name(String v) {
         setName(v);
         return this;
     }
 
-    /**  */
     public STextField<T> columns(int value) {
         setColumns(value);
         return this;
     }
 
-    /**  */
     public STextField<T> font(Font value) {
         setFont(value);
         return this;
     }
 
-    /**  */
     public STextField<T> enabled(boolean enabled) {
         setEnabled(enabled);
         return this;
     }
 
-    /**  */
     public STextField<T> toolTipText(String text) {
         setToolTipText(text);
         return this;
     }
 
-    /**  */
     public STextField<T> editable(boolean enabled) {
         setEditable(enabled);
         return this;

@@ -72,7 +72,6 @@ public class SButton extends JButton {
     // ==============================================
     // FLUENT API
 
-    /** */
     public SButton name(String v) {
         setName(v);
         return this;
@@ -98,6 +97,11 @@ public class SButton extends JButton {
         return this;
     }
 
+    public SButton action(Action v) {
+        super.setAction(v);
+        return this;
+    }
+
     public SButton icon(Icon v) {
         super.setIcon(v);
         return this;
@@ -108,8 +112,8 @@ public class SButton extends JButton {
         return this;
     }
 
-    public SButton action(Action v) {
-        super.setAction(v);
+    public SButton visible(boolean value) {
+        setVisible(value);
         return this;
     }
 }
