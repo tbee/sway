@@ -1,7 +1,13 @@
 package org.tbee.sway;
 
+import org.tbee.sway.binding.BeanBinder;
+import org.tbee.sway.binding.BindUtil;
+import org.tbee.sway.binding.Binding;
+import org.tbee.util.ExceptionUtil;
+
 import javax.swing.AbstractButton;
 import javax.swing.ButtonGroup;
+import javax.swing.JOptionPane;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -11,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 // TODO:
-// - bind()
+// - implement logic ourselves, and extend AbstractBean?
 
 /**
  * Like ButtonGroup, but associate values with the buttons, and base the API one the value.
@@ -29,6 +35,7 @@ import java.util.Map;
  * </pre>
  */
 public class SButtonGroup<T> extends ButtonGroup {
+    static private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(SButtonGroup.class);
 
     /**
      * Creates an empty <code>SButtonGroup</code>
@@ -164,9 +171,72 @@ public class SButtonGroup<T> extends ButtonGroup {
         return null;
     }
 
+    protected boolean handleException(Throwable e, Object oldValue, Object newValue) {
+        // Display the error
+        if (logger.isDebugEnabled()) logger.debug(e.getMessage(), e);
+        JOptionPane.showMessageDialog(buttons.get(0), ExceptionUtil.determineMessage(e), "ERROR", JOptionPane.ERROR_MESSAGE);
+
+        // Mark exception as handled
+        return true;
+    }
+
+
+    // ========================================================
+    // BIND
+
+    /**
+     * Will create a binding to a specific bean/property.
+     * Use binding(BeanBinding, PropertyName) to be able to switch beans while keeping the bind.
+     *
+     * @param bean
+     * @param propertyName
+     * @return Binding, so unbind() can be called
+     */
+    public Binding binding(Object bean, String propertyName) {
+        return BindUtil.bind(this, VALUE, bean, propertyName, this::handleException);
+    }
+
+    /**
+     * Will create a binding to a specific bean/property.
+     * Use bind(BeanBinding, PropertyName) to be able to switch beans while keeping the bind.
+     *
+     * @param bean
+     * @param propertyName
+     * @return this, for fluent API
+     */
+    public SButtonGroup<T> bind(Object bean, String propertyName) {
+        Binding binding = binding(bean, propertyName);
+        return this;
+    }
+
+    /**
+     * Bind to a bean wrapper's property.
+     * This will allow the swap the bean (in the BeanBinder) without having to rebind.
+     *
+     * @param beanBinder
+     * @param propertyName
+     * @return Binding, so unbind() can be called
+     */
+    public Binding binding(BeanBinder beanBinder, String propertyName) {
+        return BindUtil.bind(this, VALUE, beanBinder, propertyName, this::handleException);
+    }
+
+    /**
+     * Bind to a bean wrapper's property.
+     * This will allow the swap the bean (in the BeanBinder) without having to rebind.
+     *
+     * @param beanBinder
+     * @param propertyName
+     * @return this, for fluent API
+     */
+    public SButtonGroup<T> bind(BeanBinder beanBinder, String propertyName) {
+        Binding binding = binding(beanBinder, propertyName);
+        return this;
+    }
+
 
     // ===============================================================================================
-    // PropertyChange (this class cannot extend AbstractBean)
+    // PropertyChange (this class cannot extend AbstractBean because it extends ButtonGroup)
 
     /** PropertyChange */
     public PropertyChangeListener[] getPropertyChangeListeners() {
