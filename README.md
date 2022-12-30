@@ -23,6 +23,13 @@ Some more examples
 
 ``` java
 var sLabel = new Slabel().bindText(city, "name");
+
+var sButtonGroup = new SButtonGroup<Integer>() //
+        .add(1, new SToggleButton("1")) //
+        .add(2, new SToggleButton("2")) //
+        .add(3, new SToggleButton("3")) //
+        .bind(race, "postion");
+var panel = new SPanel(sButtonGroup.getButtonsAsArray());
 ```
 
 Well, you've come to the right place. 
