@@ -10,6 +10,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+// TODO:
+// - bind()
+
 /**
  * Like ButtonGroup, but associate values with the buttons, and base the API one the value.
  * <br/>

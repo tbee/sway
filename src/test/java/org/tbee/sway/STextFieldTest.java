@@ -127,5 +127,27 @@ public class STextFieldTest extends TestBase {
         Assertions.assertEquals(0, sTextField.getValue());
     }
 
-    // TBEERNOT TODO BeanBinder tests
+    @Test
+    public void integerUnbindHappyTest() throws Exception {
+
+        // GIVEN
+        final City bean1 = new City().distance(456);
+        construct(() -> {
+            sTextField = STextField.ofInteger().name("sTextField");
+            return TestUtil.inJFrame(sTextField, focusMeComponent());
+        });
+
+        // WHEN bind and unbind
+        SwingUtilities.invokeAndWait(() -> sTextField.binding(bean1, City.DISTANCE).unbind());
+        // THEN there was a sync, so textfield was changed
+        Assertions.assertEquals("456", sTextField.getText());
+        Assertions.assertEquals( 456, bean1.getDistance());
+
+        // WHEN
+        frameFixture.textBox("sTextField").selectAll().enterText("123");
+        moveFocus();
+        // THEN bean's value should be unchanged
+        Assertions.assertEquals("123", sTextField.getText());
+        Assertions.assertEquals( 456, bean1.getDistance());
+    }
 }

@@ -5,6 +5,12 @@ import javax.swing.Icon;
 import javax.swing.JToggleButton;
 import java.awt.event.ActionListener;
 
+// TODO:
+// - binding (2 values)
+
+/**
+ *
+ */
 public class SToggleButton extends JToggleButton {
     public SToggleButton() {
     }

@@ -4,15 +4,15 @@ import com.jgoodies.binding.beans.PropertyAdapter;
 import org.tbee.util.AbstractBean;
 import org.tbee.util.ExceptionUtil;
 
+/**
+ * Catches any exception and forwards them to the exception handler
+ */
 public class ExceptionCatcher extends AbstractBean<ExceptionCatcher> {
-
-    @FunctionalInterface
-    public interface ExceptionHandler {
-        boolean handle(Throwable t, Object oldValue, Object newValue);
-    }
+    static private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(ExceptionCatcher.class);
 
     final private PropertyAdapter<Object> propertyAdapter;
     final private ExceptionHandler handler;
+
     public ExceptionCatcher(Object bean, String property, ExceptionHandler handler) {
         propertyAdapter = new PropertyAdapter<Object>(bean, property, true);
         propertyAdapter.addPropertyChangeListener("value", evt -> {
@@ -29,10 +29,13 @@ public class ExceptionCatcher extends AbstractBean<ExceptionCatcher> {
         }
         catch (RuntimeException e) {
             Throwable ultimateCause = ExceptionUtil.findUltimateCause(e);
-            boolean handled = handler.handle(ultimateCause, oldValue, v);
-            if (!handled) {
-                throw e;
+            if (handler != null) {
+                boolean handled = handler.handle(ultimateCause, oldValue, v);
+                if (handled) {
+                    return;
+                }
             }
+            throw e; // TBEERNOT: check if this exception is swalled, if so log it
         }
     }
     public Object getValue() {

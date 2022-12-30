@@ -9,6 +9,13 @@ import javax.swing.SwingConstants;
 import java.awt.Color;
 import java.awt.Font;
 
+// TODO:
+// - bindText()
+// - bindIcon()
+
+/**
+ *
+ */
 public class SLabel extends JLabel {
 
     public SLabel() {

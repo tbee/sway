@@ -1,8 +1,8 @@
 package org.tbee.sway;
 
-import com.jgoodies.binding.beans.PropertyConnector;
 import org.tbee.sway.binding.BeanBinder;
-import org.tbee.sway.binding.ExceptionCatcher;
+import org.tbee.sway.binding.BindUtil;
+import org.tbee.sway.binding.Binding;
 import org.tbee.sway.format.Format;
 import org.tbee.sway.format.FormatRegistry;
 import org.tbee.sway.format.JavaFormat;
@@ -27,10 +27,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Currency;
-import java.util.List;
 import java.util.Locale;
 
 // TODO
@@ -403,7 +401,17 @@ public class STextField<T> extends javax.swing.JTextField {
     // ========================================================
     // BIND
 
-    private List<PropertyConnector> propertyConnectors;
+    /**
+     * Will create a binding to a specific bean/property.
+     * Use bind(BeanBinding, PropertyName) to be able to switch beans while keeping the bind.
+     *
+     * @param bean
+     * @param propertyName
+     * @return Binding
+     */
+    public Binding binding(Object bean, String propertyName) {
+        return BindUtil.bind(this, VALUE, bean, propertyName, this::handleException);
+    }
 
     /**
      * Will create a binding to a specific bean/property.
@@ -411,47 +419,23 @@ public class STextField<T> extends javax.swing.JTextField {
      *
      * @param bean
      * @param propertyName
-     * @return
+     * @return this
      */
     public STextField<T> bind(Object bean, String propertyName) {
-
-        // Bind
-        PropertyConnector propertyConnector = PropertyConnector.connect(new ExceptionCatcher(bean, propertyName, this::handleException), ExceptionCatcher.VALUE, this, VALUE);
-        propertyConnector.updateProperty2();
-
-        // Remember binding (for unbinding)
-        if (propertyConnectors == null) {
-            propertyConnectors = new ArrayList<>();
-        }
-        propertyConnectors.add(propertyConnector);
-
-        // Done
+        Binding binding = binding(bean, propertyName);
         return this;
     }
 
     /**
-     * Will unbind the connection to the bean/property combination.
+     * Bind to a bean wrapper's property.
+     * This will allow the swap the bean (in the BeanBinder) without having to rebind.
      *
-     * @param bean
+     * @param beanBinder
      * @param propertyName
-     * @return true if unbind was successful
+     * @return Binding
      */
-    public boolean unbind(Object bean, String propertyName) {
-        if (propertyConnectors == null) {
-            return false;
-        }
-
-        // Find the PropertyConnector
-        List<PropertyConnector> toBeRemovedPropertyConnectors = propertyConnectors.stream() //
-                .filter(pc -> pc.getBean1().equals(bean) && pc.getProperty1Name().equals(propertyName)) //
-                .toList();
-
-        // Unbind the PropertyConnector
-        toBeRemovedPropertyConnectors.stream().forEach(pc -> pc.release());
-        propertyConnectors.removeAll(toBeRemovedPropertyConnectors);
-
-        // Done
-        return toBeRemovedPropertyConnectors.size() > 0;
+    public Binding binding(BeanBinder beanBinder, String propertyName) {
+        return BindUtil.bind(this, VALUE, beanBinder, propertyName, this::handleException);
     }
 
     /**
@@ -459,20 +443,10 @@ public class STextField<T> extends javax.swing.JTextField {
      * This will allow the swap the bean (in the BeanBinder) without having to rebind.
      * @param beanBinder
      * @param propertyName
-     * @return
+     * @return this
      */
     public STextField<T> bind(BeanBinder beanBinder, String propertyName) {
-        return bind(beanBinder.getBeanAdapter().getValueModel(propertyName), "value");
-    }
-
-    /**
-     * Will unbind the connection to the beanBinder/property combination.
-     *
-     * @param beanBinder
-     * @param propertyName
-     * @return true if unbind was successful
-     */
-    public boolean unbind(BeanBinder beanBinder, String propertyName) {
-        return unbind(beanBinder.getBeanAdapter().getValueModel(propertyName), "value");
+        Binding binding = binding(beanBinder, propertyName);
+        return this;
     }
 }

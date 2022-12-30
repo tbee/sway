@@ -26,7 +26,7 @@ public class STextFieldApp {
             City bean = new City("test",12);
             BeanBinder<City> beanBinder = new BeanBinder<>(bean);
 
-            STextField.ofStringBlankIsNull().bind(beanBinder, City.NAME).unbind(beanBinder, City.NAME);
+            STextField.ofStringBlankIsNull().binding(beanBinder, City.NAME).unbind();
 
             JPanel jPanel = new JPanel();
             jPanel.setLayout(new MigLayout());
