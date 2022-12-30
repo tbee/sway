@@ -12,8 +12,6 @@ import java.awt.Color;
 import java.awt.Font;
 
 // TODO:
-// - bindText()
-// - bindIcon()
 
 /**
  *
