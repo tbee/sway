@@ -26,9 +26,9 @@ import java.util.Map;
  * Basic use:
  * <pre>{@code
  * var sButtonGroup = new SButtonGroup<Integer>() //
- *        .add(button1, 1) //
- *        .add(button2, 2) //
- *        .add(button3, 3) //
+ *        .add(1, button1) //
+ *        .add(2, button2) //
+ *        .add(3, button3) //
  *        .value(2);
  * sButtonGroup.getValue();
  * }
@@ -37,9 +37,9 @@ import java.util.Map;
  * <pre>{@code
  * race.setPosition(1);
  * var sButtonGroup = new SButtonGroup<Integer>() //
- *        .add(button1, 1) //
- *        .add(button2, 2) //
- *        .add(button3, 3) //
+ *        .add(1, button1) //
+ *        .add(2, button2) //
+ *        .add(3, button3) //
  *        .bind(race, "position");
  * }
  * </pre>
@@ -63,7 +63,7 @@ public class SButtonGroup<T> extends ButtonGroup {
      * @param button an <code>AbstractButton</code> reference
      * @return
      */
-    public SButtonGroup<T> add(AbstractButton button, T value) {
+    public SButtonGroup<T> add(T value, AbstractButton button) {
         if (button == null) {
             throw new IllegalArgumentException("Button is null");
         }

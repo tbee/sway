@@ -17,9 +17,9 @@ public class SButtonGroupTest extends TestBase {
             var button2 = new SToggleButton("2").name("b2");
             var button3 = new SToggleButton("3").name("b3");
             sButtonGroup = new SButtonGroup<Integer>() //
-                    .add(button1, 1) //
-                    .add(button2, 2) //
-                    .add(button3, 3);
+                    .add(1, button1) //
+                    .add(2, button2) //
+                    .add(3, button3);
             return TestUtil.inJFrame(button1, button2, button3);
         });
 
@@ -57,9 +57,9 @@ public class SButtonGroupTest extends TestBase {
             var button2 = new SToggleButton("2").name("b2");
             var button3 = new SToggleButton("3").name("b3");
             sButtonGroup = new SButtonGroup<Integer>() //
-                    .add(button1, 1) //
-                    .add(button2, 2) //
-                    .add(button3, 3) //
+                    .add(1, button1) //
+                    .add(2, button2) //
+                    .add(3, button3) //
                     .bind(city, City.DISTANCE);
             return TestUtil.inJFrame(button1, button2, button3);
         });
