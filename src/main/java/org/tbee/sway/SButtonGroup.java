@@ -20,7 +20,7 @@ import java.util.Map;
 // - implement logic ourselves, and extend AbstractBean?
 
 /**
- * Like ButtonGroup, but associate values with the buttons, and base the API one the value.
+ * Like ButtonGroup, but associate values with the buttons, and base the API on the value.
  * <br/>
  * <br/>
  * Basic use:
@@ -31,6 +31,16 @@ import java.util.Map;
  *        .add(button3, 3) //
  *        .value(2);
  * sButtonGroup.getValue();
+ * }
+ * </pre>
+ * Or with binding:
+ * <pre>{@code
+ * race.setPosition(1);
+ * var sButtonGroup = new SButtonGroup<Integer>() //
+ *        .add(button1, 1) //
+ *        .add(button2, 2) //
+ *        .add(button3, 3) //
+ *        .bind(race, "position");
  * }
  * </pre>
  */
