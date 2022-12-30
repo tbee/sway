@@ -2,6 +2,8 @@ package org.tbee.sway.format;
 
 import org.tbee.sway.support.HAlign;
 
+import javax.swing.Icon;
+
 public interface Format<T> {
     String toString(T value);
 
@@ -13,5 +15,8 @@ public interface Format<T> {
 
     default HAlign horizontalAlignment() {
         return HAlign.LEADING;
+    }
+    default Icon toIcon(T value) {
+        return null;
     }
 }

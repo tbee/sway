@@ -3,6 +3,7 @@ package org.tbee.sway;
 import org.tbee.sway.binding.BeanBinder;
 import org.tbee.sway.binding.BindUtil;
 import org.tbee.sway.binding.Binding;
+import org.tbee.sway.format.Format;
 import org.tbee.util.ExceptionUtil;
 
 import javax.swing.AbstractButton;
@@ -15,8 +16,10 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 
 // TODO:
+// - of() using FormatRegistry
 // - implement logic ourselves, and extend AbstractBean?
 
 /**
@@ -244,6 +247,36 @@ public class SButtonGroup<T> extends ButtonGroup {
         return this;
     }
 
+    // ===========================================================================================================================
+    // CONVENIENCE
+
+    /**
+     * To easy add to a container
+     * @return
+     */
+    public AbstractButton[] getButtonsAsArray() {
+        return getButtons().toArray(new AbstractButton[getButtonCount()]);
+    }
+
+    /**
+     * Create a buttongroup using a formatter
+     * @param format
+     * @param supplier
+     * @param values
+     * @return
+     * @param <T>
+     */
+    public static <T> SButtonGroup<T> of(Format<T> format, Supplier<AbstractButton> supplier, T... values) {
+        var sButtonGroup = new SButtonGroup<T>();
+        for (T value : values) {
+            AbstractButton button = supplier.get();
+            button.setText(format.toString(value));
+            button.setIcon(format.toIcon(value));
+            button.setHorizontalAlignment(format.horizontalAlignment().getSwingConstant());
+            sButtonGroup.add(value, button);
+        }
+        return sButtonGroup;
+    }
 
     // ===============================================================================================
     // PropertyChange (this class cannot extend AbstractBean because it extends ButtonGroup)

@@ -18,6 +18,13 @@ Or creating a strongly typed text field would be as simple as:
 var sTextField = STextField.ofBind(city, "name");
 ```
 
+
+Some more examples
+
+``` java
+var sLabel = new Slabel().bindText(city, "name");
+```
+
 Well, you've come to the right place. 
 Take a look at the components present in org.tbee.sway and see if they are easy enough to use.
 We're not there yet, but the idea of what Sway is trying to do should be clear.

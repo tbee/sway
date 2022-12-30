@@ -4,24 +4,26 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import javax.swing.SwingUtilities;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class SButtonGroupTest extends TestBase {
-    private SButtonGroup<Integer> sButtonGroup;
 
     @Test
     public void happyJToggleButtonTest() throws Exception {
 
         // GIVEN
+        var ref = new AtomicReference<SButtonGroup<Integer>>();
         construct(() -> {
-            var button1 = new SToggleButton("1").name("b1");
-            var button2 = new SToggleButton("2").name("b2");
-            var button3 = new SToggleButton("3").name("b3");
-            sButtonGroup = new SButtonGroup<Integer>() //
-                    .add(1, button1) //
-                    .add(2, button2) //
-                    .add(3, button3);
-            return TestUtil.inJFrame(button1, button2, button3);
+            var sButtonGroup = new SButtonGroup<Integer>() //
+                    .add(1, new SToggleButton("1")) //
+                    .add(2, new SToggleButton("2")) //
+                    .add(3, new SToggleButton("3"));
+            sButtonGroup.getButtons().forEach(b -> b.setName("b" + b.getText())); // to make them findable
+            ref.set(sButtonGroup);
+            return TestUtil.inJFrame(sButtonGroup.getButtonsAsArray());
         });
+        SButtonGroup<Integer> sButtonGroup = ref.get();
 
         // THEN
         Assertions.assertEquals(null, sButtonGroup.getValue());
@@ -52,17 +54,18 @@ public class SButtonGroupTest extends TestBase {
 
         // GIVEN
         City city = new City().distance(1);
+        var ref = new AtomicReference<SButtonGroup<Integer>>();
         construct(() -> {
-            var button1 = new SToggleButton("1").name("b1");
-            var button2 = new SToggleButton("2").name("b2");
-            var button3 = new SToggleButton("3").name("b3");
-            sButtonGroup = new SButtonGroup<Integer>() //
-                    .add(1, button1) //
-                    .add(2, button2) //
-                    .add(3, button3) //
+            var sButtonGroup = new SButtonGroup<Integer>() //
+                    .add(1, new SToggleButton("1")) //
+                    .add(2, new SToggleButton("2")) //
+                    .add(3, new SToggleButton("3")) //
                     .bind(city, City.DISTANCE);
-            return TestUtil.inJFrame(button1, button2, button3);
+            sButtonGroup.getButtons().forEach(b -> b.setName("b" + b.getText())); // to make them findable
+            ref.set(sButtonGroup);
+            return TestUtil.inJFrame(sButtonGroup.getButtonsAsArray());
         });
+        SButtonGroup<Integer> sButtonGroup = ref.get();
 
         // THEN there was an initial sync upon binding
         Assertions.assertEquals(1, city.getDistance());
@@ -76,5 +79,34 @@ public class SButtonGroupTest extends TestBase {
         SwingUtilities.invokeAndWait(() -> city.distance(3));
         // THEN
         Assertions.assertEquals(3, sButtonGroup.getValue());
+    }
+
+    @Test
+    public void happyOfTest() throws Exception {
+
+        // GIVEN
+        City amsterdam = new City("Amsterdam", 150);
+        City berlin = new City("Berlin", 560);
+        City bredevoort = new City("Bredevoort", 5);
+        City paris = new City("Paris", 575);
+        City rome = new City("Rome", 1560);
+        List<City> cities = List.of(berlin, bredevoort, amsterdam, rome, paris);
+        var ref = new AtomicReference<SButtonGroup<City>>();
+        construct(() -> {
+            var sButtonGroup = SButtonGroup.of(new CityFormat(cities), () -> new SToggleButton(), berlin, bredevoort, amsterdam, rome, paris);
+            sButtonGroup.getButtons().forEach(b -> b.setName(b.getText())); // to make them findable
+            ref.set(sButtonGroup);
+            return TestUtil.inJFrame(sButtonGroup.getButtonsAsArray());
+        });
+        SButtonGroup<City> sButtonGroup = ref.get();
+
+        // THEN
+        Assertions.assertEquals(null, sButtonGroup.getValue());
+
+        // WHEN click on 2
+        frameFixture.toggleButton("Amsterdam").click();
+
+        // THEN
+        Assertions.assertEquals(amsterdam, sButtonGroup.getValue());
     }
 }

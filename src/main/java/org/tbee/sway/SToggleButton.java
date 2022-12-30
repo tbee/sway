@@ -6,7 +6,7 @@ import javax.swing.JToggleButton;
 import java.awt.event.ActionListener;
 
 // TODO:
-// - binding (2 values)
+// - binding (2/3? values)
 
 /**
  *
@@ -42,6 +42,7 @@ public class SToggleButton extends JToggleButton {
     public SToggleButton(String text, Icon icon, boolean selected) {
         super(text, icon, selected);
     }
+
 
     // ===========================================================================================================================
     // FLUENT API
