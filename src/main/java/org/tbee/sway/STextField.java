@@ -403,11 +403,11 @@ public class STextField<T> extends javax.swing.JTextField {
 
     /**
      * Will create a binding to a specific bean/property.
-     * Use bind(BeanBinding, PropertyName) to be able to switch beans while keeping the bind.
+     * Use binding(BeanBinding, PropertyName) to be able to switch beans while keeping the bind.
      *
      * @param bean
      * @param propertyName
-     * @return Binding
+     * @return Binding, so unbind() can be called
      */
     public Binding binding(Object bean, String propertyName) {
         return BindUtil.bind(this, VALUE, bean, propertyName, this::handleException);
@@ -419,7 +419,7 @@ public class STextField<T> extends javax.swing.JTextField {
      *
      * @param bean
      * @param propertyName
-     * @return this
+     * @return this, for fluent API
      */
     public STextField<T> bind(Object bean, String propertyName) {
         Binding binding = binding(bean, propertyName);
@@ -432,7 +432,7 @@ public class STextField<T> extends javax.swing.JTextField {
      *
      * @param beanBinder
      * @param propertyName
-     * @return Binding
+     * @return Binding, so unbind() can be called
      */
     public Binding binding(BeanBinder beanBinder, String propertyName) {
         return BindUtil.bind(this, VALUE, beanBinder, propertyName, this::handleException);
@@ -443,7 +443,7 @@ public class STextField<T> extends javax.swing.JTextField {
      * This will allow the swap the bean (in the BeanBinder) without having to rebind.
      * @param beanBinder
      * @param propertyName
-     * @return this
+     * @return this, for fluent API
      */
     public STextField<T> bind(BeanBinder beanBinder, String propertyName) {
         Binding binding = binding(beanBinder, propertyName);

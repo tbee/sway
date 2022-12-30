@@ -1,6 +1,11 @@
 package org.tbee.util;
 
-import java.beans.*;
+import java.beans.IndexedPropertyChangeEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
+import java.beans.VetoableChangeListener;
+import java.beans.VetoableChangeSupport;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Supplier;
@@ -8,7 +13,7 @@ import java.util.function.Supplier;
 
 /**
  * a class that implements standard features of a JavaBean.
- * The inherting class should implements:
+ * The inherting class should implement:
  * - parameterless constructor
  * - serializable
  * ...

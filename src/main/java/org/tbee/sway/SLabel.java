@@ -1,5 +1,7 @@
 package org.tbee.sway;
 
+import org.tbee.sway.binding.BindUtil;
+import org.tbee.sway.binding.Binding;
 import org.tbee.sway.support.HAlign;
 import org.tbee.sway.support.VAlign;
 
@@ -127,6 +129,51 @@ public class SLabel extends JLabel {
 
     public SLabel toolTipText(String text) {
         setToolTipText(text);
+        return this;
+    }
+
+    // ===========================================================================================================================
+    // BINDING
+
+    /**
+     *
+     * @param bean
+     * @param propertyName
+     * @return Binding, so unbind() can be called
+     */
+    public Binding bindingForText(Object bean, String propertyName) {
+        return BindUtil.bind(this, "text", bean, propertyName);
+    }
+
+    /**
+     *
+     * @param bean
+     * @param propertyName
+     * @return this, for fluent API
+     */
+    public SLabel bindText(Object bean, String propertyName) {
+        bindingForText(bean, propertyName);
+        return this;
+    }
+
+    /**
+     *
+     * @param bean
+     * @param propertyName
+     * @return Binding, so unbind() can be called
+     */
+    public Binding bindingForIcon(Object bean, String propertyName) {
+        return BindUtil.bind(this, "icon", bean, propertyName);
+    }
+
+    /**
+     *
+     * @param bean
+     * @param propertyName
+     * @return this, for fluent API
+     */
+    public SLabel bindIcon(Object bean, String propertyName) {
+        bindingForIcon(bean, propertyName);
         return this;
     }
 }

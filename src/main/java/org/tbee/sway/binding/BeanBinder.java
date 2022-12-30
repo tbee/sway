@@ -4,6 +4,8 @@ import com.jgoodies.binding.beans.BeanAdapter;
 
 public class BeanBinder<T> {
 
+    static String VALUE = "value";
+
     final private BeanAdapter<T> beanAdapter = new BeanAdapter<>(null, true);
 
     public BeanBinder(T bean) {

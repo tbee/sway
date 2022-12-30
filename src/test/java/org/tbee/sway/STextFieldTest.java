@@ -54,9 +54,9 @@ public class STextFieldTest extends TestBase {
     public void stringBindHappyTest() throws Exception {
 
         // GIVEN
-        final City bean1 = new City();
+        final City city = new City();
         construct(() -> {
-            sTextField = STextField.ofString().name("sTextField").bind(bean1, City.NAME);
+            sTextField = STextField.ofString().name("sTextField").bind(city, City.NAME);
             return TestUtil.inJFrame(sTextField, focusMeComponent());
         });
 
@@ -65,11 +65,11 @@ public class STextFieldTest extends TestBase {
         moveFocus();
 
         // THEN
-        Assertions.assertEquals("abc", bean1.getName());
+        Assertions.assertEquals("abc", city.getName());
 
         // WHEN
         SwingUtilities.invokeAndWait(() -> {
-            bean1.setName("def");
+            city.setName("def");
         });
 
         // THEN
@@ -81,9 +81,9 @@ public class STextFieldTest extends TestBase {
     public void integerBindHappyTest() throws Exception {
 
         // GIVEN
-        final City bean1 = new City();
+        final City city = new City();
         construct(() -> {
-            sTextField = STextField.ofInteger().name("sTextField").bind(bean1, City.DISTANCE);
+            sTextField = STextField.ofInteger().name("sTextField").bind(city, City.DISTANCE);
             return TestUtil.inJFrame(sTextField, focusMeComponent());
         });
 
@@ -92,11 +92,11 @@ public class STextFieldTest extends TestBase {
         moveFocus();
 
         // THEN
-        Assertions.assertEquals(123, bean1.getDistance());
+        Assertions.assertEquals(123, city.getDistance());
 
         // WHEN
         SwingUtilities.invokeAndWait(() -> {
-            bean1.setDistance(456);
+            city.setDistance(456);
         });
 
         // THEN
@@ -108,9 +108,9 @@ public class STextFieldTest extends TestBase {
     public void integerBindSetterFailureTest() throws Exception {
 
         // GIVEN
-        final City bean1 = new City();
+        final City city = new City();
         construct(() -> {
-            sTextField = STextField.ofInteger().name("sTextField").bind(bean1, City.DISTANCE);
+            sTextField = STextField.ofInteger().name("sTextField").bind(city, City.DISTANCE);
             return TestUtil.inJFrame(sTextField, focusMeComponent());
         });
 
@@ -131,23 +131,29 @@ public class STextFieldTest extends TestBase {
     public void integerUnbindHappyTest() throws Exception {
 
         // GIVEN
-        final City bean1 = new City().distance(456);
+        final City city = new City().distance(456);
         construct(() -> {
             sTextField = STextField.ofInteger().name("sTextField");
             return TestUtil.inJFrame(sTextField, focusMeComponent());
         });
 
         // WHEN bind and unbind
-        SwingUtilities.invokeAndWait(() -> sTextField.binding(bean1, City.DISTANCE).unbind());
-        // THEN there was a sync, so textfield was changed
+        SwingUtilities.invokeAndWait(() -> sTextField.binding(city, City.DISTANCE).unbind());
+        // THEN there was a sync when binding, so textfield was changed
         Assertions.assertEquals("456", sTextField.getText());
-        Assertions.assertEquals( 456, bean1.getDistance());
+        Assertions.assertEquals( 456, city.getDistance());
 
-        // WHEN
+        // WHEN change the textfield
         frameFixture.textBox("sTextField").selectAll().enterText("123");
         moveFocus();
         // THEN bean's value should be unchanged
         Assertions.assertEquals("123", sTextField.getText());
-        Assertions.assertEquals( 456, bean1.getDistance());
+        Assertions.assertEquals( 456, city.getDistance());
+
+        // WHEN change the bean
+        SwingUtilities.invokeAndWait(() -> city.setDistance(789));
+        // THEN textfield's value should be unchanged
+        Assertions.assertEquals("123", sTextField.getText());
+        Assertions.assertEquals( 789, city.getDistance());
     }
 }
