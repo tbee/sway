@@ -18,8 +18,12 @@ Or creating a strongly typed text field would be as simple as:
 var sTextField = STextField.ofBind(city, "name");
 ```
 
+Well, you've come to the right place. 
+Take a look at the components present in org.tbee.sway and see if they are easy enough to use.
+We're not there yet, but the idea of what Sway is trying to do should be clear.
 
-Some more examples
+
+Some more examples:
 
 ``` java
 var sLabel = new Slabel().bindText(city, "name");
@@ -29,12 +33,11 @@ var sButtonGroup = new SButtonGroup<Integer>() //
         .add(2, new SToggleButton("2")) //
         .add(3, new SToggleButton("3")) //
         .bind(race, "postion");
-var panel = new SPanel(sButtonGroup.getButtonsAsArray());
+var panel = new SPanel(new FlowLayout()).addAll(sButtonGroup.getButtons());
 ```
-
-Well, you've come to the right place. 
-Take a look at the components present in org.tbee.sway and see if they are easy enough to use.
-We're not there yet, but the idea of what Sway is trying to do should be clear.
 
 ## Compatibility
 The components are still the standard Swing components, only with an opinionated API, but they should blend-in nicely in existing applications.
+
+And as long as you stick to Sway's API upgrading should not be too much of a hassle. 
+If you start poking around, you're on your own ;-)

@@ -1,19 +1,23 @@
 package org.tbee.sway;
 
-import net.miginfocom.layout.CC;
 import net.miginfocom.swing.MigLayout;
 
-import javax.swing.*;
+import javax.swing.JComponent;
+import javax.swing.JFrame;
+import java.util.Collection;
 
 public class TestUtil {
 
+    static public JFrame inJFrame(Collection<JComponent> components) {
+        var sPanel = new SPanel(new MigLayout()) //
+                .addAll(components);
+        return inJFrame(sPanel);
+    }
+
     static public JFrame inJFrame(JComponent... components) {
-        var jPanel = new JPanel();
-        jPanel.setLayout(new MigLayout());
-        for (JComponent component : components) {
-            jPanel.add(component, new CC());
-        }
-        return inJFrame(jPanel);
+        var sPanel = new SPanel(new MigLayout()) //
+                .addAll(components);
+        return inJFrame(sPanel);
     }
 
     static public JFrame inJFrame(JComponent component) {
