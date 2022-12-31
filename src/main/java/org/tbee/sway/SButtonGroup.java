@@ -251,14 +251,6 @@ public class SButtonGroup<T> extends ButtonGroup {
     // CONVENIENCE
 
     /**
-     * To easy add to a container
-     * @return
-     */
-    public AbstractButton[] getButtonsAsArray() {
-        return getButtons().toArray(new AbstractButton[getButtonCount()]);
-    }
-
-    /**
      * Create a buttongroup using a formatter
      * @param format
      * @param supplier

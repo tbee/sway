@@ -21,7 +21,7 @@ public class SButtonGroupTest extends TestBase {
                     .add(3, new SToggleButton("3"));
             sButtonGroup.getButtons().forEach(b -> b.setName("b" + b.getText())); // to make them findable
             ref.set(sButtonGroup);
-            return TestUtil.inJFrame(sButtonGroup.getButtonsAsArray());
+            return TestUtil.inJFrame(sButtonGroup.getButtons());
         });
         SButtonGroup<Integer> sButtonGroup = ref.get();
 
@@ -63,7 +63,7 @@ public class SButtonGroupTest extends TestBase {
                     .bind(city, City.DISTANCE);
             sButtonGroup.getButtons().forEach(b -> b.setName("b" + b.getText())); // to make them findable
             ref.set(sButtonGroup);
-            return TestUtil.inJFrame(sButtonGroup.getButtonsAsArray());
+            return TestUtil.inJFrame(sButtonGroup.getButtons());
         });
         SButtonGroup<Integer> sButtonGroup = ref.get();
 
@@ -96,7 +96,7 @@ public class SButtonGroupTest extends TestBase {
             var sButtonGroup = SButtonGroup.of(new CityFormat(cities), () -> new SToggleButton(), berlin, bredevoort, amsterdam, rome, paris);
             sButtonGroup.getButtons().forEach(b -> b.setName(b.getText())); // to make them findable
             ref.set(sButtonGroup);
-            return TestUtil.inJFrame(sButtonGroup.getButtonsAsArray());
+            return TestUtil.inJFrame(sButtonGroup.getButtons());
         });
         SButtonGroup<City> sButtonGroup = ref.get();
 

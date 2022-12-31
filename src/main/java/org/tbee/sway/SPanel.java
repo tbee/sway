@@ -40,7 +40,7 @@ public class SPanel extends JPanel {
         return this;
     }
 
-    public SPanel addAll(Collection<JComponent> components) {
+    public SPanel addAll(Collection<? extends JComponent> components) {
         components.forEach(c -> add(c));
         return this;
     }
