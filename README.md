@@ -33,7 +33,7 @@ var sButtonGroup = new SButtonGroup<Integer>() //
         .add(2, new SToggleButton("2")) //
         .add(3, new SToggleButton("3")) //
         .bind(race, "postion");
-var sPanel = new SFlowPanel().addAll(sButtonGroup.getButtons());
+var sPanel = new SFlowPanel(sButtonGroup.getButtons());
 ```
 
 ## Compatibility
