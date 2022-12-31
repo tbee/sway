@@ -1,7 +1,9 @@
 package org.tbee.sway;
 
+import net.miginfocom.layout.AC;
 import net.miginfocom.layout.CC;
-import org.tbee.sway.support.MigLayoutUtil;
+import net.miginfocom.layout.LC;
+import net.miginfocom.swing.MigLayout;
 
 import javax.swing.JComponent;
 import javax.swing.JPanel;
@@ -13,9 +15,19 @@ import java.util.Collection;
 
 public class SMigLayoutPanel extends JPanel {
 
+    final private LC lc = new LC();
+    final private AC rowAC = new AC();
+    final private AC colAC = new AC();
+    final private MigLayout migLayout = new MigLayout(lc, colAC, rowAC);
+
+    public LC getLC() {
+        return lc;
+    }
+
     public SMigLayoutPanel() {
         super();
-        setLayout(MigLayoutUtil.newMigLayout());
+        setLayout(migLayout);
+        lc.hideMode(2); // invisible components are 0x0*
     }
 
     public SMigLayoutPanel(JComponent... components) {
@@ -40,6 +52,24 @@ public class SMigLayoutPanel extends JPanel {
 
     public SMigLayoutPanel add(JComponent component, CC cc) {
         super.add(component, cc);
+        return this;
+    }
+
+    // ===================================================================
+    // FLUENT API
+
+    public SMigLayoutPanel fill() {
+        lc.fill();
+        return this;
+    }
+
+    public SMigLayoutPanel noMargins() {
+        lc.insets("0", "0", "0", "0");
+        return this;
+    }
+
+    public SMigLayoutPanel noGaps() {
+        lc.gridGap("0", "0");
         return this;
     }
 }

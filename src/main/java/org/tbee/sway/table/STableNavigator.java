@@ -1,14 +1,13 @@
 package org.tbee.sway.table;
 
-
+import net.miginfocom.layout.CC;
+import org.tbee.sway.SMigLayoutPanel;
 import org.tbee.sway.SwingUtil;
 import org.tbee.sway.comedia.text.CNumericDocument;
 import org.tbee.sway.comedia.ui.CEncodedIcon;
-import org.tbee.sway.support.MigLayoutUtil;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.Border;
 import javax.swing.event.ListSelectionEvent;
@@ -28,7 +27,7 @@ import java.beans.PropertyChangeListener;
 /**
  * Copy and adapted from CoMedia cbeans
  */
-public class STableNavigator extends JPanel implements ListSelectionListener, TableModelListener, ActionListener, FocusListener, PropertyChangeListener {
+public class STableNavigator extends SMigLayoutPanel implements ListSelectionListener, TableModelListener, ActionListener, FocusListener, PropertyChangeListener {
 
     JButton firstButton = new JButton();
     JButton priorButton = new JButton();
@@ -103,14 +102,14 @@ public class STableNavigator extends JPanel implements ListSelectionListener, Ta
         lastNewButton.setPreferredSize(new Dimension(21, 17));
 
         // layout
-        this.setLayout(MigLayoutUtil.newMigLayoutFillNoGaps());
-        this.add(firstButton, MigLayoutUtil.newCC().growY());
-        this.add(priorButton, MigLayoutUtil.newCC().growY());
-        this.add(recordText, MigLayoutUtil.newCC().growY());
-        this.add(nextButton, MigLayoutUtil.newCC().growY());
-        this.add(lastButton, MigLayoutUtil.newCC().growY());
-        this.add(lastNewButton, MigLayoutUtil.newCC().growY());
-        this.add(recordLabel, MigLayoutUtil.newCC().growY().growX().pushX());
+        this.noMargins().noGaps().fill();
+        this.add(firstButton, new CC().growY());
+        this.add(priorButton, new CC().growY());
+        this.add(recordText, new CC().growY());
+        this.add(nextButton, new CC().growY());
+        this.add(lastButton, new CC().growY());
+        this.add(lastNewButton, new CC().growY());
+        this.add(recordLabel, new CC().growY().growX().pushX());
     }
 
     /**
