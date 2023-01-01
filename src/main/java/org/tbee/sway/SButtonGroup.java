@@ -4,6 +4,7 @@ import org.tbee.sway.binding.BeanBinder;
 import org.tbee.sway.binding.BindUtil;
 import org.tbee.sway.binding.Binding;
 import org.tbee.sway.format.Format;
+import org.tbee.sway.format.FormatRegistry;
 import org.tbee.util.ExceptionUtil;
 
 import javax.swing.AbstractButton;
@@ -268,6 +269,30 @@ public class SButtonGroup<T> extends ButtonGroup {
             sButtonGroup.add(value, button);
         }
         return sButtonGroup;
+    }
+
+    /**
+     * Create a buttongroup using a FormatRegistry
+     * @param supplier
+     * @param values, cannot be empty
+     * @return
+     * @param <T>
+     */
+    public static <T> SButtonGroup<T> of(Class<T> clazz, Supplier<AbstractButton> supplier, T... values) {
+        Format<T> format = (Format<T>) FormatRegistry.findFor(clazz);
+        return of(format, supplier, values);
+    }
+
+    /**
+     * Create a buttongroup using a FormatRegistry
+     * @param supplier
+     * @param values, cannot be empty
+     * @return
+     * @param <T>
+     */
+    public static <T> SButtonGroup<T> of(Supplier<AbstractButton> supplier, T... values) {
+        Format<T> format = (Format<T>) FormatRegistry.findFor(values[0].getClass());
+        return of(format, supplier, values);
     }
 
     // ===============================================================================================
