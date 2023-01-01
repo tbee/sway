@@ -14,6 +14,30 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
+    <name>Sway</name>
+    <description>Sway - a modern style API for Swing</description>
+    <url>https://github.com/tbee/sway</url>
+    <licenses>
+        <license>
+            <name>Apache 2.0</name>
+            <url>https://opensource.org/licenses/Apache-2.0</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <scm>
+        <connection>scm:git:https://git@github.com/tbee/sway.git</connection>
+        <developerConnection>scm:git:https://git@github.com/tbee/sway.git</developerConnection>
+        <url>https://github.com/tbee/sway.git</url>
+        <tag>HEAD</tag>
+    </scm>
+    <developers>
+        <developer>
+            <id>tbee</id>
+            <name>Tom Eugelink</name>
+            <email>tbee@tbee.org</email>
+        </developer>
+    </developers>
+
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -99,6 +123,34 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <!-- https://jreleaser.org/guide/latest/quick-start/maven.html -->
+            <plugin>
+                <groupId>org.jreleaser</groupId>
+                <artifactId>jreleaser-maven-plugin</artifactId>
+                <version>1.4.0</version>
+                <configuration>
+                    <jreleaser>
+                        <signing>
+                            <active>ALWAYS</active>
+                            <armored>true</armored>
+                        </signing>
+                        <deploy>
+                            <maven>
+                                <nexus2>
+                                    <maven-central>
+                                        <active>ALWAYS</active>
+                                        <snapshotUrl>https://oss.sonatype.org/content/repositories/snapshots</snapshotUrl>;
+                                        <url>https://oss.sonatype.org/service/local</url>;
+                                        <closeRepository>true</closeRepository>
+                                        <releaseRepository>true</releaseRepository>
+                                        <stagingRepositories>target/staging-deploy</stagingRepositories>
+                                    </maven-central>
+                                </nexus2>
+                            </maven>
+                        </deploy>
+                    </jreleaser>
+                </configuration>
             </plugin>
         </plugins>
     </build>
