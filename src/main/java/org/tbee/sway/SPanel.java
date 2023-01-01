@@ -10,38 +10,35 @@ public class SPanel extends JPanel {
     public SPanel() {
     }
 
-    public SPanel(LayoutManager layout, boolean isDoubleBuffered) {
-        super(layout, isDoubleBuffered);
-    }
-
     public SPanel(LayoutManager layout) {
         super(layout);
-    }
-
-    public SPanel(boolean isDoubleBuffered) {
-        super(isDoubleBuffered);
     }
 
     // =========================================================================
     // FLUENT API
 
-    public SPanel addOne(JComponent component) {
+    public SPanel add(JComponent component) {
         super.add(component);
         return this;
     }
 
-    public SPanel addOne(JComponent component, Object constraints) {
+    public SPanel add(JComponent component, Object constraints) {
         super.add(component, constraints);
         return this;
     }
 
-    public SPanel addAll(JComponent... component) {
+    public SPanel add(JComponent... component) {
         Arrays.stream(component).forEach(c -> add(c));
         return this;
     }
 
-    public SPanel addAll(Collection<? extends JComponent> components) {
+    public SPanel add(Collection<? extends JComponent> components) {
         components.forEach(c -> add(c));
+        return this;
+    }
+
+    public SPanel doubleBuffered(boolean v) {
+        super.setDoubleBuffered(v);
         return this;
     }
 }

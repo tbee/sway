@@ -19,6 +19,9 @@ public class SBorderPanel extends JPanel {
         center(centerComponent);
     }
 
+    // =========================================================================
+    // FLUENT API
+
     public SBorderPanel center(JComponent component) {
         super.add(component, BorderLayout.CENTER);
         return this;

@@ -5,10 +5,8 @@ import org.tbee.sway.table.STableNavigator;
 import org.tbee.sway.table.TableColumn;
 import org.tbee.util.ClassUtil;
 
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
-import java.awt.BorderLayout;
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
@@ -56,7 +54,7 @@ import java.util.stream.Collectors;
  * <br/>
  * The main focus of Sway is simplicity, the simplest example of this component is:
  * <pre>{@code
- * STable stable = new STable<SomeBean>() //
+ * var sTable = new STable<SomeBean>() //
  *         .columns(SomeBean.class, "name", "distance", "roundtrip") //
  *         .data(aListOfSomeBeans);
  * }
@@ -69,7 +67,7 @@ import java.util.stream.Collectors;
  *     <li>A navigation footer</li>
  *     <li>Scrollbars</li>
  *     <li>Automatic refresh of cells</li>
- *     <li>Sorting (TODO)</li>
+ *     <li>Sorting</li>
  *     <li>Filtering (TODO)</li>
  *     <li>Pagination (TODO)</li>
  *     <li>Tooltips per cell (TODO)</li>
@@ -82,7 +80,7 @@ import java.util.stream.Collectors;
  * <br/>
  * A more elaborate example:
  * <pre>{@code
- * STable stable = new STable<SomeBean>() //
+ * var sTable = new STable<SomeBean>() //
  *         .column(String.class).title("name RO").valueSupplier(b -> b.getName()).table() // read only
  *         .column(String.class).title("name RW").valueSupplier(SomeBean::getName).valueConsumer(SomeBean::setName).table() // read write
  *         .column(Integer.class).title("distance RW").valueSupplier(SomeBean::getDistance).valueConsumer(SomeBean::setDistance).table() // read write
@@ -109,7 +107,7 @@ import java.util.stream.Collectors;
  * <br/>
  * Extending the previous example with binding:
  * <pre>{@code
- * STable stable = new STable<SomeBean>() //
+ * var sTable = new STable<SomeBean>() //
  *         .column(String.class).title("name RO")...monitorProperty("name").table() //
  *         .column(String.class).title("name RW")...monitorProperty("name").table() //
  *         .column(Integer.class).title("distance RW")...monitorProperty("distance").table() //
@@ -124,7 +122,7 @@ import java.util.stream.Collectors;
  * <h2>Selection</h2>
  * Selection still has the three modes, but set via an enum, and the listener gets a list of selected items.
  * <pre>{@code
- * STable stable = new STable<SomeBean>() //
+ * var sTable = new STable<SomeBean>() //
  *         .selectionMode(STable.SelectionMode.MULTIPLE) //
  *         .onSelectionChanged(selection -> System.out.println("onSelectionChanged: " + selection)) //
  * }
@@ -132,12 +130,12 @@ import java.util.stream.Collectors;
  *
  * Selection uses the table type:
  * <pre>{@code
- * STable stable = new STable<SomeBean>() //
+ * var sTable = new STable<SomeBean>() //
  *         .selectionMode(STable.SelectionMode.MULTIPLE) //
  *         .data(aListOfSomeBeans); //
  *
- *  stable.setSelection(List.of(bean1, bean3, bean12));
- *  List<SomeBean> selection = stable.getSelection();
+ *  sTable.setSelection(List.of(bean1, bean3, bean12));
+ *  List<SomeBean> selection = sTable.getSelection();
  * }
  * </pre>
  * Note: if the selection mode does not match the selection
@@ -146,7 +144,7 @@ import java.util.stream.Collectors;
  *
  * @param <TableType>
  */
-public class STable<TableType> extends JPanel {
+public class STable<TableType> extends SBorderPanel {
     static private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(STable.class);
 
     private final STableCore<TableType> sTableCore;
@@ -159,9 +157,8 @@ public class STable<TableType> extends JPanel {
         STableNavigator tableNavigator = new STableNavigator(sTableCore);
 
         // Layout
-        setLayout(new BorderLayout());
-        add(scrollPane, BorderLayout.CENTER);
-        add(tableNavigator, BorderLayout.SOUTH);
+        center(scrollPane);
+        south(tableNavigator);
     }
 
     public STableCore<TableType> sTable() {

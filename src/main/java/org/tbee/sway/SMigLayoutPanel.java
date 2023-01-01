@@ -27,7 +27,7 @@ public class SMigLayoutPanel extends JPanel {
     public SMigLayoutPanel() {
         super();
         setLayout(migLayout);
-        lc.hideMode(2); // invisible components are 0x0*
+        lc.hideMode(2); // invisible components are present but 0x0
     }
 
     public SMigLayoutPanel(JComponent... components) {
@@ -39,6 +39,9 @@ public class SMigLayoutPanel extends JPanel {
         this();
         add(components);
     }
+
+    // =========================================================================
+    // FLUENT API
 
     public SMigLayoutPanel add(JComponent... components) {
         Arrays.stream(components).forEach(c -> super.add(c));

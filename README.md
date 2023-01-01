@@ -34,6 +34,11 @@ var sButtonGroup = new SButtonGroup<Integer>() //
         .add(3, new SToggleButton("3")) //
         .bind(race, "postion");
 var sPanel = new SFlowPanel(sButtonGroup.getButtons());
+
+var sBorderPanel = new SBorderPanel(new STable()) //
+         .west(new SomeMenu()) //
+         .east(new SomeContextLinks());
+         
 ```
 
 ## Compatibility
