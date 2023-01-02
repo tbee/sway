@@ -220,7 +220,11 @@ public class STable<TableType> extends SBorderPanel {
 
     /**
      * Finds (the first!) column with the provided id.
-     * Usage: ...<ColumType>findColumnById(id)
+     * Usage:
+     * <pre>{@code
+     *     ...<ColumType>findColumnById(id)
+     * }</pre>
+     *
      * @param id
      * @return
      */
@@ -250,7 +254,9 @@ public class STable<TableType> extends SBorderPanel {
 
     /**
      * Add a column. Requires the table() call at the end to continue the fluent API
-     * ...column(String.class).title("Property").valueSupplier(d -> d.getProperty())).table()
+     * <pre>{@code
+     *     ...column(String.class).title("Property").valueSupplier(d -> d.getProperty())).table()
+     * }</pre>
      * @param type
      * @return
      * @param <ColumnType>
@@ -263,8 +269,9 @@ public class STable<TableType> extends SBorderPanel {
 
     /**
      * Generate columns based on bean info.
-     * ...columns(Bean.class, "property", "anotherProperty")
-     * <p>
+     * <pre>{@code
+     *     ...columns(Bean.class, "property", "anotherProperty")
+     * }</pre>
      * This method will set monitorProperty() on each column, and monitorBean() on this class.
      *
      * @param tableTypeClass
@@ -387,7 +394,6 @@ public class STable<TableType> extends SBorderPanel {
 
     /**
      *
-     * @return
      */
     public void setSelection(List<TableType> values) {
         clearSelection();

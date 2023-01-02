@@ -14,7 +14,7 @@ public class BindUtil {
     };
 
     /**
-     * Binds bean & property 1 to bean & property 2.
+     * Binds bean and property 1 to bean and property 2.
      * Property 1 will be synced to property 2 after the bind was maded.
      * Use bind(Object bean1, String propertyName1, BeanBinding, PropertyName) to be able to switch beans while keeping the bind.
      *
@@ -32,7 +32,7 @@ public class BindUtil {
     }
 
     /**
-     * Binds bean & property 1 to bean & property 2.
+     * Binds bean and property 1 to bean and property 2.
      * Property 1 will be synced to property 2 after the bind was maded.
      * Use bind(Object bean1, String propertyName1, BeanBinding, PropertyName) to be able to switch beans while keeping the bind.
      *

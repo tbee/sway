@@ -1,3 +1,4 @@
 rem call mvnw jreleaser:config
-call mvnw jreleaser:full-release
+call mvnw clean deploy jreleaser:full-release -DaltDeploymentRepository=local::file:./target/staging-deploy
+rem call mvnw jreleaser:full-release
 pause

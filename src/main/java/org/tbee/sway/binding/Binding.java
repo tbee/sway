@@ -15,7 +15,7 @@ public class Binding {
      *
      * @param bean
      * @param propertyName
-     * @return True if it is bound to this bean & property on either side of the binding
+     * @return True if it is bound to this bean and property on either side of the binding
      */
     public boolean bindsTo(Object bean, String propertyName) {
         return propertyConnector.getBean1().equals(bean) && propertyConnector.getProperty1Name().equals(propertyName) //
