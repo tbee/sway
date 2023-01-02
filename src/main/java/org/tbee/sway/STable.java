@@ -1,5 +1,10 @@
 package org.tbee.sway;
 
+import net.coderazzi.filters.gui.AutoChoices;
+import net.coderazzi.filters.gui.TableFilterHeader;
+import org.tbee.sway.format.Format;
+import org.tbee.sway.format.FormatRegistry;
+import org.tbee.sway.table.FormatCellRenderer;
 import org.tbee.sway.table.STableCore;
 import org.tbee.sway.table.STableNavigator;
 import org.tbee.sway.table.TableColumn;
@@ -7,11 +12,14 @@ import org.tbee.util.ClassUtil;
 
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
+import javax.swing.table.TableCellRenderer;
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
+import java.text.FieldPosition;
+import java.text.ParsePosition;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -21,7 +29,6 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 // TODO
-// - filter
 // - column reordering (map the column in the table model)
 // - column hiding (map the column in the table model)
 // - TAB/enter key behavior: skip edit to next editable cell
@@ -68,7 +75,7 @@ import java.util.stream.Collectors;
  *     <li>Scrollbars</li>
  *     <li>Automatic refresh of cells</li>
  *     <li>Sorting</li>
- *     <li>Filtering (TODO)</li>
+ *     <li>Filtering</li>
  *     <li>Pagination (TODO)</li>
  *     <li>Tooltips per cell (TODO)</li>
  *     <li>Copy / paste functionality (TODO)</li>
@@ -141,6 +148,16 @@ import java.util.stream.Collectors;
  * Note: if the selection mode does not match the selection
  * (e.g. selection mode is single, but the to-be-set selection has multiple items),
  * the last possible selection is what is selected (so the last item in the selection will be selected).
+ *
+ * <h2>Filtering</h2>
+ * <pre>{@code
+ * var sTable = new STable<SomeBean>() //
+ *         .columns(SomeBean.class, "name", "distance", "roundtrip") //
+ *         .filterHeaderEnabled(true) // This will show the filter header
+ *         .data(aListOfSomeBeans);
+ * }
+ * </pre>
+ * Note: the FilterHeader functionality is provided by Coderazzi (https://coderazzi.net/tablefilter/)
  *
  * @param <TableType>
  */
@@ -461,6 +478,89 @@ public class STable<TableType> extends SBorderPanel {
     }
     public STable<TableType> monitorBean(Class<TableType> v) {
         setMonitorBean(v);
+        return this;
+    }
+
+    // ===========================================================================
+    // Stuff
+
+    /** Filter header used in the table */
+    private TableFilterHeader tableFilterHeader = null;
+
+    /**
+     *
+     * @return Coderazzi's filter header component used in the table or null if never used
+     */
+    public TableFilterHeader getTableFilterHeader() {
+        return tableFilterHeader;
+    }
+
+    /**
+     * True if filter header is enabled.
+     *
+     * @return
+     */
+    public boolean isFilterHeaderEnabled() {
+        return tableFilterHeader != null && tableFilterHeader.isEnabled();
+    }
+
+    /**
+     * Enables or disables (and hides) filter header.
+     * @param v True to enable the filter header component
+     */
+    public void setFilterHeaderEnabled(boolean v) {
+        // if filter was off and enabled, create and attach it
+        if (v == true && tableFilterHeader == null) {
+            tableFilterHeader = new TableFilterHeader(this.sTableCore, AutoChoices.ENABLED);
+            setupFilterHeaderRenderers();
+        }
+        if (tableFilterHeader != null) {
+            tableFilterHeader.setVisible(v);
+            tableFilterHeader.setEnabled(v);
+        }
+    }
+
+    private void setupFilterHeaderRenderers() {
+
+        for (TableColumn tableColumn : sTableCore.getColumns()) {
+            Class columnClass = tableColumn.getType();
+
+            // Try to determine the used format
+            Format format = null;
+            TableCellRenderer renderer = tableColumn.getRenderer();
+            if (format == null && renderer instanceof FormatCellRenderer formatCellRenderer) {
+                format = formatCellRenderer.getFormat();
+            }
+            if (format == null) {
+                format = FormatRegistry.findFor(columnClass);
+            }
+            // If format found, configure it
+            if (format != null) {
+                if (logger.isDebugEnabled()) logger.debug("Found format for " + columnClass + ", add renderer for filter header");
+                Format formatFinal = format;
+                tableFilterHeader.getParserModel().setFormat(columnClass, new java.text.Format() {
+                    @Override
+                    public StringBuffer format(Object obj, StringBuffer toAppendTo, FieldPosition pos) {
+                        return new StringBuffer(formatFinal.toString(obj));
+                    }
+
+                    @Override
+                    public Object parseObject(String source, ParsePosition pos) {
+                        return formatFinal.toValue(source);
+                    }
+                });
+                return;
+            }
+        }
+    }
+
+    /**
+     *
+     * @param v
+     * @return
+     */
+    public STable<TableType> filterHeaderEnabled(boolean v) {
+        setFilterHeaderEnabled(v);
         return this;
     }
 

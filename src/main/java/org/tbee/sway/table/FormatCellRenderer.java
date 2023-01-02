@@ -15,6 +15,10 @@ public class FormatCellRenderer<T> extends javax.swing.table.DefaultTableCellRen
         this.format = format;
     }
 
+    public Format<T> getFormat() {
+        return format;
+    }
+
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
         JLabel jLabel = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
         jLabel.setText(format.toString((T) value));

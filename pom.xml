@@ -67,6 +67,12 @@
             <artifactId>miglayout-swing</artifactId>
             <version>11.0</version>
         </dependency>
+        <dependency>
+            <groupId>net.coderazzi</groupId>
+            <artifactId>tablefilter-swing</artifactId>
+            <version>5.5.4</version>
+            <scope>provided</scope>
+        </dependency>
 
         <dependency>
             <groupId>org.slf4j</groupId>

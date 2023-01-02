@@ -49,6 +49,9 @@ public class STableApp {
                     .selectionMode(STable.SelectionMode.MULTIPLE) //
                     .onSelectionChanged(selection -> System.out.println("onSelectionChanged: " + selection)) //
 
+                    // filter
+                    .filterHeaderEnabled(true) //
+
                     // data
                     .data(cities) //
              ;
