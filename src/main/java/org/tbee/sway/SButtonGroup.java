@@ -20,7 +20,6 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 // TODO:
-// - of() using FormatRegistry
 // - implement logic ourselves, and extend AbstractBean?
 
 /**
