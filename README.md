@@ -69,7 +69,7 @@ public class LongFormat implements Format<Long> {
 } 
 
 // Register the format once to use it in many components
-FormatRegistry.register(Long.class, new LongFormat()); // Formats must be stateless and threat safe.   
+FormatRegistry.register(Long.class, new LongFormat()); // Formats must be stateless and thread safe.   
 ```
 
 The FormatRegisty is used by all components, STextField, STable, SButtonGroup, ..., so it is only necessary to register a format once.
