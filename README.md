@@ -56,6 +56,6 @@ Asking for help is always an option. But so is participating, creating pull requ
 ## Third party
 * Binding uses Karsten Lentzsch's JGoodies underneath (https://www.jgoodies.com/freeware/libraries/binding/).
 * STable's filter header is provided by Coderazzi (https://coderazzi.net/tablefilter/).
-* STable's navigation bar is based on CoModia's implementation (project is no longer available online).
+* STable's navigation bar is based on CoMedia's implementation (project is no longer available online).
 * Mikael Grev's excelent MigLayout is used for several layouts (https://www.miglayout.com/).
 
