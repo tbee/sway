@@ -43,6 +43,34 @@ var sBorderPanel = new SBorderPanel(new STable()) //
          
 ```
 
+## Format
+In order to not have to repeat the same formatting over and over again, Sway has a FormatRegistry.
+
+A simple example:
+
+``` java
+public class LongFormat implements Format<Long> {
+
+    @Override
+    public String toString(Long value) {
+        return value == null ? "" : value.toString();
+    }
+
+    @Override
+    public Long toValue(String string) {
+        return string.isBlank() ? null : Long.parseLong(string);
+    }
+} 
+
+FormatRegistry.register(Long.class, new LongFormat()); // Formats must be stateless and threat safe.   
+```
+
+The FormatRegisty is used by all components, STextField, STable, SButtonGroup, ..., so it is only necessary to register a format once.
+This also is true for domain entities, like for example a "City" or "Employee".
+
+
+Format also allows to define things like horizontal alignment and icon.
+
 ## Compatibility
 The components are still the standard Swing components, only with an opinionated API, but they should blend-in nicely in existing applications.
 
