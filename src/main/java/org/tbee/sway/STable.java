@@ -157,7 +157,6 @@ import java.util.stream.Collectors;
  *         .data(aListOfSomeBeans);
  * }
  * </pre>
- * Note: the FilterHeader functionality is provided by Coderazzi (https://coderazzi.net/tablefilter/)
  *
  * @param <TableType>
  */
