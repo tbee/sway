@@ -29,10 +29,10 @@ import java.util.function.Supplier;
  * <br/>
  * Basic use:
  * <pre>{@code
- * var sButtonGroup = new SButtonGroup<Integer>() //
- *        .add(1, button1) //
- *        .add(2, button2) //
- *        .add(3, button3) //
+ * var sButtonGroup = new SButtonGroup<City>() //
+ *        .add(amsterdam, new SToggleButton("Amsterdam")) //
+ *        .add(berlin, new SToggleButton("Berlin")) //
+ *        .add(rome, new SToggleButton("Rome)) //
  *        .value(2);
  * sButtonGroup.getValue();
  * }
@@ -41,10 +41,15 @@ import java.util.function.Supplier;
  * <pre>{@code
  * race.setPosition(1);
  * var sButtonGroup = new SButtonGroup<Integer>() //
- *        .add(1, button1) //
- *        .add(2, button2) //
- *        .add(3, button3) //
+ *        .add(1, new SRadioButton("1")) //
+ *        .add(2, new SRadioButton("2") //
+ *        .add(3, new SRadioButton("3") //
  *        .bind(race, "position");
+ * }
+ * </pre>
+ * Or combined with Format and FormatRegistry:
+ * <pre>{@code
+ * var sButtonGroup = SButtonGroup.of(() -> new SRadioButton(), berlin, amsterdam, rome, paris);
  * }
  * </pre>
  */
@@ -252,7 +257,7 @@ public class SButtonGroup<T> extends ButtonGroup {
     // CONVENIENCE
 
     /**
-     * Create a buttongroup using a formatter
+     * Create a buttongroup using a format and factory (supplier)
      * @param format
      * @param supplier
      * @param values
@@ -272,7 +277,7 @@ public class SButtonGroup<T> extends ButtonGroup {
     }
 
     /**
-     * Create a buttongroup using a FormatRegistry
+     * Create a buttongroup using FormatRegistry and factory (supplier)
      * @param supplier
      * @param values, cannot be empty
      * @return
@@ -284,7 +289,7 @@ public class SButtonGroup<T> extends ButtonGroup {
     }
 
     /**
-     * Create a buttongroup using a FormatRegistry
+     * Create a buttongroup using FormatRegistry and factory (supplier)
      * @param supplier
      * @param values, cannot be empty
      * @return
@@ -293,6 +298,26 @@ public class SButtonGroup<T> extends ButtonGroup {
     public static <T> SButtonGroup<T> of(Supplier<AbstractButton> supplier, T... values) {
         Format<T> format = (Format<T>) FormatRegistry.findFor(values[0].getClass());
         return of(format, supplier, values);
+    }
+
+    /**
+     * Create a buttongroup with radiobuttons using FormatRegistry
+     * @param values, cannot be empty
+     * @return
+     * @param <T>
+     */
+    public static <T> SButtonGroup<T> ofRadioButtons(T... values) {
+        return of(() -> new SRadioButton(), values);
+    }
+
+    /**
+     * Create a buttongroup with toggle buttons using FormatRegistry
+     * @param values, cannot be empty
+     * @return
+     * @param <T>
+     */
+    public static <T> SButtonGroup<T> ofToggleButtons(T... values) {
+        return of(() -> new SToggleButton(), values);
     }
 
     // ===============================================================================================
