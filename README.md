@@ -26,8 +26,10 @@ Sway is not there yet, but the idea of what it is trying to do should be clear.
 Some more examples:
 
 ``` java
+// A label can have its text and icon property bound
 var sLabel = new Slabel().bindText(city, "name");
 
+// ButtonGroup revolves around the associated value, not the button
 var sButtonGroup = new SButtonGroup<Integer>() //
         .add(1, new SToggleButton("1")) //
         .add(2, new SToggleButton("2")) //
@@ -35,8 +37,11 @@ var sButtonGroup = new SButtonGroup<Integer>() //
         .bind(race, "postion");
 var sPanel = new SFlowPanel(sButtonGroup.getButtons());
 
-var sButtonGroupCities = new SButtonGroup.ofRadioButtons(amsterdam, berlin, rome);
+// ButtonGroup has some practical convenience methods
+var sButtonGroupCities = SButtonGroup.ofRadioButtons(amsterdam, berlin, rome);
+var sPanelCities = new SFlowPanel(sButtonGroupCities.getButtons());
 
+// Explicit panels for layouts, with correcsponding methods.
 var sBorderPanel = new SBorderPanel(new STable()) //
          .west(new SomeNavigationMenu()) //
          .east(new SomeContextLinks());
@@ -49,6 +54,7 @@ In order to not have to repeat the same formatting over and over again, Sway has
 A simple example:
 
 ``` java
+// Only two methods need to be implemented, the rest are optional
 public class LongFormat implements Format<Long> {
 
     @Override
@@ -62,6 +68,7 @@ public class LongFormat implements Format<Long> {
     }
 } 
 
+// Register the format once to use it in many components
 FormatRegistry.register(Long.class, new LongFormat()); // Formats must be stateless and threat safe.   
 ```
 
