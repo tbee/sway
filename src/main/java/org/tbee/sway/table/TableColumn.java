@@ -26,7 +26,7 @@ public class TableColumn<TableType, ColumnType extends Object> {
 
 
     // =======================================================================
-    // TABLE(MODEL)
+    // TABLE
 
     /**
      * table
@@ -45,16 +45,16 @@ public class TableColumn<TableType, ColumnType extends Object> {
     }
 
     private void fireTableStructureChanged() {
-        TableModel<TableType> tableModel = sTable.getSTableCore().getTableModel();
-        if (tableModel != null) {
-            tableModel.fireTableStructureChanged();
+        if (sTable == null) {
+            return;
         }
+        sTable.getSTableCore().getTableModel().fireTableStructureChanged();
     }
     private void fireTableDataChanged() {
-        TableModel<TableType> tableModel = sTable.getSTableCore().getTableModel();
-        if (tableModel != null) {
-            tableModel.fireTableDataChanged();
+        if (sTable == null) {
+            return;
         }
+        sTable.getSTableCore().getTableModel().fireTableDataChanged();
     }
 
     // =======================================================================
@@ -214,6 +214,7 @@ public class TableColumn<TableType, ColumnType extends Object> {
     /** Renderer: */
     public void setRenderer(TableCellRenderer value) {
         renderer = value;
+        fireTableStructureChanged();
     }
     public TableCellRenderer getRenderer() { return renderer; }
     public TableColumn<TableType, ColumnType> renderer(TableCellRenderer value) { setRenderer(value); return this; }
@@ -249,6 +250,7 @@ public class TableColumn<TableType, ColumnType extends Object> {
     /** sortBy: */
     public void setSorting(Comparator<ColumnType> value) {
         sorting = value;
+        fireTableStructureChanged();
     }
     public Comparator<ColumnType> getSorting() {
         return sorting;

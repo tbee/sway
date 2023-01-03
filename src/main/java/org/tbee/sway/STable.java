@@ -331,8 +331,8 @@ public class STable<TableType> extends SBorderPanel {
             // If no properties are specified, assume all. Order is undefined.
             if (propertyNames.length == 0) {
                 var excludedPropertyNames = List.of("class", "propertyChangeListeners", "vetoableChangeListeners");
-                propertyNames = propertyDescriptorsMap.keySet() //
-                        .stream().filter(pn -> !excludedPropertyNames.contains(pn)) //
+                propertyNames = propertyDescriptorsMap.keySet().stream() //
+                        .filter(pn -> !excludedPropertyNames.contains(pn)) //
                         .toList().toArray(new String[]{});
             }
 
@@ -343,38 +343,13 @@ public class STable<TableType> extends SBorderPanel {
                     throw new IllegalArgumentException("Property '" + propertyName + "' not found in bean " + tableTypeClass);
                 }
 
-                // Handle primitive types
-                Class<?> propertyType = propertyDescriptor.getPropertyType();
-                if (propertyType.isPrimitive()) {
-                    propertyType = ClassUtil.primitiveToClass(propertyType);
-                }
-
                 // Add column
+                Class<?> propertyType = ClassUtil.primitiveToClass(propertyDescriptor.getPropertyType());
                 column((Class<Object>) propertyType) // It's okay, JTable will still use the appropriate renderer and editor
                         .id(propertyName) //
-                        .title(propertyName) //
-                        .valueSupplier(bean -> {
-                            try {
-                                return propertyDescriptor.getReadMethod().invoke(bean);
-                            }
-                            catch (IllegalAccessException e) {
-                                throw new RuntimeException(e);
-                            }
-                            catch (InvocationTargetException e) {
-                                throw new RuntimeException(e);
-                            }
-                        }) //
-                        .valueConsumer((bean,value) -> {
-                            try {
-                                propertyDescriptor.getWriteMethod().invoke(bean, value);
-                            }
-                            catch (IllegalAccessException e) {
-                                throw new RuntimeException(e);
-                            }
-                            catch (InvocationTargetException e) {
-                                throw new RuntimeException(e);
-                            }
-                        }) //
+                        .title(propertyName) // TODO: i18n / translation
+                        .valueSupplier(bean -> readFromPropertyDescriptor(propertyDescriptor, bean)) //
+                        .valueConsumer((bean,value) -> writeToPropertyDescriptor(propertyDescriptor, bean, value)) //
                         .editable(propertyDescriptor.getWriteMethod() != null) // if there is a write method then it is editable
                         .monitorProperty(propertyName) //
                 ;
@@ -383,15 +358,41 @@ public class STable<TableType> extends SBorderPanel {
         catch (IntrospectionException e) {
             throw new RuntimeException(e);
         }
+
+        // Also start monitor this bean
         monitorBean(tableTypeClass);
+
+        // Done
         return this;
+    }
+
+    private void writeToPropertyDescriptor(PropertyDescriptor propertyDescriptor, TableType bean, Object value) {
+        try {
+            propertyDescriptor.getWriteMethod().invoke(bean, value);
+        }
+        catch (IllegalAccessException | InvocationTargetException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private Object readFromPropertyDescriptor(PropertyDescriptor propertyDescriptor, TableType bean) {
+        try {
+            return propertyDescriptor.getReadMethod().invoke(bean);
+        }
+        catch (IllegalAccessException | InvocationTargetException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 
     // ===========================================================================
     // SELECTION
 
-    enum SelectionMode{ SINGLE(ListSelectionModel.SINGLE_SELECTION), INTERVAL(ListSelectionModel.SINGLE_INTERVAL_SELECTION), MULTIPLE(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+    enum SelectionMode{ //
+        SINGLE(ListSelectionModel.SINGLE_SELECTION), //
+        INTERVAL(ListSelectionModel.SINGLE_INTERVAL_SELECTION), //
+        MULTIPLE(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+
          private int code;
          private SelectionMode(int code) {
              this.code = code;
