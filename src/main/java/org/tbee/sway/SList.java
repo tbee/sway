@@ -6,15 +6,18 @@ import org.tbee.sway.support.SwayUtil;
 
 import javax.swing.JScrollPane;
 import java.awt.Color;
+import java.util.Collections;
 import java.util.List;
 
 public class SList<T> extends SBorderPanel {
 
-    final private SListCore<T> sListCore = new SListCore<>();
-    final private JScrollPane jScrollPane = new JScrollPane(sListCore);
+    final private SListCore<T> sListCore;
+    final private JScrollPane jScrollPane;
 
     public SList() {
         super();
+        sListCore = new SListCore<>(this);
+        jScrollPane = new JScrollPane(sListCore);
         center(jScrollPane);
         sListCore.setCellRenderer(new DefaultListCellRenderer(this));
     }
@@ -23,23 +26,29 @@ public class SList<T> extends SBorderPanel {
         return sListCore;
     }
 
+
     // =======================================================================
     // DATA
+
+    private List<T> data = List.of();
 
     /**
      *
      * @param v
      */
     public void setData(List<T> v) {
-        sListCore.getListModel().setData(v);
+//        unregisterFromAllBeans();
+        this.data = Collections.unmodifiableList(v); // We don't allow outside changes to the provided list
+//        registerToAllBeans();
     }
     public List<T> getData() {
-        return sListCore.getListModel().getData();
+        return this.data;
     }
     public SList<T> data(List<T> v) {
         setData(v);
         return this;
     }
+
 
     // ===========================================================================
     // RENDERING e.g. alternate row colors

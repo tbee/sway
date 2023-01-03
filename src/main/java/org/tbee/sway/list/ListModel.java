@@ -1,36 +1,23 @@
 package org.tbee.sway.list;
 
-import java.util.Collections;
-import java.util.List;
+import org.tbee.sway.SList;
 
 public class ListModel<T> extends javax.swing.AbstractListModel<T> {
 
+    final private SList<T> sList;
+
+    public ListModel(SList<T> sList) {
+        this.sList = sList;
+    }
+
     @Override
     public int getSize() {
-        return data.size();
+        return sList.getData().size();
     }
 
     @Override
     public T getElementAt(int index) {
-        return data.get(index);
+        return sList.getData().get(index);
     }
 
-
-    // =======================================================================
-    // DATA
-
-    private List<T> data = List.of();
-
-    /**
-     *
-     * @param v
-     */
-    public void setData(List<T> v) {
-//        unregisterFromAllBeans();
-        this.data = Collections.unmodifiableList(v); // We don't allow outside changes to the provided list
-//        registerToAllBeans();
-    }
-    public List<T> getData() {
-        return this.data;
-    }
 }

@@ -1,43 +1,22 @@
 package org.tbee.sway.list;
 
+import org.tbee.sway.SList;
+
 import javax.swing.JList;
-import java.util.Collections;
-import java.util.List;
 
 public class SListCore<T> extends JList<T> {
 
-    private final ListModel<T> listModel = new ListModel<>();
+    final private SList<T> sList;
+    private final ListModel<T> listModel;
 
-    public SListCore() {
+    public SListCore(SList<T> sList) {
         super();
+        this.sList = sList;
+        this.listModel = new ListModel<>(sList);
         setModel(listModel);
     }
 
     public ListModel<T> getListModel() {
         return listModel;
     }
-
-    // =======================================================================
-    // DATA
-
-    private List<T> data = List.of();
-
-    /**
-     *
-     * @param v
-     */
-    public void setData(List<T> v) {
-//        unregisterFromAllBeans();
-        this.data = Collections.unmodifiableList(v); // We don't allow outside changes to the provided list
-//        registerToAllBeans();
-    }
-    public List<T> getData() {
-        return this.data;
-    }
-    public SListCore<T> data(List<T> v) {
-        setData(v);
-        return this;
-    }
-
-
 }
