@@ -20,7 +20,7 @@ var sTextField = STextField.ofBind(city, "name");
 ```
 
 Well, you've come to the right place. 
-Take a look at the components amd their JavaDoc present in org.tbee.sway and see if they are easy enough to use.
+Take a look at the components and their JavaDoc present in org.tbee.sway and see if they are easy enough to use.
 Sway is not there yet, but the idea of what it is trying to do should be clear.
 
 Some more examples:

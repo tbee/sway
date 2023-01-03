@@ -3,6 +3,7 @@ package org.tbee.sway;
 import net.coderazzi.filters.gui.AutoChoices;
 import net.coderazzi.filters.gui.TableFilterHeader;
 import org.tbee.sway.format.Format;
+import org.tbee.sway.format.FormatAsJavaTextFormat;
 import org.tbee.sway.format.FormatRegistry;
 import org.tbee.sway.table.FormatCellRenderer;
 import org.tbee.sway.table.STableCore;
@@ -18,8 +19,6 @@ import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
-import java.text.FieldPosition;
-import java.text.ParsePosition;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -534,21 +533,9 @@ public class STable<TableType> extends SBorderPanel {
                 format = FormatRegistry.findFor(columnClass);
             }
             // If format found, configure it
-            if (format != null) {
+            if (format != null && tableFilterHeader.getParserModel().getFormat(columnClass) == null) {
                 if (logger.isDebugEnabled()) logger.debug("Found format for " + columnClass + ", add renderer for filter header");
-                Format formatFinal = format;
-                tableFilterHeader.getParserModel().setFormat(columnClass, new java.text.Format() {
-                    @Override
-                    public StringBuffer format(Object obj, StringBuffer toAppendTo, FieldPosition pos) {
-                        return new StringBuffer(formatFinal.toString(obj));
-                    }
-
-                    @Override
-                    public Object parseObject(String source, ParsePosition pos) {
-                        return formatFinal.toValue(source);
-                    }
-                });
-                return;
+                tableFilterHeader.getParserModel().setFormat(columnClass, new FormatAsJavaTextFormat(format));
             }
         }
     }

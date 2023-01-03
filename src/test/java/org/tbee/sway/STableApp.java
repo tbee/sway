@@ -1,6 +1,7 @@
 package org.tbee.sway;
 
 import org.tbee.sway.format.Format;
+import org.tbee.sway.support.DebugUtil;
 
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
@@ -23,6 +24,7 @@ public class STableApp {
             Format<City> cityFormat = new CityFormat(cities);
 
             var sTable = new STable<City>() //
+                    .name("mySTable") //
 
                     // add columns via lambda's (no reflection)
                     .column(String.class).title("Name CT").valueSupplier(d -> d.getName()).valueConsumer((d,v) -> d.setName(v)).monitorProperty(City.NAME).table() //
@@ -61,6 +63,8 @@ public class STableApp {
             jFrame.setSize(1600, 800);
             jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             jFrame.setVisible(true);
+
+            System.out.println(DebugUtil.componentTreeAsString(jFrame));
         });
     }
 }
