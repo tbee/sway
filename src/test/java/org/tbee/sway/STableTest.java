@@ -17,6 +17,9 @@ public class STableTest extends TestBase {
     // https://joel-costigliola.github.io/assertj/assertj-swing-input.html
     // https://joel-costigliola.github.io/assertj/assertj-swing-advanced.html#custom-editors
 
+    // NOTES:
+    // - it is difficult to test TableFilter, so we trust Coderazzi to have done that for us. Does leave the enhancements like the automatic Renderer based on Format.
+
     private STable sTable;
 
     @Test
