@@ -1,7 +1,7 @@
 package org.tbee.sway.table;
 
+import org.tbee.sway.STable;
 import org.tbee.sway.support.FocusInterpreter;
-import org.tbee.sway.support.SwayUtil;
 
 import javax.swing.UIManager;
 import javax.swing.table.TableCellEditor;
@@ -25,9 +25,11 @@ public class STableCore<TableType> extends javax.swing.JTable {
     static private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(STableCore.class);
 
     final private TableRowSorter<TableModel<TableType>> tableRowSorter;
+    final private STable<TableType> sTable;
 
-    public STableCore() {
-        super(new TableModel<TableType>());
+    public STableCore(STable<TableType> sTable) {
+        super(new TableModel<TableType>(sTable));
+        this.sTable = sTable;
 
         // TODO: somehow the setComparator is forgotten, so we override the relevant methods. But we should figure out why this is.
         tableRowSorter = new TableRowSorter<>(getTableModel()){
@@ -235,113 +237,6 @@ public class STableCore<TableType> extends javax.swing.JTable {
         return super.getCellEditor(row, column);
     }
 
-    // ===========================================================================
-    // RENDERING e.g. alternate row colors
-
-    /** Alternate the background color for rows */
-    public void setAlternateRowColor(boolean v) {
-        firePropertyChange(ALTERNATEROWCOLOR, this.alternateRowColor, this.alternateRowColor = v);
-    }
-    public boolean getAlternateRowColor() {
-        return alternateRowColor;
-    }
-    private boolean alternateRowColor = true;
-    final static public String ALTERNATEROWCOLOR = "alternateRowColor";
-    public STableCore<TableType> alternateRowColor(boolean v) {
-        setAlternateRowColor(v);
-        return this;
-    }
-
-    /** The color to use for the alternating background color for rows */
-    public void setFirstAlternateRowColor(Color v) {
-        firePropertyChange(FIRSTALTERNATEROWCOLOR, this.firstAlternateRowColor, this.firstAlternateRowColor = v);
-    }
-    public Color getFirstAlternateRowColor() {
-        return firstAlternateRowColor;
-    }
-    private Color firstAlternateRowColor = SwayUtil.getFirstAlternateRowColor();
-    final static public String FIRSTALTERNATEROWCOLOR = "firstAlternateRowColor";
-    public STableCore<TableType> firstAlternateRowColor(Color v) {
-        firstAlternateRowColor(v);
-        return this;
-    }
-
-    /** The second color to use for the alternating background color for rows */
-    public void setSecondAlternateRowColor(Color v) {
-        firePropertyChange(SECONDALTERNATEROWCOLOR, this.secondAlternateRowColor, this.secondAlternateRowColor = v);
-    }
-    public Color getSecondAlternateRowColor() {
-        return secondAlternateRowColor;
-    }
-    private Color secondAlternateRowColor = SwayUtil.getSecondAlternateRowColor();
-    final static public String SECONDALTERNATEROWCOLOR = "secondAlternateRowColor";
-    public STableCore<TableType> secondAlternateRowColor(Color v) {
-        setSecondAlternateRowColor(v);
-        return this;
-    }
-
-    /** UneditableCellsShowAsDisabled */
-    public void setUneditableCellsShowAsDisabled(boolean v) {
-        firePropertyChange(UNEDITABLECELLSSHOWASDISABLED, this.uneditableCellsShowAsDisabled, this.uneditableCellsShowAsDisabled = v);
-    }
-    public boolean getUneditableCellsShowAsDisabled() {
-        return uneditableCellsShowAsDisabled;
-    }
-    private boolean uneditableCellsShowAsDisabled = true;
-    final static public String UNEDITABLECELLSSHOWASDISABLED = "uneditableCellsShowAsDisabled";
-    public STableCore<TableType> uneditableCellsShowAsDisabled(boolean v) {
-        setUneditableCellsShowAsDisabled(v);
-        return this;
-    }
-
-    /** DisabledTableShowsCellsAsDisabled */
-    public void setDisabledTableShowsCellsAsDisabled(boolean v) {
-        firePropertyChange(DISABLEDTABLESHOWSCELLSASDISABLED, this.disabledTableShowsCellsAsDisabled, this.disabledTableShowsCellsAsDisabled = v);
-    }
-    public boolean getDisabledTableShowsCellsAsDisabled() {
-        return disabledTableShowsCellsAsDisabled;
-    }
-    private boolean disabledTableShowsCellsAsDisabled = true;
-    final static public String DISABLEDTABLESHOWSCELLSASDISABLED = "disabledTableShowsCellsAsDisabled";
-    public STableCore<TableType> disabledTableShowsCellsAsDisabled(boolean v) {
-        setDisabledTableShowsCellsAsDisabled(v);
-        return this;
-    }
-
-    /** Editable */
-    public void setEditable(boolean v) {
-        editable = v;
-        repaint();
-    }
-    public boolean isEditable() {
-        return editable;
-    }
-    private boolean editable = true;
-    public STableCore<TableType> editable(boolean v) {
-        setEditable(v);
-        return this;
-    }
-
-    /** UneditableTableShowsCellsAsDisabled */
-    public void setUneditableTableShowsCellsAsDisabled(boolean v) {
-        firePropertyChange(UNEDITABLETABLESHOWSCELLSASDISABLED, this.uneditableTableShowsCellsAsDisabled, this.uneditableTableShowsCellsAsDisabled = v);
-    }
-    public boolean getUneditableTableShowsCellsAsDisabled() {
-        return uneditableTableShowsCellsAsDisabled;
-    }
-    private boolean uneditableTableShowsCellsAsDisabled = true;
-    final static public String UNEDITABLETABLESHOWSCELLSASDISABLED = "uneditableTableShowsCellsAsDisabled";
-    public STableCore<TableType> uneditableTableShowsCellsAsDisabled(boolean v) {
-        setUneditableTableShowsCellsAsDisabled(v);
-        return this;
-    }
-
-    /** must repaint because cells may be shown disabled */
-    public void setEnabled(boolean v) {
-        super.setEnabled(v);
-        repaint();
-    }
-
     /**
      * Updated rendering
      */
@@ -351,9 +246,9 @@ public class STableCore<TableType> extends javax.swing.JTable {
         Component component = super.prepareRenderer(renderer, row, col);
 
         // alternate the row color
-        if (getEditingRow() != row && alternateRowColor) {
+        if (getEditingRow() != row && sTable.getAlternateRowColor()) {
             if (!isRowSelected(row) || isPrinting) {
-                Color color = ((row % 2 != 0) ? getFirstAlternateRowColor() : getSecondAlternateRowColor());
+                Color color = ((row % 2 != 0) ? sTable.getFirstAlternateRowColor() : sTable.getSecondAlternateRowColor());
                 if (component.getBackground() != color) {
                     component.setBackground( color );
                 }
@@ -362,13 +257,13 @@ public class STableCore<TableType> extends javax.swing.JTable {
 
         // render disabled cells
         component.setEnabled(true);
-        if ( (disabledTableShowsCellsAsDisabled && component.isEnabled() != isEnabled())     // if table is disabled
-          || (uneditableTableShowsCellsAsDisabled  && component.isEnabled() != isEditable()) // if table is marked uneditable
+        if ( (sTable.getDisabledTableShowsCellsAsDisabled() && component.isEnabled() != isEnabled())     // if table is disabled
+          || (sTable.getUneditableCellsShowAsDisabled()  && component.isEnabled() != sTable.isEditable()) // if table is marked uneditable
         ) {
             component.setEnabled(false);
         }
         // if the cell is not editable, show it as disabled
-        if (uneditableCellsShowAsDisabled && !isCellEditable(row, col)) {
+        if (sTable.getUneditableCellsShowAsDisabled() && !isCellEditable(row, col)) {
             component.setEnabled(false);
         }
 
@@ -399,32 +294,6 @@ public class STableCore<TableType> extends javax.swing.JTable {
      */
     public boolean isPrinting() {
         return isPrinting;
-    }
-
-    // ===========================================================================
-    // FLUENT API
-
-    public STableCore<TableType> name(String v) {
-        setName(v);
-        return this;
-    }
-
-    // ===========================================================================
-    // BINDING
-
-    /**
-     * monitorBean
-     */
-    public void setMonitorBean(Class<TableType> v) {
-        getTableModel().setMonitorBean(v);
-    }
-    public Class<TableType> getMonitorBean() {
-        return getTableModel().getMonitorBean();
-    }
-    private Class<TableType> monitorBean = null;
-    public STableCore<TableType> monitorBean(Class<TableType> v) {
-        setMonitorBean(v);
-        return this;
     }
 
     // ===========================================================================

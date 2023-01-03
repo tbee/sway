@@ -5,6 +5,7 @@ import net.coderazzi.filters.gui.TableFilterHeader;
 import org.tbee.sway.format.Format;
 import org.tbee.sway.format.FormatAsJavaTextFormat;
 import org.tbee.sway.format.FormatRegistry;
+import org.tbee.sway.support.SwayUtil;
 import org.tbee.sway.table.FormatCellRenderer;
 import org.tbee.sway.table.STableCore;
 import org.tbee.sway.table.STableNavigator;
@@ -50,7 +51,7 @@ import java.util.stream.Collectors;
 //   - automatically add a new row at the end of the table when in the last cell and press enter (ForEdit)
 //   - insert / delete keys
 // - set sort programmatically
-// - remove fluent api from STableCore
+// - remove fluent api from STableCore -> move all settings to STable and refer from STableCore.
 
 /**
  * <h2>Basic usage</h2>
@@ -169,7 +170,7 @@ public class STable<TableType> extends SBorderPanel {
     public STable() {
 
         // Create components
-        sTableCore = new STableCore<TableType>();
+        sTableCore = new STableCore<TableType>(this);
         JScrollPane scrollPane = new JScrollPane(sTableCore);
         STableNavigator tableNavigator = new STableNavigator(sTableCore);
 
@@ -463,7 +464,6 @@ public class STable<TableType> extends SBorderPanel {
         addSelectionChangedListener(onSelectionChangedListener);
         return this;
     }
-
     // ===========================================================================
     // BINDING
 
@@ -471,15 +471,17 @@ public class STable<TableType> extends SBorderPanel {
      * monitorBean
      */
     public void setMonitorBean(Class<TableType> v) {
-        sTableCore.setMonitorBean(v);
+        sTableCore.getTableModel().setMonitorBean(v);
     }
     public Class<TableType> getMonitorBean() {
-        return sTableCore.getMonitorBean();
+        return sTableCore.getTableModel().getMonitorBean();
     }
+    private Class<TableType> monitorBean = null;
     public STable<TableType> monitorBean(Class<TableType> v) {
         setMonitorBean(v);
         return this;
     }
+
 
     // ===========================================================================
     // FilterHeader
@@ -557,12 +559,13 @@ public class STable<TableType> extends SBorderPanel {
 
     /** Alternate the background color for rows */
     public void setAlternateRowColor(boolean v) {
-        sTableCore.setAlternateRowColor(v);
+        firePropertyChange(ALTERNATEROWCOLOR, this.alternateRowColor, this.alternateRowColor = v);
     }
     public boolean getAlternateRowColor() {
-        return sTableCore.getAlternateRowColor();
+        return alternateRowColor;
     }
-    //final static public String ALTERNATEROWCOLOR = "alternateRowColor";
+    private boolean alternateRowColor = true;
+    final static public String ALTERNATEROWCOLOR = "alternateRowColor";
     public STable<TableType> alternateRowColor(boolean v) {
         setAlternateRowColor(v);
         return this;
@@ -570,12 +573,13 @@ public class STable<TableType> extends SBorderPanel {
 
     /** The color to use for the alternating background color for rows */
     public void setFirstAlternateRowColor(Color v) {
-        sTableCore.setFirstAlternateRowColor(v);
+        firePropertyChange(FIRSTALTERNATEROWCOLOR, this.firstAlternateRowColor, this.firstAlternateRowColor = v);
     }
     public Color getFirstAlternateRowColor() {
-        return sTableCore.getFirstAlternateRowColor();
+        return firstAlternateRowColor;
     }
-    //final static public String FIRSTALTERNATEROWCOLOR = "firstAlternateRowColor";
+    private Color firstAlternateRowColor = SwayUtil.getFirstAlternateRowColor();
+    final static public String FIRSTALTERNATEROWCOLOR = "firstAlternateRowColor";
     public STable<TableType> firstAlternateRowColor(Color v) {
         firstAlternateRowColor(v);
         return this;
@@ -583,12 +587,13 @@ public class STable<TableType> extends SBorderPanel {
 
     /** The second color to use for the alternating background color for rows */
     public void setSecondAlternateRowColor(Color v) {
-        sTableCore.setSecondAlternateRowColor(v);
+        firePropertyChange(SECONDALTERNATEROWCOLOR, this.secondAlternateRowColor, this.secondAlternateRowColor = v);
     }
     public Color getSecondAlternateRowColor() {
-        return sTableCore.getSecondAlternateRowColor();
+        return secondAlternateRowColor;
     }
-    //final static public String SECONDALTERNATEROWCOLOR = "secondAlternateRowColor";
+    private Color secondAlternateRowColor = SwayUtil.getSecondAlternateRowColor();
+    final static public String SECONDALTERNATEROWCOLOR = "secondAlternateRowColor";
     public STable<TableType> secondAlternateRowColor(Color v) {
         setSecondAlternateRowColor(v);
         return this;
@@ -596,12 +601,13 @@ public class STable<TableType> extends SBorderPanel {
 
     /** UneditableCellsShowAsDisabled */
     public void setUneditableCellsShowAsDisabled(boolean v) {
-        sTableCore.setUneditableCellsShowAsDisabled(v);
+        firePropertyChange(UNEDITABLECELLSSHOWASDISABLED, this.uneditableCellsShowAsDisabled, this.uneditableCellsShowAsDisabled = v);
     }
     public boolean getUneditableCellsShowAsDisabled() {
-        return sTableCore.getUneditableCellsShowAsDisabled();
+        return uneditableCellsShowAsDisabled;
     }
-    //final static public String UNEDITABLECELLSSHOWASDISABLED = "uneditableCellsShowAsDisabled";
+    private boolean uneditableCellsShowAsDisabled = true;
+    final static public String UNEDITABLECELLSSHOWASDISABLED = "uneditableCellsShowAsDisabled";
     public STable<TableType> uneditableCellsShowAsDisabled(boolean v) {
         setUneditableCellsShowAsDisabled(v);
         return this;
@@ -609,12 +615,13 @@ public class STable<TableType> extends SBorderPanel {
 
     /** DisabledTableShowsCellsAsDisabled */
     public void setDisabledTableShowsCellsAsDisabled(boolean v) {
-        sTableCore.setDisabledTableShowsCellsAsDisabled(v);
+        firePropertyChange(DISABLEDTABLESHOWSCELLSASDISABLED, this.disabledTableShowsCellsAsDisabled, this.disabledTableShowsCellsAsDisabled = v);
     }
     public boolean getDisabledTableShowsCellsAsDisabled() {
-        return sTableCore.getDisabledTableShowsCellsAsDisabled();
+        return disabledTableShowsCellsAsDisabled;
     }
-    //final static public String DISABLEDTABLESHOWSCELLSASDISABLED = "disabledTableShowsCellsAsDisabled";
+    private boolean disabledTableShowsCellsAsDisabled = true;
+    final static public String DISABLEDTABLESHOWSCELLSASDISABLED = "disabledTableShowsCellsAsDisabled";
     public STable<TableType> disabledTableShowsCellsAsDisabled(boolean v) {
         setDisabledTableShowsCellsAsDisabled(v);
         return this;
@@ -622,11 +629,13 @@ public class STable<TableType> extends SBorderPanel {
 
     /** Editable */
     public void setEditable(boolean v) {
-        sTableCore.setEditable(v);
+        editable = v;
+        repaint();
     }
     public boolean isEditable() {
-        return sTableCore.isEditable();
+        return editable;
     }
+    private boolean editable = true;
     public STable<TableType> editable(boolean v) {
         setEditable(v);
         return this;
@@ -634,16 +643,24 @@ public class STable<TableType> extends SBorderPanel {
 
     /** UneditableTableShowsCellsAsDisabled */
     public void setUneditableTableShowsCellsAsDisabled(boolean v) {
-        sTableCore.setUneditableTableShowsCellsAsDisabled(v);
+        firePropertyChange(UNEDITABLETABLESHOWSCELLSASDISABLED, this.uneditableTableShowsCellsAsDisabled, this.uneditableTableShowsCellsAsDisabled = v);
     }
     public boolean getUneditableTableShowsCellsAsDisabled() {
-        return sTableCore.getUneditableTableShowsCellsAsDisabled();
+        return uneditableTableShowsCellsAsDisabled;
     }
-    //final static public String UNEDITABLETABLESHOWSCELLSASDISABLED = "uneditableTableShowsCellsAsDisabled";
+    private boolean uneditableTableShowsCellsAsDisabled = true;
+    final static public String UNEDITABLETABLESHOWSCELLSASDISABLED = "uneditableTableShowsCellsAsDisabled";
     public STable<TableType> uneditableTableShowsCellsAsDisabled(boolean v) {
         setUneditableTableShowsCellsAsDisabled(v);
         return this;
     }
+
+    /** must repaint because cells may be shown disabled */
+    public void setEnabled(boolean v) {
+        super.setEnabled(v);
+        repaint();
+    }
+
 
     // ===========================================================================
     // FLUENT API
@@ -651,7 +668,7 @@ public class STable<TableType> extends SBorderPanel {
     @Override
     public void setName(String v) {
         super.setName(v);
-        sTableCore.name(v + ".sTableCore"); // For tests we need to address the actual table
+        sTableCore.setName(v + ".sTableCore"); // For tests we need to address the actual table
     }
     public STable<TableType> name(String v) {
         setName(v);
