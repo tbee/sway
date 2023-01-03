@@ -1,5 +1,6 @@
 package org.tbee.sway;
 
+import org.assertj.swing.core.ComponentLookupScope;
 import org.assertj.swing.edt.FailOnThreadViolationRepaintManager;
 import org.assertj.swing.edt.GuiActionRunner;
 import org.assertj.swing.fixture.FrameFixture;
@@ -30,6 +31,7 @@ public class TestBase extends AssertJSwingTestCaseTemplate {
     @BeforeEach
     public final void beforeEach() throws Exception {
         this.setUpRobot();
+        robot().settings().componentLookupScope(ComponentLookupScope.ALL); // also find hidden components
     }
 
     @AfterEach
