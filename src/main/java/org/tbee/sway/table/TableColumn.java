@@ -32,38 +32,28 @@ public class TableColumn<TableType, ColumnType extends Object> {
      * table
      * @param v
      */
-    public void setTable(STable<TableType> v) {
-        this.table = v;
+    public void setsTable(STable<TableType> v) {
+        this.sTable = v;
     }
-    public STable<TableType> getTable() {
-        return this.table;
+    public STable<TableType> getsTable() {
+        return this.sTable;
     }
-    private STable<TableType> table;
+    private STable<TableType> sTable;
     // Needed for a fluent API
     public STable<TableType> table() {
-        return table;
+        return sTable;
     }
-
-    /**
-     *
-     * @param v
-     */
-    public void setTabelModel(TableModel<TableType> v) {
-        this.tabelModel = v;
-    }
-    public TableModel<TableType> getTabelModel() {
-        return this.tabelModel;
-    }
-    private TableModel<TableType> tabelModel;
 
     private void fireTableStructureChanged() {
-        if (tabelModel != null) {
-            tabelModel.fireTableStructureChanged();
+        TableModel<TableType> tableModel = sTable.getSTableCore().getTableModel();
+        if (tableModel != null) {
+            tableModel.fireTableStructureChanged();
         }
     }
     private void fireTableDataChanged() {
-        if (tabelModel != null) {
-            tabelModel.fireTableDataChanged();
+        TableModel<TableType> tableModel = sTable.getSTableCore().getTableModel();
+        if (tableModel != null) {
+            tableModel.fireTableDataChanged();
         }
     }
 

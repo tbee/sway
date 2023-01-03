@@ -19,8 +19,10 @@ import java.awt.Color;
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
+import java.beans.PropertyChangeListener;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -51,7 +53,6 @@ import java.util.stream.Collectors;
 //   - automatically add a new row at the end of the table when in the last cell and press enter (ForEdit)
 //   - insert / delete keys
 // - set sort programmatically
-// - remove fluent api from STableCore -> move all settings to STable and refer from STableCore.
 
 /**
  * <h2>Basic usage</h2>
@@ -179,26 +180,29 @@ public class STable<TableType> extends SBorderPanel {
         south(tableNavigator);
     }
 
-    public STableCore<TableType> sTable() {
+    public STableCore<TableType> getSTableCore() {
         return sTableCore;
     }
 
     // ===========================================================================
     // DATA
 
+    private List<TableType> data = List.of();
+
+
     /**
-     * Set new data to show
      *
      * @param v
      */
     public void setData(List<TableType> v) {
-        sTableCore.setData(v);
+        unregisterFromAllBeans();
+        this.data = Collections.unmodifiableList(v); // We don't allow outside changes to the provided list
+        registerToAllBeans();
+       sTableCore.getTableModel().fireTableDataChanged();
     }
-
     public List<TableType> getData() {
-        return sTableCore.getData();
+        return this.data;
     }
-
     public STable<TableType> data(List<TableType> v) {
         setData(v);
         return this;
@@ -208,14 +212,29 @@ public class STable<TableType> extends SBorderPanel {
      * Stop the edit by either accepting or cancelling
      */
     public void stopEdit() {
-        sTableCore.stopEdit();
+        if (!isEditing()) {
+            return;
+        }
+        try {
+            if (sTableCore.getCellEditor() != null) {
+                sTableCore.getCellEditor().stopCellEditing();
+            }
+        }
+        finally {
+            cancelEdit();
+        }
     }
 
     /**
      * Cancel the edit
      */
     public void cancelEdit() {
-        sTableCore.cancelEdit();
+        if (!isEditing()) {
+            return;
+        }
+        if (sTableCore.getCellEditor() != null) {
+            sTableCore.getCellEditor().cancelCellEditing();
+        }
     }
 
     /**
@@ -225,15 +244,39 @@ public class STable<TableType> extends SBorderPanel {
         return sTableCore.isEditing();
     }
 
-    // ===========================================================================
+    // =======================================================================
     // COLUMNS
+
+    final private List<TableColumn<TableType, ?>> tableColumns = new ArrayList<>();
 
     /**
      * Get the columns
-     * @return Unmodifiable list of colums
+     * @return Unmodifiable list of columns
      */
-    public List<TableColumn<TableType, ?>> getColumns() {
-        return sTableCore.getColumns();
+    public List<TableColumn<TableType, ?>> getTableColumns() {
+        return Collections.unmodifiableList(tableColumns);
+    }
+
+    /**
+     * Append a column
+     * @param tableColumn
+     */
+    public void addColumn(TableColumn<TableType, ?> tableColumn) {
+        tableColumn.setsTable(this);
+        this.tableColumns.add(tableColumn);
+        sTableCore.getTableModel().fireTableStructureChanged();
+    }
+
+    /**
+     * Remove a column
+     * @param tableColumn
+     * @return Indicate if a remove actually took place.
+     * @param <ColumnType>
+     */
+    public boolean removeColumn(TableColumn<TableType, ?> tableColumn) {
+        boolean removed = this.tableColumns.remove(tableColumn);
+        sTableCore.getTableModel().fireTableStructureChanged();
+        return removed;
     }
 
     /**
@@ -247,29 +290,10 @@ public class STable<TableType> extends SBorderPanel {
      * @return
      */
     public <ColumnType> TableColumn<TableType, ColumnType> findColumnById(String id) {
-        return sTable().findColumnById(id);
+        return (TableColumn<TableType, ColumnType>) tableColumns.stream() //
+                .filter(tc -> id.equals(tc.getId())) //
+                .findFirst().orElse(null);
     }
-
-
-    /**
-     * Append a column
-     * @param tableColumn
-     * @param <ColumnType>
-     */
-    public <ColumnType extends Object> void addColumn(TableColumn<TableType, ColumnType> tableColumn) {
-        sTableCore.addColumn(tableColumn);
-    }
-
-    /**
-     * Remove a column
-     * @param tableColumn
-     * @return Indicate if a remove actually took place.
-     * @param <ColumnType>
-     */
-    public <ColumnType extends Object> boolean removeColumn(TableColumn<TableType, ColumnType> tableColumn) {
-        return sTableCore.removeColumn(tableColumn);
-    }
-
     /**
      * Add a column. Requires the table() call at the end to continue the fluent API
      * <pre>{@code
@@ -280,10 +304,11 @@ public class STable<TableType> extends SBorderPanel {
      * @param <ColumnType>
      */
     public <ColumnType extends Object> TableColumn<TableType, ColumnType> column(Class<ColumnType> type) {
-        TableColumn<TableType, ColumnType> column = sTableCore.column(type);
-        column.setTable(this);
-        return column;
+        var tableColumn = new TableColumn<TableType, ColumnType>(type);
+        addColumn(tableColumn);
+        return tableColumn;
     }
+
 
     /**
      * Generate columns based on bean info.
@@ -464,22 +489,117 @@ public class STable<TableType> extends SBorderPanel {
         addSelectionChangedListener(onSelectionChangedListener);
         return this;
     }
+
+
+
     // ===========================================================================
     // BINDING
 
+    private Method addPropertyChangeListenerMethod = null;
+    private Method removePropertyChangeListenerMethod = null;
+    private boolean boundToBean = false;
+
     /**
-     * monitorBean
+     * bindToBean
      */
     public void setMonitorBean(Class<TableType> v) {
-        sTableCore.getTableModel().setMonitorBean(v);
+
+        // unregister if already registered
+        if (monitorBean != null) {
+            unregisterFromAllBeans();
+        }
+
+        // Remember
+        monitorBean = v;
+
+        // Find the binding methods
+        addPropertyChangeListenerMethod = null;
+        removePropertyChangeListenerMethod = null;
+        if (monitorBean != null) {
+            try {
+                addPropertyChangeListenerMethod = monitorBean.getMethod("addPropertyChangeListener", new Class<?>[]{PropertyChangeListener.class});
+            }
+            catch (NoSuchMethodException e) {
+                // ignore silently throw new RuntimeException(e);
+            }
+            try {
+                removePropertyChangeListenerMethod = monitorBean.getMethod("removePropertyChangeListener", new Class<?>[]{PropertyChangeListener.class});
+            }
+            catch (NoSuchMethodException e) {
+                // ignore silently throw new RuntimeException(e);
+            }
+            boundToBean = (addPropertyChangeListenerMethod != null && removePropertyChangeListenerMethod != null);
+        }
+
+        // Register
+        registerToAllBeans();
     }
     public Class<TableType> getMonitorBean() {
-        return sTableCore.getTableModel().getMonitorBean();
+        return monitorBean;
     }
     private Class<TableType> monitorBean = null;
     public STable<TableType> monitorBean(Class<TableType> v) {
         setMonitorBean(v);
         return this;
+    }
+
+    final private PropertyChangeListener beanPropertyChangeListener = evt -> {
+        Object evtSource = evt.getSource();
+
+        // Find the bean in the data
+        var rowIdxs = new ArrayList<Integer>();
+        for (int rowIdx = 0; rowIdx < data.size(); rowIdx++) {
+            if (evtSource.equals(data.get(rowIdx))) {
+                rowIdxs.add(rowIdx);
+            }
+        }
+        if (logger.isDebugEnabled()) logger.debug("Found bean at row(s) " + rowIdxs);
+
+        // Now loop all columns that are bound
+        for (int colIdx = 0; colIdx < getTableColumns().size(); colIdx++) {
+            String monitorProperty = getTableColumns().get(colIdx).getMonitorProperty();
+            if (monitorProperty != null && monitorProperty.equals(evt.getPropertyName())) {
+                for (Integer rowIdx : rowIdxs) {
+                    if (logger.isDebugEnabled()) logger.debug("Invoke fireTableCellUpdated(" + rowIdx + "," + colIdx + ")");
+                    getSTableCore().getTableModel().fireTableCellUpdated(rowIdx, colIdx);
+                }
+            }
+        }
+    };
+
+    protected void registerToAllBeans() {
+        if (!boundToBean) {
+            return;
+        }
+        for (Object record : data) {
+            try {
+                if (logger.isDebugEnabled()) logger.debug("Register to " + record);
+                addPropertyChangeListenerMethod.invoke(record, beanPropertyChangeListener);
+            }
+            catch (IllegalAccessException e) {
+                throw new RuntimeException(e);
+            }
+            catch (InvocationTargetException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+    protected void unregisterFromAllBeans() {
+        if (!boundToBean) {
+            return;
+        }
+        for (Object record : data) {
+            try {
+                if (logger.isDebugEnabled()) logger.debug("Unregister from " + record);
+                removePropertyChangeListenerMethod.invoke(record, beanPropertyChangeListener);
+            }
+            catch (IllegalAccessException e) {
+                throw new RuntimeException(e);
+            }
+            catch (InvocationTargetException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
 
@@ -524,7 +644,7 @@ public class STable<TableType> extends SBorderPanel {
 
     private void setupFilterHeaderRenderers() {
 
-        for (TableColumn tableColumn : sTableCore.getColumns()) {
+        for (TableColumn tableColumn : getTableColumns()) {
             Class columnClass = tableColumn.getType();
 
             // Try to determine the used format

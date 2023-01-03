@@ -12,7 +12,6 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.util.Comparator;
-import java.util.List;
 import java.util.function.Supplier;
 
 /**
@@ -35,7 +34,7 @@ public class STableCore<TableType> extends javax.swing.JTable {
         tableRowSorter = new TableRowSorter<>(getTableModel()){
             @Override
             public Comparator<?> getComparator(int column) {
-                Comparator<?> comparator = getTableModel().getTableColumns().get(column).getSorting();
+                Comparator<?> comparator = sTable.getTableColumns().get(column).getSorting();
                 if (comparator != null) {
                     return comparator;
                 }
@@ -43,7 +42,7 @@ public class STableCore<TableType> extends javax.swing.JTable {
             }
             @Override
             protected boolean useToString(int column) {
-                Comparator<?> comparator = getTableModel().getTableColumns().get(column).getSorting();
+                Comparator<?> comparator = sTable.getTableColumns().get(column).getSorting();
                 if (comparator != null) {
                     return false;
                 }
@@ -58,7 +57,7 @@ public class STableCore<TableType> extends javax.swing.JTable {
         // the FocusInterpreterListener must be kept in an instance variable, otherwise it will be cleared by the WeakArrayList used in the FocusInterpreter
         focusInterpreterListener = evt -> {
             if (evt.getState() == FocusInterpreter.State.FOCUS_LOST) {
-                stopEdit();
+                sTable.stopEdit();
             }
         };
         focusInterpreter.addFocusListener(focusInterpreterListener);
@@ -110,111 +109,12 @@ public class STableCore<TableType> extends javax.swing.JTable {
     }
 
     // =======================================================================
-    // DATA
-
-    /**
-     * Set new data to show
-     * @param v
-     */
-    public void setData(List<TableType> v) {
-        getTableModel().setData(v);
-    }
-    public List<TableType> getData() {
-        return getTableModel().getData();
-    }
-    public STableCore<TableType> data(List<TableType> v) {
-        setData(v);
-        return this;
-    }
-
-
-    /**
-     * Stop the edit by either accepting or cancelling
-     */
-    public void stopEdit() {
-        if (!isEditing()) {
-            return;
-        }
-        try {
-            if (getCellEditor() != null) {
-                getCellEditor().stopCellEditing();
-            }
-        }
-        finally {
-            cancelEdit();
-        }
-    }
-
-    /**
-     * Cancel the edit
-     */
-    public void cancelEdit() {
-        if (!isEditing()) {
-            return;
-        }
-        if (getCellEditor() != null) {
-            getCellEditor().cancelCellEditing();
-        }
-    }
-
-
-    // =======================================================================
-    // COLUMNS
-
-    /**
-     * Get the columns
-     * @return Unmodifiable list of colums
-     */
-    public List<TableColumn<TableType, ?>> getColumns() {
-        return getTableModel().getTableColumns();
-    }
-
-    /**
-     * Finds (the first!) column with the provided id.
-     * @param id
-     * @return
-     */
-    public <ColumnType> TableColumn<TableType, ColumnType> findColumnById(String id) {
-        return getTableModel().findTableColumnById(id);
-    }
-
-
-    /**
-     * Append a column
-     * @param tableColumn
-     * @param <ColumnType>
-     */
-    public <ColumnType extends Object> void addColumn(TableColumn<TableType, ColumnType> tableColumn) {
-        getTableModel().addColumn(tableColumn);
-    }
-
-    /**
-     * Remove a column
-     * @param tableColumn
-     * @return Indicate if a remove actually took place.
-     * @param <ColumnType>
-     */
-    public <ColumnType extends Object> boolean removeColumn(TableColumn<TableType, ColumnType> tableColumn) {
-        return getTableModel().removeColumn(tableColumn);
-    }
-
-    /**
-     * Add a column. Requires the table() call at the end to continue the fluent API
-     * ...column(String.class).title("Property").valueSupplier(d -> d.getProperty())).table()
-     * @param type
-     * @return
-     * @param <ColumnType>
-     */
-    public <ColumnType extends Object> TableColumn<TableType, ColumnType> column(Class<ColumnType> type) {
-        var tableColumn = new TableColumn<TableType, ColumnType>(type);
-        addColumn(tableColumn);
-        return tableColumn;
-    }
+    // RENDERER
 
     @Override
     public TableCellRenderer getCellRenderer(int row, int column) {
         // TableColumn based
-        TableCellRenderer renderer = getTableModel().getTableColumns().get(column).getRenderer();
+        TableCellRenderer renderer = sTable.getTableColumns().get(column).getRenderer();
         if (renderer != null) {
             return renderer;
         }
@@ -227,13 +127,12 @@ public class STableCore<TableType> extends javax.swing.JTable {
     @Override
     public TableCellEditor getCellEditor(int row, int column) {
         // TableColumn based
-        TableCellEditor editor = getTableModel().getTableColumns().get(column).getEditor();
+        TableCellEditor editor = sTable.getTableColumns().get(column).getEditor();
         if (editor != null) {
             return editor;
         }
 
         // Default behavior
-        System.out.println("!!!!" + super.getCellEditor(row, column));
         return super.getCellEditor(row, column);
     }
 

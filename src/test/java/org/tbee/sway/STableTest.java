@@ -44,7 +44,7 @@ public class STableTest extends TestBase {
         moveFocus();
 
         // THEN
-        Assertions.assertEquals("Rotterdam", sTable.sTable().getValueAt(0, 0));
+        Assertions.assertEquals("Rotterdam", sTable.getSTableCore().getValueAt(0, 0));
         Assertions.assertEquals("Rotterdam", amsterdam.getName());
         Assertions.assertEquals("Berlin", berlin.getName());
     }
@@ -69,7 +69,7 @@ public class STableTest extends TestBase {
         moveFocus();
 
         // THEN
-        Assertions.assertEquals("Rotterdam", sTable.sTable().getValueAt(0, 0));
+        Assertions.assertEquals("Rotterdam", sTable.getSTableCore().getValueAt(0, 0));
         Assertions.assertEquals("Rotterdam", amsterdam.getName());
         Assertions.assertEquals("Berlin", berlin.getName());
     }
@@ -95,7 +95,7 @@ public class STableTest extends TestBase {
         });
 
         // THEN
-        Assertions.assertEquals("Rome", sTable.sTable().getValueAt(0, 0));
+        Assertions.assertEquals("Rome", sTable.getSTableCore().getValueAt(0, 0));
         Assertions.assertEquals("Berlin", berlin.getName());
     }
 
@@ -126,7 +126,7 @@ public class STableTest extends TestBase {
         moveFocus();
 
         // THEN
-        Assertions.assertEquals(rome, sTable.sTable().getValueAt(0, 1));
+        Assertions.assertEquals(rome, sTable.getSTableCore().getValueAt(0, 1));
     }
 
     @Test
@@ -156,7 +156,7 @@ public class STableTest extends TestBase {
             moveFocus();
 
             // THEN
-            Assertions.assertEquals(rome, sTable.sTable().getValueAt(0, 1));
+            Assertions.assertEquals(rome, sTable.getSTableCore().getValueAt(0, 1));
         }
         finally {
             Assertions.assertTrue(FormatRegistry.unregister(City.class));
@@ -191,33 +191,33 @@ public class STableTest extends TestBase {
         // WHEN Sort on name
         frameFixture.table("table.sTableCore").tableHeader().clickColumn(0);
         // THEN
-        Assertions.assertEquals(amsterdam.getName(), sTable.sTable().getValueAt(0, 0)); // first row
-        Assertions.assertEquals(rome.getName(), sTable.sTable().getValueAt(4, 0)); // last row
+        Assertions.assertEquals(amsterdam.getName(), sTable.getSTableCore().getValueAt(0, 0)); // first row
+        Assertions.assertEquals(rome.getName(), sTable.getSTableCore().getValueAt(4, 0)); // last row
 
         // WHEN Sort on distance
         frameFixture.table("table.sTableCore").tableHeader().clickColumn(1);
         // THEN
-        Assertions.assertEquals(bredevoort.getName(), sTable.sTable().getValueAt(0, 0)); // first row
-        Assertions.assertEquals(rome.getName(), sTable.sTable().getValueAt(4, 0)); // last row
+        Assertions.assertEquals(bredevoort.getName(), sTable.getSTableCore().getValueAt(0, 0)); // first row
+        Assertions.assertEquals(rome.getName(), sTable.getSTableCore().getValueAt(4, 0)); // last row
 
         // WHEN Sort on sisterCity
         frameFixture.table("table.sTableCore").tableHeader().clickColumn(2);
 
         // THEN
-        Assertions.assertEquals(berlin.getName(), sTable.sTable().getValueAt(0, 0)); // first row
-        Assertions.assertEquals(bredevoort.getName(), sTable.sTable().getValueAt(4, 0)); // last row
+        Assertions.assertEquals(berlin.getName(), sTable.getSTableCore().getValueAt(0, 0)); // first row
+        Assertions.assertEquals(bredevoort.getName(), sTable.getSTableCore().getValueAt(4, 0)); // last row
 
         // WHEN Sort on 2nd letter of name
         frameFixture.table("table.sTableCore").tableHeader().clickColumn(3);
         // THEN
-        Assertions.assertEquals(paris.getName(), sTable.sTable().getValueAt(0, 0)); // first row
-        Assertions.assertEquals(bredevoort.getName(), sTable.sTable().getValueAt(4, 0)); // last row
+        Assertions.assertEquals(paris.getName(), sTable.getSTableCore().getValueAt(0, 0)); // first row
+        Assertions.assertEquals(bredevoort.getName(), sTable.getSTableCore().getValueAt(4, 0)); // last row
 
         // WHEN Sort on 2nd letter of name DESC
         frameFixture.table("table.sTableCore").tableHeader().clickColumn(3);
         // THEN
-        Assertions.assertEquals(bredevoort.getName(), sTable.sTable().getValueAt(0, 0)); // first row
-        Assertions.assertEquals(paris.getName(), sTable.sTable().getValueAt(4, 0)); // last row
+        Assertions.assertEquals(bredevoort.getName(), sTable.getSTableCore().getValueAt(0, 0)); // first row
+        Assertions.assertEquals(paris.getName(), sTable.getSTableCore().getValueAt(4, 0)); // last row
     }
 
     @Test
