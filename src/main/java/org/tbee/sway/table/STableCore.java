@@ -353,9 +353,9 @@ public class STableCore<TableType> extends javax.swing.JTable {
         // alternate the row color
         if (getEditingRow() != row && alternateRowColor) {
             if (!isRowSelected(row) || isPrinting) {
-                Color lColor = ((row % 2 != 0) ? getFirstAlternateRowColor() : getSecondAlternateRowColor());
-                if (component.getBackground() != lColor) {
-                    component.setBackground( lColor );
+                Color color = ((row % 2 != 0) ? getFirstAlternateRowColor() : getSecondAlternateRowColor());
+                if (component.getBackground() != color) {
+                    component.setBackground( color );
                 }
             }
         }

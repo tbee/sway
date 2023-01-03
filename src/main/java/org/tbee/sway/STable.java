@@ -14,6 +14,7 @@ import org.tbee.util.ClassUtil;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.TableCellRenderer;
+import java.awt.Color;
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
@@ -49,6 +50,7 @@ import java.util.stream.Collectors;
 //   - automatically add a new row at the end of the table when in the last cell and press enter (ForEdit)
 //   - insert / delete keys
 // - set sort programmatically
+// - remove fluent api from STableCore
 
 /**
  * <h2>Basic usage</h2>
@@ -480,7 +482,7 @@ public class STable<TableType> extends SBorderPanel {
     }
 
     // ===========================================================================
-    // Stuff
+    // FilterHeader
 
     /** Filter header used in the table */
     private TableFilterHeader tableFilterHeader = null;
@@ -551,11 +553,108 @@ public class STable<TableType> extends SBorderPanel {
     }
 
     // ===========================================================================
+    // RENDERING e.g. alternate row colors
+
+    /** Alternate the background color for rows */
+    public void setAlternateRowColor(boolean v) {
+        sTableCore.setAlternateRowColor(v);
+    }
+    public boolean getAlternateRowColor() {
+        return sTableCore.getAlternateRowColor();
+    }
+    //final static public String ALTERNATEROWCOLOR = "alternateRowColor";
+    public STable<TableType> alternateRowColor(boolean v) {
+        setAlternateRowColor(v);
+        return this;
+    }
+
+    /** The color to use for the alternating background color for rows */
+    public void setFirstAlternateRowColor(Color v) {
+        sTableCore.setFirstAlternateRowColor(v);
+    }
+    public Color getFirstAlternateRowColor() {
+        return sTableCore.getFirstAlternateRowColor();
+    }
+    //final static public String FIRSTALTERNATEROWCOLOR = "firstAlternateRowColor";
+    public STable<TableType> firstAlternateRowColor(Color v) {
+        firstAlternateRowColor(v);
+        return this;
+    }
+
+    /** The second color to use for the alternating background color for rows */
+    public void setSecondAlternateRowColor(Color v) {
+        sTableCore.setSecondAlternateRowColor(v);
+    }
+    public Color getSecondAlternateRowColor() {
+        return sTableCore.getSecondAlternateRowColor();
+    }
+    //final static public String SECONDALTERNATEROWCOLOR = "secondAlternateRowColor";
+    public STable<TableType> secondAlternateRowColor(Color v) {
+        setSecondAlternateRowColor(v);
+        return this;
+    }
+
+    /** UneditableCellsShowAsDisabled */
+    public void setUneditableCellsShowAsDisabled(boolean v) {
+        sTableCore.setUneditableCellsShowAsDisabled(v);
+    }
+    public boolean getUneditableCellsShowAsDisabled() {
+        return sTableCore.getUneditableCellsShowAsDisabled();
+    }
+    //final static public String UNEDITABLECELLSSHOWASDISABLED = "uneditableCellsShowAsDisabled";
+    public STable<TableType> uneditableCellsShowAsDisabled(boolean v) {
+        setUneditableCellsShowAsDisabled(v);
+        return this;
+    }
+
+    /** DisabledTableShowsCellsAsDisabled */
+    public void setDisabledTableShowsCellsAsDisabled(boolean v) {
+        sTableCore.setDisabledTableShowsCellsAsDisabled(v);
+    }
+    public boolean getDisabledTableShowsCellsAsDisabled() {
+        return sTableCore.getDisabledTableShowsCellsAsDisabled();
+    }
+    //final static public String DISABLEDTABLESHOWSCELLSASDISABLED = "disabledTableShowsCellsAsDisabled";
+    public STable<TableType> disabledTableShowsCellsAsDisabled(boolean v) {
+        setDisabledTableShowsCellsAsDisabled(v);
+        return this;
+    }
+
+    /** Editable */
+    public void setEditable(boolean v) {
+        sTableCore.setEditable(v);
+    }
+    public boolean isEditable() {
+        return sTableCore.isEditable();
+    }
+    public STable<TableType> editable(boolean v) {
+        setEditable(v);
+        return this;
+    }
+
+    /** UneditableTableShowsCellsAsDisabled */
+    public void setUneditableTableShowsCellsAsDisabled(boolean v) {
+        sTableCore.setUneditableTableShowsCellsAsDisabled(v);
+    }
+    public boolean getUneditableTableShowsCellsAsDisabled() {
+        return sTableCore.getUneditableTableShowsCellsAsDisabled();
+    }
+    //final static public String UNEDITABLETABLESHOWSCELLSASDISABLED = "uneditableTableShowsCellsAsDisabled";
+    public STable<TableType> uneditableTableShowsCellsAsDisabled(boolean v) {
+        setUneditableTableShowsCellsAsDisabled(v);
+        return this;
+    }
+
+    // ===========================================================================
     // FLUENT API
 
+    @Override
+    public void setName(String v) {
+        super.setName(v);
+        sTableCore.name(v + ".sTableCore"); // For tests we need to address the actual table
+    }
     public STable<TableType> name(String v) {
         setName(v);
-        sTableCore.name(v + ".sTableCore"); // For tests we need to address the actual table
         return this;
     }
 
