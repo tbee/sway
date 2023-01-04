@@ -1,13 +1,20 @@
 package org.tbee.sway;
 
+import org.tbee.sway.format.Format;
+import org.tbee.sway.format.FormatRegistry;
 import org.tbee.sway.list.DefaultListCellRenderer;
 import org.tbee.sway.list.SListCore;
 import org.tbee.sway.support.SwayUtil;
 
+import javax.swing.JLabel;
 import javax.swing.JScrollPane;
+import javax.swing.ListSelectionModel;
 import java.awt.Color;
+import java.awt.Component;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class SList<T> extends SBorderPanel {
 
@@ -19,7 +26,22 @@ public class SList<T> extends SBorderPanel {
         sListCore = new SListCore<>(this);
         jScrollPane = new JScrollPane(sListCore);
         center(jScrollPane);
-        sListCore.setCellRenderer(new DefaultListCellRenderer(this));
+        sListCore.setCellRenderer(new DefaultListCellRenderer(this){
+            @Override
+            public Component getListCellRendererComponent(javax.swing.JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+                Component component = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+
+                // Apply format
+                if (format != null && component instanceof JLabel jLabel) {
+                    jLabel.setText(format.toString((T)value));
+                    jLabel.setIcon(format.toIcon((T)value));
+                    jLabel.setHorizontalAlignment(format.horizontalAlignment().getSwingConstant());
+                }
+
+                // Done
+                return component;
+            }
+        });
     }
 
     public SListCore<T> getSListCore() {
@@ -51,7 +73,33 @@ public class SList<T> extends SBorderPanel {
 
 
     // ===========================================================================
-    // RENDERING e.g. alternate row colors
+    // RENDERING
+
+    private Format<T> format = null;
+
+    // TBEERNOT not sure how to do this, but I know this API needs to be there. TTD? :-D
+    /**
+     *
+     * @param v
+     * @return
+     */
+    public SList<T> render(Format<T> v) {
+        this.format = v;
+        return this;
+    }
+
+    // TBEERNOT not sure how to do this, but I know this API needs to be there. TTD? :-D
+    /**
+     *
+     * @param clazz
+     * @return
+     */
+    public SList<T> renderFor(Class<T> clazz) {
+        return render((Format<T>) FormatRegistry.findFor(clazz));
+    }
+
+    // ===========================================================================
+    // ALTERNATE ROW COLORS
 
     /** Alternate the background color for rows */
     public void setAlternateRowColor(boolean v) {
@@ -92,6 +140,111 @@ public class SList<T> extends SBorderPanel {
     final static public String SECONDALTERNATEROWCOLOR = "secondAlternateRowColor";
     public SList<T> secondAlternateRowColor(Color v) {
         setSecondAlternateRowColor(v);
+        return this;
+    }
+
+
+    // ===========================================================================
+    // SELECTION
+
+    enum SelectionMode{ //
+        SINGLE(ListSelectionModel.SINGLE_SELECTION), //
+        INTERVAL(ListSelectionModel.SINGLE_INTERVAL_SELECTION), //
+        MULTIPLE(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+
+        private int code;
+        private SelectionMode(int code) {
+            this.code = code;
+        }
+
+        static SList.SelectionMode of(int code) {
+            for (SList.SelectionMode selectionMode : values()) {
+                if (selectionMode.code == code) {
+                    return selectionMode;
+                }
+            }
+            throw new IllegalArgumentException("Code does not exist " + code);
+        }
+    }
+
+    /**
+     *
+     * @param v
+     */
+    public void setSelectionMode(SList.SelectionMode v) {
+        sListCore.setSelectionMode(v.code);
+    }
+    public SList.SelectionMode getSelectionMode() {
+        return SList.SelectionMode.of(sListCore.getSelectionModel().getSelectionMode());
+    }
+    public SList<T> selectionMode(SList.SelectionMode v) {
+        setSelectionMode(v);
+        return this;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public List<T> getSelection() {
+        var selectedItems = new ArrayList<T>(sListCore.getSelectionModel().getSelectionMode());
+        for (int rowIdx : sListCore.getSelectionModel().getSelectedIndices()) {
+            selectedItems.add(getData().get(rowIdx));
+        }
+        return Collections.unmodifiableList(selectedItems);
+    }
+
+    /**
+     *
+     */
+    public void setSelection(List<T> values) {
+        clearSelection();
+        List<T> data = getData();
+        for (T value : values) {
+            int index = data.indexOf(value);
+            sListCore.getSelectionModel().addSelectionInterval(index, index);
+        }
+    }
+
+    /**
+     *
+     */
+    public void clearSelection() {
+        sListCore.clearSelection();
+    }
+
+    /**
+     *
+     * @param listener
+     */
+    synchronized public void addSelectionChangedListener(Consumer<List<T>> listener) {
+        if (selectionChangedListeners == null) {
+            selectionChangedListeners = new ArrayList<>();
+
+            // Start listening
+            sListCore.getSelectionModel().addListSelectionListener(e -> {
+                if (!e.getValueIsAdjusting()) {
+                    var selectedItems = getSelection();
+                    selectionChangedListeners.forEach(l -> l.accept(selectedItems));
+                }
+            });
+        }
+        selectionChangedListeners.add(listener);
+    }
+    synchronized public boolean removeSelectionChangedListener(Consumer<List<T>> listener) {
+        if (selectionChangedListeners == null) {
+            return false;
+        }
+        return selectionChangedListeners.remove(listener);
+    }
+    private List<Consumer<List<T>>> selectionChangedListeners;
+
+    /**
+     * @param onSelectionChangedListener
+     * @return
+     */
+    public SList<T> onSelectionChanged(Consumer<List<T>> onSelectionChangedListener) {
+        addSelectionChangedListener(onSelectionChangedListener);
         return this;
     }
 
