@@ -24,6 +24,7 @@ public class STableCore<TableType> extends javax.swing.JTable {
     static private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(STableCore.class);
 
     final private TableRowSorter<TableModel<TableType>> tableRowSorter;
+
     final private STable<TableType> sTable;
 
     public STableCore(STable<TableType> sTable) {
@@ -96,6 +97,11 @@ public class STableCore<TableType> extends javax.swing.JTable {
     }
     private FocusInterpreter.FocusInterpreterListener focusInterpreterListener = null;
     final private FocusInterpreter focusInterpreter = new FocusInterpreter(this);
+
+    public STable<TableType> getSTable() {
+        return sTable;
+    }
+
 
     // =======================================================================
     // TABLEMODEL

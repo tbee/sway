@@ -4,6 +4,7 @@ import net.miginfocom.layout.CC;
 import net.miginfocom.swing.MigLayout;
 import org.kordamp.ikonli.Ikon;
 import org.kordamp.ikonli.materialdesign2.MaterialDesignC;
+import org.kordamp.ikonli.materialdesign2.MaterialDesignF;
 import org.kordamp.ikonli.swing.FontIcon;
 import org.tbee.sway.binding.BeanBinder;
 import org.tbee.sway.format.Format;
@@ -52,9 +53,11 @@ public class TestApp {
     }
 
     private static void registerIcons() {
+        // https://kordamp.org/ikonli/cheat-sheet-material2.html
         IconRegistry.register("copy", IconRegistry.Usage.MENU, createIcon(MaterialDesignC.CONTENT_COPY));
         IconRegistry.register("cut", IconRegistry.Usage.MENU, createIcon(MaterialDesignC.CONTENT_CUT));
         IconRegistry.register("paste", IconRegistry.Usage.MENU, createIcon(MaterialDesignC.CONTENT_PASTE));
+        IconRegistry.register("filter", IconRegistry.Usage.MENU, createIcon(MaterialDesignF.FILTER));
     }
     private static Icon createIcon(Ikon ikon) {
         FontIcon fontIcon = new FontIcon();
@@ -196,7 +199,7 @@ public class TestApp {
                 .onSelectionChanged(selection -> System.out.println("onSelectionChanged: " + selection)) //
 
                 // filter
-                .filterHeaderEnabled(true) //
+                //.filterHeaderEnabled(true) //
 
                 // data
                 .data(cities) //

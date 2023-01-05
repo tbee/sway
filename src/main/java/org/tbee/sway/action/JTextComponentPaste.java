@@ -33,6 +33,7 @@ public class JTextComponentPaste implements Action {
     @Override
     public void apply(Component component, Map<String, Object> context) {
         JTextComponent jTextComponent = (JTextComponent)component;
+        jTextComponent.selectAll();
         jTextComponent.paste();
     }
 }
