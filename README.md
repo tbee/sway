@@ -78,6 +78,39 @@ This also is true for domain entities, like for example a "City" or "Employee".
 
 Format also allows to define things like horizontal alignment and icon.
 
+
+## Actions / context menu
+Actions can be registered and these will be shown in the (right mouse button) context menu.
+These can be simple actions, like the default availabe "copy", "cut" and "paste", but also business model related actions.
+
+``` java
+ActionRegistry.register(new ShowOnMapForCityTextFields());
+SContextMenu.install();
+
+public class ShowOnMapForCityTextFields implements Action {
+
+    @Override
+    public String label() {
+        return "Show on map";
+    }
+
+    @Override
+    public boolean isApplicableFor(Component component, Map<String, Object> context) {
+        if (!component instanceof STextField) {
+            return false;
+        }
+        return ((STextField)component).getFormat() instanceof CityFormat;
+    }
+
+    @Override
+    public void apply(Component component, Map<String, Object> context) {
+        STextField<City> sTextField = (STextField<City>)component;
+        City city = sTextField.getValue();
+        ... // show city on map
+    }
+}
+```
+
 ## Compatibility
 The components are still the standard Swing components, only with an opinionated API, but they should blend-in nicely in existing applications.
 
