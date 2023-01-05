@@ -3,9 +3,9 @@ package org.tbee.sway.action;
 import org.tbee.sway.transferable.ImageSelection;
 
 import javax.swing.Icon;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import java.awt.Component;
+import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.ClipboardOwner;
@@ -32,15 +32,15 @@ public class JButtonCopyIcon implements Action, ClipboardOwner {
     @Override
     public boolean isEnabled(Component component, Map<String, Object> context) {
         JButton jButton = (JButton)component;
-        return jButton.getIcon() != null && jButton.getIcon() instanceof ImageIcon;
+        return jButton.getIcon() != null;
     }
 
     @Override
     public void apply(Component component, Map<String, Object> context) {
         JButton jButton = (JButton)component;
-        ImageIcon icon = (ImageIcon)jButton.getIcon();
+        Image image = JLabelCopyIcon.convertIconToImage(jButton.getIcon());
         Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-        clipboard.setContents(new ImageSelection(icon.getImage()), this);
+        clipboard.setContents(new ImageSelection(image), this);
     }
 
     @Override
