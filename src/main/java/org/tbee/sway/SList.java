@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.function.Consumer;
 
 public class SList<T> extends SBorderPanel {
+    static private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(SList.class);
 
     final private SListCore<T> sListCore;
     final private JScrollPane jScrollPane;

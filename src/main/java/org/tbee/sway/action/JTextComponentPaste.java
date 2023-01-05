@@ -1,5 +1,7 @@
 package org.tbee.sway.action;
 
+import org.tbee.sway.support.IconRegistry;
+
 import javax.swing.Icon;
 import javax.swing.text.JTextComponent;
 import java.awt.Component;
@@ -14,7 +16,7 @@ public class JTextComponentPaste implements Action {
 
     @Override
     public Icon icon() {
-        return null;
+        return IconRegistry.find("paste", IconRegistry.Usage.MENU);
     }
 
     @Override

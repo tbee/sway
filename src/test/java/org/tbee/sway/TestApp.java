@@ -2,10 +2,15 @@ package org.tbee.sway;
 
 import net.miginfocom.layout.CC;
 import net.miginfocom.swing.MigLayout;
+import org.kordamp.ikonli.Ikon;
+import org.kordamp.ikonli.materialdesign2.MaterialDesignC;
+import org.kordamp.ikonli.swing.FontIcon;
 import org.tbee.sway.binding.BeanBinder;
 import org.tbee.sway.format.Format;
 import org.tbee.sway.support.DebugUtil;
+import org.tbee.sway.support.IconRegistry;
 
+import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -25,6 +30,8 @@ import java.util.Locale;
 public class TestApp {
 
     static public void main(String[] args) throws Exception {
+        registerIcons();
+
         SwingUtilities.invokeAndWait(() -> {
             SMigLayoutPanel panel = new SMigLayoutPanel();
 
@@ -42,6 +49,18 @@ public class TestApp {
 
             System.out.println(DebugUtil.componentTreeAsString(jFrame));
         });
+    }
+
+    private static void registerIcons() {
+        IconRegistry.register("copy", IconRegistry.Usage.MENU, createIcon(MaterialDesignC.CONTENT_COPY));
+        IconRegistry.register("cut", IconRegistry.Usage.MENU, createIcon(MaterialDesignC.CONTENT_CUT));
+        IconRegistry.register("paste", IconRegistry.Usage.MENU, createIcon(MaterialDesignC.CONTENT_PASTE));
+    }
+    private static Icon createIcon(Ikon ikon) {
+        FontIcon fontIcon = new FontIcon();
+        fontIcon.setIkon(ikon);
+        fontIcon.setIconSize(16);
+        return fontIcon;
     }
 
     static private JPanel sTextField() {
@@ -128,7 +147,7 @@ public class TestApp {
         var sList = new SList<City>() //
                 .name("mySList") //
 
-                .render(new CityFormat(List.of())) // toValue is never call so the list can be empty
+                .render(new CityFormat(cities)) // toValue is never call so the list can be empty
 
                 // data
                 .data(cities) //

@@ -1,5 +1,7 @@
 package org.tbee.sway.action;
 
+import org.tbee.sway.support.IconRegistry;
+
 import javax.swing.Icon;
 import javax.swing.JTable;
 import javax.swing.SwingUtilities;
@@ -22,7 +24,7 @@ public class JTableCopyCellAsText implements Action, ClipboardOwner {
 
     @Override
     public Icon icon() {
-        return null;
+        return IconRegistry.find("copy", IconRegistry.Usage.MENU);
     }
 
     @Override

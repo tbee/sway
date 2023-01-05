@@ -1,5 +1,6 @@
 package org.tbee.sway.action;
 
+import org.tbee.sway.support.IconRegistry;
 import org.tbee.sway.transferable.ImageSelection;
 
 import javax.swing.Icon;
@@ -23,7 +24,7 @@ public class JLabelCopyIcon implements Action, ClipboardOwner {
 
     @Override
     public Icon icon() {
-        return null;
+        return IconRegistry.find("copy", IconRegistry.Usage.MENU);
     }
 
     @Override
