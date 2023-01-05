@@ -1,7 +1,10 @@
 package org.tbee.sway;
 
+import org.kordamp.ikonli.materialdesign2.MaterialDesignC;
+import org.kordamp.ikonli.swing.FontIcon;
 import org.tbee.sway.format.Format;
 
+import javax.swing.Icon;
 import java.util.List;
 
 public class CityFormat implements Format<City> {
@@ -14,6 +17,14 @@ public class CityFormat implements Format<City> {
     @Override
     public String toString(City value) {
         return value == null ? "" : value.getName();
+    }
+
+    @Override
+    public Icon toIcon(City value) {
+        FontIcon fontIcon = new FontIcon();
+        fontIcon.setIkon(MaterialDesignC.values()[cities.indexOf(value)]);
+        fontIcon.setIconSize(16);
+        return fontIcon;
     }
 
     @Override

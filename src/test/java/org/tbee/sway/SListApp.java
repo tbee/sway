@@ -24,10 +24,7 @@ public class SListApp {
 
             var sList = new SList<City>() //
                     .name("mySList") //
-
-                    .render(new CityFormat(List.of())) // toValue is never call so the list can be empty
-
-                    // data
+                    .render(new CityFormat(cities)) //
                     .data(cities) //
              ;
 

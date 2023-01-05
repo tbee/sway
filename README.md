@@ -127,3 +127,5 @@ Asking for help is always an option. But so is participating, creating pull requ
 * STable's navigation bar is based on CoMedia's implementation (project is no longer available online).
 * Mikael Grev's excelent MigLayout is used for several layouts (https://www.miglayout.com/).
 
+And if icons are needed in an application Ikonli is highly suggested! (https://kordamp.org/ikonli/)
+
