@@ -4,7 +4,7 @@ import org.tbee.sway.transferable.ImageSelection;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
-import javax.swing.JLabel;
+import javax.swing.JButton;
 import java.awt.Component;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
@@ -12,7 +12,7 @@ import java.awt.datatransfer.ClipboardOwner;
 import java.awt.datatransfer.Transferable;
 import java.util.Map;
 
-public class JLabelCopyIcon implements Action, ClipboardOwner {
+public class JButtonCopyIcon implements Action, ClipboardOwner {
 
     @Override
     public String label() {
@@ -26,19 +26,19 @@ public class JLabelCopyIcon implements Action, ClipboardOwner {
 
     @Override
     public boolean isApplicableFor(Component component, Map<String, Object> context) {
-        return component instanceof JLabel;
+        return component instanceof JButton;
     }
 
     @Override
     public boolean isEnabled(Component component, Map<String, Object> context) {
-        JLabel jLabel = (JLabel)component;
-        return jLabel.getIcon() != null && jLabel.getIcon() instanceof ImageIcon;
+        JButton jButton = (JButton)component;
+        return jButton.getIcon() != null && jButton.getIcon() instanceof ImageIcon;
     }
 
     @Override
     public void apply(Component component, Map<String, Object> context) {
-        JLabel jLabel = (JLabel)component;
-        ImageIcon icon = (ImageIcon)jLabel.getIcon();
+        JButton jButton = (JButton)component;
+        ImageIcon icon = (ImageIcon)jButton.getIcon();
         Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
         clipboard.setContents(new ImageSelection(icon.getImage()), this);
     }

@@ -3,6 +3,7 @@ package org.tbee.sway.action;
 import javax.swing.Icon;
 import javax.swing.text.JTextComponent;
 import java.awt.Component;
+import java.util.Map;
 
 public class JTextComponentCopy implements Action {
 
@@ -17,18 +18,18 @@ public class JTextComponentCopy implements Action {
     }
 
     @Override
-    public boolean isApplicableFor(Component component) {
+    public boolean isApplicableFor(Component component, Map<String, Object> context) {
         return component instanceof JTextComponent;
     }
 
     @Override
-    public void apply(Component component) {
+    public void apply(Component component, Map<String, Object> context) {
         JTextComponent jTextComponent = (JTextComponent)component;
 
         boolean enabled = jTextComponent.isEnabled();
         try {
             jTextComponent.setEnabled(true);
-            jTextComponent.selectAll();
+            jTextComponent.selectAll(); // TextComponent loses selection if a popup is shown
             jTextComponent.copy();
         }
         finally {

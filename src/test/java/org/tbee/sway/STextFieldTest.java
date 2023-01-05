@@ -6,9 +6,21 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import javax.swing.SwingUtilities;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.ClipboardOwner;
+import java.awt.datatransfer.StringSelection;
+import java.awt.datatransfer.Transferable;
 
 public class STextFieldTest extends TestBase {
+
     private STextField sTextField;
+
+    final static private ClipboardOwner dummyClipboardOwner = new ClipboardOwner() {
+        @Override
+        public void lostOwnership(Clipboard clipboard, Transferable contents) {
+        }
+    };
 
     @Test
     public void integerHappyTest() throws Exception {
@@ -24,6 +36,45 @@ public class STextFieldTest extends TestBase {
         moveFocus();
 
         // THEN
+        Assertions.assertEquals(123, sTextField.getValue());
+    }
+
+
+    @Test
+    public void integerPasteTest() throws Exception {
+        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+
+        // GIVEN
+        construct(() -> {
+            sTextField = STextField.ofInteger().name("sTextField");
+            return TestUtil.inJFrame(sTextField, focusMeComponent());
+        });
+
+        // WHEN
+        clipboard.setContents(new StringSelection("123"), dummyClipboardOwner);
+        SwingUtilities.invokeAndWait(() -> {
+            sTextField.requestFocus();
+            sTextField.selectAll();
+            sTextField.paste();
+        });
+        moveFocus();
+        // THEN
+        Assertions.assertEquals(123, sTextField.getValue());
+
+        // WHEN
+        clipboard.setContents(new StringSelection("abc"), dummyClipboardOwner);
+        SwingUtilities.invokeAndWait(() -> {
+            sTextField.requestFocus();
+            sTextField.selectAll();
+            sTextField.paste();
+        });
+        moveFocus();
+        // THEN
+        JOptionPaneFixture optionPaneFixture = JOptionPaneFinder.findOptionPane().using(frameFixture.robot());
+        optionPaneFixture.requireErrorMessage().requireMessage("For input string: \"abc\"");
+        optionPaneFixture.okButton().click();
+        Assertions.assertTrue(sTextField.hasFocus());
+        Assertions.assertEquals("abc", sTextField.getText());
         Assertions.assertEquals(123, sTextField.getValue());
     }
 
@@ -68,9 +119,7 @@ public class STextFieldTest extends TestBase {
         Assertions.assertEquals("abc", city.getName());
 
         // WHEN
-        SwingUtilities.invokeAndWait(() -> {
-            city.setName("def");
-        });
+        SwingUtilities.invokeAndWait(() -> city.setName("def"));
 
         // THEN
         Assertions.assertEquals("def", sTextField.getText());

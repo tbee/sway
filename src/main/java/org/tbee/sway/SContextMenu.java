@@ -10,7 +10,9 @@ import java.awt.AWTEvent;
 import java.awt.Component;
 import java.awt.Toolkit;
 import java.awt.event.MouseEvent;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 
 public class SContextMenu {
     static private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(SContextMenu.class);
@@ -71,17 +73,20 @@ public class SContextMenu {
     }
 
     private void showPopupMenuFor(MouseEvent mouseEvent, Component component) {
-        List<Action> actions = ActionRegistry.findFor(component);
+        Map<String, Object> context = Map.of("MouseEvent", mouseEvent);
+        List<Action> actions = ActionRegistry.findFor(component, context);
 
         JPopupMenu menu = new JPopupMenu();
-        actions.forEach(a -> {
-            SMenuItem menuItem = new SMenuItem() //
-                    .text(a.label()) //
-                    .icon(a.icon()) //
-                    .enabled(a.isEnabled(component)) //
-                    .onAction((evt) -> a.apply(component));
-            menu.add(menuItem);
-        });
+        actions.stream() //
+                .sorted(Comparator.comparingInt(Action::order)) //
+                .forEach(a -> {
+                    SMenuItem menuItem = new SMenuItem() //
+                            .text(a.label()) //
+                            .icon(a.icon()) //
+                            .enabled(a.isEnabled(component, context)) //
+                            .onAction((evt) -> a.apply(component, context));
+                    menu.add(menuItem);
+                });
         menu.show(mouseEvent.getComponent(), mouseEvent.getX(), mouseEvent.getY());
     }
 }

@@ -3,6 +3,7 @@ package org.tbee.sway.action;
 import java.awt.Component;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class ActionRegistry {
 
@@ -12,10 +13,12 @@ public class ActionRegistry {
         // TBEERNOT autodiscovery?
         register(new JLabelCopyText());
         register(new JLabelCopyIcon());
+        register(new JButtonCopyText());
+        register(new JButtonCopyIcon());
         register(new JTextComponentCopy());
         register(new JTextComponentCut());
         register(new JTextComponentPaste());
-        register(new STextFieldCopy());
+        register(new JTableCopyCellAsText());
     }
 
     /**
@@ -34,9 +37,9 @@ public class ActionRegistry {
      * @param component
      * @return
      */
-    static public List<Action> findFor(Component component) {
+    static public List<Action> findFor(Component component, Map<String, Object> context) {
         return actions.stream() //
-                .filter(a -> a.isApplicableFor(component)) //
+                .filter(a -> a.isApplicableFor(component, context)) //
                 .toList();
     }
 }

@@ -3,6 +3,7 @@ package org.tbee.sway.action;
 import javax.swing.Icon;
 import javax.swing.text.JTextComponent;
 import java.awt.Component;
+import java.util.Map;
 
 public class JTextComponentCut implements Action {
 
@@ -17,23 +18,20 @@ public class JTextComponentCut implements Action {
     }
 
     @Override
-    public boolean isApplicableFor(Component component) {
+    public boolean isApplicableFor(Component component, Map<String, Object> context) {
         return component instanceof JTextComponent;
     }
 
     @Override
-    public void apply(Component component) {
+    public boolean isEnabled(Component component, Map<String, Object> context) {
         JTextComponent jTextComponent = (JTextComponent)component;
+        return jTextComponent.isEnabled() && jTextComponent.isEditable();
+    }
 
-        boolean enabled = jTextComponent.isEnabled();
-        try {
-            jTextComponent.setEnabled(true);
-            jTextComponent.selectAll();
-            jTextComponent.copy();
-            jTextComponent.setText("");
-        }
-        finally {
-            jTextComponent.setEnabled(enabled);
-        }
+    @Override
+    public void apply(Component component, Map<String, Object> context) {
+        JTextComponent jTextComponent = (JTextComponent)component;
+        jTextComponent.selectAll(); // TextComponent loses selection if a popup is shown
+        jTextComponent.cut();
     }
 }
