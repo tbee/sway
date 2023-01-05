@@ -22,7 +22,7 @@ public class SListApp {
 
             Format<City> cityFormat = new CityFormat(cities);
 
-            var sTable = new SList<City>() //
+            var sList = new SList<City>() //
                     .name("mySList") //
 
                     .render(new CityFormat(List.of())) // toValue is never call so the list can be empty
@@ -32,7 +32,7 @@ public class SListApp {
              ;
 
             JFrame jFrame = new JFrame();
-            jFrame.setContentPane(sTable);
+            jFrame.setContentPane(sList);
             jFrame.setSize(1600, 800);
             jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             jFrame.setVisible(true);

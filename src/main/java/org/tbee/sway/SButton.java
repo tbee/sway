@@ -92,7 +92,7 @@ public class SButton extends JButton {
         return this;
     }
 
-    public SButton actionListener(ActionListener l) {
+    public SButton onAction(ActionListener l) {
         super.addActionListener(l);
         return this;
     }
