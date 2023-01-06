@@ -80,6 +80,7 @@
             <version>2.0.6</version>
         </dependency>
 
+        <!-- TBEERNOT right now this is only needed for the splitter in STablePasteSelection - can that be removed? -->
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>

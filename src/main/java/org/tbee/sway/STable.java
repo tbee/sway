@@ -29,6 +29,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 // TODO
@@ -196,12 +197,12 @@ public class STable<TableType> extends SBorderPanel {
      */
     public void setData(List<TableType> v) {
         unregisterFromAllBeans();
-        this.data = Collections.unmodifiableList(v); // We don't allow outside changes to the provided list
+        this.data = new ArrayList<>(v); // We don't allow outside changes to the provided list
         registerToAllBeans();
        sTableCore.getTableModel().fireTableDataChanged();
     }
     public List<TableType> getData() {
-        return this.data;
+        return Collections.unmodifiableList(this.data);
     }
     public STable<TableType> data(List<TableType> v) {
         setData(v);
@@ -782,6 +783,80 @@ public class STable<TableType> extends SBorderPanel {
         repaint();
     }
 
+    // ===========================================================================
+    // SORTING
+
+    public void cancelSorting() {
+        sTableCore.getRowSorter().setSortKeys(null);
+    }
+
+    // ===========================================================================
+    // LIST MANIPULATION
+
+    /** BeanFactory */
+    public void setBeanFactory(Supplier<TableType> v) {
+        firePropertyChange(BEANFACTORY, this.beanFactory, this.beanFactory = v);
+    }
+    public Supplier<TableType> getBeanFactory() {
+        return beanFactory;
+    }
+    private Supplier<TableType> beanFactory = null;
+    final static public String BEANFACTORY = "beanFactory";
+    public STable<TableType> beanFactory(Supplier<TableType> v) {
+        setBeanFactory(v);
+        return this;
+    }
+
+    /**
+     * Add a new row to the list
+     *
+     * @return row index where the row was added
+     */
+    public int appendRow() {
+        if (beanFactory == null) {
+            throw new IllegalStateException("BeanFactory must be provided");
+        }
+        cancelSorting();
+
+        // Create and add bean
+        TableType bean = beanFactory.get();
+        data.add(bean);
+        sTableCore.getTableModel().fireTableDataChanged();
+        fireRowAdded(bean);
+        return data.size() - 1;
+    }
+
+    public boolean getAllowInsertRows() {
+        return beanFactory != null;
+    }
+
+    /**
+     *
+     * @param listener
+     */
+    synchronized public void addRowAddedListener(Consumer<TableType> listener) {
+        if (rowAddedListeners == null) {
+            rowAddedListeners = new ArrayList<>();
+        }
+        rowAddedListeners.add(listener);
+    }
+    synchronized public boolean removeRowAddedListener(Consumer<TableType> listener) {
+        if (rowAddedListeners == null) {
+            return false;
+        }
+        return rowAddedListeners.remove(listener);
+    }
+    private List<Consumer<TableType>> rowAddedListeners;
+    public STable<TableType> onRowAdded(Consumer<TableType> onRowAddedListener) {
+        addRowAddedListener(onRowAddedListener);
+        return this;
+    }
+    private void fireRowAdded(TableType bean) {
+        if (rowAddedListeners == null) {
+            return;
+        }
+        rowAddedListeners.forEach(l -> l.accept(bean));
+    }
 
     // ===========================================================================
     // FLUENT API

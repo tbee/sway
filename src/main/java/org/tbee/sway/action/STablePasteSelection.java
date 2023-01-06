@@ -76,15 +76,15 @@ public class STablePasteSelection implements Action {
     /**
      * The method actually processing the copy string
      */
-    static public void paste(STableCore table, int[] selectedRows, int[] selectedCols, String clipboardContents) {
-        boolean startedInLastRow = (selectedRows.length == 0 || selectedRows[selectedRows.length - 1] == table.getRowCount() - 1);
+    static public void paste(STableCore sTableCore, int[] selectedRows, int[] selectedCols, String clipboardContents) {
+        boolean startedInLastRow = (selectedRows.length == 0 || selectedRows[selectedRows.length - 1] == sTableCore.getRowCount() - 1);
 
         // TBEERNOT?
         // disable sorting
         // doing this on sorted tables works... almost
         // the addRowAt will reapply sorting, but the setValues do not.
-        // And we don't want that, because since the sorting is done by a model but we talk in table row indexes, the setValueAt may make the row move to another table index
-        // ((TableSorter)table.getModel()).cancelSorting();
+        // And we don't want that, because since the sorting is done by a model but we talk in sTableCore row indexes, the setValueAt may make the row move to another sTableCore index
+        sTableCore.getSTable().cancelSorting();
 
         // split into rows
         String[] clipboardRows = Splitter.on(RECORD_SEPARATOR).splitToList(clipboardContents).toArray(new String[]{});
@@ -97,16 +97,15 @@ public class STablePasteSelection implements Action {
             // determine the row to paste in
             int rowIdx = (i < selectedRows.length ? selectedRows[i] : -1);
 
-            // not enough rows but add rows allowed TBEERNOT
-//            if (...) {
-//                rowIdx = lJTableForEdit.addRowAt( table.getRowCount() );
-//            }
-            if (rowIdx < 0)
-            {
+            // not enough rows but add rows allowed
+            if (rowIdx < 0 && startedInLastRow && sTableCore.getSTable().getAllowInsertRows()) {
+                rowIdx = sTableCore.getSTable().appendRow();
+            }
+            if (rowIdx < 0) {
                 if (logger.isDebugEnabled()) logger.debug("skipping cell");
                 continue;
             }
-            if (logger.isDebugEnabled()) logger.debug("pasting to table row " + rowIdx);
+            if (logger.isDebugEnabled()) logger.debug("pasting to sTableCore row " + rowIdx);
 
             // split into columns (and thus individual cells)
             String[] lClipboardCols = Splitter.on(FIELD_SEPARATOR).splitToList(clipboardRow).toArray(new String[]{});
@@ -122,15 +121,15 @@ public class STablePasteSelection implements Action {
                     if (logger.isDebugEnabled()) logger.debug("skipping cell");
                     continue;
                 }
-                if (logger.isDebugEnabled()) logger.debug("paste to table cell " + rowIdx + "," + colIdx + ": " + value);
+                if (logger.isDebugEnabled()) logger.debug("paste to sTableCore cell " + rowIdx + "," + colIdx + ": " + value);
 
                 // if value location
-                if ( rowIdx < table.getModel().getRowCount() // if we use the table.getRowCount() we get the filtered amount
-                  && colIdx < table.getColumnCount()
-                  && table.isCellEditable(rowIdx, colIdx)) {
+                if ( rowIdx < sTableCore.getModel().getRowCount() // if we use the sTableCore.getRowCount() we get the filtered amount
+                  && colIdx < sTableCore.getColumnCount()
+                  && sTableCore.isCellEditable(rowIdx, colIdx)) {
 
                     // write value TBEERNOT: view to model mapping
-                    table.getTableModel().setValueAtAsString(value, rowIdx, colIdx);
+                    sTableCore.getTableModel().setValueAtAsString(value, rowIdx, colIdx);
                 }
             }
         }

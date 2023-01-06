@@ -4,6 +4,7 @@ import net.miginfocom.layout.CC;
 import net.miginfocom.swing.MigLayout;
 import org.kordamp.ikonli.Ikon;
 import org.kordamp.ikonli.materialdesign2.MaterialDesignC;
+import org.kordamp.ikonli.materialdesign2.MaterialDesignD;
 import org.kordamp.ikonli.materialdesign2.MaterialDesignF;
 import org.kordamp.ikonli.swing.FontIcon;
 import org.tbee.sway.binding.BeanBinder;
@@ -58,6 +59,7 @@ public class TestApp {
         IconRegistry.register("cut", IconRegistry.Usage.MENU, createIcon(MaterialDesignC.CONTENT_CUT));
         IconRegistry.register("paste", IconRegistry.Usage.MENU, createIcon(MaterialDesignC.CONTENT_PASTE));
         IconRegistry.register("filter", IconRegistry.Usage.MENU, createIcon(MaterialDesignF.FILTER));
+        IconRegistry.register("delete", IconRegistry.Usage.MENU, createIcon(MaterialDesignD.DELETE));
     }
     private static Icon createIcon(Ikon ikon) {
         FontIcon fontIcon = new FontIcon();
@@ -203,6 +205,8 @@ public class TestApp {
 
                 // data
                 .data(cities) //
+                .beanFactory(() -> new City()) //
+                .onRowAdded(b -> System.out.println("added " + b)) //
          ;
         return sTable;
     }
