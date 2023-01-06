@@ -21,6 +21,7 @@ public class ActionRegistry {
         register(new JTableCopyCellAsText());
         register(new STableToggleFilter());
         register(new STableCopySelection());
+        register(new STablePasteSelection());
     }
 
     /**
