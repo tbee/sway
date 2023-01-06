@@ -71,6 +71,53 @@ public class TableColumn<TableType, ColumnType extends Object> {
     }
 
     // =======================================================================
+    // VALUE AS STRING
+
+    /**
+     * The *ValueAsString methods are used for copy and paste.
+     * Because the table does not know how to convert something, each column must provide this mapping.
+     * This is done by means of the valueAsStringFormat property.
+     * If this is omitted, a column returns an empty string and does not set a value
+     * @param record
+     * @return
+     */
+    public String getValueAsString(TableType record) {
+        Format<ColumnType> valueAsStringFormat = determineValueAsStringFormat();
+        if (valueAsStringFormat == null) {
+            return "";
+        }
+        return valueAsStringFormat.toString(getValue(record));
+    }
+    /**
+     * The *ValueAsString methods are used for copy and paste.
+     * Because the table does not know how to convert something, each column must provide this mapping.
+     * This is done by means of the valueAsStringFormat property.
+     * If this is omitted, a column returns an empty string and does not set a value
+     * @param record
+     * @return
+     */
+    public void setValueAsString(TableType record, String value) {
+        Format<ColumnType> valueAsStringFormat = determineValueAsStringFormat();
+        if (valueAsStringFormat == null) {
+            return;
+        }
+        setValue(record, valueAsStringFormat.toValue(value));
+    }
+
+    private Format<ColumnType> determineValueAsStringFormat() {
+        if (valueAsStringFormat != null) {
+            return valueAsStringFormat;
+        }
+        if (renderer instanceof FormatCellRenderer formatCellRenderer) {
+            return formatCellRenderer.getFormat();
+        }
+        if (renderer instanceof FormatCellEditor formatCellRenderer) {
+            return formatCellRenderer.getFormat();
+        }
+        return null;
+    }
+
+    // =======================================================================
     // PROPERTIES
 
     /**
@@ -261,4 +308,15 @@ public class TableColumn<TableType, ColumnType extends Object> {
     }
     volatile private Comparator<ColumnType> sorting = null;
     final static public String SORTBY = "sorting";
+
+
+    /** ValueAsStringFormat: */
+    public void setValueAsStringFormat(Format<ColumnType> value) {
+        valueAsStringFormat = value;
+    }
+    public Format<ColumnType> getValueAsStringFormat() { return valueAsStringFormat; }
+    public TableColumn<TableType, ColumnType> valueAsStringFormat(Format<ColumnType> value) { setValueAsStringFormat(value); return this; }
+    volatile private Format<ColumnType> valueAsStringFormat = null;
+    final static public String VALUEASSTRINGFORMAT = "valueAsStringFormat";
+
 }

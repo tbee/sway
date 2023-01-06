@@ -55,4 +55,17 @@ public class TableModel<TableType> extends AbstractTableModel {
         column.setValue(record, aValue);
         fireTableCellUpdated(rowIndex, columnIndex);
     }
+
+    public String getValueAtAsString(int rowIndex, int columnIndex) {
+        TableColumn<TableType, ?> column = sTable.getTableColumns().get(columnIndex);
+        TableType record = sTable.getData().get(rowIndex);
+        return column.getValueAsString(record);
+    }
+
+    public void setValueAtAsString(String aValue, int rowIndex, int columnIndex) {
+        TableColumn<TableType, ?> column = sTable.getTableColumns().get(columnIndex);
+        TableType record = sTable.getData().get(rowIndex);
+        column.setValueAsString(record, aValue);
+        fireTableCellUpdated(rowIndex, columnIndex);
+    }
 }

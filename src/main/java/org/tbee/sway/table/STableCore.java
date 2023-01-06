@@ -1,8 +1,11 @@
 package org.tbee.sway.table;
 
 import org.tbee.sway.STable;
+import org.tbee.sway.action.STableCopySelection;
 import org.tbee.sway.support.FocusInterpreter;
 
+import javax.swing.JComponent;
+import javax.swing.KeyStroke;
 import javax.swing.UIManager;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
@@ -11,7 +14,10 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.util.Comparator;
+import java.util.Map;
 import java.util.function.Supplier;
 
 /**
@@ -94,6 +100,10 @@ public class STableCore<TableType> extends javax.swing.JTable {
         if (getIntercellSpacing().width < 1 || getIntercellSpacing().height < 1) {
             setIntercellSpacing(new Dimension(1, 1));
         }
+
+        // key shortcuts
+        KeyStroke copyKeystroke = KeyStroke.getKeyStroke(KeyEvent.VK_C, ActionEvent.CTRL_MASK, false);
+        registerKeyboardAction(e -> new STableCopySelection().apply(this, Map.of()), "Copy", copyKeystroke, JComponent.WHEN_FOCUSED);
     }
     private FocusInterpreter.FocusInterpreterListener focusInterpreterListener = null;
     final private FocusInterpreter focusInterpreter = new FocusInterpreter(this);

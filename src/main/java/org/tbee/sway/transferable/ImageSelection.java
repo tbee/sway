@@ -7,11 +7,13 @@
 package org.tbee.sway.transferable;
 
 import java.awt.Image;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.ClipboardOwner;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 
-public class ImageSelection implements Transferable {
+public class ImageSelection implements Transferable, ClipboardOwner {
     public ImageSelection() {
     }
 
@@ -45,5 +47,10 @@ public class ImageSelection implements Transferable {
 
     public DataFlavor[] getTransferDataFlavors() {
         return new DataFlavor[]{DataFlavor.imageFlavor};
+    }
+
+    @Override
+    public void lostOwnership(Clipboard clipboard, Transferable contents) {
+
     }
 }

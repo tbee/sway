@@ -35,4 +35,8 @@ public class FormatCellEditor<T> extends javax.swing.DefaultCellEditor {
         T value = sTextField.getValue();
         return value;
     }
+
+    public Format<T> getFormat() {
+        return format;
+    }
 }

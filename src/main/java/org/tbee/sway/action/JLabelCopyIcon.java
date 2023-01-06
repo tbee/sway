@@ -10,12 +10,10 @@ import java.awt.Component;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.ClipboardOwner;
-import java.awt.datatransfer.Transferable;
 import java.awt.image.BufferedImage;
 import java.util.Map;
 
-public class JLabelCopyIcon implements Action, ClipboardOwner {
+public class JLabelCopyIcon implements Action {
 
     @Override
     public String label() {
@@ -44,12 +42,8 @@ public class JLabelCopyIcon implements Action, ClipboardOwner {
 
         Image image = convertIconToImage(jLabel.getIcon());
         Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-        clipboard.setContents(new ImageSelection(image), this);
-    }
-
-    @Override
-    public void lostOwnership(Clipboard clipboard, Transferable contents) {
-        // do we need to do something here?
+        ImageSelection imageSelection = new ImageSelection(image);
+        clipboard.setContents(imageSelection, imageSelection);
     }
 
     static Image convertIconToImage(Icon icon) {

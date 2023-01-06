@@ -1,16 +1,18 @@
 package org.tbee.sway.action;
 
 import org.tbee.sway.support.IconRegistry;
+import org.tbee.sway.table.STableCore;
 
 import javax.swing.Icon;
-import javax.swing.JLabel;
 import java.awt.Component;
-import java.awt.Toolkit;
-import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.StringSelection;
 import java.util.Map;
 
-public class JLabelCopyText implements Action {
+public class STablePasteSelection implements Action {
+    static private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(STablePasteSelection.class);
+
+    // These are the same separators as used by Excel
+    static final String FIELD_SEPARATOR = "\t";
+    static final String RECORD_SEPARATOR = "\n";
 
     @Override
     public String label() {
@@ -24,21 +26,18 @@ public class JLabelCopyText implements Action {
 
     @Override
     public boolean isApplicableFor(Component component, Map<String, Object> context) {
-        return component instanceof JLabel;
+        return component instanceof STableCore;
     }
 
     @Override
     public boolean isEnabled(Component component, Map<String, Object> context) {
-        JLabel jLabel = (JLabel)component;
-        return jLabel.getText() != null;
+        STableCore sTable = (STableCore)component;
+        return sTable.isEnabled();
     }
 
     @Override
     public void apply(Component component, Map<String, Object> context) {
-        JLabel jLabel = (JLabel)component;
-        String s = jLabel.getText();
-        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-        StringSelection stringSelection = new StringSelection(s);
-        clipboard.setContents(stringSelection, stringSelection);
+        STableCore sTableCore = (STableCore)component;
+        // TODO
     }
 }

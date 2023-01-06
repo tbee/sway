@@ -9,11 +9,9 @@ import java.awt.Component;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.ClipboardOwner;
-import java.awt.datatransfer.Transferable;
 import java.util.Map;
 
-public class JButtonCopyIcon implements Action, ClipboardOwner {
+public class JButtonCopyIcon implements Action {
 
     @Override
     public String label() {
@@ -41,11 +39,7 @@ public class JButtonCopyIcon implements Action, ClipboardOwner {
         JButton jButton = (JButton)component;
         Image image = JLabelCopyIcon.convertIconToImage(jButton.getIcon());
         Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-        clipboard.setContents(new ImageSelection(image), this);
-    }
-
-    @Override
-    public void lostOwnership(Clipboard clipboard, Transferable contents) {
-        // do we need to do something here?
+        ImageSelection imageSelection = new ImageSelection(image);
+        clipboard.setContents(imageSelection, imageSelection);
     }
 }

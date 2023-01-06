@@ -20,6 +20,7 @@ public class ActionRegistry {
         register(new JTextComponentPaste());
         register(new JTableCopyCellAsText());
         register(new STableToggleFilter());
+        register(new STableCopySelection());
     }
 
     /**

@@ -9,13 +9,11 @@ import java.awt.Component;
 import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.ClipboardOwner;
 import java.awt.datatransfer.StringSelection;
-import java.awt.datatransfer.Transferable;
 import java.awt.event.MouseEvent;
 import java.util.Map;
 
-public class JTableCopyCellAsText implements Action, ClipboardOwner {
+public class JTableCopyCellAsText implements Action {
 
     @Override
     public String label() {
@@ -58,12 +56,8 @@ public class JTableCopyCellAsText implements Action, ClipboardOwner {
 
         // do it
         String s = "" + jTable.getValueAt(rowIdx, colIdx);
-        Clipboard lClipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-        lClipboard.setContents(new StringSelection(s), this);
-    }
-
-    @Override
-    public void lostOwnership(Clipboard clipboard, Transferable contents) {
-        // do we need to do something here?
+        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+        StringSelection stringSelection = new StringSelection(s);
+        clipboard.setContents(stringSelection, stringSelection);
     }
 }
