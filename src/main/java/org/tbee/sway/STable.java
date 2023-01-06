@@ -163,6 +163,9 @@ import java.util.stream.Collectors;
  * }
  * </pre>
  *
+ * <h2>Copy and paste</h2>
+ * STable can be used to copy and paste into Microsoft Excel.
+ * 
  * <h2>Bean factory</h2>
  * <pre>{@code
  * var sTable = new STable<SomeBean>() //
