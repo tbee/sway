@@ -206,7 +206,7 @@ public class TestApp {
                 // data
                 .data(cities) //
                 .beanFactory(() -> new City()) //
-                .onRowAdded(b -> System.out.println("added " + b)) //
+                .onRowAdded((b, i) -> System.out.println("added " + i + ": " + b)) //
          ;
         return sTable;
     }

@@ -28,6 +28,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -161,6 +162,18 @@ import java.util.stream.Collectors;
  *         .data(aListOfSomeBeans);
  * }
  * </pre>
+ *
+ * <h2>Bean factory</h2>
+ * <pre>{@code
+ * var sTable = new STable<SomeBean>() //
+ *         .columns(SomeBean.class, "name", "distance", "roundtrip") //
+ *         .beanFactory(() -> new SomeBean()) //
+ *         .onRowAdded(b -> ...) // fired when a row was added
+ *         .data(aListOfSomeBeans);
+ * }
+ * </pre>
+ * If configured, the bean factory allows the table to automatically add new rows.
+ * This can be relevant if for example a larger set of data is pasted into the table and rows need to be added at the end.
  *
  * @param <TableType>
  */
@@ -822,8 +835,9 @@ public class STable<TableType> extends SBorderPanel {
         TableType bean = beanFactory.get();
         data.add(bean);
         sTableCore.getTableModel().fireTableDataChanged();
-        fireRowAdded(bean);
-        return data.size() - 1;
+        int rowIdx = data.size() - 1;
+        fireRowAdded(bean, rowIdx);
+        return rowIdx;
     }
 
     public boolean getAllowInsertRows() {
@@ -834,28 +848,28 @@ public class STable<TableType> extends SBorderPanel {
      *
      * @param listener
      */
-    synchronized public void addRowAddedListener(Consumer<TableType> listener) {
+    synchronized public void addRowAddedListener(BiConsumer<TableType, Integer> listener) {
         if (rowAddedListeners == null) {
             rowAddedListeners = new ArrayList<>();
         }
         rowAddedListeners.add(listener);
     }
-    synchronized public boolean removeRowAddedListener(Consumer<TableType> listener) {
+    synchronized public boolean removeRowAddedListener(BiConsumer<TableType, Integer> listener) {
         if (rowAddedListeners == null) {
             return false;
         }
         return rowAddedListeners.remove(listener);
     }
-    private List<Consumer<TableType>> rowAddedListeners;
-    public STable<TableType> onRowAdded(Consumer<TableType> onRowAddedListener) {
+    private List<BiConsumer<TableType, Integer>> rowAddedListeners;
+    public STable<TableType> onRowAdded(BiConsumer<TableType, Integer> onRowAddedListener) {
         addRowAddedListener(onRowAddedListener);
         return this;
     }
-    private void fireRowAdded(TableType bean) {
+    private void fireRowAdded(TableType bean, int rowIdx) {
         if (rowAddedListeners == null) {
             return;
         }
-        rowAddedListeners.forEach(l -> l.accept(bean));
+        rowAddedListeners.forEach(l -> l.accept(bean, rowIdx));
     }
 
     // ===========================================================================
