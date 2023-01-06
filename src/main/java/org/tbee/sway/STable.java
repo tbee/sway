@@ -81,9 +81,9 @@ import java.util.stream.Collectors;
  *     <li>Automatic refresh of cells</li>
  *     <li>Sorting</li>
  *     <li>Filtering</li>
+ *     <li>Copy / paste functionality (Excel compatible)</li>
  *     <li>Pagination (TODO)</li>
  *     <li>Tooltips per cell (TODO)</li>
- *     <li>Copy / paste functionality (TODO)</li>
  *     <li>Column reordering and hiding (TODO)</li>
  *     <li>Resizable rows and columns (TODO)</li>
  *     <li>Automatically sizing row (TODO)</li>
@@ -163,9 +163,6 @@ import java.util.stream.Collectors;
  * }
  * </pre>
  *
- * <h2>Copy and paste</h2>
- * STable can be used to copy and paste into Microsoft Excel.
- * 
  * <h2>Bean factory</h2>
  * <pre>{@code
  * var sTable = new STable<SomeBean>() //
