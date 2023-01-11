@@ -79,8 +79,8 @@ Format also allows to define things like horizontal alignment and icon.
 
 
 ## Actions / context menu
-Actions can be registered and these will be shown in the (right mouse button) context menu.
-These can be simple actions, like the default availabe "copy", "cut" and "paste", but also business model related actions.
+Actions can be registered and will be shown in the (right mouse button) context menu.
+These can be simple actions, like the default available "copy", "cut" and "paste", but also business model related actions.
 
 ``` java
 ActionRegistry.register(new ShowOnMapForCityTextFields());
@@ -95,10 +95,8 @@ public class ShowOnMapForCityTextFields implements Action {
 
     @Override
     public boolean isApplicableFor(Component component, Map<String, Object> context) {
-        if (!component instanceof STextField) {
-            return false;
-        }
-        return ((STextField)component).getFormat() instanceof CityFormat;
+        return component instanceof STextField sTextField
+            && sTextField.getFormat() instanceof CityFormat;
     }
 
     @Override
