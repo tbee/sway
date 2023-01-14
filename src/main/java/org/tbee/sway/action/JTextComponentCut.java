@@ -16,7 +16,7 @@ public class JTextComponentCut implements Action {
 
     @Override
     public Icon icon() {
-        return IconRegistry.find("cut", IconRegistry.Usage.MENU);
+        return IconRegistry.find(IconRegistry.SwayInternallyUsedIcon.CUT.toString(), IconRegistry.Usage.MENU);
     }
 
     @Override

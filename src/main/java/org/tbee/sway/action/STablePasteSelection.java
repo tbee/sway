@@ -25,7 +25,7 @@ public class STablePasteSelection implements Action {
 
     @Override
     public Icon icon() {
-        return IconRegistry.find("paste", IconRegistry.Usage.MENU);
+        return IconRegistry.find(IconRegistry.SwayInternallyUsedIcon.PASTE.toString(), IconRegistry.Usage.MENU);
     }
 
     @Override

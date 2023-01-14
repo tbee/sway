@@ -1,11 +1,9 @@
 package org.tbee.sway;
 
-import net.miginfocom.layout.CC;
-import net.miginfocom.swing.MigLayout;
 import org.kordamp.ikonli.Ikon;
 import org.kordamp.ikonli.materialdesign2.MaterialDesignC;
-import org.kordamp.ikonli.materialdesign2.MaterialDesignD;
 import org.kordamp.ikonli.materialdesign2.MaterialDesignF;
+import org.kordamp.ikonli.materialdesign2.MaterialDesignS;
 import org.kordamp.ikonli.swing.FontIcon;
 import org.tbee.sway.binding.BeanBinder;
 import org.tbee.sway.format.Format;
@@ -15,7 +13,6 @@ import org.tbee.sway.support.IconRegistry;
 import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import java.math.BigDecimal;
@@ -35,11 +32,13 @@ public class TestApp {
         registerIcons();
 
         SwingUtilities.invokeAndWait(() -> {
-            SMigLayoutPanel panel = new SMigLayoutPanel();
+            SMigPanel panel = new SMigPanel() //
+                    //.debug()
+                    ;
 
-            panel.add(sTable());
-            panel.add(sList());
-            panel.add(sTextField());
+            panel.addField(sTable()).grow();
+            panel.addField(sList()).grow();
+            panel.addField(sTextField()).grow();
 
             SContextMenu.install();
 
@@ -55,16 +54,16 @@ public class TestApp {
 
     private static void registerIcons() {
         // https://kordamp.org/ikonli/cheat-sheet-material2.html
-        IconRegistry.register("copy", IconRegistry.Usage.MENU, createIcon(MaterialDesignC.CONTENT_COPY));
-        IconRegistry.register("cut", IconRegistry.Usage.MENU, createIcon(MaterialDesignC.CONTENT_CUT));
-        IconRegistry.register("paste", IconRegistry.Usage.MENU, createIcon(MaterialDesignC.CONTENT_PASTE));
-        IconRegistry.register("filter", IconRegistry.Usage.MENU, createIcon(MaterialDesignF.FILTER));
-        IconRegistry.register("delete", IconRegistry.Usage.MENU, createIcon(MaterialDesignD.DELETE));
+        IconRegistry.register(IconRegistry.SwayInternallyUsedIcon.COPY, IconRegistry.Usage.MENU, createIcon(MaterialDesignC.CONTENT_COPY, IconRegistry.Usage.MENU.typicalSize()));
+        IconRegistry.register(IconRegistry.SwayInternallyUsedIcon.CUT, IconRegistry.Usage.MENU, createIcon(MaterialDesignC.CONTENT_CUT, IconRegistry.Usage.MENU.typicalSize()));
+        IconRegistry.register(IconRegistry.SwayInternallyUsedIcon.PASTE, IconRegistry.Usage.MENU, createIcon(MaterialDesignC.CONTENT_PASTE, IconRegistry.Usage.MENU.typicalSize()));
+        IconRegistry.register(IconRegistry.SwayInternallyUsedIcon.FILTER, IconRegistry.Usage.MENU, createIcon(MaterialDesignF.FILTER, IconRegistry.Usage.MENU.typicalSize()));
+        IconRegistry.register(IconRegistry.SwayInternallyUsedIcon.SELECTION, IconRegistry.Usage.MENU, createIcon(MaterialDesignS.SELECTION, IconRegistry.Usage.MENU.typicalSize()));
     }
-    private static Icon createIcon(Ikon ikon) {
+    private static Icon createIcon(Ikon ikon, int size) {
         FontIcon fontIcon = new FontIcon();
         fontIcon.setIkon(ikon);
-        fontIcon.setIconSize(16);
+        fontIcon.setIconSize(size);
         return fontIcon;
     }
 
@@ -72,70 +71,87 @@ public class TestApp {
         City bean = new City("test",12);
         BeanBinder<City> beanBinder = new BeanBinder<>(bean);
 
-        STextField.ofStringBlankIsNull().binding(beanBinder, City.NAME).unbind();
+        STextField.ofStringBlankIsNull().binding(beanBinder, City.NAME).unbind(); // test unbind
 
-        JPanel jPanel = new JPanel();
-        jPanel.setLayout(new MigLayout());
+        SMigPanel migPanel = new SMigPanel();
 
-        jPanel.add(new JLabel("String"), new CC().alignX("right"));
-        jPanel.add(STextField.ofString().value("abc"), new CC().wrap());
+        migPanel.addLabel(new SLabel("String"));
+        migPanel.addField(STextField.ofString().value("abc"));
+        migPanel.wrap();
 
-        jPanel.add(new JLabel("String -> bean.name"), new CC().alignX("right"));
-        jPanel.add(STextField.ofString().bind(bean, City.NAME), new CC().wrap());
+        migPanel.addLabel(new SLabel("String -> bean.name"));
+        migPanel.addField(STextField.ofString().bind(bean, City.NAME));
+        migPanel.wrap();
 
-        jPanel.add(new JLabel("StringBlankIsNull -> bean.name"), new CC().alignX("right"));
-        jPanel.add(STextField.ofStringBlankIsNull().bind(beanBinder, City.NAME), new CC().wrap());
+        migPanel.addLabel(new SLabel("StringBlankIsNull -> bean.name"));
+        migPanel.addField(STextField.ofStringBlankIsNull().bind(beanBinder, City.NAME));
+        migPanel.wrap();
 
-        jPanel.add(new JLabel("Integer -> bean.age"), new CC().alignX("right"));
-        jPanel.add(STextField.ofInteger().bind(bean, City.DISTANCE), new CC().wrap());
+        migPanel.addLabel(new SLabel("Integer -> bean.age"));
+        migPanel.addField(STextField.ofInteger().bind(bean, City.DISTANCE));
+        migPanel.wrap();
 
-        jPanel.add(new JLabel("Integer -> ofBind bean.age"), new CC().alignX("right"));
-        jPanel.add(STextField.ofBind(bean, City.DISTANCE), new CC().wrap());
+        migPanel.addLabel(new SLabel("Integer -> ofBind bean.age"));
+        migPanel.addField(STextField.ofBind(bean, City.DISTANCE));
+        migPanel.wrap();
 
-        jPanel.add(new JLabel("Integer -> ofBind beanBinder.age"), new CC().alignX("right"));
-        jPanel.add(STextField.ofBind(beanBinder, City.DISTANCE), new CC().wrap());
+        migPanel.addLabel(new SLabel("Integer -> ofBind beanBinder.age"));
+        migPanel.addField(STextField.ofBind(beanBinder, City.DISTANCE));
+        migPanel.wrap();
 
-        jPanel.add(new JLabel("Long"), new CC().alignX("right"));
-        jPanel.add(STextField.ofLong().value(123l), new CC().wrap());
+        migPanel.addLabel(new SLabel("Long"));
+        migPanel.addField(STextField.ofLong().value(123l));
+        migPanel.wrap();
 
-        jPanel.add(new JLabel("Double"), new CC().alignX("right"));
-        jPanel.add(STextField.ofDouble().value(1.23), new CC().wrap());
+        migPanel.addLabel(new SLabel("Double"));
+        migPanel.addField(STextField.ofDouble().value(1.23));
+        migPanel.wrap();
 
-        jPanel.add(new JLabel("Percent"), new CC().alignX("right"));
-        jPanel.add(STextField.ofPercent().value(1.23), new CC().wrap());
+        migPanel.addLabel(new SLabel("Percent"));
+        migPanel.addField(STextField.ofPercent().value(1.23));
+        migPanel.wrap();
 
-        jPanel.add(new JLabel("Currency"), new CC().alignX("right"));
-        jPanel.add(STextField.ofCurrency().value(1.23), new CC().wrap());
+        migPanel.addLabel(new SLabel("Currency"));
+        migPanel.addField(STextField.ofCurrency().value(1.23));
+        migPanel.wrap();
 
-        jPanel.add(new JLabel("Currency JAPAN"), new CC().alignX("right"));
-        jPanel.add(STextField.ofCurrency(Locale.JAPAN).value(1.23), new CC().wrap());
+        migPanel.addLabel(new SLabel("Currency JAPAN"));
+        migPanel.addField(STextField.ofCurrency(Locale.JAPAN).value(1.23));
+        migPanel.wrap();
 
-        jPanel.add(new JLabel("Currency EURO"), new CC().alignX("right"));
-        jPanel.add(STextField.ofCurrency(Currency.getInstance("EUR")).value(1.23), new CC().wrap());
+        migPanel.addLabel(new SLabel("Currency EURO"));
+        migPanel.addField(STextField.ofCurrency(Currency.getInstance("EUR")).value(1.23));
+        migPanel.wrap();
 
-        jPanel.add(new JLabel("BigInteger"), new CC().alignX("right"));
-        jPanel.add(STextField.ofBigInteger().value(BigInteger.ONE), new CC().wrap());
+        migPanel.addLabel(new SLabel("BigInteger"));
+        migPanel.addField(STextField.ofBigInteger().value(BigInteger.ONE));
+        migPanel.wrap();
 
-        jPanel.add(new JLabel("BigDecimal"), new CC().alignX("right"));
-        jPanel.add(STextField.ofBigDecimal().value(BigDecimal.TEN.ONE), new CC().wrap());
+        migPanel.addLabel(new SLabel("BigDecimal"));
+        migPanel.addField(STextField.ofBigDecimal().value(BigDecimal.TEN.ONE));
+        migPanel.wrap();
 
-        jPanel.add(new JLabel("LocalDate"), new CC().alignX("right"));
-        jPanel.add(STextField.ofLocalDate().value(LocalDate.now()), new CC().wrap());
+        migPanel.addLabel(new SLabel("LocalDate"));
+        migPanel.addField(STextField.ofLocalDate().value(LocalDate.now()));
+        migPanel.wrap();
 
-        jPanel.add(new JLabel("LocalDateTime"), new CC().alignX("right"));
-        jPanel.add(STextField.ofLocalDateTime().value(LocalDateTime.now()), new CC().wrap());
+        migPanel.addLabel(new SLabel("LocalDateTime"));
+        migPanel.addField(STextField.ofLocalDateTime().value(LocalDateTime.now()));
+        migPanel.wrap();
 
-        jPanel.add(new JLabel("ZonedDateTime"), new CC().alignX("right"));
-        jPanel.add(STextField.ofZonedDateTime().value(ZonedDateTime.now()), new CC().wrap());
+        migPanel.addLabel(new SLabel("ZonedDateTime"));
+        migPanel.addField(STextField.ofZonedDateTime().value(ZonedDateTime.now()));
+        migPanel.wrap();
 
-        jPanel.add(new JLabel("OffsetDateTime"), new CC().alignX("right"));
-        jPanel.add(STextField.ofOffsetDateTime().value(OffsetDateTime.now()), new CC().wrap());
+        migPanel.addLabel(new SLabel("OffsetDateTime"));
+        migPanel.addField(STextField.ofOffsetDateTime().value(OffsetDateTime.now()));
+        migPanel.wrap();
 
-        JButton jButton = new JButton("set name");
+        JButton jButton = new SButton("set name");
         jButton.addActionListener(e -> bean.setName("name" + System.currentTimeMillis()));
-        jPanel.add(jButton, new CC().skip(1).wrap());
+        migPanel.addField(jButton).skip(1);
 
-        return jPanel;
+        return migPanel;
     }
 
     static private SList<City> sList() {

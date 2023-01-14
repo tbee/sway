@@ -17,7 +17,7 @@ public class STableClearSelection implements Action {
 
     @Override
     public Icon icon() {
-        return IconRegistry.find("delete", IconRegistry.Usage.MENU);
+        return IconRegistry.find(IconRegistry.SwayInternallyUsedIcon.SELECTION.toString(), IconRegistry.Usage.MENU);
     }
 
     @Override

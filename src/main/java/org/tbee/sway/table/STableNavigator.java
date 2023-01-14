@@ -1,7 +1,7 @@
 package org.tbee.sway.table;
 
 import net.miginfocom.layout.CC;
-import org.tbee.sway.SMigLayoutPanel;
+import org.tbee.sway.SMigPanel;
 import org.tbee.sway.SwingUtil;
 import org.tbee.sway.comedia.text.CNumericDocument;
 import org.tbee.sway.comedia.ui.CEncodedIcon;
@@ -27,7 +27,7 @@ import java.beans.PropertyChangeListener;
 /**
  * Copy and adapted from CoMedia cbeans
  */
-public class STableNavigator extends SMigLayoutPanel implements ListSelectionListener, TableModelListener, ActionListener, FocusListener, PropertyChangeListener {
+public class STableNavigator extends SMigPanel implements ListSelectionListener, TableModelListener, ActionListener, FocusListener, PropertyChangeListener {
 
     JButton firstButton = new JButton();
     JButton priorButton = new JButton();

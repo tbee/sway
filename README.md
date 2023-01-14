@@ -40,11 +40,15 @@ var sPanel = new SFlowPanel(sButtonGroup.getButtons());
 var sButtonGroupCities = SButtonGroup.ofRadioButtons(amsterdam, berlin, rome);
 var sPanelCities = new SFlowPanel(sButtonGroupCities.getButtons());
 
-// Explicit panels for layouts, with correcsponding methods.
+// Explicit panels for layouts, with corresponding methods.
 var sBorderPanel = new SBorderPanel(new STable()) //
          .west(new SomeNavigationMenu()) //
          .east(new SomeContextLinks());
          
+// MigLayout is used by Sway anyhow         
+var migPanel = new MigPanel().fill(); //
+migPanel.addLabelAndField(someLabel, someField).growX();
+migPanel.wrap();         
 ```
 
 ## Format

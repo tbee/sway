@@ -19,7 +19,7 @@ public class JLabelCopyText implements Action {
 
     @Override
     public Icon icon() {
-        return IconRegistry.find("copy", IconRegistry.Usage.MENU);
+        return IconRegistry.find(IconRegistry.SwayInternallyUsedIcon.COPY.toString(), IconRegistry.Usage.MENU);
     }
 
     @Override

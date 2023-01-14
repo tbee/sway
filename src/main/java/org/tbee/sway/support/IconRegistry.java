@@ -11,11 +11,26 @@ import java.util.Map;
 public class IconRegistry {
     static private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(IconRegistry.class);
 
-    public enum Usage { MENU // normally 16x16
+    public enum SwayInternallyUsedIcon { COPY, CUT, PASTE, FILTER, SELECTION }
+
+    public enum Usage { MENU(16);
+
+        public int typicalSize() {
+            return typicalSize;
+        }
+
+        final int typicalSize;
+
+        Usage(int typicalSize) {
+            this.typicalSize = typicalSize;
+        }
     }
 
     final static Map<String, Icon> icons = new HashMap<>();
 
+    synchronized static public void register(SwayInternallyUsedIcon name, Usage usage, Icon icon) {
+        register(name.toString(), usage, icon);
+    }
     synchronized static public void register(String name, Usage usage, Icon icon) {
         icons.put(key(name, usage), icon);
     }

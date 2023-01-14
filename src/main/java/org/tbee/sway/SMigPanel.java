@@ -14,7 +14,7 @@ import java.util.Collection;
 // TODO
 // - strongly typed API calls for all MigLayout stuff
 
-public class SMigLayoutPanel extends JPanel {
+public class SMigPanel extends JPanel {
 
     // Need to declare these specifically, because the getters return String
     final private LC lc = new LC();
@@ -22,38 +22,65 @@ public class SMigLayoutPanel extends JPanel {
     final private AC colAC = new AC();
     final private MigLayout migLayout = new MigLayout(lc, colAC, rowAC);
 
-    public SMigLayoutPanel() {
+    public SMigPanel() {
         super();
         setLayout(migLayout);
         hideMode(HideMode.SIZE_0_GAPS_0);
     }
 
-    public SMigLayoutPanel(JComponent... components) {
+    public SMigPanel(JComponent... components) {
         this();
         add(components);
     }
 
-    public SMigLayoutPanel(Collection<? extends JComponent> components) {
+    public SMigPanel(Collection<? extends JComponent> components) {
         this();
         add(components);
     }
 
     // =========================================================================
-    // FLUENT API
+    // FLUENT API for adding components
 
-    public SMigLayoutPanel add(JComponent... components) {
+    public SMigPanel add(JComponent... components) {
         Arrays.stream(components).forEach(c -> super.add(c));
         return this;
     }
 
-    public SMigLayoutPanel add(Collection<? extends JComponent> components) {
+    public SMigPanel add(Collection<? extends JComponent> components) {
         components.forEach(c -> super.add(c));
         return this;
     }
 
-    public SMigLayoutPanel add(JComponent component, CC cc) {
+    public SMigPanel add(JComponent component, CC cc) {
         super.add(component, cc);
         return this;
+    }
+
+    public CC addLabel(JComponent component) {
+        CC cc = new CC() //
+            .alignX("trailing") //
+            .alignY("top");
+        add(component, cc);
+        return cc;
+    }
+
+    public CC addField(JComponent component) {
+        CC cc = new CC() //
+                .alignX("leading") //
+                .alignY("top");
+        add(component, cc);
+        return cc;
+    }
+
+    /**
+     * Add both a label and field side by side
+     * @param labelComponent
+     * @param fieldComponent
+     * @return CC of field component
+     */
+    public CC addLabelAndField(JComponent labelComponent, JComponent fieldComponent) {
+        addLabel(labelComponent);
+        return addField(fieldComponent);
     }
 
     public CC getCCFor(Component component) {
@@ -67,19 +94,31 @@ public class SMigLayoutPanel extends JPanel {
         migLayout.setComponentConstraints(component, cc);
     }
 
-    public SMigLayoutPanel fill() {
+    // =========================================================================
+    // FLUENT API panel level
+
+    /**
+     * Toggle debug
+     * @return
+     */
+    public SMigPanel debug() {
+        lc.debug(lc.getDebugMillis() > 0 ? 0 : 1000); // toggle debug
+        return this;
+    }
+
+    public SMigPanel fill() {
         lc.fill();
         migLayout.setLayoutConstraints(lc); // reapply
         return this;
     }
 
-    public SMigLayoutPanel noMargins() {
+    public SMigPanel noMargins() {
         lc.insets("0", "0", "0", "0");
         migLayout.setLayoutConstraints(lc); // reapply
         return this;
     }
 
-    public SMigLayoutPanel noGaps() {
+    public SMigPanel noGaps() {
         lc.gridGap("0", "0");
         migLayout.setLayoutConstraints(lc); // reapply
         return this;
@@ -88,7 +127,7 @@ public class SMigLayoutPanel extends JPanel {
     /**
      * Wrap after the last component
      */
-    public SMigLayoutPanel wrap() {
+    public SMigPanel wrap() {
         Component component = getComponent(getComponentCount() - 1);
         CC cc = getCCFor(component);
         setCCFor(component, cc.wrap()); // reapply
@@ -101,7 +140,7 @@ public class SMigLayoutPanel extends JPanel {
      * SIZE_0_GAPS_0: If hidden the size will be 0, 0 and gaps set to zero.<br>
      * DISREGARD: If hidden the component will be disregarded completely and not take up a cell in the grid..
      */
-    public SMigLayoutPanel hideMode(HideMode v)
+    public SMigPanel hideMode(HideMode v)
     {
         lc.setHideMode(v.code);
         migLayout.setLayoutConstraints(lc); // reapply
