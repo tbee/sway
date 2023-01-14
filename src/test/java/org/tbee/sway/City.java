@@ -90,6 +90,20 @@ public class City extends AbstractBean<City> {
         return this;
     }
 
+    /** growing: boolean property */
+    public void setGrowing(boolean v) {
+        fireVetoableChange(GROWING, this.growing, v);
+        firePropertyChange(GROWING, this.growing, this.growing = v);
+    }
+    public boolean getGrowing() {
+        return growing;
+    }
+    private boolean growing;
+    static public String GROWING = "growing";
+    public City growing(boolean v) {
+        setGrowing(v);
+        return this;
+    }
 
     /** sisterCity: City property */
     public void setSisterCity(City v) {
@@ -112,6 +126,7 @@ public class City extends AbstractBean<City> {
                 + ",name=" + name
                 + ",age=" + distance
                 + ",surfaceInKM2=" + surfaceInKM2
+                + ",growing=" + growing
                 ;
     }
 
@@ -129,6 +144,7 @@ public class City extends AbstractBean<City> {
         return Objects.equals(name, other.name) //
             && Objects.equals(distance, other.distance) //
             && Objects.equals(sisterCity, other.sisterCity) //
+            && Objects.equals(growing, other.growing) //
         ;
     }
 }

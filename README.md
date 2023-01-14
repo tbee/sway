@@ -12,7 +12,7 @@ var sTable = new STable<City>() //
         .data(cities); // cities is a List<City>
 ```
 
-Or creating a strongly typed text field would be as simple as:
+Or creating a strongly typed text field the is bound to the property of a Java bean would be as simple as:
 
 ``` java
 var sTextField = STextField.ofBind(city, "name");
@@ -28,15 +28,18 @@ Some more examples:
 // A label can have its text and icon property bound
 var sLabel = new Slabel().bindText(city, "name");
 
-// ButtonGroup revolves around the associated value, not the button
+// SCheckBox can be bound to a boolean property
+var sCheckBox = new SCheckBox("Growing").bind(city, City.GROWING);
+
+// SButtonGroup revolves around the associated value, not the button
 var sButtonGroup = new SButtonGroup<Integer>() //
-        .add(1, new SToggleButton("1")) //
-        .add(2, new SToggleButton("2")) //
-        .add(3, new SToggleButton("3")) //
-        .bind(race, "postion");
+        .add(1, new SToggleButton("winner")) //
+        .add(2, new SToggleButton("2nd")) //
+        .add(3, new SToggleButton("3rd")) //
+        .bind(race, "position");
 var sPanel = new SFlowPanel(sButtonGroup.getButtons());
 
-// ButtonGroup has some practical convenience methods
+// SButtonGroup has some practical convenience methods
 var sButtonGroupCities = SButtonGroup.ofRadioButtons(amsterdam, berlin, rome);
 var sPanelCities = new SFlowPanel(sButtonGroupCities.getButtons());
 

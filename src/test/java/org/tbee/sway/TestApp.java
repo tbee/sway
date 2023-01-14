@@ -39,6 +39,7 @@ public class TestApp {
             panel.addField(sTable()).grow();
             panel.addField(sList()).grow();
             panel.addField(sTextField()).grow();
+            panel.addField(sCheckBox()).grow();
 
             SContextMenu.install();
 
@@ -225,5 +226,20 @@ public class TestApp {
                 .onRowAdded((b, i) -> System.out.println("added " + i + ": " + b)) //
          ;
         return sTable;
+    }
+
+    static private JPanel sCheckBox() {
+        City city = new City("test",12);
+        BeanBinder<City> beanBinder = new BeanBinder<>(city);
+
+        SMigPanel migPanel = new SMigPanel();
+
+        migPanel.addField(new SCheckBox("CheckBox"));
+        migPanel.wrap();
+        migPanel.addField(new SCheckBox("bind").bind(city, City.GROWING));
+        migPanel.addField(new SCheckBox("beanBinder").bind(beanBinder, City.GROWING));
+        migPanel.wrap();
+
+        return migPanel;
     }
 }
