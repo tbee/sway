@@ -18,7 +18,7 @@ public class STableToggleFilter implements Action {
 
     @Override
     public Icon icon() {
-        return IconRegistry.find(IconRegistry.SwayInternallyUsedIcon.FILTER.toString(), IconRegistry.Usage.MENU);
+        return IconRegistry.find(IconRegistry.SwayInternallyUsedIcon.FILTER, IconRegistry.Usage.MENU);
     }
 
     @Override

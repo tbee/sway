@@ -3,6 +3,7 @@ package org.tbee.sway;
 import org.tbee.sway.binding.BeanBinder;
 import org.tbee.sway.binding.BindUtil;
 import org.tbee.sway.binding.Binding;
+import org.tbee.sway.support.IconRegistry;
 import org.tbee.util.ExceptionUtil;
 
 import javax.swing.Icon;
@@ -10,23 +11,32 @@ import javax.swing.JCheckBox;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
+/**
+ * If the SELECTED, UNSELECTED icons are specified in the IconRegistry, then these will be drawn.
+ */
 public class SCheckBox extends JCheckBox {
     static private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(SCheckBox.class);
 
     public SCheckBox() {
+        updateIcon();
     }
 
     public SCheckBox(Icon icon) {
         super(icon);
+        explicitIcon = true;
     }
 
     public SCheckBox(String text) {
         super(text);
+        updateIcon();
     }
 
     public SCheckBox(String text, Icon icon) {
         super(text, icon);
+        explicitIcon = true;
     }
+
+    private boolean explicitIcon = false;
 
     // ==================================================
     // PROPERTIES
@@ -35,12 +45,27 @@ public class SCheckBox extends JCheckBox {
     protected void fireStateChanged() {
         super.fireStateChanged();
         firePropertyChange(SELECTED, selected, selected = isSelected());
+        updateIcon();
     }
+
+    private void updateIcon() {
+        if (explicitIcon) {
+            return;
+        }
+        super.setIcon(IconRegistry.find(selected ? IconRegistry.SwayInternallyUsedIcon.SELECTED : IconRegistry.SwayInternallyUsedIcon.UNSELECTED, IconRegistry.Usage.COMPONENT));
+    }
+
     final static public String SELECTED = "selected";
     boolean selected = false;
     public SCheckBox selected(boolean value) {
         setSelected(value);
         return this;
+    }
+
+    @Override
+    public void setIcon(Icon v) {
+        super.setIcon(v);
+        explicitIcon = true;
     }
 
     // ==================================================

@@ -60,6 +60,10 @@ public class TestApp {
         IconRegistry.register(IconRegistry.SwayInternallyUsedIcon.PASTE, IconRegistry.Usage.MENU, createIcon(MaterialDesignC.CONTENT_PASTE, IconRegistry.Usage.MENU.typicalSize()));
         IconRegistry.register(IconRegistry.SwayInternallyUsedIcon.FILTER, IconRegistry.Usage.MENU, createIcon(MaterialDesignF.FILTER, IconRegistry.Usage.MENU.typicalSize()));
         IconRegistry.register(IconRegistry.SwayInternallyUsedIcon.SELECTION, IconRegistry.Usage.MENU, createIcon(MaterialDesignS.SELECTION, IconRegistry.Usage.MENU.typicalSize()));
+
+//        IconRegistry.register(IconRegistry.SwayInternallyUsedIcon.SELECTED, IconRegistry.Usage.COMPONENT, createIcon(MaterialDesignS.SELECT, IconRegistry.Usage.COMPONENT.typicalSize()));
+//        IconRegistry.register(IconRegistry.SwayInternallyUsedIcon.UNSELECTED, IconRegistry.Usage.COMPONENT, createIcon(MaterialDesignS.SELECT_INVERSE, IconRegistry.Usage.COMPONENT.typicalSize()));
+//        IconRegistry.register(IconRegistry.SwayInternallyUsedIcon.UNDETERMINED, IconRegistry.Usage.COMPONENT, createIcon(MaterialDesignS.SELECT_OFF, IconRegistry.Usage.COMPONENT.typicalSize()));
     }
     private static Icon createIcon(Ikon ikon, int size) {
         FontIcon fontIcon = new FontIcon();
@@ -234,10 +238,16 @@ public class TestApp {
 
         SMigPanel migPanel = new SMigPanel();
 
-        migPanel.addField(new SCheckBox("CheckBox"));
+        migPanel.addField(new SCheckBox("boolean"));
         migPanel.wrap();
-        migPanel.addField(new SCheckBox("bind").bind(city, City.GROWING));
-        migPanel.addField(new SCheckBox("beanBinder").bind(beanBinder, City.GROWING));
+        migPanel.addField(new SCheckBox("boolean bind").bind(city, City.GROWING));
+        migPanel.addField(new SCheckBox("boolean beanBinder").bind(beanBinder, City.GROWING));
+        migPanel.wrap();
+
+        migPanel.addField(new SCheckBox3("Boolean"));
+        migPanel.wrap();
+        migPanel.addField(new SCheckBox3("Boolean bind").bind(city, City.CITYRIGHTS));
+        migPanel.addField(new SCheckBox3("Boolean beanBinder").bind(beanBinder, City.CITYRIGHTS));
         migPanel.wrap();
 
         return migPanel;

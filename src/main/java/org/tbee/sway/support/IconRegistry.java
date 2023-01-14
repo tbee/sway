@@ -11,9 +11,9 @@ import java.util.Map;
 public class IconRegistry {
     static private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(IconRegistry.class);
 
-    public enum SwayInternallyUsedIcon { COPY, CUT, PASTE, FILTER, SELECTION }
+    public enum SwayInternallyUsedIcon { COPY, CUT, PASTE, FILTER, SELECTION, SELECTED, UNSELECTED, UNDETERMINED }
 
-    public enum Usage { MENU(16);
+    public enum Usage { MENU(16), COMPONENT(16);
 
         public int typicalSize() {
             return typicalSize;
@@ -36,6 +36,10 @@ public class IconRegistry {
     }
     synchronized static public void unregister(String name, Usage usage) {
         icons.remove(key(name, usage));
+    }
+
+    synchronized static public Icon find(SwayInternallyUsedIcon name, Usage usage) {
+        return find(name.toString(), usage);
     }
     synchronized static public Icon find(String name, Usage usage) {
         String key = key(name, usage);

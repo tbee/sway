@@ -98,10 +98,25 @@ public class City extends AbstractBean<City> {
     public boolean getGrowing() {
         return growing;
     }
-    private boolean growing;
+    private boolean growing = true;
     static public String GROWING = "growing";
     public City growing(boolean v) {
         setGrowing(v);
+        return this;
+    }
+
+    /** cityRights: Boolean property */
+    public void setCityRights(Boolean v) {
+        fireVetoableChange(CITYRIGHTS, this.cityRights, v);
+        firePropertyChange(CITYRIGHTS, this.cityRights, this.cityRights = v);
+    }
+    public Boolean getCityRights() {
+        return cityRights;
+    }
+    private Boolean cityRights = null;
+    static public String CITYRIGHTS = "cityRights";
+    public City cityRights(Boolean v) {
+        setCityRights(v);
         return this;
     }
 
@@ -127,12 +142,13 @@ public class City extends AbstractBean<City> {
                 + ",age=" + distance
                 + ",surfaceInKM2=" + surfaceInKM2
                 + ",growing=" + growing
+                + ",cityRights=" + cityRights
                 ;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, distance, surfaceInKM2);
+        return Objects.hash(name, distance, surfaceInKM2, sisterCity, growing, cityRights);
     }
 
     @Override
@@ -143,8 +159,10 @@ public class City extends AbstractBean<City> {
         City other = (City) obj;
         return Objects.equals(name, other.name) //
             && Objects.equals(distance, other.distance) //
+            && Objects.equals(surfaceInKM2, other.surfaceInKM2) //
             && Objects.equals(sisterCity, other.sisterCity) //
             && Objects.equals(growing, other.growing) //
+            && Objects.equals(cityRights, other.cityRights) //
         ;
     }
 }

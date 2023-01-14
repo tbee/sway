@@ -22,7 +22,7 @@ public class JLabelCopyIcon implements Action {
 
     @Override
     public Icon icon() {
-        return IconRegistry.find(IconRegistry.SwayInternallyUsedIcon.COPY.toString(), IconRegistry.Usage.MENU);
+        return IconRegistry.find(IconRegistry.SwayInternallyUsedIcon.COPY, IconRegistry.Usage.MENU);
     }
 
     @Override

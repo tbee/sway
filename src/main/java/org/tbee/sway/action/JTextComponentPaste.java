@@ -16,7 +16,7 @@ public class JTextComponentPaste implements Action {
 
     @Override
     public Icon icon() {
-        return IconRegistry.find(IconRegistry.SwayInternallyUsedIcon.PASTE.toString(), IconRegistry.Usage.MENU);
+        return IconRegistry.find(IconRegistry.SwayInternallyUsedIcon.PASTE, IconRegistry.Usage.MENU);
     }
 
     @Override
