@@ -6,10 +6,13 @@ import org.tbee.sway.binding.Binding;
 import org.tbee.sway.support.IconRegistry;
 import org.tbee.util.ExceptionUtil;
 
+import javax.swing.Action;
 import javax.swing.Icon;
 import javax.swing.JCheckBox;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
+import java.awt.Insets;
+import java.awt.event.ActionListener;
 
 /**
  * If the SELECTED, UNSELECTED icons are specified in the IconRegistry, then these will be drawn.
@@ -133,5 +136,53 @@ public class SCheckBox extends JCheckBox {
 
         // Mark exception as handled
         return true;
+    }
+
+    // ==============================================
+    // FLUENT API
+
+    public SCheckBox name(String v) {
+        setName(v);
+        return this;
+    }
+
+    public SCheckBox toolTipText(String t) {
+        super.setToolTipText(t);
+        return this;
+    }
+
+    public SCheckBox enabled(boolean v) {
+        super.setEnabled(v);
+        return this;
+    }
+
+    public SCheckBox margin(Insets m) {
+        super.setMargin(m);
+        return this;
+    }
+
+    public SCheckBox onAction(ActionListener l) {
+        super.addActionListener(l);
+        return this;
+    }
+
+    public SCheckBox action(Action v) {
+        super.setAction(v);
+        return this;
+    }
+
+    public SCheckBox icon(Icon v) {
+        super.setIcon(v);
+        return this;
+    }
+
+    public SCheckBox text(String v) {
+        super.setText(v);
+        return this;
+    }
+
+    public SCheckBox visible(boolean value) {
+        setVisible(value);
+        return this;
     }
 }

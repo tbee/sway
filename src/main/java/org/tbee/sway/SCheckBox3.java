@@ -19,6 +19,7 @@ import org.tbee.sway.support.IconRegistry;
 import org.tbee.util.ExceptionUtil;
 
 import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.ActionMap;
 import javax.swing.ButtonModel;
 import javax.swing.Icon;
@@ -28,6 +29,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.plaf.ActionMapUIResource;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -237,14 +239,6 @@ public class SCheckBox3 extends JCheckBox {
 	}
 
 	// ==================================================
-	// FLUENT API
-
-	public SCheckBox3 enabled(boolean enabled) {
-		setEnabled(enabled);
-		return this;
-	}
-
-	// ==================================================
 	// BIND
 
 	/**
@@ -309,6 +303,54 @@ public class SCheckBox3 extends JCheckBox {
 
 		// Mark exception as handled
 		return true;
+	}
+
+	// ==============================================
+	// FLUENT API
+
+	public SCheckBox3 name(String v) {
+		setName(v);
+		return this;
+	}
+
+	public SCheckBox3 toolTipText(String t) {
+		super.setToolTipText(t);
+		return this;
+	}
+
+	public SCheckBox3 enabled(boolean v) {
+		super.setEnabled(v);
+		return this;
+	}
+
+	public SCheckBox3 margin(Insets m) {
+		super.setMargin(m);
+		return this;
+	}
+
+	public SCheckBox3 onAction(ActionListener l) {
+		super.addActionListener(l);
+		return this;
+	}
+
+	public SCheckBox3 action(Action v) {
+		super.setAction(v);
+		return this;
+	}
+
+	public SCheckBox3 icon(Icon v) {
+		super.setIcon(v);
+		return this;
+	}
+
+	public SCheckBox3 text(String v) {
+		super.setText(v);
+		return this;
+	}
+
+	public SCheckBox3 visible(boolean value) {
+		setVisible(value);
+		return this;
 	}
 }
 
