@@ -94,7 +94,6 @@ public class TableColumn<TableType, ColumnType extends Object> {
      * This is done by means of the valueAsStringFormat property.
      * If this is omitted, a column returns an empty string and does not set a value
      * @param record
-     * @return
      */
     public void setValueAsString(TableType record, String value) {
         Format<ColumnType> valueAsStringFormat = determineValueAsStringFormat();

@@ -127,7 +127,6 @@ public class SCheckBox3 extends JCheckBox {
 
 	/**
 	 * Selected3 to not conflict with selected
-	 * @return
 	 */
 	public void setSelected3(Boolean v) {
 		Boolean oldValue = getSelected3();

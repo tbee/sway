@@ -285,7 +285,6 @@ public class STable<TableType> extends SBorderPanel {
      * Remove a column
      * @param tableColumn
      * @return Indicate if a remove actually took place.
-     * @param <ColumnType>
      */
     public boolean removeColumn(TableColumn<TableType, ?> tableColumn) {
         boolean removed = this.tableColumns.remove(tableColumn);
