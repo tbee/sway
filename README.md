@@ -30,6 +30,8 @@ var sLabel = new Slabel().bindText(city, "name");
 
 // SCheckBox can be bound to a boolean property
 var sCheckBox = new SCheckBox("Growing").bind(city, City.GROWING);
+// SCheckBox3 can be bound to a Boolean property, supporting 3 states: TRUE, FALSE, NULL
+var sCheckBox = new SCheckBox3("Cityrights").bind(city, City.CITYRIGHTS);
 
 // SButtonGroup revolves around the associated value, not the button
 var sButtonGroup = new SButtonGroup<Integer>() //
