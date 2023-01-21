@@ -1,20 +1,5 @@
 package org.tbee.sway;
 
-import net.coderazzi.filters.gui.AutoChoices;
-import net.coderazzi.filters.gui.TableFilterHeader;
-import org.tbee.sway.format.Format;
-import org.tbee.sway.format.FormatAsJavaTextFormat;
-import org.tbee.sway.format.FormatRegistry;
-import org.tbee.sway.support.SwayUtil;
-import org.tbee.sway.table.FormatCellRenderer;
-import org.tbee.sway.table.STableCore;
-import org.tbee.sway.table.STableNavigator;
-import org.tbee.sway.table.TableColumn;
-import org.tbee.util.ClassUtil;
-
-import javax.swing.JScrollPane;
-import javax.swing.ListSelectionModel;
-import javax.swing.table.TableCellRenderer;
 import java.awt.Color;
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
@@ -30,8 +15,28 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
+
+import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import javax.swing.ListSelectionModel;
+import javax.swing.SwingUtilities;
+import javax.swing.table.TableCellRenderer;
+
+import org.tbee.sway.format.Format;
+import org.tbee.sway.format.FormatAsJavaTextFormat;
+import org.tbee.sway.format.FormatRegistry;
+import org.tbee.sway.support.SwayUtil;
+import org.tbee.sway.table.FormatCellRenderer;
+import org.tbee.sway.table.STableCore;
+import org.tbee.sway.table.STableNavigator;
+import org.tbee.sway.table.TableColumn;
+import org.tbee.util.ClassUtil;
+
+import net.coderazzi.filters.gui.AutoChoices;
+import net.coderazzi.filters.gui.TableFilterHeader;
 
 // TODO
 // - column reordering (map the column in the table model)
@@ -209,6 +214,9 @@ public class STable<TableType> extends SBorderPanel {
      * @param v
      */
     public void setData(List<TableType> v) {
+    	if (v == null) {
+    		throw new IllegalArgumentException("Null not allowed, provide an empty list");
+    	}
         unregisterFromAllBeans();
         this.data = new ArrayList<>(v); // We don't allow outside changes to the provided list
         registerToAllBeans();
@@ -805,7 +813,60 @@ public class STable<TableType> extends SBorderPanel {
     // ===========================================================================
     // LIST MANIPULATION
 
-    /** BeanFactory */
+	/** the table supports inserting of rows */
+	public void setAllowInsertRows(boolean v) { 
+        firePropertyChange(ALLOWINSERTROWS, this.allowInsertRows, this.allowInsertRows = v);
+	}
+	public boolean getAllowInsertRows() { 
+		return allowInsertRows; 
+	}
+    final static public String ALLOWINSERTROWS = "allowInsertRows";
+	private boolean allowInsertRows = true; // we allow per default this behavior
+    public STable<TableType> allowInsertRows(boolean v) {
+    	setAllowInsertRows(v);
+        return this;
+    }
+	public boolean checkAllowInsertRows() { 
+		return getAllowInsertRows() && isEnabled() && isEditable();
+	}
+
+	/** the table supports deleting of rows */
+	public void setAllowDeleteRows(boolean v) { 
+        firePropertyChange(ALLOWDELETEROWS, this.allowDeleteRows, this.allowDeleteRows = v);
+	}
+	public boolean getAllowDeleteRows() { 
+		return allowDeleteRows; 
+	}
+	private boolean allowDeleteRows = true; // we allow per default this behavior
+    final static public String ALLOWDELETEROWS = "allowDeleteRows";
+    public STable<TableType> allowDeleteRows(boolean v) {
+    	setAllowDeleteRows(v);
+        return this;
+    }
+	public boolean checkAllowDeleteRows() { 
+		return getAllowDeleteRows() && isEnabled() && isEditable();
+	}
+	
+	/** the table supports inserting of rows */
+	public void setConfirmDeleteRows(Function<List<TableType>, Boolean> v) { 
+        firePropertyChange(CONFIRMDELETEROWS, this.confirmDeleteRows, this.confirmDeleteRows = v);
+	}
+	public Function<List<TableType>, Boolean> getConfirmDeleteRows() { 
+		return confirmDeleteRows; 
+	}
+	private Function<List<TableType>, Boolean> confirmDeleteRows = (beans) -> {
+		// TBEERNOT internationalization
+		return JOptionPane.showConfirmDialog(SwingUtilities.windowForComponent(this), "Delete rows?", "Delete", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION;
+
+	}; // delete without confirmation
+    final static public String CONFIRMDELETEROWS = "confirmDeleteRows";
+    public STable<TableType> confirmDeleteRows(Function<List<TableType>, Boolean> v) {
+    	setConfirmDeleteRows(v);
+        return this;
+    }
+
+
+	/** BeanFactory */
     public void setBeanFactory(Supplier<TableType> v) {
         firePropertyChange(BEANFACTORY, this.beanFactory, this.beanFactory = v);
     }
@@ -820,14 +881,22 @@ public class STable<TableType> extends SBorderPanel {
     }
 
     /**
-     * Add a new row to the list
+     * Add a new row to the list.
+     * This will use the beanFactory, call rowAdded listeners, and finally calls the provided callback (if not null).
+     * The row in the callback is the index in the view (table)
      *
-     * @return row index where the row was added
+     * @return row index where the row was added or -1 if insert if not allowed or possible
      */
-    public int appendRow() {
+    public int appendRow(BiConsumer<TableType, Integer> callback) {
+    	if (!checkAllowInsertRows()) {
+    		return -1;
+    	}
         if (beanFactory == null) {
             throw new IllegalStateException("BeanFactory must be provided");
         }
+        
+        // To make sure the row is at the end
+        // TBEERNOT: replace this with a appendedRow logic in the datamode: appendedRow stays the last row until a new row is appended. GhostRow becomes appended row upon first PCE.
         cancelSorting();
 
         // Create and add bean
@@ -835,16 +904,67 @@ public class STable<TableType> extends SBorderPanel {
         data.add(bean);
         sTableCore.getTableModel().fireTableDataChanged();
         int rowIdx = data.size() - 1;
+		rowIdx = getSTableCore().convertRowIndexToView(rowIdx);
         fireRowAdded(bean, rowIdx);
+        if (callback != null) {
+        	callback.accept(bean, rowIdx);
+        }
         return rowIdx;
     }
-
-    public boolean getAllowInsertRows() {
-        return beanFactory != null;
-    }
-
     /**
+     * Add a new row to the list.
+     * This will use the beanFactory and call rowAdded listeners.
+     * The row is the index in the view (table)
      *
+     * @return row index where the row was added or -1 if insert if not allowed or possible
+     */
+    public int appendRow() {
+    	return appendRow(null);
+    }
+    
+
+	/**
+	 * Delete all selected rows.
+     * The row in the callback is the index in the view (table)
+	 * Removes row from list one by one, and calls rowDeleted listeners and the callback (if not null) for each.
+	 */
+	public void deleteSelectedRows(BiConsumer<TableType, Integer> callback) {
+		// allowed?
+		if (!checkAllowDeleteRows()) {
+			return;
+		}
+
+		// confirm
+		List<TableType> selection = getSelection();
+		if (selection.isEmpty()) {
+			return;
+		}
+		if (!confirmDeleteRows.apply(selection)) {
+			return;
+		}
+		
+		// delete
+		selection.forEach(bean -> {
+			int rowIdx = data.indexOf(bean);
+			rowIdx = getSTableCore().convertRowIndexToView(rowIdx);
+			data.remove(bean);
+			if (callback != null) {
+				callback.accept(bean, rowIdx);
+			}
+			fireRowDeleted(bean, rowIdx);
+		});
+        sTableCore.getTableModel().fireTableDataChanged();
+	}
+	/**
+	 * Delete all selected rows.
+	 * Removes row from list one by one, and calls rowDeleted listeners for each.
+	 */
+	public void deleteSelectedRows() {
+		deleteSelectedRows(null);
+	}
+	
+    /**
+     * The row in the callback is the index in the view (table)
      * @param listener
      */
     synchronized public void addRowAddedListener(BiConsumer<TableType, Integer> listener) {
@@ -869,6 +989,35 @@ public class STable<TableType> extends SBorderPanel {
             return;
         }
         rowAddedListeners.forEach(l -> l.accept(bean, rowIdx));
+    }
+
+
+    /**
+     * The row is the index in data, not in the table
+     * @param listener
+     */
+    synchronized public void addRowDeletedListener(BiConsumer<TableType, Integer> listener) {
+        if (rowDeletedListeners == null) {
+            rowDeletedListeners = new ArrayList<>();
+        }
+        rowDeletedListeners.add(listener);
+    }
+    synchronized public boolean removeRowDeletedListener(BiConsumer<TableType, Integer> listener) {
+        if (rowDeletedListeners == null) {
+            return false;
+        }
+        return rowDeletedListeners.remove(listener);
+    }
+    private List<BiConsumer<TableType, Integer>> rowDeletedListeners;
+    public STable<TableType> onRowDeleted(BiConsumer<TableType, Integer> onRowDeletedListener) {
+        addRowDeletedListener(onRowDeletedListener);
+        return this;
+    }
+    private void fireRowDeleted(TableType bean, int rowIdx) {
+        if (rowDeletedListeners == null) {
+            return;
+        }
+        rowDeletedListeners.forEach(l -> l.accept(bean, rowIdx));
     }
 
     // ===========================================================================

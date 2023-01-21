@@ -1,15 +1,17 @@
 package org.tbee.sway.action;
 
-import org.tbee.sway.support.IconRegistry;
-import org.tbee.sway.table.STableCore;
-
-import javax.swing.Icon;
 import java.awt.Component;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.util.Map;
 
+import javax.swing.Icon;
+
+import org.tbee.sway.support.IconRegistry;
+import org.tbee.sway.table.STableCore;
+
+// TBEERNOT: move logic to STable
 public class STableCopySelection implements Action {
     static private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(STableCopySelection.class);
 

@@ -1,15 +1,5 @@
 package org.tbee.sway.table;
 
-import org.tbee.sway.STable;
-import org.tbee.sway.action.STableCopySelection;
-import org.tbee.sway.support.FocusInterpreter;
-
-import javax.swing.JComponent;
-import javax.swing.KeyStroke;
-import javax.swing.UIManager;
-import javax.swing.table.TableCellEditor;
-import javax.swing.table.TableCellRenderer;
-import javax.swing.table.TableRowSorter;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -18,7 +8,20 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.util.Comparator;
 import java.util.Map;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
+
+import javax.swing.AbstractAction;
+import javax.swing.KeyStroke;
+import javax.swing.UIManager;
+import javax.swing.table.TableCellEditor;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableRowSorter;
+
+import org.tbee.sway.STable;
+import org.tbee.sway.action.STableCopySelection;
+import org.tbee.sway.action.STablePasteSelection;
+import org.tbee.sway.support.FocusInterpreter;
 
 /**
  * This is an extended JTable, that is used by STable.
@@ -102,8 +105,13 @@ public class STableCore<TableType> extends javax.swing.JTable {
         }
 
         // key shortcuts
-        KeyStroke copyKeystroke = KeyStroke.getKeyStroke(KeyEvent.VK_C, ActionEvent.CTRL_MASK, false);
-        registerKeyboardAction(e -> new STableCopySelection().apply(this, Map.of()), "Copy", copyKeystroke, JComponent.WHEN_FOCUSED);
+        addKeyShortcut("copy", KeyStroke.getKeyStroke(KeyEvent.VK_C, ActionEvent.CTRL_MASK, false) //
+        		, e -> new STableCopySelection().apply(STableCore.this, Map.of()));
+        addKeyShortcut("paste", KeyStroke.getKeyStroke(KeyEvent.VK_V, ActionEvent.CTRL_MASK, false) //
+        		, e -> new STablePasteSelection().apply(STableCore.this, Map.of()));
+        // TBEERNOT: cut
+        addKeyShortcut("deleteSelectedRows", KeyStroke.getKeyStroke("DELETE") //
+        		, e -> STableCore.this.sTable.deleteSelectedRows());
     }
     private FocusInterpreter.FocusInterpreterListener focusInterpreterListener = null;
     final private FocusInterpreter focusInterpreter = new FocusInterpreter(this);
@@ -112,6 +120,21 @@ public class STableCore<TableType> extends javax.swing.JTable {
         return sTable;
     }
 
+    /**
+     * To simply creating keyboard shortcuts
+     * Uses the inputMap and actionMap.
+     */
+    public void addKeyShortcut(String id, KeyStroke keyStroke, Consumer<ActionEvent> consumer) {
+		getInputMap().put(keyStroke, id);
+		getActionMap().put(id, action(consumer));    	
+    }
+    private AbstractAction action(Consumer<ActionEvent> consumer) {
+		return new AbstractAction() {
+			public void actionPerformed(ActionEvent e) {
+				consumer.accept(e);
+			}
+		};
+    }
 
     // =======================================================================
     // TABLEMODEL

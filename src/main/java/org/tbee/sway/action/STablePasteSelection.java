@@ -1,16 +1,19 @@
 package org.tbee.sway.action;
 
-import com.google.common.base.Splitter;
-import org.tbee.sway.support.IconRegistry;
-import org.tbee.sway.table.STableCore;
-
-import javax.swing.Icon;
 import java.awt.Component;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
 import java.util.Map;
 
+import javax.swing.Icon;
+
+import org.tbee.sway.support.IconRegistry;
+import org.tbee.sway.table.STableCore;
+
+import com.google.common.base.Splitter;
+
+//TBEERNOT: move logic to STable
 public class STablePasteSelection implements Action {
     static private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(STablePasteSelection.class);
 
