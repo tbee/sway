@@ -1,20 +1,5 @@
 package org.tbee.sway;
 
-import org.kordamp.ikonli.Ikon;
-import org.kordamp.ikonli.materialdesign2.MaterialDesignC;
-import org.kordamp.ikonli.materialdesign2.MaterialDesignF;
-import org.kordamp.ikonli.materialdesign2.MaterialDesignS;
-import org.kordamp.ikonli.swing.FontIcon;
-import org.tbee.sway.binding.BeanBinder;
-import org.tbee.sway.format.Format;
-import org.tbee.sway.support.DebugUtil;
-import org.tbee.sway.support.IconRegistry;
-
-import javax.swing.Icon;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDate;
@@ -25,6 +10,22 @@ import java.util.Comparator;
 import java.util.Currency;
 import java.util.List;
 import java.util.Locale;
+
+import javax.swing.Icon;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
+
+import org.kordamp.ikonli.Ikon;
+import org.kordamp.ikonli.materialdesign2.MaterialDesignC;
+import org.kordamp.ikonli.materialdesign2.MaterialDesignF;
+import org.kordamp.ikonli.materialdesign2.MaterialDesignS;
+import org.kordamp.ikonli.swing.FontIcon;
+import org.tbee.sway.binding.BeanBinder;
+import org.tbee.sway.format.Format;
+import org.tbee.sway.support.DebugUtil;
+import org.tbee.sway.support.IconRegistry;
 
 public class TestApp {
 
@@ -55,15 +56,15 @@ public class TestApp {
 
     private static void registerIcons() {
         // https://kordamp.org/ikonli/cheat-sheet-material2.html
-        IconRegistry.register(IconRegistry.SwayInternallyUsedIcon.COPY, IconRegistry.Usage.MENU, createIcon(MaterialDesignC.CONTENT_COPY, IconRegistry.Usage.MENU.typicalSize()));
-        IconRegistry.register(IconRegistry.SwayInternallyUsedIcon.CUT, IconRegistry.Usage.MENU, createIcon(MaterialDesignC.CONTENT_CUT, IconRegistry.Usage.MENU.typicalSize()));
-        IconRegistry.register(IconRegistry.SwayInternallyUsedIcon.PASTE, IconRegistry.Usage.MENU, createIcon(MaterialDesignC.CONTENT_PASTE, IconRegistry.Usage.MENU.typicalSize()));
-        IconRegistry.register(IconRegistry.SwayInternallyUsedIcon.FILTER, IconRegistry.Usage.MENU, createIcon(MaterialDesignF.FILTER, IconRegistry.Usage.MENU.typicalSize()));
-        IconRegistry.register(IconRegistry.SwayInternallyUsedIcon.SELECTION, IconRegistry.Usage.MENU, createIcon(MaterialDesignS.SELECTION, IconRegistry.Usage.MENU.typicalSize()));
+        IconRegistry.register(IconRegistry.SwayInternallyUsedIcon.MENU_COPY, createIcon(MaterialDesignC.CONTENT_COPY, IconRegistry.SwayInternallyUsedIcon.MENU_COPY.typicalSize()));
+        IconRegistry.register(IconRegistry.SwayInternallyUsedIcon.MENU_CUT, createIcon(MaterialDesignC.CONTENT_CUT, IconRegistry.SwayInternallyUsedIcon.MENU_CUT.typicalSize()));
+        IconRegistry.register(IconRegistry.SwayInternallyUsedIcon.MENU_PASTE, createIcon(MaterialDesignC.CONTENT_PASTE, IconRegistry.SwayInternallyUsedIcon.MENU_PASTE.typicalSize()));
+        IconRegistry.register(IconRegistry.SwayInternallyUsedIcon.MENU_FILTER, createIcon(MaterialDesignF.FILTER, IconRegistry.SwayInternallyUsedIcon.MENU_FILTER.typicalSize()));
+        IconRegistry.register(IconRegistry.SwayInternallyUsedIcon.MENU_SELECTION, createIcon(MaterialDesignS.SELECTION, IconRegistry.SwayInternallyUsedIcon.MENU_SELECTION.typicalSize()));
 
-//        IconRegistry.register(IconRegistry.SwayInternallyUsedIcon.SELECTED, IconRegistry.Usage.COMPONENT, createIcon(MaterialDesignS.SELECT, IconRegistry.Usage.COMPONENT.typicalSize()));
-//        IconRegistry.register(IconRegistry.SwayInternallyUsedIcon.UNSELECTED, IconRegistry.Usage.COMPONENT, createIcon(MaterialDesignS.SELECT_INVERSE, IconRegistry.Usage.COMPONENT.typicalSize()));
-//        IconRegistry.register(IconRegistry.SwayInternallyUsedIcon.UNDETERMINED, IconRegistry.Usage.COMPONENT, createIcon(MaterialDesignS.SELECT_OFF, IconRegistry.Usage.COMPONENT.typicalSize()));
+//        IconRegistry.register(IconRegistry.SwayInternallyUsedIcon.CHECKBOX_SELECTED, createIcon(MaterialDesignS.SELECT, IconRegistry.SwayInternallyUsedIcon.CHECKBOX_SELECTED.typicalSize()));
+//        IconRegistry.register(IconRegistry.SwayInternallyUsedIcon.CHECKBOX_UNSELECTED, createIcon(MaterialDesignS.SELECT_INVERSE, IconRegistry.SwayInternallyUsedIcon.CHECKBOX_UNSELECTED.typicalSize()));
+//        IconRegistry.register(IconRegistry.SwayInternallyUsedIcon.CHECKBOX_UNDETERMINED, createIcon(MaterialDesignS.SELECT_OFF, IconRegistry.SwayInternallyUsedIcon.CHECKBOX_UNDETERMINED.typicalSize()));
     }
     private static Icon createIcon(Ikon ikon, int size) {
         FontIcon fontIcon = new FontIcon();

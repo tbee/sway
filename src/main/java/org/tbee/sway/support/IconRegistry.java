@@ -1,8 +1,9 @@
 package org.tbee.sway.support;
 
-import javax.swing.Icon;
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.swing.Icon;
 
 /**
  * This is where the components in Sway come looking for their icons.
@@ -11,47 +12,53 @@ import java.util.Map;
 public class IconRegistry {
     static private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(IconRegistry.class);
 
-    public enum SwayInternallyUsedIcon { COPY, CUT, PASTE, FILTER, SELECTION, SELECTED, UNSELECTED, UNDETERMINED }
+    public enum SwayInternallyUsedIcon { //
+    	MENU_COPY("copy@menu", 16), //
+    	MENU_CUT("cut@menu", 16), //
+    	MENU_PASTE("paste@menu", 16), //
+    	MENU_FILTER("filter@menu", 16), //
+    	MENU_SELECTION("selection@menu", 16), //
+    	CHECKBOX_SELECTED("selected@checkbox", 24), //
+    	CHECKBOX_UNSELECTED("unselected@checkbox", 24), //
+    	CHECKBOX_UNDETERMINED("undetermined@checkbox", 24); //
 
-    public enum Usage { MENU(16), COMPONENT(16);
+        final String id;
+        final int typicalSize;
 
+    	SwayInternallyUsedIcon(String id, int typicalSize) {
+    		this.id = id;
+            this.typicalSize = typicalSize;
+        }
+
+    	public String id() {
+    		return id;
+    	}
         public int typicalSize() {
             return typicalSize;
         }
-
-        final int typicalSize;
-
-        Usage(int typicalSize) {
-            this.typicalSize = typicalSize;
-        }
-    }
+	}
 
     final static Map<String, Icon> icons = new HashMap<>();
 
-    synchronized static public void register(SwayInternallyUsedIcon name, Usage usage, Icon icon) {
-        register(name.toString(), usage, icon);
+    synchronized static public void register(SwayInternallyUsedIcon swayIcon, Icon icon) {
+        register(swayIcon.id(), icon);
     }
-    synchronized static public void register(String name, Usage usage, Icon icon) {
-        icons.put(key(name, usage), icon);
+    synchronized static public void register(String id, Icon icon) {
+        icons.put(id, icon);
     }
-    synchronized static public void unregister(String name, Usage usage) {
-        icons.remove(key(name, usage));
+    synchronized static public void unregister(String id) {
+        icons.remove(id);
     }
 
-    synchronized static public Icon find(SwayInternallyUsedIcon name, Usage usage) {
-        return find(name.toString(), usage);
+    synchronized static public Icon find(SwayInternallyUsedIcon swayIcon) {
+        return find(swayIcon.id());
     }
-    synchronized static public Icon find(String name, Usage usage) {
-        String key = key(name, usage);
-        Icon icon = icons.get(key);
-        if (!icons.containsKey(key) && logger.isDebugEnabled()) {
-            icons.put(key, null); // prevent the message from appearing again
-            logger.debug("FYI: a Sway component is looking for an icon '" + name + "' to be used in " + usage + ", but none is registered.");
+    synchronized static public Icon find(String id) {
+        Icon icon = icons.get(id);
+        if (!icons.containsKey(id) && logger.isDebugEnabled()) {
+            icons.put(id, null); // prevent the message from appearing again
+            logger.debug("FYI: a Sway component is looking for an icon '" + id + "', but none is registered.");
         }
         return icon;
-    }
-
-    private static String key(String name, Usage usage) {
-        return name + "@" + usage;
     }
 }

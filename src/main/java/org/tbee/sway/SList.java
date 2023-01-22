@@ -1,20 +1,21 @@
 package org.tbee.sway;
 
-import org.tbee.sway.format.Format;
-import org.tbee.sway.format.FormatRegistry;
-import org.tbee.sway.list.DefaultListCellRenderer;
-import org.tbee.sway.list.SListCore;
-import org.tbee.sway.support.SwayUtil;
-
-import javax.swing.JLabel;
-import javax.swing.JScrollPane;
-import javax.swing.ListSelectionModel;
 import java.awt.Color;
 import java.awt.Component;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
+
+import javax.swing.JLabel;
+import javax.swing.JScrollPane;
+import javax.swing.ListSelectionModel;
+
+import org.tbee.sway.format.Format;
+import org.tbee.sway.format.FormatRegistry;
+import org.tbee.sway.list.DefaultListCellRenderer;
+import org.tbee.sway.list.SListCore;
+import org.tbee.sway.support.SwayUtil;
 
 public class SList<T> extends SBorderPanel {
     static private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(SList.class);
@@ -148,7 +149,7 @@ public class SList<T> extends SBorderPanel {
     // ===========================================================================
     // SELECTION
 
-    enum SelectionMode{ //
+    public enum SelectionMode{ //
         SINGLE(ListSelectionModel.SINGLE_SELECTION), //
         INTERVAL(ListSelectionModel.SINGLE_INTERVAL_SELECTION), //
         MULTIPLE(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
@@ -266,5 +267,9 @@ public class SList<T> extends SBorderPanel {
     public SList<T> visible(boolean value) {
         setVisible(value);
         return this;
+    }
+    
+    static public <T> SList<T> of(List<T> data) {
+    	return new SList<T>().data(data);
     }
 }

@@ -1,8 +1,9 @@
 package org.tbee.sway;
 
+import java.awt.BorderLayout;
+
 import javax.swing.JComponent;
 import javax.swing.JPanel;
-import java.awt.BorderLayout;
 
 /**
  * JPanel with BorderLayout
@@ -85,5 +86,17 @@ public class SBorderPanel extends JPanel {
     public SBorderPanel lineEnd(JComponent component) {
         super.add(component, BorderLayout.LINE_END);
         return this;
+    }
+    
+    // =========================================================================
+    // OF
+
+    /**
+     * 
+     * @param center
+     * @return
+     */
+    static public SBorderPanel of(JComponent center) {
+    	return new SBorderPanel(center);
     }
 }

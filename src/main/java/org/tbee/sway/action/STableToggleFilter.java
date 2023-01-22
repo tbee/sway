@@ -1,13 +1,14 @@
 package org.tbee.sway.action;
 
-import org.tbee.sway.STable;
-import org.tbee.sway.support.IconRegistry;
-import org.tbee.sway.table.STableCore;
+import java.awt.Component;
+import java.util.Map;
 
 import javax.swing.Icon;
 import javax.swing.table.JTableHeader;
-import java.awt.Component;
-import java.util.Map;
+
+import org.tbee.sway.STable;
+import org.tbee.sway.support.IconRegistry;
+import org.tbee.sway.table.STableCore;
 
 public class STableToggleFilter implements Action {
 
@@ -18,7 +19,7 @@ public class STableToggleFilter implements Action {
 
     @Override
     public Icon icon() {
-        return IconRegistry.find(IconRegistry.SwayInternallyUsedIcon.FILTER, IconRegistry.Usage.MENU);
+        return IconRegistry.find(IconRegistry.SwayInternallyUsedIcon.MENU_FILTER);
     }
 
     @Override
