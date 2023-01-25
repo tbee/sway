@@ -1,6 +1,10 @@
 package org.tbee.sway;
 
 import java.awt.Color;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.StringSelection;
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
@@ -34,6 +38,8 @@ import org.tbee.sway.table.STableCore;
 import org.tbee.sway.table.STableNavigator;
 import org.tbee.sway.table.TableColumn;
 import org.tbee.util.ClassUtil;
+
+import com.google.common.base.Splitter;
 
 import net.coderazzi.filters.gui.AutoChoices;
 import net.coderazzi.filters.gui.TableFilterHeader;
@@ -1018,6 +1024,171 @@ public class STable<TableType> extends SBorderPanel {
             return;
         }
         rowDeletedListeners.forEach(l -> l.accept(bean, rowIdx));
+    }
+
+    // ===========================================================================
+    // CLIPBOARD
+    
+    static final String FIELD_SEPARATOR = "\t";
+    static final String RECORD_SEPARATOR = "\n";
+
+    public void copy() {
+
+        // get the range to copy into
+        int selectedRowCnt = sTableCore.getSelectedRowCount();
+        int selectedColCnt = sTableCore.getSelectedColumnCount();
+        int[] selectedRows = sTableCore.getSelectedRows();
+        int[] selectedCols = sTableCore.getSelectedColumns();
+
+        // if row selection is not allowed, emulate
+        if (!sTableCore.getRowSelectionAllowed()) {
+            selectedRowCnt = sTableCore.getRowCount();
+            selectedRows = new int[selectedRowCnt];
+            for (int i = 0; i < selectedRowCnt; i++) selectedRows[i] = i;
+        }
+
+        // if column selection is not allowed, emulate
+        if (!sTableCore.getColumnSelectionAllowed()) {
+            selectedColCnt = sTableCore.getColumnCount();
+            selectedCols = new int[selectedColCnt];
+            for (int i = 0; i < selectedColCnt; i++) selectedCols[i] = i;
+        }
+
+        // create the copy
+        String s = (selectedColCnt <= 0 || selectedRowCnt <= 0 ? "" : copy(sTableCore, selectedRows, selectedCols));
+
+        // dump in system clipboard
+        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+        StringSelection stringSelection = new StringSelection(s);
+        clipboard.setContents(stringSelection, stringSelection);
+    }
+
+
+    /**
+     * The method actually generating the copy string that is placed on the clipboard
+     */
+    private String copy(STableCore<?> table, int[] selectedRows, int[] selectedCols) {
+
+        // copy from all selected rows
+        StringBuffer stringBuffer = new StringBuffer();
+        for (int i = 0; i < selectedRows.length; i++) {
+
+            // copy from all selected columns
+            for (int j = 0; j < selectedCols.length; j++) {
+
+                // convert value
+                String value = table.getTableModel().getValueAtAsString(selectedRows[i], selectedCols[j]);
+
+                // field
+                if (logger.isDebugEnabled()) logger.debug("copy from table cell " + selectedRows[i] + "," + selectedCols[j] + ": " + value);
+                stringBuffer.append( value );
+
+                // field separator
+                if (j < selectedCols.length - 1) stringBuffer.append(FIELD_SEPARATOR);
+            }
+            // line separator
+            if (i < selectedRows.length - 1) stringBuffer.append(RECORD_SEPARATOR);
+        }
+        return stringBuffer.toString();
+    }
+
+    public void paste() {
+
+        try {
+            // get data and start position
+            Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+            int[] selectedRows = sTableCore.getSelectedRows();
+            int[] selectedCols = sTableCore.getSelectedColumns();
+
+            // get data
+            String clipboardContents = (String)(clipboard.getContents(sTableCore).getTransferData(DataFlavor.stringFlavor));
+
+            // if row selection is not allowed, emulate
+            if (!sTableCore.getRowSelectionAllowed()) {
+                int selectedRowCnt = sTableCore.getRowCount();
+                selectedRows = new int[selectedRowCnt];
+                for (int i = 0; i < selectedRowCnt; i++) selectedRows[i] = i;
+            }
+            // if column selection is not allowed, emulate
+            if (!sTableCore.getColumnSelectionAllowed()) {
+                int lSelectedColCnt = sTableCore.getColumnCount();
+                selectedCols = new int[lSelectedColCnt];
+                for (int i = 0; i < lSelectedColCnt; i++) selectedCols[i] = i;
+            }
+
+            // do the actual paste logic
+            paste(sTableCore, selectedRows, selectedCols, clipboardContents);
+        }
+        catch (Exception e) {
+            logger.error(e.getMessage(), e);
+        }
+    }
+
+    /**
+     * The method actually processing the copy string
+     */
+    private void paste(STableCore sTableCore, int[] selectedRows, int[] selectedCols, String clipboardContents) {
+        boolean startedInLastRow = (selectedRows.length == 0 || selectedRows[selectedRows.length - 1] == sTableCore.getRowCount() - 1);
+
+        // TBEERNOT?
+        // disable sorting
+        // doing this on sorted tables works... almost
+        // the addRowAt will reapply sorting, but the setValues do not.
+        // And we don't want that, because since the sorting is done by a model but we talk in sTableCore row indexes, the setValueAt may make the row move to another sTableCore index
+        sTableCore.getSTable().cancelSorting();
+
+        // split into rows
+        String[] clipboardRows = Splitter.on(RECORD_SEPARATOR).splitToList(clipboardContents).toArray(new String[]{});
+        for (int i = 0; i < clipboardRows.length; i++)
+        {
+            // get single row
+            String clipboardRow = clipboardRows[i];
+            if (logger.isDebugEnabled()) logger.debug("pasting row " + i + ": " + clipboardRow);
+
+            // determine the row to paste in
+            int rowIdx = (i < selectedRows.length ? selectedRows[i] : -1);
+
+            // not enough rows but add rows allowed
+            if (rowIdx < 0 && startedInLastRow && sTableCore.getSTable().getAllowInsertRows()) {
+                rowIdx = sTableCore.getSTable().appendRow();
+            }
+            if (rowIdx < 0) {
+                if (logger.isDebugEnabled()) logger.debug("skipping cell");
+                continue;
+            }
+            if (logger.isDebugEnabled()) logger.debug("pasting to sTableCore row " + rowIdx);
+
+            // split into columns (and thus individual cells)
+            String[] lClipboardCols = Splitter.on(FIELD_SEPARATOR).splitToList(clipboardRow).toArray(new String[]{});
+            for (int j = 0; j < lClipboardCols.length; j++) {
+
+                // get cell value
+                String value = lClipboardCols[j];
+                if (logger.isDebugEnabled()) logger.debug("pasting from " + i + "," + j + ": " + value);
+
+                // determine the column to paste in
+                int colIdx = ( j < selectedCols.length ? selectedCols[j] : -1);
+                if (colIdx < 0) {
+                    if (logger.isDebugEnabled()) logger.debug("skipping cell");
+                    continue;
+                }
+                if (logger.isDebugEnabled()) logger.debug("paste to sTableCore cell " + rowIdx + "," + colIdx + ": " + value);
+
+                // if value location
+                if ( rowIdx < sTableCore.getModel().getRowCount() // if we use the sTableCore.getRowCount() we get the filtered amount
+                  && colIdx < sTableCore.getColumnCount()
+                  && sTableCore.isCellEditable(rowIdx, colIdx)) {
+
+                    // write value TBEERNOT: view to model mapping
+                    sTableCore.getTableModel().setValueAtAsString(value, rowIdx, colIdx);
+                }
+            }
+        }
+    }
+    
+    public void cut() {
+    	copy();
+    	deleteSelectedRows();
     }
 
     // ===========================================================================

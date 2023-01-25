@@ -7,7 +7,6 @@ import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.util.Comparator;
-import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -19,8 +18,6 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableRowSorter;
 
 import org.tbee.sway.STable;
-import org.tbee.sway.action.STableCopySelection;
-import org.tbee.sway.action.STablePasteSelection;
 import org.tbee.sway.support.FocusInterpreter;
 
 /**
@@ -105,13 +102,10 @@ public class STableCore<TableType> extends javax.swing.JTable {
         }
 
         // key shortcuts
-        addKeyShortcut("copy", KeyStroke.getKeyStroke(KeyEvent.VK_C, ActionEvent.CTRL_MASK, false) //
-        		, e -> new STableCopySelection().apply(STableCore.this, Map.of()));
-        addKeyShortcut("paste", KeyStroke.getKeyStroke(KeyEvent.VK_V, ActionEvent.CTRL_MASK, false) //
-        		, e -> new STablePasteSelection().apply(STableCore.this, Map.of()));
-        // TBEERNOT: cut
-        addKeyShortcut("deleteSelectedRows", KeyStroke.getKeyStroke("DELETE") //
-        		, e -> STableCore.this.sTable.deleteSelectedRows());
+        addKeyShortcut("copy", KeyStroke.getKeyStroke(KeyEvent.VK_C, ActionEvent.CTRL_MASK, false), e -> sTable.copy());
+        addKeyShortcut("paste", KeyStroke.getKeyStroke(KeyEvent.VK_V, ActionEvent.CTRL_MASK, false), e -> sTable.paste());
+        addKeyShortcut("cut", KeyStroke.getKeyStroke(KeyEvent.VK_X, ActionEvent.CTRL_MASK, false), e -> sTable.cut());
+        addKeyShortcut("deleteSelectedRows", KeyStroke.getKeyStroke("DELETE"), e -> STableCore.this.sTable.deleteSelectedRows());
     }
     private FocusInterpreter.FocusInterpreterListener focusInterpreterListener = null;
     final private FocusInterpreter focusInterpreter = new FocusInterpreter(this);
