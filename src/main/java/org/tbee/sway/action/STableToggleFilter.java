@@ -36,7 +36,7 @@ public class STableToggleFilter implements Action {
     }
 
     @Override
-    public void apply(Component component, Map<String, Object> context) {
+    public void apply(Component component, String option, Map<String, Object> context) {
         JTableHeader jTableHeader = (JTableHeader)component;
         STableCore sTableCore = (STableCore) jTableHeader.getTable();
         STable sTable = sTableCore.getSTable();

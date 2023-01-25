@@ -36,7 +36,7 @@ public class JButtonCopyIcon implements Action {
     }
 
     @Override
-    public void apply(Component component, Map<String, Object> context) {
+    public void apply(Component component, String option, Map<String, Object> context) {
         JButton jButton = (JButton)component;
         Image image = JLabelCopyIcon.convertIconToImage(jButton.getIcon());
         Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();

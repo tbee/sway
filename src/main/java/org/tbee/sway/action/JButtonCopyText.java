@@ -35,7 +35,7 @@ public class JButtonCopyText implements Action {
     }
 
     @Override
-    public void apply(Component component, Map<String, Object> context) {
+    public void apply(Component component, String option, Map<String, Object> context) {
         JButton jButton = (JButton)component;
         String s = jButton.getText();
         Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();

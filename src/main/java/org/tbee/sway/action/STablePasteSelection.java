@@ -33,7 +33,7 @@ public class STablePasteSelection implements Action {
     }
 
     @Override
-    public void apply(Component component, Map<String, Object> context) {
+    public void apply(Component component, String option, Map<String, Object> context) {
         STableCore sTableCore = (STableCore)component;
         sTableCore.getSTable().paste();
     }

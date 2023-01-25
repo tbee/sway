@@ -26,7 +26,7 @@ public class JTextComponentCopy implements Action {
     }
 
     @Override
-    public void apply(Component component, Map<String, Object> context) {
+    public void apply(Component component, String option, Map<String, Object> context) {
         JTextComponent jTextComponent = (JTextComponent)component;
 
         boolean enabled = jTextComponent.isEnabled();

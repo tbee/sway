@@ -39,7 +39,7 @@ public class JTableCopyCellAsText implements Action {
     }
 
     @Override
-    public void apply(Component component, Map<String, Object> context) {
+    public void apply(Component component, String option, Map<String, Object> context) {
         JTable jTable = (JTable)component;
         MouseEvent mouseEvent = (MouseEvent)context.get("MouseEvent");
 

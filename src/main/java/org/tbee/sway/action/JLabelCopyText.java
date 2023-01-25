@@ -35,7 +35,7 @@ public class JLabelCopyText implements Action {
     }
 
     @Override
-    public void apply(Component component, Map<String, Object> context) {
+    public void apply(Component component, String option, Map<String, Object> context) {
         JLabel jLabel = (JLabel)component;
         String s = jLabel.getText();
         Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();

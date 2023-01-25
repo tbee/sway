@@ -24,6 +24,7 @@ public class ActionRegistry {
         register(new STableCutSelection());
         register(new STableToggleFilter());
         register(new STableClearSelection());
+        register(new STableAutoResize());
     }
 
     /**

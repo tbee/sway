@@ -33,7 +33,7 @@ public class STableClearSelection implements Action {
     }
 
     @Override
-    public void apply(Component component, Map<String, Object> context) {
+    public void apply(Component component, String option, Map<String, Object> context) {
         STableCore sTableCore = (STableCore)component;
         STable sTable = sTableCore.getSTable();
         sTable.clearSelection();

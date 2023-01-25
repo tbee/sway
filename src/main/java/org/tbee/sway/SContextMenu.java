@@ -1,11 +1,5 @@
 package org.tbee.sway;
 
-import org.tbee.sway.action.Action;
-import org.tbee.sway.action.ActionRegistry;
-
-import javax.swing.JPopupMenu;
-import javax.swing.JViewport;
-import javax.swing.SwingUtilities;
 import java.awt.AWTEvent;
 import java.awt.Component;
 import java.awt.Toolkit;
@@ -13,6 +7,13 @@ import java.awt.event.MouseEvent;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+
+import javax.swing.JPopupMenu;
+import javax.swing.JViewport;
+import javax.swing.SwingUtilities;
+
+import org.tbee.sway.action.Action;
+import org.tbee.sway.action.ActionRegistry;
 
 public class SContextMenu {
     static private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(SContextMenu.class);
@@ -80,12 +81,33 @@ public class SContextMenu {
         actions.stream() //
                 .sorted(Comparator.comparingInt(Action::order)) //
                 .forEach(a -> {
-                    SMenuItem menuItem = new SMenuItem() //
-                            .text(a.label()) //
-                            .icon(a.icon()) //
-                            .enabled(a.isEnabled(component, context)) //
-                            .onAction((evt) -> a.apply(component, context));
-                    menu.add(menuItem);
+                    if (a.options() == null) {
+                    	
+                    	// Stand alone menuitem
+	                    var menuItem = new SMenuItem() //
+	                            .text(a.label()) //
+	                            .icon(a.icon()) //
+	                            .enabled(a.isEnabled(component, context)) //
+	                            .onAction((evt) -> a.apply(component, null, context));
+	                    menu.add(menuItem);
+                    }
+                    else {
+                    	
+                    	// Submenu of options
+                        SMenu subM = new SMenu() //
+                                .text(a.label()) //
+                                .icon(a.icon()) //
+                                .enabled(a.isEnabled(component, context));
+	                    menu.add(subM);
+
+	                    a.options().forEach(o -> {
+                    		var subMenuItem = new SMenuItem(o) //
+                    				.onAction((evt) -> {
+                    					a.apply(component, o, context);	
+                    				});
+                    		subM.add(subMenuItem);
+                    	});
+                    }
                 });
         menu.show(mouseEvent.getComponent(), mouseEvent.getX(), mouseEvent.getY());
     }

@@ -33,7 +33,7 @@ public class STableCutSelection implements Action {
     }
 
     @Override
-    public void apply(Component component, Map<String, Object> context) {
+    public void apply(Component component, String option, Map<String, Object> context) {
         STableCore sTableCore = (STableCore)component;
         sTableCore.getSTable().copy();
     }

@@ -1,14 +1,44 @@
 package org.tbee.sway;
 
-import javax.swing.Icon;
 import java.awt.event.ActionListener;
 
+import javax.swing.Icon;
+
 public class SMenuItem extends javax.swing.JMenuItem {
+
+    /**
+	 * 
+	 */
+	public SMenuItem() {
+		super();
+	}
+
+	/**
+	 * @param icon
+	 */
+	public SMenuItem(Icon icon) {
+		super(icon);
+	}
+
+	/**
+	 * @param text
+	 * @param icon
+	 */
+	public SMenuItem(String text, Icon icon) {
+		super(text, icon);
+	}
+
+	/**
+	 * @param text
+	 */
+	public SMenuItem(String text) {
+		super(text);
+	}
 
     // ===========================================================================================================================
     // FLUENT API
 
-    public SMenuItem name(String v) {
+	public SMenuItem name(String v) {
         setName(v);
         return this;
     }
