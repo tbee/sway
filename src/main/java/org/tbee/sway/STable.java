@@ -1191,6 +1191,43 @@ public class STable<TableType> extends SBorderPanel {
     	deleteSelectedRows();
     }
 
+	// ===========================================================================
+	// Preferences
+
+	/** 
+	 * preferencesId; used to store the setup (like column widths) of this table.
+	 * It should be unique within the whole application, so some combination of a screen id, and table-within-screen.
+	 * Should be the last call to be made, so the implicit "restorePreferences()" has stuff to restore. 
+	 */
+	public void setPreferencesId(String value) {
+		firePropertyChange(PREFERENCESID, preferencesId, preferencesId = value);
+		restorePreferences(); // TBEERNOT can we move this to some first paint moment? 
+	}
+	public String getPreferencesId() { 
+		return preferencesId; 
+	}
+	private String preferencesId = null;
+    final static public String PREFERENCESID = "preferencesId";
+	public STable<TableType> preferencesId(String value) { 
+		setPreferencesId(value); 
+		return this; 
+	}
+
+    /**
+     * save all preferences
+     */
+    public void savePreferences() {
+    	sTableCore.savePreferences();
+    }
+
+    /**
+     * restore all preferences
+     */
+    public void restorePreferences() {
+    	sTableCore.restorePreferences();
+    }
+
+
     // ===========================================================================
     // FLUENT API
 
