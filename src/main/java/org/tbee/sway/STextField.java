@@ -1,19 +1,5 @@
 package org.tbee.sway;
 
-import org.tbee.sway.binding.BeanBinder;
-import org.tbee.sway.binding.BindUtil;
-import org.tbee.sway.binding.Binding;
-import org.tbee.sway.format.Format;
-import org.tbee.sway.format.FormatRegistry;
-import org.tbee.sway.format.JavaFormat;
-import org.tbee.sway.format.StringFormat;
-import org.tbee.sway.support.FocusInterpreter;
-import org.tbee.sway.support.HAlign;
-import org.tbee.util.ClassUtil;
-import org.tbee.util.ExceptionUtil;
-
-import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
 import java.awt.Font;
 import java.awt.event.KeyEvent;
 import java.beans.BeanInfo;
@@ -30,6 +16,21 @@ import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.Currency;
 import java.util.Locale;
+
+import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
+
+import org.tbee.sway.binding.BeanBinder;
+import org.tbee.sway.binding.BindUtil;
+import org.tbee.sway.binding.Binding;
+import org.tbee.sway.format.Format;
+import org.tbee.sway.format.FormatRegistry;
+import org.tbee.sway.format.JavaFormat;
+import org.tbee.sway.format.StringFormat;
+import org.tbee.sway.support.FocusInterpreter;
+import org.tbee.sway.support.HAlign;
+import org.tbee.util.ClassUtil;
+import org.tbee.util.ExceptionUtil;
 
 // TODO
 // - popup
@@ -136,12 +137,16 @@ public class STextField<T> extends javax.swing.JTextField {
     // ========================================================
     // OF
 
+    static public <T> STextField<T> of(Format<T> format) {
+        return new STextField<T>(format);
+    }
+
     static public <T> STextField<T> of(Class<T> clazz) {
         Format<T> format = (Format<T>) FormatRegistry.findFor(clazz);
         if (format == null) {
             throw new IllegalArgumentException("No format found for " + clazz);
         }
-        return new STextField<T>(format);
+        return of(format);
     }
 
     /**
@@ -420,7 +425,7 @@ public class STextField<T> extends javax.swing.JTextField {
      * @return this, for fluent API
      */
     public STextField<T> bind(Object bean, String propertyName) {
-        Binding binding = binding(bean, propertyName);
+        binding(bean, propertyName);
         return this;
     }
 
@@ -432,7 +437,7 @@ public class STextField<T> extends javax.swing.JTextField {
      * @param propertyName
      * @return Binding, so unbind() can be called
      */
-    public Binding binding(BeanBinder beanBinder, String propertyName) {
+    public Binding binding(BeanBinder<?> beanBinder, String propertyName) {
         return BindUtil.bind(this, VALUE, beanBinder, propertyName, this::handleException);
     }
 
@@ -443,8 +448,8 @@ public class STextField<T> extends javax.swing.JTextField {
      * @param propertyName
      * @return this, for fluent API
      */
-    public STextField<T> bind(BeanBinder beanBinder, String propertyName) {
-        Binding binding = binding(beanBinder, propertyName);
+    public STextField<T> bind(BeanBinder<?> beanBinder, String propertyName) {
+        binding(beanBinder, propertyName);
         return this;
     }
 }

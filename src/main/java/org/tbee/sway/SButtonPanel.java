@@ -1,6 +1,7 @@
 package org.tbee.sway;
 
 import java.util.Collection;
+import java.util.List;
 
 import javax.swing.AbstractButton;
 import javax.swing.JComponent;
@@ -30,6 +31,9 @@ public class SButtonPanel extends SMigPanel {
 	}
 
 	static SButtonPanel of(AbstractButton... buttons) {
+		return new SButtonPanel(buttons);
+	}
+	static SButtonPanel of(List<? extends AbstractButton> buttons) {
 		return new SButtonPanel(buttons);
 	}
 }

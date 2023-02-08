@@ -40,6 +40,7 @@ public class SwayTestApp {
             panel.addField(sTable()).grow();
             panel.addField(sList()).grow();
             panel.addField(sTextField()).grow();
+            panel.addField(sTextArea()).grow();
             panel.addField(sCheckBox()).grow();
 
             SContextMenu.install();
@@ -134,7 +135,7 @@ public class SwayTestApp {
         migPanel.wrap();
 
         migPanel.addLabel(new SLabel("BigDecimal"));
-        migPanel.addField(STextField.ofBigDecimal().value(BigDecimal.TEN.ONE));
+        migPanel.addField(STextField.ofBigDecimal().value(BigDecimal.TEN));
         migPanel.wrap();
 
         migPanel.addLabel(new SLabel("LocalDate"));
@@ -169,19 +170,15 @@ public class SwayTestApp {
         rome.sisterCity(paris);
         var cities = List.of(amsterdam, berlin, rome, paris);
 
-        Format<City> cityFormat = new CityFormat(cities);
-
         var sList = new SList<City>() //
                 .name("mySList") //
-
-                .render(new CityFormat(cities)) // toValue is never call so the list can be empty
-
-                // data
+                .render(new CityFormat(cities))
                 .data(cities) //
                 ;
 
         return sList;
     }
+    
     static private STable<City> sTable() {
 
         City amsterdam = new City("Amsterdam", 150);
@@ -254,6 +251,15 @@ public class SwayTestApp {
         migPanel.addField(new SCheckBox3("Boolean beanBinder").bind(beanBinder, City.CITYRIGHTS));
         migPanel.wrap();
 
+        return migPanel;
+    }
+    
+    static private SMigPanel sTextArea() {
+        City city = new City("test",12);
+
+        SMigPanel migPanel = new SMigPanel();
+    	migPanel.addLabelAndField("bind 1", new STextArea().bind(city,  City.NAME)).wrap();
+    	migPanel.addLabelAndField("bind 2", new STextArea(5, 10).bind(city,  City.NAME)).wrap();
         return migPanel;
     }
 }

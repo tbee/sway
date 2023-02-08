@@ -22,7 +22,7 @@ public class SMenu extends JMenu {
 	}
 
 	/**
-	 * @param s
+	 * @param icon
 	 */
 	public SMenu(Icon icon) {
 		super("");
@@ -31,6 +31,7 @@ public class SMenu extends JMenu {
 
 	/**
 	 * @param s
+	 * @param icon
 	 */
 	public SMenu(String s, Icon icon) {
 		super(s);

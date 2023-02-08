@@ -1,15 +1,16 @@
 package org.tbee.sway;
 
+import java.awt.Component;
+import java.util.Arrays;
+import java.util.Collection;
+
+import javax.swing.JComponent;
+import javax.swing.JPanel;
+
 import net.miginfocom.layout.AC;
 import net.miginfocom.layout.CC;
 import net.miginfocom.layout.LC;
 import net.miginfocom.swing.MigLayout;
-
-import javax.swing.JComponent;
-import javax.swing.JPanel;
-import java.awt.Component;
-import java.util.Arrays;
-import java.util.Collection;
 
 // TODO
 // - strongly typed API calls for all MigLayout stuff
@@ -59,7 +60,7 @@ public class SMigPanel extends JPanel {
     public CC addLabel(JComponent component) {
         CC cc = new CC() //
             .alignX("trailing") //
-            .alignY("top");
+            .alignY("baseline");
         add(component, cc);
         return cc;
     }
@@ -79,8 +80,21 @@ public class SMigPanel extends JPanel {
      * @return CC of field component
      */
     public CC addLabelAndField(JComponent labelComponent, JComponent fieldComponent) {
-        addLabel(labelComponent);
+    	CC labelCC = addLabel(labelComponent);
+        if (fieldComponent.getPreferredSize().height > (1.1 * STextField.ofString().value("X").getPreferredSize().height)) { // if (fieldComponent instanceof STextArea)        
+        	labelCC.alignY("top");
+        }
         return addField(fieldComponent);
+    }
+
+    /**
+     * Add both a label and field side by side
+     * @param label
+     * @param fieldComponent
+     * @return CC of field component
+     */
+    public CC addLabelAndField(String label, JComponent fieldComponent) {
+    	return addLabelAndField(new SLabel(label), fieldComponent);
     }
 
     public CC getCCFor(Component component) {
