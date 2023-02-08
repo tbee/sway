@@ -9,7 +9,7 @@ import javax.swing.UIManager;
 public class SOptionPane extends JOptionPane {
 
 	static public void ofInfo(Component parent, String title, String text) {
-		SOptionPane.showConfirmDialog(parent, text, title, JOptionPane.OK_OPTION, JOptionPane.INFORMATION_MESSAGE);
+		SOptionPane.showMessageDialog(parent, text, title, JOptionPane.INFORMATION_MESSAGE);
 	}
 	
 	static SButton okButton() {
