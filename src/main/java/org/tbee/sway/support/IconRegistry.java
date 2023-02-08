@@ -13,6 +13,10 @@ public class IconRegistry {
     static private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(IconRegistry.class);
 
     public enum SwayInternallyUsedIcon { //
+    	BUTTON_OK("ok@button", 16), //
+    	BUTTON_CANCEL("cancel@button", 16), //
+    	BUTTON_YES("yes@button", 16), //
+    	BUTTON_NO("no@button", 16), //
     	MENU_COPY("copy@menu", 16), //
     	MENU_CUT("cut@menu", 16), //
     	MENU_PASTE("paste@menu", 16), //
