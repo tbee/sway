@@ -12,7 +12,21 @@ import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
 public class SDialog extends JDialog {
+	
+	/**
+	 * @param owner
+	 * @param title
+	 * @param modalityType
+	 */
+	public SDialog(Window owner, String title, ModalityType modalityType) {
+		super(owner, title, modalityType);
+		setDefaultCloseOperation(SDialog.DISPOSE_ON_CLOSE);		
+	}
 
+
+	// =======================================================================================================
+	// PROPERTIES
+	
 	/*
 	 * The reason why a dialog is closed
 	 */
@@ -31,17 +45,10 @@ public class SDialog extends JDialog {
 	public boolean closeReasonIsCancel() {
 		return closeReason != null && closeReason == CloseReason.OK;
 	}
-	
-	/**
-	 * @param owner
-	 * @param title
-	 * @param modalityType
-	 */
-	public SDialog(Window owner, String title, ModalityType modalityType) {
-		super(owner, title, modalityType);
-		setDefaultCloseOperation(SDialog.DISPOSE_ON_CLOSE);		
-	}
 
+	// =======================================================================================================
+	// CONVENIENCE
+	
 	static public SDialog ofCancel(Component parent, String title, JComponent content) {
 		return of(parent, title, content, CloseReason.CANCEL);
 	}
@@ -62,7 +69,7 @@ public class SDialog extends JDialog {
 				case OK -> SOptionPane.okButton();
 				case CANCEL -> SOptionPane.cancelButton();
 			};
-			button.onAction(e -> dialog.closeReason(closeReason).setVisible(false)) // hide dialog upon click
+			button.onAction(e -> dialog.closeReason(closeReason).visible(false)) // hide dialog upon click
 				.registerKeyboardAction(e -> button.doClick() //
 					, KeyStroke.getKeyStroke(button.getText().toUpperCase().charAt(0), 0) //
 					, JButton.WHEN_IN_FOCUSED_WINDOW //
@@ -73,9 +80,21 @@ public class SDialog extends JDialog {
 		// Populate and show dialog
 		dialog.setContentPane(SBorderPanel.of(content).south(SButtonPanel.of(buttons)));
 		dialog.pack();
+		if (parent != null) {
+			dialog.setLocationRelativeTo(parent);
+		}
 		return dialog;
 	}
+
 	
+	// =======================================================================================================
+	// FLUENT API
+	
+    public SDialog name(String v) {
+        setName(v);
+        return this;
+    }
+
 	public SDialog visible(boolean v) {
 		setVisible(v);
 		return this;
