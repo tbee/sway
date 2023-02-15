@@ -1,10 +1,12 @@
 package org.tbee.sway;
 
-import javax.swing.JComponent;
-import javax.swing.JPanel;
 import java.awt.LayoutManager;
 import java.util.Arrays;
 import java.util.Collection;
+
+import javax.swing.BorderFactory;
+import javax.swing.JComponent;
+import javax.swing.JPanel;
 
 public class SPanel extends JPanel {
     public SPanel() {
@@ -16,6 +18,19 @@ public class SPanel extends JPanel {
 
     // =========================================================================
     // FLUENT API
+
+    public SPanel name(String v) {
+        setName(v);
+        return this;
+    }
+    
+    public SPanel margin(int top, int left, int bottom, int right) {
+    	setBorder(BorderFactory.createEmptyBorder(top, left, bottom, right));
+        return this;
+    }
+    public SPanel margin(int v) {
+        return margin(v, v, v, v);
+    }
 
     public SPanel add(JComponent component) {
         super.add(component);

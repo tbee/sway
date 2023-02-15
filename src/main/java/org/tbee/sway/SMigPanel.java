@@ -16,6 +16,10 @@ import net.miginfocom.swing.MigLayout;
 // - strongly typed API calls for all MigLayout stuff
 
 public class SMigPanel extends JPanel {
+	
+	static public enum AlignX {LEADING, LEFT, RIGHT, TRAILING}
+	static public enum AlignY {TOP, BOTTOM, BASELINE}
+
 
     // Need to declare these specifically, because the getters return String
     final private LC lc = new LC();
@@ -136,6 +140,24 @@ public class SMigPanel extends JPanel {
         lc.gridGap("0", "0");
         migLayout.setLayoutConstraints(lc); // reapply
         return this;
+    }
+    
+    public SMigPanel alignX(String v) {
+        lc.alignX(v);
+        migLayout.setLayoutConstraints(lc); // reapply
+        return this;
+    }
+    public SMigPanel alignX(AlignX alignX) {
+        return alignX(alignX == null ? null : alignX.toString().toLowerCase());
+    }
+
+    public SMigPanel alignY(String v) {
+        lc.alignY(v);
+        migLayout.setLayoutConstraints(lc); // reapply
+        return this;
+    }
+    public SMigPanel alignY(AlignY alignY) {
+        return alignX(alignY == null ? null : alignY.toString().toLowerCase());
     }
 
     /**

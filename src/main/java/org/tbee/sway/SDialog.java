@@ -78,7 +78,7 @@ public class SDialog extends JDialog {
 		}
 		
 		// Populate and show dialog
-		dialog.setContentPane(SBorderPanel.of(content).south(SButtonPanel.of(buttons)));
+		dialog.setContentPane(SBorderPanel.of(content).south(SButtonPanel.of(buttons)).margin(4));
 		dialog.pack();
 		if (parent != null) {
 			dialog.setLocationRelativeTo(parent);

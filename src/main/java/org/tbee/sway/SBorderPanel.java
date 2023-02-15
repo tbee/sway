@@ -3,12 +3,11 @@ package org.tbee.sway;
 import java.awt.BorderLayout;
 
 import javax.swing.JComponent;
-import javax.swing.JPanel;
 
 /**
  * JPanel with BorderLayout
  */
-public class SBorderPanel extends JPanel {
+public class SBorderPanel extends SPanel {
 
     public SBorderPanel() {
         super();
