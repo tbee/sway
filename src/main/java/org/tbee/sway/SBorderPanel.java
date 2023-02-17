@@ -7,7 +7,7 @@ import javax.swing.JComponent;
 /**
  * JPanel with BorderLayout
  */
-public class SBorderPanel extends SPanel {
+public class SBorderPanel extends SPanelExtendable<SBorderPanel> {
 
     public SBorderPanel() {
         super();

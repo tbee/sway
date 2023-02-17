@@ -1,11 +1,9 @@
 package org.tbee.sway;
 
 import java.awt.Component;
-import java.util.Arrays;
 import java.util.Collection;
 
 import javax.swing.JComponent;
-import javax.swing.JPanel;
 
 import net.miginfocom.layout.AC;
 import net.miginfocom.layout.CC;
@@ -15,7 +13,7 @@ import net.miginfocom.swing.MigLayout;
 // TODO
 // - strongly typed API calls for all MigLayout stuff
 
-public class SMigPanel extends JPanel {
+public class SMigPanel extends SPanelExtendable<SMigPanel> {
 	
 	static public enum AlignX {LEADING, LEFT, RIGHT, TRAILING}
 	static public enum AlignY {TOP, BOTTOM, BASELINE}
@@ -45,16 +43,6 @@ public class SMigPanel extends JPanel {
 
     // =========================================================================
     // FLUENT API for adding components
-
-    public SMigPanel add(JComponent... components) {
-        Arrays.stream(components).forEach(c -> super.add(c));
-        return this;
-    }
-
-    public SMigPanel add(Collection<? extends JComponent> components) {
-        components.forEach(c -> super.add(c));
-        return this;
-    }
 
     public SMigPanel add(JComponent component, CC cc) {
         super.add(component, cc);
@@ -200,4 +188,34 @@ public class SMigPanel extends JPanel {
             throw new IllegalArgumentException("Code does not exist " + code);
         }
     }
+    
+    // ---
+    // SBorderPanel like
+    
+    public SMigPanel center(JComponent component) {
+        super.add(component, "dock center");
+        return this;
+    }
+
+    public SMigPanel north(JComponent component) {
+        super.add(component, new CC().dockNorth());
+        return this;
+    }
+
+    public SMigPanel east(JComponent component) {
+        super.add(component, new CC().dockEast());
+        return this;
+    }
+
+    public SMigPanel south(JComponent component) {
+        super.add(component, new CC().dockSouth());
+        return this;
+    }
+
+    public SMigPanel west(JComponent component) {
+        super.add(component, new CC().dockWest());
+        return this;
+    }
+
+
 }

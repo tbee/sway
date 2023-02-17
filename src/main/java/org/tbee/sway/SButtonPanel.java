@@ -12,7 +12,7 @@ import javax.swing.AbstractButton;
 import javax.swing.JComponent;
 
 // TBEERNOT this class needs just a bit more work
-public class SButtonPanel extends SPanel {
+public class SButtonPanel extends SPanelExtendable<SButtonPanel> {
 	
 	/**
 	 * 
