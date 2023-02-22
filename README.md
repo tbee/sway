@@ -19,10 +19,9 @@ var sTextField = STextField.ofBind(city, "name");
 ```
 
 Well, you've come to the right place. 
-Take a look at the components and their JavaDoc present in org.tbee.sway and see if they are easy enough to use.
-Sway is not there yet, but the idea of what it is trying to do should be clear.
+Take a look at the examples here, and the JavaDoc present in org.tbee.sway, and see if they are easy enough to use.
+A UI library probably is never truly finished, but Sway is stable and used in production.
 
-Some more examples:
 
 ``` java
 // A label can have its text and icon property bound
