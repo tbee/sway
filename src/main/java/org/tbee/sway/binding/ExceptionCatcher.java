@@ -1,8 +1,9 @@
 package org.tbee.sway.binding;
 
-import com.jgoodies.binding.beans.PropertyAdapter;
 import org.tbee.util.AbstractBean;
 import org.tbee.util.ExceptionUtil;
+
+import com.jgoodies.binding.beans.PropertyAdapter;
 
 /**
  * Catches any exception and forwards them to the exception handler
@@ -29,13 +30,10 @@ public class ExceptionCatcher extends AbstractBean<ExceptionCatcher> {
         }
         catch (RuntimeException e) {
             Throwable ultimateCause = ExceptionUtil.findUltimateCause(e);
-            if (handler != null) {
-                boolean handled = handler.handle(ultimateCause, oldValue, v);
-                if (handled) {
-                    return;
-                }
+            if (handler != null && handler.handle(ultimateCause, oldValue, v)) {
+                return;
             }
-            throw e; // TBEERNOT: check if this exception is swalled, if so log it
+            throw e;
         }
     }
     public Object getValue() {

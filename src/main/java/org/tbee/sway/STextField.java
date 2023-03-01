@@ -23,6 +23,7 @@ import javax.swing.SwingUtilities;
 import org.tbee.sway.binding.BeanBinder;
 import org.tbee.sway.binding.BindUtil;
 import org.tbee.sway.binding.Binding;
+import org.tbee.sway.binding.ExceptionHandler;
 import org.tbee.sway.format.Format;
 import org.tbee.sway.format.FormatRegistry;
 import org.tbee.sway.format.JavaFormat;
@@ -104,7 +105,7 @@ import org.tbee.util.ExceptionUtil;
  * @param <T> the type of value the textfield holds.
  */
 public class STextField<T> extends javax.swing.JTextField {
-    static private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(STextField.class);
+    final static private org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(STextField.class);
 
     final private Format<T> format;
 
@@ -288,10 +289,27 @@ public class STextField<T> extends javax.swing.JTextField {
         return true;
     }
 
-    protected boolean handleException(Throwable e, Object oldValue, Object newValue) {
+    /**
+     * Set the ExceptionHandler used a.o. in binding
+     * @param v
+     */
+    public void setExceptionHandler(ExceptionHandler v) {
+        firePropertyChange(EXCEPTIONHANDLER, exceptionHandler, exceptionHandler = v);
+    }
+    public ExceptionHandler getExceptionHandler() {
+        return exceptionHandler;
+    }
+    public STextField<T> exceptionHandler(ExceptionHandler v) {
+        setExceptionHandler(v);
+        return this;
+    }
+    final static public String EXCEPTIONHANDLER = "exceptionHandler";
+    ExceptionHandler exceptionHandler = this::handleException;
+    
+    private boolean handleException(Throwable e, Object oldValue, Object newValue) {
         return handleException(e);
     }
-    protected boolean handleException(Throwable e) {
+    private boolean handleException(Throwable e) {
         if (handlingExceptionCnt > 0) {
             return false;
         }
@@ -303,7 +321,7 @@ public class STextField<T> extends javax.swing.JTextField {
             SwingUtilities.invokeLater(() -> this.grabFocus());
 
             // Display the error
-            if (logger.isDebugEnabled()) logger.debug(e.getMessage(), e);
+            if (LOGGER.isDebugEnabled()) LOGGER.debug(e.getMessage(), e);
             JOptionPane.showMessageDialog(this, ExceptionUtil.determineMessage(e), "ERROR", JOptionPane.ERROR_MESSAGE);
 
             // Mark exception as handled
@@ -413,7 +431,7 @@ public class STextField<T> extends javax.swing.JTextField {
      * @return Binding, so unbind() can be called
      */
     public Binding binding(Object bean, String propertyName) {
-        return BindUtil.bind(this, VALUE, bean, propertyName, this::handleException);
+        return BindUtil.bind(this, VALUE, bean, propertyName, exceptionHandler);
     }
 
     /**
@@ -438,7 +456,7 @@ public class STextField<T> extends javax.swing.JTextField {
      * @return Binding, so unbind() can be called
      */
     public Binding binding(BeanBinder<?> beanBinder, String propertyName) {
-        return BindUtil.bind(this, VALUE, beanBinder, propertyName, this::handleException);
+        return BindUtil.bind(this, VALUE, beanBinder, propertyName, exceptionHandler);
     }
 
     /**

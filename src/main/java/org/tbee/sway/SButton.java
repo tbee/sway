@@ -1,15 +1,21 @@
 package org.tbee.sway;
 
-import org.tbee.sway.support.HAlign;
-import org.tbee.sway.support.VAlign;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.Action;
 import javax.swing.Icon;
 import javax.swing.JButton;
-import java.awt.Insets;
-import java.awt.event.ActionListener;
+import javax.swing.JOptionPane;
+
+import org.tbee.sway.binding.ExceptionHandler;
+import org.tbee.sway.support.HAlign;
+import org.tbee.sway.support.VAlign;
+import org.tbee.util.ExceptionUtil;
 
 public class SButton extends JButton {
+    final static private org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(SButton.class);
 
     public SButton() {
     }
@@ -31,7 +37,7 @@ public class SButton extends JButton {
     }
 
     // ==============================================
-    // JavaBaan
+    // JavaBean
 
     /**
      * Enum variant of HorizontalAlignment
@@ -69,6 +75,48 @@ public class SButton extends JButton {
     }
     final static public String VALIGN = "vAlign";
 
+    // ==============================================
+    // ExceptionHandler
+    
+    /**
+     * Set the ExceptionHandler used a.o. when the actionListeners are called.
+     * @param v
+     */
+    public void setExceptionHandler(ExceptionHandler v) {
+        firePropertyChange(EXCEPTIONHANDLER, exceptionHandler, exceptionHandler = v);
+    }
+    public ExceptionHandler getExceptionHandler() {
+        return exceptionHandler;
+    }
+    public SButton exceptionHandler(ExceptionHandler v) {
+        setExceptionHandler(v);
+        return this;
+    }
+    final static public String EXCEPTIONHANDLER = "exceptionHandler";
+    ExceptionHandler exceptionHandler = this::handleException;
+    
+    private boolean handleException(Throwable e, Object oldValue, Object newValue) {
+    	
+        if (LOGGER.isDebugEnabled()) LOGGER.debug(e.getMessage(), e);
+        JOptionPane.showMessageDialog(this, ExceptionUtil.determineMessage(e), "ERROR", JOptionPane.ERROR_MESSAGE);
+
+        // Mark exception as handled
+        return true;
+    }
+
+    @Override
+    protected void fireActionPerformed(ActionEvent event) {
+    	try {
+    		super.fireActionPerformed(event);
+    	}
+    	catch (Throwable t) {
+    		if (exceptionHandler != null && exceptionHandler.handle(t, null, null)) {
+    			return;
+    		}
+			throw t;
+    	}
+    }
+    
     // ==============================================
     // FLUENT API
 
