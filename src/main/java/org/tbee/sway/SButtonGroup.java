@@ -9,6 +9,7 @@ import org.tbee.util.ExceptionUtil;
 
 import javax.swing.AbstractButton;
 import javax.swing.ButtonGroup;
+import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeListener;
@@ -189,7 +190,7 @@ public class SButtonGroup<T> extends ButtonGroup {
         return null;
     }
 
-    protected boolean handleException(Throwable e, Object oldValue, Object newValue) {
+    protected boolean handleException(Throwable e, JComponent component, Object oldValue, Object newValue) {
         // Display the error
         if (logger.isDebugEnabled()) logger.debug(e.getMessage(), e);
         JOptionPane.showMessageDialog(buttons.get(0), ExceptionUtil.determineMessage(e), "ERROR", JOptionPane.ERROR_MESSAGE);

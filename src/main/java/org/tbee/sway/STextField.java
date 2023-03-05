@@ -1,5 +1,21 @@
 package org.tbee.sway;
 
+import org.tbee.sway.binding.BeanBinder;
+import org.tbee.sway.binding.BindUtil;
+import org.tbee.sway.binding.Binding;
+import org.tbee.sway.binding.ExceptionHandler;
+import org.tbee.sway.format.Format;
+import org.tbee.sway.format.FormatRegistry;
+import org.tbee.sway.format.JavaFormat;
+import org.tbee.sway.format.StringFormat;
+import org.tbee.sway.support.FocusInterpreter;
+import org.tbee.sway.support.HAlign;
+import org.tbee.util.ClassUtil;
+import org.tbee.util.ExceptionUtil;
+
+import javax.swing.JComponent;
+import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import java.awt.Font;
 import java.awt.event.KeyEvent;
 import java.beans.BeanInfo;
@@ -16,22 +32,6 @@ import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.Currency;
 import java.util.Locale;
-
-import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
-
-import org.tbee.sway.binding.BeanBinder;
-import org.tbee.sway.binding.BindUtil;
-import org.tbee.sway.binding.Binding;
-import org.tbee.sway.binding.ExceptionHandler;
-import org.tbee.sway.format.Format;
-import org.tbee.sway.format.FormatRegistry;
-import org.tbee.sway.format.JavaFormat;
-import org.tbee.sway.format.StringFormat;
-import org.tbee.sway.support.FocusInterpreter;
-import org.tbee.sway.support.HAlign;
-import org.tbee.util.ClassUtil;
-import org.tbee.util.ExceptionUtil;
 
 // TODO
 // - popup
@@ -306,7 +306,7 @@ public class STextField<T> extends javax.swing.JTextField {
     final static public String EXCEPTIONHANDLER = "exceptionHandler";
     ExceptionHandler exceptionHandler = this::handleException;
     
-    private boolean handleException(Throwable e, Object oldValue, Object newValue) {
+    private boolean handleException(Throwable e, JComponent component, Object oldValue, Object newValue) {
         return handleException(e);
     }
     private boolean handleException(Throwable e) {

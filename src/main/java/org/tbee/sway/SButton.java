@@ -1,18 +1,18 @@
 package org.tbee.sway;
 
-import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
-import javax.swing.Action;
-import javax.swing.Icon;
-import javax.swing.JButton;
-import javax.swing.JOptionPane;
-
 import org.tbee.sway.binding.ExceptionHandler;
 import org.tbee.sway.support.HAlign;
 import org.tbee.sway.support.VAlign;
 import org.tbee.util.ExceptionUtil;
+
+import javax.swing.Action;
+import javax.swing.Icon;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JOptionPane;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class SButton extends JButton {
     final static private org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(SButton.class);
@@ -95,7 +95,7 @@ public class SButton extends JButton {
     final static public String EXCEPTIONHANDLER = "exceptionHandler";
     ExceptionHandler exceptionHandler = this::handleException;
     
-    private boolean handleException(Throwable e, Object oldValue, Object newValue) {
+    private boolean handleException(Throwable e, JComponent component, Object oldValue, Object newValue) {
     	
         if (LOGGER.isDebugEnabled()) LOGGER.debug(e.getMessage(), e);
         JOptionPane.showMessageDialog(this, ExceptionUtil.determineMessage(e), "ERROR", JOptionPane.ERROR_MESSAGE);
@@ -110,7 +110,7 @@ public class SButton extends JButton {
     		super.fireActionPerformed(event);
     	}
     	catch (Throwable t) {
-    		if (exceptionHandler != null && exceptionHandler.handle(t, null, null)) {
+    		if (exceptionHandler != null && exceptionHandler.handle(t, this, null, null)) {
     			return;
     		}
 			throw t;

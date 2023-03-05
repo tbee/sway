@@ -12,12 +12,11 @@
 
 package org.tbee.sway;
 
-import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import org.tbee.sway.binding.BeanBinder;
+import org.tbee.sway.binding.BindUtil;
+import org.tbee.sway.binding.Binding;
+import org.tbee.sway.support.IconRegistry;
+import org.tbee.util.ExceptionUtil;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -25,15 +24,16 @@ import javax.swing.ActionMap;
 import javax.swing.ButtonModel;
 import javax.swing.Icon;
 import javax.swing.JCheckBox;
+import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.plaf.ActionMapUIResource;
-
-import org.tbee.sway.binding.BeanBinder;
-import org.tbee.sway.binding.BindUtil;
-import org.tbee.sway.binding.Binding;
-import org.tbee.sway.support.IconRegistry;
-import org.tbee.util.ExceptionUtil;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 
 /**
@@ -290,7 +290,7 @@ public class SCheckBox3 extends JCheckBox {
 		return this;
 	}
 
-	protected boolean handleException(Throwable e, Object oldValue, Object newValue) {
+	protected boolean handleException(Throwable e, JComponent component, Object oldValue, Object newValue) {
 		return handleException(e);
 	}
 	protected boolean handleException(Throwable e) {

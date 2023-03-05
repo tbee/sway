@@ -2,12 +2,14 @@ package org.tbee.sway.binding;
 
 import com.jgoodies.binding.beans.PropertyConnector;
 
+import javax.swing.JComponent;
+
 public class BindUtil {
     static private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(BindUtil.class);
 
     static private ExceptionHandler loggingExceptionHandler = new ExceptionHandler() {
         @Override
-        public boolean handle(Throwable t, Object oldValue, Object newValue) {
+        public boolean handle(Throwable t, JComponent component, Object oldValue, Object newValue) {
             logger.warn(t.getMessage(), t);
             return false;
         }

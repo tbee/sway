@@ -1,19 +1,19 @@
 package org.tbee.sway;
 
-import java.awt.Insets;
-import java.awt.event.ActionListener;
-
-import javax.swing.Action;
-import javax.swing.Icon;
-import javax.swing.JCheckBox;
-import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
-
 import org.tbee.sway.binding.BeanBinder;
 import org.tbee.sway.binding.BindUtil;
 import org.tbee.sway.binding.Binding;
 import org.tbee.sway.support.IconRegistry;
 import org.tbee.util.ExceptionUtil;
+
+import javax.swing.Action;
+import javax.swing.Icon;
+import javax.swing.JCheckBox;
+import javax.swing.JComponent;
+import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
+import java.awt.Insets;
+import java.awt.event.ActionListener;
 
 /**
  * If the SELECTED, UNSELECTED icons are specified in the IconRegistry, then these will be drawn.
@@ -124,7 +124,7 @@ public class SCheckBox extends JCheckBox {
         return this;
     }
 
-    protected boolean handleException(Throwable e, Object oldValue, Object newValue) {
+    protected boolean handleException(Throwable e, JComponent component, Object oldValue, Object newValue) {
         return handleException(e);
     }
     protected boolean handleException(Throwable e) {

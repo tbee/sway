@@ -126,6 +126,17 @@ If you start poking around, you're on your own ;-)
 There is no formal support for Sway: this library is an open source hobby project and no claims can be made. 
 Asking for help is always an option. But so is participating, creating pull requests, and other ways of contributing.
 
+## Usage
+Just include a dependency in your project. For the latest version see [Maven central](https://central.sonatype.com/namespace/org.tbee.sway)
+
+```xml
+<dependency>
+    <groupId>org.tbee.sway</groupId>
+    <artifactId>sway</artifactId>
+    <version>1.0.0</version>
+</dependency>
+```
+
 ## Third party
 * Binding uses Karsten Lentzsch's JGoodies underneath (https://www.jgoodies.com/freeware/libraries/binding/).
 * STable's filter header is provided by Coderazzi (https://coderazzi.net/tablefilter/).
