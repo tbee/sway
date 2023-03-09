@@ -191,10 +191,19 @@ public class SButtonPanel extends SPanelExtendable<SButtonPanel> {
 	// ===================================================================================================
 	// CONVENIENCE
 
-	static SButtonPanel of(AbstractButton... buttons) {
+	static public SButtonPanel of(AbstractButton... buttons) {
 		return new SButtonPanel(buttons);
 	}
-	static SButtonPanel of(List<? extends AbstractButton> buttons) {
+	static public SButtonPanel of(List<? extends AbstractButton> buttons) {
 		return new SButtonPanel(buttons);
+	}	
+	
+	public SButtonPanel horizontal() {
+		setOrientation(Orientation.HORIZONTAL);
+		return this;
+	}
+	public SButtonPanel vertical() {
+		setOrientation(Orientation.VERTICAL);
+		return this;
 	}
 }
