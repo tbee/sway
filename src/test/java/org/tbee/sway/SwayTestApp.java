@@ -37,7 +37,7 @@ public class SwayTestApp {
 
             panel.addField(sTable()).grow();
             panel.addField(sList()).grow();
-            panel.addField(sComboBox()).grow();
+            panel.addField(sComboBox()).growX();
             panel.addField(sTextField()).grow();
             panel.addField(sTextArea()).grow();
             panel.addField(sCheckBox()).grow();
@@ -160,7 +160,7 @@ public class SwayTestApp {
         return migPanel;
     }
 
-    static private SList<City> sList() {
+    static private SFlowPanel sList() {
         City amsterdam = new City("Amsterdam", 150);
         City berlin = new City("Berlin", 560);
         City rome = new City("Rome", 1560);
@@ -169,17 +169,17 @@ public class SwayTestApp {
         rome.sisterCity(paris);
         var cities = List.of(amsterdam, berlin, rome, paris);
 
+
         var sList = new SList<City>() //
                 .name("mySList") //
                 .render(new CityFormat(cities))
                 .onSelectionChanged(cs -> System.out.println("List: " + cs))
                 .data(cities) //
                 ;
-
-        return sList;
+        return SFlowPanel.of(sList);
     }
 
-    static private SFlowPanel sComboBox() {
+    static private SVerticalPanel sComboBox() {
         City amsterdam = new City("Amsterdam", 150);
         City berlin = new City("Berlin", 560);
         City rome = new City("Rome", 1560);
@@ -191,11 +191,18 @@ public class SwayTestApp {
         var sComboBox = SComboBox.<City>of() //
                 .name("mySComboBox") //
                 .render(new CityFormat(cities))
-                .onSelectionChanged(c -> System.out.println("Combobox: " + c))
-                .data(cities) //
-                ;
+                .onValueChanged(c -> System.out.println("Combobox: " + c))
+                .data(cities);
 
-        return new SFlowPanel(sComboBox);
+        // The combobox is bound to the textfield, so it should have the value
+        STextField<City> sTextFieldDisplay = STextField.of(new CityFormat(cities)).value(cities.get(0)).enabled(false);
+        sComboBox.bind(sTextFieldDisplay, STextField.VALUE);
+
+        // The textfield is bound to the combobox, so the combobox should has the value
+        STextField<City> sTextField = STextField.of(new CityFormat(cities));
+        sTextField.bind(sComboBox, STextField.VALUE);
+
+        return SVerticalPanel.of(sComboBox, sTextFieldDisplay, sTextField);
     }
 
     static private STable<City> sTable() {

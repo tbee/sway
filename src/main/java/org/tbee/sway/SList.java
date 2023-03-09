@@ -254,4 +254,6 @@ public class SList<T> extends SBorderPanel {
     static public <T> SList<T> of(List<T> data) {
     	return new SList<T>().data(data);
     }
+
+    // TBEERNOT BINDING of selection
 }

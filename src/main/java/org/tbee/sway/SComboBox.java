@@ -1,12 +1,20 @@
 package org.tbee.sway;
 
+import org.tbee.sway.binding.BeanBinder;
+import org.tbee.sway.binding.BindUtil;
+import org.tbee.sway.binding.Binding;
+import org.tbee.sway.binding.ExceptionHandler;
 import org.tbee.sway.format.Format;
 import org.tbee.sway.format.FormatRegistry;
 import org.tbee.sway.list.DefaultListCellRenderer;
 import org.tbee.sway.support.SwayUtil;
+import org.tbee.util.ExceptionUtil;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
+import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -16,9 +24,11 @@ import java.util.function.Consumer;
 
 public class SComboBox<T> extends JComboBox<T> {
 
+    final static private org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(SComboBox.class);
+
     public SComboBox() {
         setRenderer(new DefaultListCellRenderer(() -> format, () -> alternateRowColor, () -> firstAlternateRowColor, () -> secondAlternateRowColor));
-        addActionListener (e -> fireSelectionChanged());
+        addActionListener (e -> fireValueChanged());
     }
 
 
@@ -124,53 +134,54 @@ public class SComboBox<T> extends JComboBox<T> {
      *
      * @return
      */
-    public T getSelection() {
+    public T getValue() {
         return (T)getSelectedItem();
     }
 
     /**
      *
      */
-    public void setSelection(T v) {
+    public void setValue(T v) {
         setSelectedItem(v);
     }
 
-    /**
-     *
-     */
-    public void clearSelection() {
-        setSelectedItem(null);
+    @Override
+    public void setSelectedItem(Object object) {
+        Object oldValue = getSelectedItem();
+        super.setSelectedItem(object);
+        firePropertyChange(VALUE, oldValue, object);
     }
+    static final public String VALUE = "value";
 
     /**
      *
      * @param listener
      */
-    synchronized public void addSelectionChangedListener(Consumer<T> listener) {
-        if (selectionChangedListeners == null) {
-            selectionChangedListeners = new ArrayList<>();
+    synchronized public void addValueChangedListener(Consumer<T> listener) {
+        if (valueChangedListeners == null) {
+            valueChangedListeners = new ArrayList<>();
         }
-        selectionChangedListeners.add(listener);
+        valueChangedListeners.add(listener);
     }
-    synchronized public boolean removeSelectionChangedListener(Consumer<T> listener) {
-        if (selectionChangedListeners == null) {
+    synchronized public boolean removeValueChangedListener(Consumer<T> listener) {
+        if (valueChangedListeners == null) {
             return false;
         }
-        return selectionChangedListeners.remove(listener);
+        return valueChangedListeners.remove(listener);
     }
-    private List<Consumer<T>> selectionChangedListeners;
-    private void fireSelectionChanged() {
-        if (selectionChangedListeners != null) {
-            selectionChangedListeners.forEach(scl -> scl.accept(getSelection()));
+    private List<Consumer<T>> valueChangedListeners;
+    private void fireValueChanged() {
+        if (valueChangedListeners != null) {
+            valueChangedListeners.forEach(scl -> scl.accept(getValue()));
         }
     }
 
     /**
-     * @param onSelectionChangedListener
+     * @param listener
      * @return
      */
-    public SComboBox<T> onSelectionChanged(Consumer<T> onSelectionChangedListener) {
-        addSelectionChangedListener(onSelectionChangedListener);
+    public SComboBox<T> onValueChanged(Consumer<T> listener) {
+        addValueChangedListener(listener);
         return this;
     }
 
@@ -194,6 +205,10 @@ public class SComboBox<T> extends JComboBox<T> {
         return of(format);
     }
 
+    static public <T> SComboBox<T> of(List<T> data) {
+        return new SComboBox<T>().data(data);
+    }
+
 
     // ===========================================================================
     // FLUENT API
@@ -203,12 +218,101 @@ public class SComboBox<T> extends JComboBox<T> {
         return this;
     }
 
-    public SComboBox<T> visible(boolean value) {
-        setVisible(value);
+    public SComboBox<T> visible(boolean v) {
+        setVisible(v);
         return this;
     }
 
-    static public <T> SComboBox<T> of(List<T> data) {
-        return new SComboBox<T>().data(data);
+    public SComboBox<T> value(T v) {
+        setValue(v);
+        return this;
     }
+
+
+    // ========================================================
+    // BIND
+
+    /**
+     * Set the ExceptionHandler used a.o. in binding
+     * @param v
+     */
+    public void setExceptionHandler(ExceptionHandler v) {
+        firePropertyChange(EXCEPTIONHANDLER, exceptionHandler, exceptionHandler = v);
+    }
+    public ExceptionHandler getExceptionHandler() {
+        return exceptionHandler;
+    }
+    public SComboBox<T> exceptionHandler(ExceptionHandler v) {
+        setExceptionHandler(v);
+        return this;
+    }
+    final static public String EXCEPTIONHANDLER = "exceptionHandler";
+    ExceptionHandler exceptionHandler = this::handleException;
+
+    private boolean handleException(Throwable e, JComponent component, Object oldValue, Object newValue) {
+        return handleException(e);
+    }
+    private boolean handleException(Throwable e) {
+
+        // Force focus back
+        SwingUtilities.invokeLater(() -> this.grabFocus());
+
+        // Display the error
+        if (LOGGER.isDebugEnabled()) LOGGER.debug(e.getMessage(), e);
+        JOptionPane.showMessageDialog(this, ExceptionUtil.determineMessage(e), "ERROR", JOptionPane.ERROR_MESSAGE);
+
+        // Mark exception as handled
+        return true;
+    }
+
+    /**
+     * Will create a binding to a specific bean/property.
+     * Use binding(BeanBinding, PropertyName) to be able to switch beans while keeping the bind.
+     *
+     * @param bean
+     * @param propertyName
+     * @return Binding, so unbind() can be called
+     */
+    public Binding binding(Object bean, String propertyName) {
+        return BindUtil.bind(this, VALUE, bean, propertyName, exceptionHandler);
+    }
+
+    /**
+     * Will create a binding to a specific bean/property.
+     * Use bind(BeanBinding, PropertyName) to be able to switch beans while keeping the bind.
+     *
+     * @param bean
+     * @param propertyName
+     * @return this, for fluent API
+     */
+    public SComboBox<T> bind(Object bean, String propertyName) {
+        binding(bean, propertyName);
+        return this;
+    }
+
+    /**
+     * Bind to a bean wrapper's property.
+     * This will allow the swap the bean (in the BeanBinder) without having to rebind.
+     *
+     * @param beanBinder
+     * @param propertyName
+     * @return Binding, so unbind() can be called
+     */
+    public Binding binding(BeanBinder<?> beanBinder, String propertyName) {
+        return BindUtil.bind(this, VALUE, beanBinder, propertyName, exceptionHandler);
+    }
+
+    /**
+     * Bind to a bean wrapper's property.
+     * This will allow the swap the bean (in the BeanBinder) without having to rebind.
+     * @param beanBinder
+     * @param propertyName
+     * @return this, for fluent API
+     */
+    public SComboBox<T> bind(BeanBinder<?> beanBinder, String propertyName) {
+        binding(beanBinder, propertyName);
+        return this;
+    }
+
+    // TBEERNOT Tests
 }

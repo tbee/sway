@@ -12,16 +12,6 @@ public class SFlowPanel extends JPanel {
         super();
         setLayout(new FlowLayout());
     }
-    
-    public SFlowPanel(JComponent... components) {
-        this();
-        add(components);
-    }
-
-    public SFlowPanel(Collection<? extends JComponent> components) {
-        this();
-        add(components);
-    }
 
     public SFlowPanel add(JComponent... components) {
         Arrays.stream(components).forEach(c -> super.add(c));
@@ -31,5 +21,21 @@ public class SFlowPanel extends JPanel {
     public SFlowPanel add(Collection<? extends JComponent> components) {
         components.forEach(c -> super.add(c));
         return this;
+    }
+
+    public static SFlowPanel of() {
+        return new SFlowPanel();
+    }
+
+    public static SFlowPanel of(JComponent... components) {
+        SFlowPanel sFlowPanel = new SFlowPanel();
+        sFlowPanel.add(components);
+        return sFlowPanel;
+    }
+
+    public static SFlowPanel of(Collection<? extends JComponent> components) {
+        SFlowPanel sFlowPanel = new SFlowPanel();
+        sFlowPanel.add(components);
+        return sFlowPanel;
     }
 }
