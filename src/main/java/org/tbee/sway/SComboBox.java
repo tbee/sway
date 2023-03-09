@@ -3,33 +3,22 @@ package org.tbee.sway;
 import org.tbee.sway.format.Format;
 import org.tbee.sway.format.FormatRegistry;
 import org.tbee.sway.list.DefaultListCellRenderer;
-import org.tbee.sway.list.SListCore;
 import org.tbee.sway.support.SwayUtil;
 
-import javax.swing.JScrollPane;
-import javax.swing.ListSelectionModel;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JComboBox;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Vector;
 import java.util.function.Consumer;
 
-public class SList<T> extends SBorderPanel {
-    static private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(SList.class);
+public class SComboBox<T> extends JComboBox<T> {
 
-    final private SListCore<T> sListCore;
-    final private JScrollPane jScrollPane;
-
-    public SList() {
-        super();
-        sListCore = new SListCore<>(this);
-        jScrollPane = new JScrollPane(sListCore);
-        center(jScrollPane);
-        sListCore.setCellRenderer(new DefaultListCellRenderer(() -> format, () -> alternateRowColor, () -> firstAlternateRowColor, () -> secondAlternateRowColor));
-    }
-
-    public SListCore<T> getSListCore() {
-        return sListCore;
+    public SComboBox() {
+        setRenderer(new DefaultListCellRenderer(() -> format, () -> alternateRowColor, () -> firstAlternateRowColor, () -> secondAlternateRowColor));
+        addActionListener (e -> fireSelectionChanged());
     }
 
 
@@ -43,18 +32,18 @@ public class SList<T> extends SBorderPanel {
      * @param v
      */
     public void setData(List<T> v) {
-// TBEERNOT       unregisterFromAllBeans();
+// TBEERNOT        unregisterFromAllBeans();
         this.data = Collections.unmodifiableList(v); // We don't allow outside changes to the provided list
+        setModel(new DefaultComboBoxModel<>(new Vector<>(this.data)));
 // TBEERNOT       registerToAllBeans();
     }
     public List<T> getData() {
         return this.data;
     }
-    public SList<T> data(List<T> v) {
+    public SComboBox<T> data(List<T> v) {
         setData(v);
         return this;
     }
-
 
     // ===========================================================================
     // RENDERING
@@ -67,7 +56,7 @@ public class SList<T> extends SBorderPanel {
      * @param v
      * @return
      */
-    public SList<T> render(Format<T> v) {
+    public SComboBox<T> render(Format<T> v) {
         this.format = v;
         return this;
     }
@@ -78,7 +67,7 @@ public class SList<T> extends SBorderPanel {
      * @param clazz
      * @return
      */
-    public SList<T> renderFor(Class<T> clazz) {
+    public SComboBox<T> renderFor(Class<T> clazz) {
         return render((Format<T>) FormatRegistry.findFor(clazz));
     }
 
@@ -94,7 +83,7 @@ public class SList<T> extends SBorderPanel {
     }
     private boolean alternateRowColor = true;
     final static public String ALTERNATEROWCOLOR = "alternateRowColor";
-    public SList<T> alternateRowColor(boolean v) {
+    public SComboBox<T> alternateRowColor(boolean v) {
         setAlternateRowColor(v);
         return this;
     }
@@ -108,7 +97,7 @@ public class SList<T> extends SBorderPanel {
     }
     private Color firstAlternateRowColor = SwayUtil.getFirstAlternateRowColor();
     final static public String FIRSTALTERNATEROWCOLOR = "firstAlternateRowColor";
-    public SList<T> firstAlternateRowColor(Color v) {
+    public SComboBox<T> firstAlternateRowColor(Color v) {
         firstAlternateRowColor(v);
         return this;
     }
@@ -122,7 +111,7 @@ public class SList<T> extends SBorderPanel {
     }
     private Color secondAlternateRowColor = SwayUtil.getSecondAlternateRowColor();
     final static public String SECONDALTERNATEROWCOLOR = "secondAlternateRowColor";
-    public SList<T> secondAlternateRowColor(Color v) {
+    public SComboBox<T> secondAlternateRowColor(Color v) {
         setSecondAlternateRowColor(v);
         return this;
     }
@@ -131,127 +120,95 @@ public class SList<T> extends SBorderPanel {
     // ===========================================================================
     // SELECTION
 
-    public enum SelectionMode{ //
-        SINGLE(ListSelectionModel.SINGLE_SELECTION), //
-        INTERVAL(ListSelectionModel.SINGLE_INTERVAL_SELECTION), //
-        MULTIPLE(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-
-        private int code;
-        private SelectionMode(int code) {
-            this.code = code;
-        }
-
-        static SList.SelectionMode of(int code) {
-            for (SList.SelectionMode selectionMode : values()) {
-                if (selectionMode.code == code) {
-                    return selectionMode;
-                }
-            }
-            throw new IllegalArgumentException("Code does not exist " + code);
-        }
-    }
-
-    /**
-     *
-     * @param v
-     */
-    public void setSelectionMode(SList.SelectionMode v) {
-        sListCore.setSelectionMode(v.code);
-    }
-    public SList.SelectionMode getSelectionMode() {
-        return SList.SelectionMode.of(sListCore.getSelectionModel().getSelectionMode());
-    }
-    public SList<T> selectionMode(SList.SelectionMode v) {
-        setSelectionMode(v);
-        return this;
-    }
-
     /**
      *
      * @return
      */
-    public List<T> getSelection() {
-        var selectedItems = new ArrayList<T>(sListCore.getSelectionModel().getSelectionMode());
-        for (int rowIdx : sListCore.getSelectionModel().getSelectedIndices()) {
-            selectedItems.add(getData().get(rowIdx));
-        }
-        return Collections.unmodifiableList(selectedItems);
+    public T getSelection() {
+        return (T)getSelectedItem();
     }
 
     /**
      *
      */
-    public void setSelection(List<T> values) {
-        clearSelection();
-        List<T> data = getData();
-        for (T value : values) {
-            int index = data.indexOf(value);
-            sListCore.getSelectionModel().addSelectionInterval(index, index);
-        }
+    public void setSelection(T v) {
+        setSelectedItem(v);
     }
 
     /**
      *
      */
     public void clearSelection() {
-        sListCore.clearSelection();
+        setSelectedItem(null);
     }
 
     /**
      *
      * @param listener
      */
-    synchronized public void addSelectionChangedListener(Consumer<List<T>> listener) {
+    synchronized public void addSelectionChangedListener(Consumer<T> listener) {
         if (selectionChangedListeners == null) {
             selectionChangedListeners = new ArrayList<>();
-
-            // Start listening
-            sListCore.getSelectionModel().addListSelectionListener(e -> {
-                if (!e.getValueIsAdjusting()) {
-                    var selectedItems = getSelection();
-                    selectionChangedListeners.forEach(l -> l.accept(selectedItems));
-                }
-            });
         }
         selectionChangedListeners.add(listener);
     }
-    synchronized public boolean removeSelectionChangedListener(Consumer<List<T>> listener) {
+    synchronized public boolean removeSelectionChangedListener(Consumer<T> listener) {
         if (selectionChangedListeners == null) {
             return false;
         }
         return selectionChangedListeners.remove(listener);
     }
-    private List<Consumer<List<T>>> selectionChangedListeners;
+    private List<Consumer<T>> selectionChangedListeners;
+    private void fireSelectionChanged() {
+        if (selectionChangedListeners != null) {
+            selectionChangedListeners.forEach(scl -> scl.accept(getSelection()));
+        }
+    }
 
     /**
      * @param onSelectionChangedListener
      * @return
      */
-    public SList<T> onSelectionChanged(Consumer<List<T>> onSelectionChangedListener) {
+    public SComboBox<T> onSelectionChanged(Consumer<T> onSelectionChangedListener) {
         addSelectionChangedListener(onSelectionChangedListener);
         return this;
+    }
+
+
+    // ========================================================
+    // OF
+
+    static public <T> SComboBox<T> of() {
+        return new SComboBox<T>();
+    }
+
+    static public <T> SComboBox<T> of(Format<T> format) {
+        return new SComboBox<T>().render(format);
+    }
+
+    static public <T> SComboBox<T> of(Class<T> clazz) {
+        Format<T> format = (Format<T>) FormatRegistry.findFor(clazz);
+        if (format == null) {
+            throw new IllegalArgumentException("No format found for " + clazz);
+        }
+        return of(format);
     }
 
 
     // ===========================================================================
     // FLUENT API
 
-    @Override
-    public void setName(String v) {
-        super.setName(v);
-        sListCore.setName(v + ".sListCore"); // For tests we need to address the actual list
-    }
-    public SList<T> name(String v) {
+    public SComboBox<T> name(String v) {
         setName(v);
         return this;
     }
 
-    public SList<T> visible(boolean value) {
+    public SComboBox<T> visible(boolean value) {
         setVisible(value);
         return this;
     }
-    
-    static public <T> SList<T> of(List<T> data) {
-    	return new SList<T>().data(data);
+
+    static public <T> SComboBox<T> of(List<T> data) {
+        return new SComboBox<T>().data(data);
     }
 }

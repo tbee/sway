@@ -12,4 +12,5 @@ public class SPanel extends SPanelExtendable<SPanel> {
 
     // =========================================================================
     // FLUENT API
+
 }

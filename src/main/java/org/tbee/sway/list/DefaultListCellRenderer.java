@@ -1,29 +1,48 @@
 package org.tbee.sway.list;
 
-import org.tbee.sway.SList;
+import org.tbee.sway.format.Format;
 
+import javax.swing.JLabel;
 import java.awt.Color;
 import java.awt.Component;
+import java.util.function.Supplier;
 
-public class DefaultListCellRenderer extends javax.swing.DefaultListCellRenderer {
+public class DefaultListCellRenderer<T> extends javax.swing.DefaultListCellRenderer {
 
-    private final SList<?> sList;
 
-    public DefaultListCellRenderer(SList<?> sList) {
-        this.sList = sList;
+    final private Supplier<Boolean> alternateRowColorSupplier;
+    final private Supplier<Color> firstAlternateRowColorSupplier;
+    final private Supplier<Color> secondAlternateRowColorSupplier;
+    final private Supplier<Format<T>> formatSupplier;
+    public DefaultListCellRenderer(Supplier<Format<T>> formatSupplier, Supplier<Boolean> alternateRowColorSupplier, Supplier<Color> firstAlternateRowColorSupplier, Supplier<Color> secondAlternateRowColorSupplier) {
+        this.formatSupplier = formatSupplier;
+        this.alternateRowColorSupplier = alternateRowColorSupplier;
+        this.firstAlternateRowColorSupplier = firstAlternateRowColorSupplier;
+        this.secondAlternateRowColorSupplier = secondAlternateRowColorSupplier;
     }
 
     @Override
     public Component getListCellRendererComponent(javax.swing.JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
         Component component = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
 
-        // Alternating row color
-        if (sList.getAlternateRowColor()) {
-            if (!sList.getSListCore().isSelectedIndex(index)) {
-                Color color = ((index % 2 != 0) ? sList.getFirstAlternateRowColor() : sList.getSecondAlternateRowColor());
-                if (component.getBackground() != color) {
-                    component.setBackground(color);
-                }
+        // Get values
+        Format format = formatSupplier == null ? null : formatSupplier.get();
+        Color firstAlternateRowColor = firstAlternateRowColorSupplier == null ? null : firstAlternateRowColorSupplier.get();
+        Color secondAlternateRowColor = secondAlternateRowColorSupplier == null ? null : secondAlternateRowColorSupplier.get();
+        boolean alternateRowColor = alternateRowColorSupplier == null ? false : alternateRowColorSupplier.get();
+
+        // Apply format
+        if (format != null && component instanceof JLabel jLabel) {
+            jLabel.setText(format.toString((T)value));
+            jLabel.setIcon(format.toIcon((T)value));
+            jLabel.setHorizontalAlignment(format.horizontalAlignment().getSwingConstant());
+        }
+
+        // Alternate row color
+        if (alternateRowColor) {
+            Color color = ((index % 2 != 0) ? firstAlternateRowColor : secondAlternateRowColor);
+            if (component.getBackground() != color) {
+                component.setBackground(color);
             }
         }
 

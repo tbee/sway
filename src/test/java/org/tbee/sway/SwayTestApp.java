@@ -1,5 +1,19 @@
 package org.tbee.sway;
 
+import org.kordamp.ikonli.Ikon;
+import org.kordamp.ikonli.materialdesign2.MaterialDesignC;
+import org.kordamp.ikonli.materialdesign2.MaterialDesignF;
+import org.kordamp.ikonli.materialdesign2.MaterialDesignS;
+import org.kordamp.ikonli.swing.FontIcon;
+import org.tbee.sway.binding.BeanBinder;
+import org.tbee.sway.format.Format;
+import org.tbee.sway.support.DebugUtil;
+import org.tbee.sway.support.IconRegistry;
+
+import javax.swing.Icon;
+import javax.swing.JButton;
+import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDate;
@@ -10,22 +24,6 @@ import java.util.Comparator;
 import java.util.Currency;
 import java.util.List;
 import java.util.Locale;
-
-import javax.swing.Icon;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
-
-import org.kordamp.ikonli.Ikon;
-import org.kordamp.ikonli.materialdesign2.MaterialDesignC;
-import org.kordamp.ikonli.materialdesign2.MaterialDesignF;
-import org.kordamp.ikonli.materialdesign2.MaterialDesignS;
-import org.kordamp.ikonli.swing.FontIcon;
-import org.tbee.sway.binding.BeanBinder;
-import org.tbee.sway.format.Format;
-import org.tbee.sway.support.DebugUtil;
-import org.tbee.sway.support.IconRegistry;
 
 public class SwayTestApp {
 
@@ -39,17 +37,18 @@ public class SwayTestApp {
 
             panel.addField(sTable()).grow();
             panel.addField(sList()).grow();
+            panel.addField(sComboBox()).grow();
             panel.addField(sTextField()).grow();
             panel.addField(sTextArea()).grow();
             panel.addField(sCheckBox()).grow();
 
             SContextMenu.install();
 
-            JFrame jFrame = new JFrame();
-            jFrame.setContentPane(panel);
-            jFrame.setSize(1600, 800);
-            jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            jFrame.setVisible(true);
+            SFrame jFrame = SFrame.of(panel) //
+                    .exitOnClose() //
+                    .preferedSize()
+                    //.maximize() //
+                    .visible();
 
             System.out.println(DebugUtil.componentTreeAsString(jFrame));
         });
@@ -173,12 +172,32 @@ public class SwayTestApp {
         var sList = new SList<City>() //
                 .name("mySList") //
                 .render(new CityFormat(cities))
+                .onSelectionChanged(cs -> System.out.println("List: " + cs))
                 .data(cities) //
                 ;
 
         return sList;
     }
-    
+
+    static private SFlowPanel sComboBox() {
+        City amsterdam = new City("Amsterdam", 150);
+        City berlin = new City("Berlin", 560);
+        City rome = new City("Rome", 1560);
+        City paris = new City("Paris", 575);
+        amsterdam.sisterCity(berlin);
+        rome.sisterCity(paris);
+        var cities = List.of(amsterdam, berlin, rome, paris);
+
+        var sComboBox = SComboBox.<City>of() //
+                .name("mySComboBox") //
+                .render(new CityFormat(cities))
+                .onSelectionChanged(c -> System.out.println("Combobox: " + c))
+                .data(cities) //
+                ;
+
+        return new SFlowPanel(sComboBox);
+    }
+
     static private STable<City> sTable() {
 
         City amsterdam = new City("Amsterdam", 150);
