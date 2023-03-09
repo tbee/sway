@@ -46,7 +46,7 @@ public class SwayTestApp {
 
             SFrame jFrame = SFrame.of(panel) //
                     .exitOnClose() //
-                    .preferedSize()
+                    .sizeToPreferred()
                     //.maximize() //
                     .visible();
 

@@ -1,15 +1,14 @@
 package org.tbee.sway;
 
-import java.awt.Component;
-import java.awt.Dialog;
-import java.awt.Window;
-import java.util.ArrayList;
-
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
+import java.awt.Component;
+import java.awt.Dialog;
+import java.awt.Window;
+import java.util.ArrayList;
 
 public class SDialog extends JDialog {
 	
@@ -99,7 +98,20 @@ public class SDialog extends JDialog {
 		setVisible(v);
 		return this;
 	}
-	
+	public SDialog visible() {
+		return visible(true);
+	}
+
+	public SDialog size(int width, int height) {
+		setSize(width, height);
+		return this;
+	}
+
+	public SDialog sizeToPreferred() {
+		pack();
+		return this;
+	}
+
 	public SDialog centerOnScreen() {
 		SwingUtil.centerOnScreen(this);
 		return this;

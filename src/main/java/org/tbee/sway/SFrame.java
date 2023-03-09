@@ -43,9 +43,12 @@ public class SFrame extends JFrame {
         return this;
     }
 
-    public SFrame visible() {
-        setVisible(true);
+    public SFrame visible(boolean v) {
+        setVisible(v);
         return this;
+    }
+    public SFrame visible() {
+        return visible(true);
     }
 
     public SFrame size(int width, int height) {
@@ -53,7 +56,7 @@ public class SFrame extends JFrame {
         return this;
     }
 
-    public SFrame preferedSize() {
+    public SFrame sizeToPreferred() {
         pack();
         return this;
     }
@@ -72,6 +75,4 @@ public class SFrame extends JFrame {
         setExtendedState(JFrame.ICONIFIED);
         return this;
     }
-
-
 }
