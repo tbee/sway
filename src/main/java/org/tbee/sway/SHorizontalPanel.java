@@ -32,4 +32,16 @@ public class SHorizontalPanel extends SPanelExtendable<SHorizontalPanel> {
         sVerticalPanel.add(components);
         return sVerticalPanel;
     }
+
+
+    public int getGap() {
+        return ((GridLayout)getLayout()).getHgap();
+    }
+    public void setGap(int v) {
+        ((GridLayout)getLayout()).setHgap(v);
+    }
+    public SHorizontalPanel gap(int v) {
+        setGap(v);
+        return this;
+    }
 }

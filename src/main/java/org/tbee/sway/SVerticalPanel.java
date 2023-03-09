@@ -33,4 +33,15 @@ public class SVerticalPanel extends SPanelExtendable<SVerticalPanel> {
         sVerticalPanel.add(components);
         return sVerticalPanel;
     }
+
+    public int getGap() {
+        return ((GridLayout)getLayout()).getVgap();
+    }
+    public void setGap(int v) {
+        ((GridLayout)getLayout()).setVgap(v);
+    }
+    public SVerticalPanel gap(int v) {
+        setGap(v);
+        return this;
+    }
 }

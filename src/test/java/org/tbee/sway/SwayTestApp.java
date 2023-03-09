@@ -160,7 +160,7 @@ public class SwayTestApp {
         return migPanel;
     }
 
-    static private SFlowPanel sList() {
+    static private SVerticalPanel sList() {
         City amsterdam = new City("Amsterdam", 150);
         City berlin = new City("Berlin", 560);
         City rome = new City("Rome", 1560);
@@ -169,14 +169,14 @@ public class SwayTestApp {
         rome.sisterCity(paris);
         var cities = List.of(amsterdam, berlin, rome, paris);
 
-
         var sList = new SList<City>() //
                 .name("mySList") //
                 .render(new CityFormat(cities))
                 .onSelectionChanged(cs -> System.out.println("List: " + cs))
                 .data(cities) //
                 ;
-        return SFlowPanel.of(sList);
+
+        return SVerticalPanel.of(sList);
     }
 
     static private SVerticalPanel sComboBox() {
