@@ -48,7 +48,7 @@ public class SwayTestApp {
                     .exitOnClose() //
                     .sizeToPreferred()
                     //.maximize() //
-                    .visible();
+                    .visible(true);
 
             System.out.println(DebugUtil.componentTreeAsString(jFrame));
         });
@@ -160,7 +160,7 @@ public class SwayTestApp {
         return migPanel;
     }
 
-    static private SVerticalPanel sList() {
+    static private SVPanel sList() {
         City amsterdam = new City("Amsterdam", 150);
         City berlin = new City("Berlin", 560);
         City rome = new City("Rome", 1560);
@@ -176,10 +176,10 @@ public class SwayTestApp {
                 .data(cities) //
                 ;
 
-        return SVerticalPanel.of(sList);
+        return SVPanel.of(sList);
     }
 
-    static private SVerticalPanel sComboBox() {
+    static private SVPanel sComboBox() {
         City amsterdam = new City("Amsterdam", 150);
         City berlin = new City("Berlin", 560);
         City rome = new City("Rome", 1560);
@@ -202,7 +202,7 @@ public class SwayTestApp {
         STextField<City> sTextField = STextField.of(new CityFormat(cities));
         sTextField.bind(sComboBox, STextField.VALUE);
 
-        return SVerticalPanel.of(sComboBox, sTextFieldDisplay, sTextField);
+        return SVPanel.of(sComboBox, sTextFieldDisplay, sTextField);
     }
 
     static private STable<City> sTable() {

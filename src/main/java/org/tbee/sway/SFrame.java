@@ -47,9 +47,6 @@ public class SFrame extends JFrame {
         setVisible(v);
         return this;
     }
-    public SFrame visible() {
-        return visible(true);
-    }
 
     public SFrame size(int width, int height) {
         setSize(width, height);

@@ -1,5 +1,23 @@
 package org.tbee.sway;
 
+import com.google.common.base.Splitter;
+import net.coderazzi.filters.gui.AutoChoices;
+import net.coderazzi.filters.gui.TableFilterHeader;
+import org.tbee.sway.format.Format;
+import org.tbee.sway.format.FormatAsJavaTextFormat;
+import org.tbee.sway.format.FormatRegistry;
+import org.tbee.sway.support.SwayUtil;
+import org.tbee.sway.table.FormatCellRenderer;
+import org.tbee.sway.table.STableCore;
+import org.tbee.sway.table.STableNavigator;
+import org.tbee.sway.table.TableColumn;
+import org.tbee.util.ClassUtil;
+
+import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import javax.swing.ListSelectionModel;
+import javax.swing.SwingUtilities;
+import javax.swing.table.TableCellRenderer;
 import java.awt.Color;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
@@ -22,27 +40,6 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
-
-import javax.swing.JOptionPane;
-import javax.swing.JScrollPane;
-import javax.swing.ListSelectionModel;
-import javax.swing.SwingUtilities;
-import javax.swing.table.TableCellRenderer;
-
-import org.tbee.sway.format.Format;
-import org.tbee.sway.format.FormatAsJavaTextFormat;
-import org.tbee.sway.format.FormatRegistry;
-import org.tbee.sway.support.SwayUtil;
-import org.tbee.sway.table.FormatCellRenderer;
-import org.tbee.sway.table.STableCore;
-import org.tbee.sway.table.STableNavigator;
-import org.tbee.sway.table.TableColumn;
-import org.tbee.util.ClassUtil;
-
-import com.google.common.base.Splitter;
-
-import net.coderazzi.filters.gui.AutoChoices;
-import net.coderazzi.filters.gui.TableFilterHeader;
 
 // TODO
 // - column reordering (map the column in the table model)
@@ -521,7 +518,7 @@ public class STable<TableType> extends SBorderPanel {
 
 
     // ===========================================================================
-    // BINDING
+    // BINING
 
     private Method addPropertyChangeListenerMethod = null;
     private Method removePropertyChangeListenerMethod = null;
@@ -1245,4 +1242,9 @@ public class STable<TableType> extends SBorderPanel {
         setVisible(value);
         return this;
     }
+
+
+    // TBEERNOT BINDING of selection (bind with STable)
+    // TBEERNOT introduce value as the last selected row? because of: binding of value
+
 }

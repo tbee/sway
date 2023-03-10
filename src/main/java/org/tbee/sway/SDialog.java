@@ -98,9 +98,6 @@ public class SDialog extends JDialog {
 		setVisible(v);
 		return this;
 	}
-	public SDialog visible() {
-		return visible(true);
-	}
 
 	public SDialog size(int width, int height) {
 		setSize(width, height);

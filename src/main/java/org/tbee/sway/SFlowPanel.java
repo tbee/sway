@@ -28,14 +28,14 @@ public class SFlowPanel extends JPanel {
     }
 
     public static SFlowPanel of(JComponent... components) {
-        SFlowPanel sFlowPanel = new SFlowPanel();
-        sFlowPanel.add(components);
-        return sFlowPanel;
+        SFlowPanel panel = new SFlowPanel();
+        panel.add(components);
+        return panel;
     }
 
     public static SFlowPanel of(Collection<? extends JComponent> components) {
-        SFlowPanel sFlowPanel = new SFlowPanel();
-        sFlowPanel.add(components);
-        return sFlowPanel;
+        SFlowPanel panel = new SFlowPanel();
+        panel.add(components);
+        return panel;
     }
 }
