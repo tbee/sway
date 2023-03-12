@@ -64,7 +64,7 @@ public class City extends AbstractBean<City> {
         return this;
     }
     public BindingEndpoint<Integer> distance$() {
-        return BindingEndpoint.of(this, DISTANCE, null);
+        return BindingEndpoint.of(this, DISTANCE);
     }
     static public BindingEndpoint<Integer> distance$(BeanBinder<City> beanBinder) {
         return BindingEndpoint.of(beanBinder, DISTANCE);

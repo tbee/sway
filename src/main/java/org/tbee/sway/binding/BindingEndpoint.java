@@ -16,35 +16,6 @@ public class BindingEndpoint<PropertyClass> {
         this.exceptionHandler = exceptionHandler;
     }
 
-    static public <T> BindingEndpoint of(Object bean, String propertyName, ExceptionHandler exceptionHandler) {
-        return new BindingEndpoint(bean, null, propertyName, exceptionHandler);
-    }
-    static public <T> BindingEndpoint of(Object bean, String propertyName) {
-        return new BindingEndpoint(bean, null, propertyName, null);
-    }
-    static public <T> BindingEndpoint of(BeanBinder<?> beanBinder, String propertyName, ExceptionHandler exceptionHandler) {
-        return new BindingEndpoint(null, beanBinder, propertyName, exceptionHandler);
-    }
-    static public <T> BindingEndpoint of(BeanBinder<?> beanBinder, String propertyName) {
-        return new BindingEndpoint(null, beanBinder, propertyName, null);
-    }
-
-    public Binding bind(BindingEndpoint bindingEndpoint) {
-        if (bindingEndpoint.beanBinder != null) {
-            return BindUtil.bind(this.bean, this.propertyName, bindingEndpoint.beanBinder, bindingEndpoint.propertyName, exceptionHandler != null ? exceptionHandler : bindingEndpoint.exceptionHandler, chain);
-        }
-        return BindUtil.bind(this.bean, this.propertyName, bindingEndpoint.bean, bindingEndpoint.propertyName, exceptionHandler != null? exceptionHandler : bindingEndpoint.exceptionHandler, chain);
-    }
-
-    public BindingEndpoint<PropertyClass> and(BindChainNode<?,?> bindChainNode) {
-        chain.add(bindChainNode);
-        return this;
-    }
-    final private List<BindChainNode> chain = new ArrayList<>();
-    public BindingEndpoint<PropertyClass> add(int v) {
-        return and(Add.of(v));
-    }
-
     public Object bean() {
         return bean;
     }
@@ -60,4 +31,44 @@ public class BindingEndpoint<PropertyClass> {
     public ExceptionHandler exceptionHandler() {
         return exceptionHandler;
     }
+
+    // ==================================================
+    // OF
+
+    static public <PropertyClass> BindingEndpoint<PropertyClass> of(Object bean, String propertyName, ExceptionHandler exceptionHandler) {
+        return new BindingEndpoint<PropertyClass>(bean, null, propertyName, exceptionHandler);
+    }
+    static public <PropertyClass> BindingEndpoint<PropertyClass> of(Object bean, String propertyName) {
+        return new BindingEndpoint<PropertyClass>(bean, null, propertyName, null);
+    }
+    static public <PropertyClass> BindingEndpoint<PropertyClass> of(BeanBinder<?> beanBinder, String propertyName, ExceptionHandler exceptionHandler) {
+        return new BindingEndpoint<PropertyClass>(null, beanBinder, propertyName, exceptionHandler);
+    }
+    static public <PropertyClass> BindingEndpoint<PropertyClass> of(BeanBinder<?> beanBinder, String propertyName) {
+        return new BindingEndpoint<PropertyClass>(null, beanBinder, propertyName, null);
+    }
+
+    // ==================================================
+    // BIND
+
+    public Binding bind(BindingEndpoint<PropertyClass> bindingEndpoint) {
+        if (bindingEndpoint.beanBinder != null) {
+            return BindUtil.bind(this.bean, this.propertyName, bindingEndpoint.beanBinder, bindingEndpoint.propertyName, exceptionHandler != null ? exceptionHandler : bindingEndpoint.exceptionHandler, chain);
+        }
+        return BindUtil.bind(this.bean, this.propertyName, bindingEndpoint.bean, bindingEndpoint.propertyName, exceptionHandler != null? exceptionHandler : bindingEndpoint.exceptionHandler, chain);
+    }
+
+
+    // ==================================================
+    // CHAIN
+
+    public BindingEndpoint<PropertyClass> and(BindChainNode<?,?> bindChainNode) {
+        chain.add(bindChainNode);
+        return this;
+    }
+    final private List<BindChainNode> chain = new ArrayList<>();
+    public BindingEndpoint<PropertyClass> add(int v) {
+        return and(Add.of(v));
+    }
+
 }
