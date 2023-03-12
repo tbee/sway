@@ -1244,7 +1244,7 @@ public class STable<TableType> extends SBorderPanel {
     }
 
 
-    // TBEERNOT BINDING of selection (bind with STable)
+    // TBEERNOT BINDING of selection (bind with SList)
     // TBEERNOT introduce value as the last selected row? because of: binding of value
 
 }

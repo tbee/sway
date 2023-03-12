@@ -3,6 +3,7 @@ package org.tbee.sway;
 import org.tbee.sway.binding.BeanBinder;
 import org.tbee.sway.binding.BindUtil;
 import org.tbee.sway.binding.Binding;
+import org.tbee.sway.binding.BindingEndpoint;
 import org.tbee.sway.binding.ExceptionHandler;
 import org.tbee.sway.format.Format;
 import org.tbee.sway.format.FormatRegistry;
@@ -148,6 +149,13 @@ public class STextField<T> extends javax.swing.JTextField {
             throw new IllegalArgumentException("No format found for " + clazz);
         }
         return of(format);
+    }
+
+    static public <T> STextField<T> ofBind(BindingEndpoint<T> bindingEndpoint) {
+        if (bindingEndpoint.beanBinder() != null) {
+            return (STextField<T>) ofBind(bindingEndpoint.beanBinder(), bindingEndpoint.propertyName());
+        }
+        return ofBind(bindingEndpoint.bean(), bindingEndpoint.propertyName());
     }
 
     /**
@@ -347,6 +355,9 @@ public class STextField<T> extends javax.swing.JTextField {
         setValue(value);
         return this;
     }
+    public BindingEndpoint<T> value$() {
+        return BindingEndpoint.of(this, VALUE, exceptionHandler);
+    }
 
     /**
      *
@@ -469,5 +480,25 @@ public class STextField<T> extends javax.swing.JTextField {
     public STextField<T> bind(BeanBinder<?> beanBinder, String propertyName) {
         binding(beanBinder, propertyName);
         return this;
+    }
+
+    /**
+     * Binds the default property 'value'
+     * @param bindingEndpoint
+     * @return this, for fluent API
+     */
+    public STextField<T> bind(BindingEndpoint<T> bindingEndpoint) {
+        value$().bind(bindingEndpoint);
+        return this;
+    }
+
+    /**
+     * Binds the default property 'value'
+     *
+     * @param bindingEndpoint
+     * @return
+     */
+    public Binding binding(BindingEndpoint<T> bindingEndpoint) {
+        return value$().bind(bindingEndpoint);
     }
 }

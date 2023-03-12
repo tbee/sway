@@ -1,5 +1,7 @@
 package org.tbee.sway;
 
+import org.tbee.sway.binding.BeanBinder;
+import org.tbee.sway.binding.BindingEndpoint;
 import org.tbee.util.AbstractBean;
 
 import java.math.BigDecimal;
@@ -36,6 +38,12 @@ public class City extends AbstractBean<City> {
         setName(v);
         return this;
     }
+    public BindingEndpoint<String> name$() {
+        return BindingEndpoint.of(this, NAME);
+    }
+    static public BindingEndpoint<String> name$(BeanBinder<City> beanBinder) {
+        return BindingEndpoint.of(beanBinder, NAME);
+    }
 
     /** distance: integer property */
     public void setDistance(int v) {
@@ -54,6 +62,12 @@ public class City extends AbstractBean<City> {
     public City distance(int v) {
         setDistance(v);
         return this;
+    }
+    public BindingEndpoint<Integer> distance$() {
+        return BindingEndpoint.of(this, DISTANCE, null);
+    }
+    static public BindingEndpoint<Integer> distance$(BeanBinder<City> beanBinder) {
+        return BindingEndpoint.of(beanBinder, DISTANCE);
     }
 
     /** distanceInt: a property without actual storage, but forwarding to age */

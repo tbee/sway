@@ -1,12 +1,13 @@
 package org.tbee.sway;
 
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-
 import org.tbee.sway.binding.BeanBinder;
 import org.tbee.sway.binding.BindUtil;
 import org.tbee.sway.binding.Binding;
+import org.tbee.sway.binding.ExceptionHandler;
 import org.tbee.sway.support.FocusInterpreter;
+
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 
 public class STextArea extends SBorderPanel {
 
@@ -117,7 +118,7 @@ public class STextArea extends SBorderPanel {
      * @return Binding, so unbind() can be called
      */
     public Binding binding(BeanBinder<?> beanBinder, String propertyName) {
-        return BindUtil.bind(this, TEXT, beanBinder, propertyName, null);
+        return BindUtil.bind(this, TEXT, beanBinder, propertyName, (ExceptionHandler) null);
     }
 
     /**

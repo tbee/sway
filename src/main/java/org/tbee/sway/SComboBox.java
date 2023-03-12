@@ -3,6 +3,7 @@ package org.tbee.sway;
 import org.tbee.sway.binding.BeanBinder;
 import org.tbee.sway.binding.BindUtil;
 import org.tbee.sway.binding.Binding;
+import org.tbee.sway.binding.BindingEndpoint;
 import org.tbee.sway.binding.ExceptionHandler;
 import org.tbee.sway.format.Format;
 import org.tbee.sway.format.FormatRegistry;
@@ -153,6 +154,14 @@ public class SComboBox<T> extends JComboBox<T> {
     }
     static final public String VALUE = "value";
 
+    public SComboBox<T> value(T v) {
+        setValue(v);
+        return this;
+    }
+    public BindingEndpoint<T> value$() {
+        return BindingEndpoint.of(this, VALUE, exceptionHandler);
+    }
+
     /**
      *
      * @param listener
@@ -220,11 +229,6 @@ public class SComboBox<T> extends JComboBox<T> {
 
     public SComboBox<T> visible(boolean v) {
         setVisible(v);
-        return this;
-    }
-
-    public SComboBox<T> value(T v) {
-        setValue(v);
         return this;
     }
 

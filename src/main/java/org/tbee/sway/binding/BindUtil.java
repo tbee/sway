@@ -3,6 +3,7 @@ package org.tbee.sway.binding;
 import com.jgoodies.binding.beans.PropertyConnector;
 
 import javax.swing.JComponent;
+import java.util.List;
 
 public class BindUtil {
     static private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(BindUtil.class);
@@ -29,6 +30,11 @@ public class BindUtil {
      */
     static public Binding bind(Object bean1, String propertyName1, Object bean2, String propertyName2, ExceptionHandler exceptionHandler) {
         PropertyConnector propertyConnector = PropertyConnector.connect(new ExceptionCatcher(bean1, propertyName1, exceptionHandler), ExceptionCatcher.VALUE, new ExceptionCatcher(bean2, propertyName2, exceptionHandler), ExceptionCatcher.VALUE);
+        propertyConnector.updateProperty1();
+        return Binding.of(propertyConnector);
+    }
+    static public Binding bind(Object bean1, String propertyName1, Object bean2, String propertyName2, ExceptionHandler exceptionHandler, List<BindChainNode> chain) {
+        PropertyConnector propertyConnector = PropertyConnector.connect(new ExceptionCatcher(bean1, propertyName1, exceptionHandler, chain, true), ExceptionCatcher.VALUE, new ExceptionCatcher(bean2, propertyName2, exceptionHandler, chain, false), ExceptionCatcher.VALUE);
         propertyConnector.updateProperty1();
         return Binding.of(propertyConnector);
     }
@@ -61,6 +67,9 @@ public class BindUtil {
     static public Binding bind(Object bean1, String propertyName1, BeanBinder beanBinder, String propertyName, ExceptionHandler exceptionHandler) {
         return bind(bean1, propertyName1, beanBinder.getBeanAdapter().getValueModel(propertyName), BeanBinder.VALUE, exceptionHandler);
     }
+    static public Binding bind(Object bean1, String propertyName1, BeanBinder beanBinder, String propertyName, ExceptionHandler exceptionHandler, List<BindChainNode> chain) {
+        return bind(bean1, propertyName1, beanBinder.getBeanAdapter().getValueModel(propertyName), BeanBinder.VALUE, exceptionHandler, chain);
+    }
 
     /**
      * Bind to a bean wrapper's property.
@@ -73,5 +82,8 @@ public class BindUtil {
      */
     static public Binding bind(Object bean1, String propertyName1, BeanBinder beanBinder, String propertyName) {
         return bind(bean1, propertyName1, beanBinder.getBeanAdapter().getValueModel(propertyName), BeanBinder.VALUE, loggingExceptionHandler);
+    }
+    static public Binding bind(Object bean1, String propertyName1, BeanBinder beanBinder, String propertyName, List<BindChainNode> chain) {
+        return bind(bean1, propertyName1, beanBinder.getBeanAdapter().getValueModel(propertyName), BeanBinder.VALUE, loggingExceptionHandler, chain);
     }
 }

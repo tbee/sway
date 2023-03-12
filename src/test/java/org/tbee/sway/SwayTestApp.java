@@ -86,23 +86,39 @@ public class SwayTestApp {
         migPanel.wrap();
 
         migPanel.addLabel(new SLabel("String -> bean.name"));
-        migPanel.addField(STextField.ofString().bind(bean, City.NAME));
+//        migPanel.addField(STextField.ofString().bind(bean, City.NAME));
+        migPanel.addField(STextField.ofString().bind(bean.name$()));
         migPanel.wrap();
 
         migPanel.addLabel(new SLabel("StringBlankIsNull -> bean.name"));
         migPanel.addField(STextField.ofStringBlankIsNull().bind(beanBinder, City.NAME));
+//        migPanel.addField(STextField.ofStringBlankIsNull().bind(City.name$(beanBinder))); // TBEERNOT not working
         migPanel.wrap();
 
-        migPanel.addLabel(new SLabel("Integer -> bean.age"));
-        migPanel.addField(STextField.ofInteger().bind(bean, City.DISTANCE));
+        migPanel.addLabel(new SLabel("Integer -> bean.distance"));
+//        migPanel.addField(STextField.ofInteger().bind(bean, City.DISTANCE));
+        migPanel.addField(STextField.ofInteger().bind(bean.distance$()));
         migPanel.wrap();
 
-        migPanel.addLabel(new SLabel("Integer -> ofBind bean.age"));
-        migPanel.addField(STextField.ofBind(bean, City.DISTANCE));
+        migPanel.addLabel(new SLabel("Integer -> beanbinder.distance"));
+//        migPanel.addField(STextField.ofInteger().bind(bean, City.DISTANCE));
+        migPanel.addField(STextField.ofInteger().bind(City.distance$(beanBinder)));
         migPanel.wrap();
 
-        migPanel.addLabel(new SLabel("Integer -> ofBind beanBinder.age"));
-        migPanel.addField(STextField.ofBind(beanBinder, City.DISTANCE));
+        migPanel.addLabel(new SLabel("Integer -> ofBind bean.distance"));
+//        migPanel.addField(STextField.ofBind(bean, City.DISTANCE));
+        migPanel.addField(STextField.ofBind(bean.distance$()));
+        migPanel.wrap();
+
+        migPanel.addLabel(new SLabel("Integer -> ofBind beanBinder.distance"));
+//        migPanel.addField(STextField.ofBind(beanBinder, City.DISTANCE));
+        migPanel.addField(STextField.ofBind(City.distance$(beanBinder)));
+        migPanel.wrap();
+
+        migPanel.addLabel(new SLabel("Integer -> bean.distance add"));
+        STextField<Integer> integerSTextField = STextField.ofInteger();
+        integerSTextField.value$().add(2).bind(bean.distance$());
+        migPanel.addField(integerSTextField);
         migPanel.wrap();
 
         migPanel.addLabel(new SLabel("Long"));
