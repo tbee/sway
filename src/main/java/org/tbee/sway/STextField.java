@@ -1,7 +1,6 @@
 package org.tbee.sway;
 
 import org.tbee.sway.binding.BeanBinder;
-import org.tbee.sway.binding.BindUtil;
 import org.tbee.sway.binding.Binding;
 import org.tbee.sway.binding.BindingEndpoint;
 import org.tbee.sway.binding.ExceptionHandler;
@@ -184,7 +183,7 @@ public class STextField<T> extends javax.swing.JTextField {
             }
 
             // Create TextField
-            return (STextField<T>) of(propertyType).bind(bean, propertyName);
+            return (STextField<T>) of(propertyType).bind(BindingEndpoint.of(bean, propertyName));
         }
         catch (IntrospectionException e) {
             throw new RuntimeException(e);
@@ -210,7 +209,7 @@ public class STextField<T> extends javax.swing.JTextField {
             }
 
             // Create TextField
-            return (STextField<T>) of(propertyType).bind(beanBinder, propertyName);
+            return (STextField<T>) of(propertyType).bind(BindingEndpoint.of(beanBinder, propertyName));
         }
         catch (IntrospectionException e) {
             throw new RuntimeException(e);
@@ -311,9 +310,12 @@ public class STextField<T> extends javax.swing.JTextField {
         setExceptionHandler(v);
         return this;
     }
-    final static public String EXCEPTIONHANDLER = "exceptionHandler";
     ExceptionHandler exceptionHandler = this::handleException;
-    
+    final static public String EXCEPTIONHANDLER = "exceptionHandler";
+    public BindingEndpoint<String> exceptionHandler$() {
+        return BindingEndpoint.of(this, EXCEPTIONHANDLER, exceptionHandler);
+    }
+
     private boolean handleException(Throwable e, JComponent component, Object oldValue, Object newValue) {
         return handleException(e);
     }
@@ -351,20 +353,15 @@ public class STextField<T> extends javax.swing.JTextField {
             handleException(e);
         }
     }
+    public T getValue() {
+        return this.value;
+    }
     public STextField<T> value(T value) {
         setValue(value);
         return this;
     }
     public BindingEndpoint<T> value$() {
         return BindingEndpoint.of(this, VALUE, exceptionHandler);
-    }
-
-    /**
-     *
-     * @return
-     */
-    public T getValue() {
-        return this.value;
     }
 
     protected void processKeyEvent(KeyEvent e) {
@@ -395,6 +392,9 @@ public class STextField<T> extends javax.swing.JTextField {
         return this;
     }
     final static public String HALIGN = "hAlign";
+    public BindingEndpoint<HAlign> hAlign$() {
+        return BindingEndpoint.of(this, HALIGN, exceptionHandler);
+    }
 
 
     // ==============================================
@@ -432,55 +432,6 @@ public class STextField<T> extends javax.swing.JTextField {
 
     // ========================================================
     // BIND
-
-    /**
-     * Will create a binding to a specific bean/property.
-     * Use binding(BeanBinding, PropertyName) to be able to switch beans while keeping the bind.
-     *
-     * @param bean
-     * @param propertyName
-     * @return Binding, so unbind() can be called
-     */
-    public Binding binding(Object bean, String propertyName) {
-        return BindUtil.bind(this, VALUE, bean, propertyName, exceptionHandler);
-    }
-
-    /**
-     * Will create a binding to a specific bean/property.
-     * Use bind(BeanBinding, PropertyName) to be able to switch beans while keeping the bind.
-     *
-     * @param bean
-     * @param propertyName
-     * @return this, for fluent API
-     */
-    public STextField<T> bind(Object bean, String propertyName) {
-        binding(bean, propertyName);
-        return this;
-    }
-
-    /**
-     * Bind to a bean wrapper's property.
-     * This will allow the swap the bean (in the BeanBinder) without having to rebind.
-     *
-     * @param beanBinder
-     * @param propertyName
-     * @return Binding, so unbind() can be called
-     */
-    public Binding binding(BeanBinder<?> beanBinder, String propertyName) {
-        return BindUtil.bind(this, VALUE, beanBinder, propertyName, exceptionHandler);
-    }
-
-    /**
-     * Bind to a bean wrapper's property.
-     * This will allow the swap the bean (in the BeanBinder) without having to rebind.
-     * @param beanBinder
-     * @param propertyName
-     * @return this, for fluent API
-     */
-    public STextField<T> bind(BeanBinder<?> beanBinder, String propertyName) {
-        binding(beanBinder, propertyName);
-        return this;
-    }
 
     /**
      * Binds the default property 'value'

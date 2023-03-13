@@ -255,6 +255,7 @@ public class SList<T> extends SBorderPanel {
     	return new SList<T>().data(data);
     }
 
+    // TBEERNOT ExceptionHandler
     // TBEERNOT BINDING of selection (bind with STable)
     // TBEERNOT introduce value as the last selected row? because of: binding of value
 }

@@ -88,6 +88,12 @@ public class City extends AbstractBean<City> {
         return distance * 2;
     }
     static public String ROUNDTRIP = "roundTrip";
+    public BindingEndpoint<Integer> roundTrip$() {
+        return BindingEndpoint.of(this, ROUNDTRIP);
+    }
+    static public BindingEndpoint<Integer> roundTrip$(BeanBinder<City> beanBinder) {
+        return BindingEndpoint.of(beanBinder, ROUNDTRIP);
+    }
 
     /** surface: BigDecimal property */
     public void setSurfaceInKM2(BigDecimal v) {
@@ -102,6 +108,12 @@ public class City extends AbstractBean<City> {
     public City surfaceInKM2(BigDecimal v) {
         this.setSurfaceInKM2(v);
         return this;
+    }
+    public BindingEndpoint<BigDecimal> surfaceInKM2$() {
+        return BindingEndpoint.of(this, SURFACEINKM2);
+    }
+    static public BindingEndpoint<BigDecimal> surfaceInKM2$(BeanBinder<City> beanBinder) {
+        return BindingEndpoint.of(beanBinder, SURFACEINKM2);
     }
 
     /** growing: boolean property */
@@ -118,6 +130,12 @@ public class City extends AbstractBean<City> {
         setGrowing(v);
         return this;
     }
+    public BindingEndpoint<Boolean> growing$() {
+        return BindingEndpoint.of(this, GROWING);
+    }
+    static public BindingEndpoint<Boolean> growing$(BeanBinder<City> beanBinder) {
+        return BindingEndpoint.of(beanBinder, GROWING);
+    }
 
     /** cityRights: Boolean property */
     public void setCityRights(Boolean v) {
@@ -133,6 +151,12 @@ public class City extends AbstractBean<City> {
         setCityRights(v);
         return this;
     }
+    public BindingEndpoint<Boolean> cityRights$() {
+        return BindingEndpoint.of(this, CITYRIGHTS);
+    }
+    static public BindingEndpoint<Boolean> cityRights$(BeanBinder<City> beanBinder) {
+        return BindingEndpoint.of(beanBinder, CITYRIGHTS);
+    }
 
     /** sisterCity: City property */
     public void setSisterCity(City v) {
@@ -147,6 +171,12 @@ public class City extends AbstractBean<City> {
     public City sisterCity(City v) {
         setSisterCity(v);
         return this;
+    }
+    public BindingEndpoint<City> sisterCity$() {
+        return BindingEndpoint.of(this, SISTERCITY);
+    }
+    static public BindingEndpoint<City> sisterCity$(BeanBinder<City> beanBinder) {
+        return BindingEndpoint.of(beanBinder, SISTERCITY);
     }
 
     @Override

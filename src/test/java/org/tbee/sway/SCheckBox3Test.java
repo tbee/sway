@@ -14,7 +14,7 @@ public class SCheckBox3Test extends TestBase {
         City city = new City("Amsterdam", 150);
         construct(() -> {
             sCheckBox = new SCheckBox3() //
-                    .bind(city, City.CITYRIGHTS) //
+                    .bind(city.cityRights$()) //
                     .name("sCheckBox");
             return TestUtil.inJFrame(sCheckBox, focusMeComponent());
         });
@@ -47,7 +47,7 @@ public class SCheckBox3Test extends TestBase {
         City city = new City("Amsterdam", 150);
         construct(() -> {
             sCheckBox = new SCheckBox3() //
-                    .bind(city, City.CITYRIGHTS) //
+                    .bind(city.cityRights$()) //
                     .allowUndetermined(false) //
                     .name("sCheckBox");
             return TestUtil.inJFrame(sCheckBox, focusMeComponent());

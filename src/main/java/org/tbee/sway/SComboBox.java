@@ -1,7 +1,5 @@
 package org.tbee.sway;
 
-import org.tbee.sway.binding.BeanBinder;
-import org.tbee.sway.binding.BindUtil;
 import org.tbee.sway.binding.Binding;
 import org.tbee.sway.binding.BindingEndpoint;
 import org.tbee.sway.binding.ExceptionHandler;
@@ -234,7 +232,7 @@ public class SComboBox<T> extends JComboBox<T> {
 
 
     // ========================================================
-    // BIND
+    // EXCEPTION HANDLER
 
     /**
      * Set the ExceptionHandler used a.o. in binding
@@ -252,6 +250,9 @@ public class SComboBox<T> extends JComboBox<T> {
     }
     final static public String EXCEPTIONHANDLER = "exceptionHandler";
     ExceptionHandler exceptionHandler = this::handleException;
+    public BindingEndpoint<ExceptionHandler> exceptionHandler$() {
+        return BindingEndpoint.of(this, EXCEPTIONHANDLER, exceptionHandler);
+    }
 
     private boolean handleException(Throwable e, JComponent component, Object oldValue, Object newValue) {
         return handleException(e);
@@ -269,53 +270,27 @@ public class SComboBox<T> extends JComboBox<T> {
         return true;
     }
 
-    /**
-     * Will create a binding to a specific bean/property.
-     * Use binding(BeanBinding, PropertyName) to be able to switch beans while keeping the bind.
-     *
-     * @param bean
-     * @param propertyName
-     * @return Binding, so unbind() can be called
-     */
-    public Binding binding(Object bean, String propertyName) {
-        return BindUtil.bind(this, VALUE, bean, propertyName, exceptionHandler);
-    }
+    // ========================================================
+    // BIND
 
     /**
-     * Will create a binding to a specific bean/property.
-     * Use bind(BeanBinding, PropertyName) to be able to switch beans while keeping the bind.
-     *
-     * @param bean
-     * @param propertyName
+     * Binds the default property 'value'
+     * @param bindingEndpoint
      * @return this, for fluent API
      */
-    public SComboBox<T> bind(Object bean, String propertyName) {
-        binding(bean, propertyName);
+    public SComboBox<T> bind(BindingEndpoint<T> bindingEndpoint) {
+        value$().bind(bindingEndpoint);
         return this;
     }
 
     /**
-     * Bind to a bean wrapper's property.
-     * This will allow the swap the bean (in the BeanBinder) without having to rebind.
+     * Binds the default property 'value'
      *
-     * @param beanBinder
-     * @param propertyName
-     * @return Binding, so unbind() can be called
+     * @param bindingEndpoint
+     * @return
      */
-    public Binding binding(BeanBinder<?> beanBinder, String propertyName) {
-        return BindUtil.bind(this, VALUE, beanBinder, propertyName, exceptionHandler);
-    }
-
-    /**
-     * Bind to a bean wrapper's property.
-     * This will allow the swap the bean (in the BeanBinder) without having to rebind.
-     * @param beanBinder
-     * @param propertyName
-     * @return this, for fluent API
-     */
-    public SComboBox<T> bind(BeanBinder<?> beanBinder, String propertyName) {
-        binding(beanBinder, propertyName);
-        return this;
+    public Binding binding(BindingEndpoint<T> bindingEndpoint) {
+        return value$().bind(bindingEndpoint);
     }
 
     // TBEERNOT Tests

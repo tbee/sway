@@ -1,7 +1,6 @@
 package org.tbee.sway;
 
-import org.tbee.sway.binding.BindUtil;
-import org.tbee.sway.binding.Binding;
+import org.tbee.sway.binding.BindingEndpoint;
 import org.tbee.sway.support.HAlign;
 import org.tbee.sway.support.VAlign;
 
@@ -45,6 +44,9 @@ public class SLabel extends JLabel {
         firePropertyChange(VISIBLE, old, v);
     }
     final static public String VISIBLE = "visible";
+    public BindingEndpoint<String> visible$() {
+        return BindingEndpoint.of(this, VISIBLE);
+    }
 
     /**
      * Add PCE event
@@ -55,6 +57,9 @@ public class SLabel extends JLabel {
         firePropertyChange(TEXT, old, v);
     }
     final static public String TEXT = "text";
+    public BindingEndpoint<String> text$() {
+        return BindingEndpoint.of(this, TEXT);
+    }
 
     /**
      * Enum variant of HorizontalAlignment
@@ -73,6 +78,9 @@ public class SLabel extends JLabel {
         return this;
     }
     final static public String HALIGN = "hAlign";
+    public BindingEndpoint<HAlign> hAlign$() {
+        return BindingEndpoint.of(this, HALIGN);
+    }
 
     /**
      * Enum variant of VerticalAlignment
@@ -86,11 +94,14 @@ public class SLabel extends JLabel {
     public VAlign getVAlign() {
         return VAlign.of(getHorizontalAlignment());
     }
-    public SLabel VAlign(VAlign v) {
+    public SLabel vAlign(VAlign v) {
         setVAlign(v);
         return this;
     }
     final static public String VALIGN = "vAlign";
+    public BindingEndpoint<VAlign> vAlign$() {
+        return BindingEndpoint.of(this, VALIGN);
+    }
 
     // ===========================================================================================================================
     // FLUENT API
@@ -133,45 +144,7 @@ public class SLabel extends JLabel {
     // ===========================================================================================================================
     // BINDING
 
-    /**
-     *
-     * @param bean
-     * @param propertyName
-     * @return Binding, so unbind() can be called
-     */
-    public Binding bindingForText(Object bean, String propertyName) {
-        return BindUtil.bind(this, "text", bean, propertyName);
-    }
-
-    /**
-     *
-     * @param bean
-     * @param propertyName
-     * @return this, for fluent API
-     */
-    public SLabel bindText(Object bean, String propertyName) {
-        bindingForText(bean, propertyName);
-        return this;
-    }
-
-    /**
-     *
-     * @param bean
-     * @param propertyName
-     * @return Binding, so unbind() can be called
-     */
-    public Binding bindingForIcon(Object bean, String propertyName) {
-        return BindUtil.bind(this, "icon", bean, propertyName);
-    }
-
-    /**
-     *
-     * @param bean
-     * @param propertyName
-     * @return this, for fluent API
-     */
-    public SLabel bindIcon(Object bean, String propertyName) {
-        bindingForIcon(bean, propertyName);
-        return this;
+    public BindingEndpoint<Icon> icon$() {
+        return BindingEndpoint.of(this, "icon");
     }
 }

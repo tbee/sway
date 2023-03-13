@@ -15,7 +15,8 @@ public class SLabelTest extends TestBase {
         // GIVEN
         final City city = new City().name("name");
         construct(() -> {
-            sLabel = new SLabel("initial").bindText(city, City.NAME);
+            sLabel = new SLabel("initial");
+            sLabel.text$().bind(city.name$());
             return TestUtil.inJFrame(sLabel, focusMeComponent());
         });
 
@@ -39,7 +40,7 @@ public class SLabelTest extends TestBase {
         });
 
         // WHEN bind and unbind
-        SwingUtilities.invokeAndWait(() -> sLabel.bindingForText(city, City.NAME).unbind());
+        SwingUtilities.invokeAndWait(() -> sLabel.text$().bind(city.name$()).unbind());
         // THEN there was a sync when binding, so label was changed
         Assertions.assertEquals("name", sLabel.getText());
 

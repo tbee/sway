@@ -1,13 +1,12 @@
 package org.tbee.sway;
 
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
+import javax.swing.SwingUtilities;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.ClipboardOwner;
 import java.awt.datatransfer.Transferable;
-
-import javax.swing.SwingUtilities;
-
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
 
 public class STextAreaTest extends TestBase {
 
@@ -43,7 +42,7 @@ public class STextAreaTest extends TestBase {
         // GIVEN
         final City city = new City();
         construct(() -> {
-        	sTextArea = new STextArea().name("sTextArea").bind(city, City.NAME);
+        	sTextArea = new STextArea().name("sTextArea").bind(city.name$());
             return TestUtil.inJFrame(sTextArea, focusMeComponent());
         });
 

@@ -3,6 +3,8 @@ package org.tbee.sway;
 import org.tbee.sway.binding.BeanBinder;
 import org.tbee.sway.binding.BindUtil;
 import org.tbee.sway.binding.Binding;
+import org.tbee.sway.binding.BindingEndpoint;
+import org.tbee.sway.binding.ExceptionHandler;
 import org.tbee.sway.format.Format;
 import org.tbee.sway.format.FormatRegistry;
 import org.tbee.util.ExceptionUtil;
@@ -54,7 +56,7 @@ import java.util.function.Supplier;
  * </pre>
  */
 public class SButtonGroup<T> extends ButtonGroup {
-    static private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(SButtonGroup.class);
+    static private org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(SButtonGroup.class);
 
     /**
      * Creates an empty <code>SButtonGroup</code>
@@ -168,15 +170,18 @@ public class SButtonGroup<T> extends ButtonGroup {
         setValue(v);
         return this;
     }
+    public BindingEndpoint<T> value$() {
+        return BindingEndpoint.of(this, VALUE, exceptionHandler);
+    }
 
 
     private final ActionListener actionListener = e -> fireValueChangedIfRequired();
 
     public void fireValueChangedIfRequired() {
-        T lOldValue = buttonToValue.get(previousSelectedButton);
-        T lNewValue = buttonToValue.get(getSelectedButton());
+        T oldValue = buttonToValue.get(previousSelectedButton);
+        T newValue = buttonToValue.get(getSelectedButton());
         previousSelectedButton = getSelectedButton();
-        firePropertyChange(VALUE, lOldValue, lNewValue);
+        firePropertyChange(VALUE, oldValue, newValue);
     }
     private AbstractButton previousSelectedButton = null;
 
@@ -188,15 +193,6 @@ public class SButtonGroup<T> extends ButtonGroup {
             }
         }
         return null;
-    }
-
-    protected boolean handleException(Throwable e, JComponent component, Object oldValue, Object newValue) {
-        // Display the error
-        if (logger.isDebugEnabled()) logger.debug(e.getMessage(), e);
-        JOptionPane.showMessageDialog(buttons.get(0), ExceptionUtil.determineMessage(e), "ERROR", JOptionPane.ERROR_MESSAGE);
-
-        // Mark exception as handled
-        return true;
     }
 
 
@@ -366,7 +362,7 @@ public class SButtonGroup<T> extends ButtonGroup {
         propertyChangeSupport.removePropertyChangeListener(propertyName, o);
     }
 
-    public void firePropertyChange(String name, T before, T after) {
+    public void firePropertyChange(String name, Object before, Object after) {
         // do the property change
         if (propertyChangeSupport == null) {
             return;
@@ -377,4 +373,40 @@ public class SButtonGroup<T> extends ButtonGroup {
     }
 
     transient private PropertyChangeSupport propertyChangeSupport = null;
+
+    // ========================================================
+    // EXCEPTION HANDLER
+
+    /**
+     * Set the ExceptionHandler used a.o. in binding
+     * @param v
+     */
+    public void setExceptionHandler(ExceptionHandler v) {
+        firePropertyChange(EXCEPTIONHANDLER, exceptionHandler, exceptionHandler = v);
+    }
+    public ExceptionHandler getExceptionHandler() {
+        return exceptionHandler;
+    }
+    public SButtonGroup<T> exceptionHandler(ExceptionHandler v) {
+        setExceptionHandler(v);
+        return this;
+    }
+    final static public String EXCEPTIONHANDLER = "exceptionHandler";
+    ExceptionHandler exceptionHandler = this::handleException;
+    public BindingEndpoint<ExceptionHandler> exceptionHandler$() {
+        return BindingEndpoint.of(this, EXCEPTIONHANDLER, exceptionHandler);
+    }
+
+    private boolean handleException(Throwable e, JComponent component, Object oldValue, Object newValue) {
+        return handleException(e);
+    }
+    private boolean handleException(Throwable e) {
+
+        // Display the error
+        if (LOGGER.isDebugEnabled()) LOGGER.debug(e.getMessage(), e);
+        JOptionPane.showMessageDialog(buttons.isEmpty() ? null : buttons.get(0), ExceptionUtil.determineMessage(e), "ERROR", JOptionPane.ERROR_MESSAGE);
+
+        // Mark exception as handled
+        return true;
+    }
 }

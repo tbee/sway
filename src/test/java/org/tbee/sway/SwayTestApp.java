@@ -77,7 +77,7 @@ public class SwayTestApp {
         City bean = new City("test",12);
         BeanBinder<City> beanBinder = new BeanBinder<>(bean);
 
-        STextField.ofStringBlankIsNull().binding(beanBinder, City.NAME).unbind(); // test unbind
+        STextField.ofStringBlankIsNull().binding(City.name$(beanBinder)).unbind(); // test unbind
 
         SMigPanel migPanel = new SMigPanel();
 
@@ -86,40 +86,34 @@ public class SwayTestApp {
         migPanel.wrap();
 
         migPanel.addLabel(new SLabel("String -> bean.name"));
-//        migPanel.addField(STextField.ofString().bind(bean, City.NAME));
         migPanel.addField(STextField.ofString().bind(bean.name$()));
         migPanel.wrap();
 
         migPanel.addLabel(new SLabel("StringBlankIsNull -> bean.name"));
-        migPanel.addField(STextField.ofStringBlankIsNull().bind(beanBinder, City.NAME));
-//        migPanel.addField(STextField.ofStringBlankIsNull().bind(City.name$(beanBinder))); // TBEERNOT not working
+        migPanel.addField(STextField.ofStringBlankIsNull().bind(City.name$(beanBinder)));
         migPanel.wrap();
 
         migPanel.addLabel(new SLabel("Integer -> bean.distance"));
-//        migPanel.addField(STextField.ofInteger().bind(bean, City.DISTANCE));
         migPanel.addField(STextField.ofInteger().bind(bean.distance$()));
         migPanel.wrap();
 
         migPanel.addLabel(new SLabel("Integer -> beanbinder.distance"));
-//        migPanel.addField(STextField.ofInteger().bind(bean, City.DISTANCE));
         migPanel.addField(STextField.ofInteger().bind(City.distance$(beanBinder)));
         migPanel.wrap();
 
         migPanel.addLabel(new SLabel("Integer -> ofBind bean.distance"));
-//        migPanel.addField(STextField.ofBind(bean, City.DISTANCE));
         migPanel.addField(STextField.ofBind(bean.distance$()));
         migPanel.wrap();
 
         migPanel.addLabel(new SLabel("Integer -> ofBind beanBinder.distance"));
-//        migPanel.addField(STextField.ofBind(beanBinder, City.DISTANCE));
         migPanel.addField(STextField.ofBind(City.distance$(beanBinder)));
         migPanel.wrap();
 
-        migPanel.addLabel(new SLabel("Integer -> bean.distance add"));
-        STextField<Integer> integerSTextField = STextField.ofInteger();
-        integerSTextField.value$().add(2).bind(bean.distance$());
-        migPanel.addField(integerSTextField);
-        migPanel.wrap();
+//        migPanel.addLabel(new SLabel("Integer -> bean.distance add"));
+//        STextField<Integer> integerSTextField = STextField.ofInteger();
+//        integerSTextField.value$().add(2).bind(bean.distance$());
+//        migPanel.addField(integerSTextField);
+//        migPanel.wrap();
 
         migPanel.addLabel(new SLabel("Long"));
         migPanel.addField(STextField.ofLong().value(123l));
@@ -212,11 +206,11 @@ public class SwayTestApp {
 
         // The combobox is bound to the textfield, so it should have the value
         STextField<City> sTextFieldDisplay = STextField.of(new CityFormat(cities)).value(cities.get(0)).enabled(false);
-        sComboBox.bind(sTextFieldDisplay, STextField.VALUE);
+        sComboBox.bind(sTextFieldDisplay.value$());
 
         // The textfield is bound to the combobox, so the combobox should has the value
         STextField<City> sTextField = STextField.of(new CityFormat(cities));
-        sTextField.bind(sComboBox, STextField.VALUE);
+        sTextField.bind(sComboBox.value$());
 
         return SVPanel.of(sComboBox, sTextFieldDisplay, sTextField);
     }
@@ -283,14 +277,14 @@ public class SwayTestApp {
 
         migPanel.addField(new SCheckBox("boolean"));
         migPanel.wrap();
-        migPanel.addField(new SCheckBox("boolean bind").bind(city, City.GROWING));
-        migPanel.addField(new SCheckBox("boolean beanBinder").bind(beanBinder, City.GROWING));
+        migPanel.addField(new SCheckBox("boolean bind").bind(city.growing$()));
+        migPanel.addField(new SCheckBox("boolean beanBinder").bind(City.growing$(beanBinder)));
         migPanel.wrap();
 
         migPanel.addField(new SCheckBox3("Boolean"));
         migPanel.wrap();
-        migPanel.addField(new SCheckBox3("Boolean bind").bind(city, City.CITYRIGHTS));
-        migPanel.addField(new SCheckBox3("Boolean beanBinder").bind(beanBinder, City.CITYRIGHTS));
+        migPanel.addField(new SCheckBox3("Boolean bind").bind(city.cityRights$()));
+        migPanel.addField(new SCheckBox3("Boolean beanBinder").bind(City.cityRights$(beanBinder)));
         migPanel.wrap();
 
         return migPanel;
@@ -300,8 +294,8 @@ public class SwayTestApp {
         City city = new City("test",12);
 
         SMigPanel migPanel = new SMigPanel();
-    	migPanel.addLabelAndField("bind 1", new STextArea().bind(city,  City.NAME)).wrap();
-    	migPanel.addLabelAndField("bind 2", new STextArea(5, 10).bind(city,  City.NAME)).wrap();
+    	migPanel.addLabelAndField("bind 1", new STextArea().bind(city.name$())).wrap();
+    	migPanel.addLabelAndField("bind 2", new STextArea(5, 10).bind(city.name$())).wrap();
         return migPanel;
     }
 }

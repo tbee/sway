@@ -1,8 +1,8 @@
 package org.tbee.sway;
 
-import org.tbee.sway.binding.BeanBinder;
-import org.tbee.sway.binding.BindUtil;
 import org.tbee.sway.binding.Binding;
+import org.tbee.sway.binding.BindingEndpoint;
+import org.tbee.sway.binding.ExceptionHandler;
 import org.tbee.sway.support.IconRegistry;
 import org.tbee.util.ExceptionUtil;
 
@@ -19,7 +19,7 @@ import java.awt.event.ActionListener;
  * If the SELECTED, UNSELECTED icons are specified in the IconRegistry, then these will be drawn.
  */
 public class SCheckBox extends JCheckBox {
-    static private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(SCheckBox.class);
+    static private org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(SCheckBox.class);
 
     public SCheckBox() {
         updateIcon();
@@ -65,6 +65,9 @@ public class SCheckBox extends JCheckBox {
         setSelected(value);
         return this;
     }
+    public BindingEndpoint<Boolean> selected$() {
+        return BindingEndpoint.of(this, SELECTED, exceptionHandler);
+    }
 
     @Override
     public void setIcon(Icon v) {
@@ -72,72 +75,70 @@ public class SCheckBox extends JCheckBox {
         explicitIcon = true;
     }
 
-    // ==================================================
-    // BIND
+    // ========================================================
+    // EXCEPTION HANDLER
 
     /**
-     * Will create a binding to a specific bean/property.
-     * Use binding(BeanBinding, PropertyName) to be able to switch beans while keeping the bind.
-     *
-     * @param bean
-     * @param propertyName
-     * @return Binding, so unbind() can be called
+     * Set the ExceptionHandler used a.o. in binding
+     * @param v
      */
-    public Binding binding(Object bean, String propertyName) {
-        return BindUtil.bind(this, SELECTED, bean, propertyName, this::handleException);
+    public void setExceptionHandler(ExceptionHandler v) {
+        firePropertyChange(EXCEPTIONHANDLER, exceptionHandler, exceptionHandler = v);
     }
-
-    /**
-     * Will create a binding to a specific bean/property.
-     * Use bind(BeanBinding, PropertyName) to be able to switch beans while keeping the bind.
-     *
-     * @param bean
-     * @param propertyName
-     * @return this, for fluent API
-     */
-    public SCheckBox bind(Object bean, String propertyName) {
-        Binding binding = binding(bean, propertyName);
+    public ExceptionHandler getExceptionHandler() {
+        return exceptionHandler;
+    }
+    public SCheckBox exceptionHandler(ExceptionHandler v) {
+        setExceptionHandler(v);
         return this;
     }
-
-    /**
-     * Bind to a bean wrapper's property.
-     * This will allow the swap the bean (in the BeanBinder) without having to rebind.
-     *
-     * @param beanBinder
-     * @param propertyName
-     * @return Binding, so unbind() can be called
-     */
-    public Binding binding(BeanBinder beanBinder, String propertyName) {
-        return BindUtil.bind(this, SELECTED, beanBinder, propertyName, this::handleException);
+    final static public String EXCEPTIONHANDLER = "exceptionHandler";
+    ExceptionHandler exceptionHandler = this::handleException;
+    public BindingEndpoint<ExceptionHandler> exceptionHandler$() {
+        return BindingEndpoint.of(this, EXCEPTIONHANDLER, exceptionHandler);
     }
 
-    /**
-     * Bind to a bean wrapper's property.
-     * This will allow the swap the bean (in the BeanBinder) without having to rebind.
-     * @param beanBinder
-     * @param propertyName
-     * @return this, for fluent API
-     */
-    public SCheckBox bind(BeanBinder beanBinder, String propertyName) {
-        Binding binding = binding(beanBinder, propertyName);
-        return this;
-    }
-
-    protected boolean handleException(Throwable e, JComponent component, Object oldValue, Object newValue) {
+    private boolean handleException(Throwable e, JComponent component, Object oldValue, Object newValue) {
         return handleException(e);
     }
-    protected boolean handleException(Throwable e) {
+    private boolean handleException(Throwable e) {
+
         // Force focus back
         SwingUtilities.invokeLater(() -> this.grabFocus());
 
         // Display the error
-        if (logger.isDebugEnabled()) logger.debug(e.getMessage(), e);
+        if (LOGGER.isDebugEnabled()) LOGGER.debug(e.getMessage(), e);
         JOptionPane.showMessageDialog(this, ExceptionUtil.determineMessage(e), "ERROR", JOptionPane.ERROR_MESSAGE);
 
         // Mark exception as handled
         return true;
     }
+
+
+    // ==================================================
+    // BIND
+
+    /**
+     * Binds the default property 'selected'
+     *
+     * @param bindingEndpoint
+     * @return this, for fluent API
+     */
+    public SCheckBox bind(BindingEndpoint<Boolean> bindingEndpoint) {
+        selected$().bind(bindingEndpoint);
+        return this;
+    }
+
+    /**
+     * Binds the default property 'selected'
+     *
+     * @param bindingEndpoint
+     * @return
+     */
+    public Binding binding(BindingEndpoint<Boolean> bindingEndpoint) {
+        return selected$().bind(bindingEndpoint);
+    }
+
 
     // ==============================================
     // FLUENT API

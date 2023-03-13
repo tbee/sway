@@ -61,14 +61,15 @@ public class BindingEndpoint<PropertyClass> {
 
     // ==================================================
     // CHAIN
-
-    public BindingEndpoint<PropertyClass> and(BindChainNode<?,?> bindChainNode) {
-        chain.add(bindChainNode);
-        return this;
-    }
     final private List<BindChainNode> chain = new ArrayList<>();
-    public BindingEndpoint<PropertyClass> add(int v) {
-        return and(Add.of(v));
-    }
+
+// TBEERNOT need to think about this a bit more
+//    public BindingEndpoint<PropertyClass> and(BindChainNode<?,?> bindChainNode) {
+//        chain.add(bindChainNode);
+//        return this;
+//    }
+//    public BindingEndpoint<PropertyClass> add(int v) {
+//        return and(Add.of(v));
+//    }
 
 }

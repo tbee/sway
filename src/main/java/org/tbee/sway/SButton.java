@@ -1,5 +1,6 @@
 package org.tbee.sway;
 
+import org.tbee.sway.binding.BindingEndpoint;
 import org.tbee.sway.binding.ExceptionHandler;
 import org.tbee.sway.support.HAlign;
 import org.tbee.sway.support.VAlign;
@@ -56,6 +57,9 @@ public class SButton extends JButton {
         return this;
     }
     final static public String HALIGN = "hAlign";
+    public BindingEndpoint<HAlign> hAlign$() {
+        return BindingEndpoint.of(this, HALIGN, exceptionHandler);
+    }
 
     /**
      * Enum variant of VerticalAlignment
@@ -69,11 +73,14 @@ public class SButton extends JButton {
     public VAlign getVAlign() {
         return VAlign.of(getHorizontalAlignment());
     }
-    public SButton VAlign(VAlign v) {
+    public SButton vAlign(VAlign v) {
         setVAlign(v);
         return this;
     }
     final static public String VALIGN = "vAlign";
+    public BindingEndpoint<VAlign> vAlign$() {
+        return BindingEndpoint.of(this, VALIGN, exceptionHandler);
+    }
 
     // ==============================================
     // ExceptionHandler
@@ -92,9 +99,12 @@ public class SButton extends JButton {
         setExceptionHandler(v);
         return this;
     }
+    private ExceptionHandler exceptionHandler = this::handleException;
     final static public String EXCEPTIONHANDLER = "exceptionHandler";
-    ExceptionHandler exceptionHandler = this::handleException;
-    
+    public BindingEndpoint<ExceptionHandler> exceptionHandler$() {
+        return BindingEndpoint.of(this, EXCEPTIONHANDLER, exceptionHandler);
+    }
+
     private boolean handleException(Throwable e, JComponent component, Object oldValue, Object newValue) {
     	
         if (LOGGER.isDebugEnabled()) LOGGER.debug(e.getMessage(), e);

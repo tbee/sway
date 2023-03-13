@@ -107,7 +107,7 @@ public class STextFieldTest extends TestBase {
         // GIVEN
         final City city = new City();
         construct(() -> {
-            sTextField = STextField.ofString().name("sTextField").bind(city, City.NAME);
+            sTextField = STextField.ofString().name("sTextField").bind(city.name$());
             return TestUtil.inJFrame(sTextField, focusMeComponent());
         });
 
@@ -132,7 +132,7 @@ public class STextFieldTest extends TestBase {
         // GIVEN
         final City city = new City();
         construct(() -> {
-            sTextField = STextField.ofInteger().name("sTextField").bind(city, City.DISTANCE);
+            sTextField = STextField.ofInteger().name("sTextField").bind(city.distance$());
             return TestUtil.inJFrame(sTextField, focusMeComponent());
         });
 
@@ -159,7 +159,7 @@ public class STextFieldTest extends TestBase {
         // GIVEN
         final City city = new City();
         construct(() -> {
-            sTextField = STextField.ofInteger().name("sTextField").bind(city, City.DISTANCE);
+            sTextField = STextField.ofInteger().name("sTextField").bind(city.distance$());
             return TestUtil.inJFrame(sTextField, focusMeComponent());
         });
 
@@ -187,7 +187,7 @@ public class STextFieldTest extends TestBase {
         });
 
         // WHEN bind and unbind
-        SwingUtilities.invokeAndWait(() -> sTextField.binding(city, City.DISTANCE).unbind());
+        SwingUtilities.invokeAndWait(() -> sTextField.binding(city.distance$()).unbind());
         // THEN there was a sync when binding, so textfield was changed
         Assertions.assertEquals("456", sTextField.getText());
         Assertions.assertEquals( 456, city.getDistance());

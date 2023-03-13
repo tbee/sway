@@ -14,7 +14,7 @@ public class SCheckBoxTest extends TestBase {
         City city = new City("Amsterdam", 150);
         construct(() -> {
             sCheckBox = new SCheckBox() //
-                    .bind(city, City.GROWING) //
+                    .bind(city.growing$()) //
                     .name("sCheckBox");
             return TestUtil.inJFrame(sCheckBox, focusMeComponent());
         });

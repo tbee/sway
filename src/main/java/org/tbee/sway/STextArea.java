@@ -1,17 +1,22 @@
 package org.tbee.sway;
 
-import org.tbee.sway.binding.BeanBinder;
-import org.tbee.sway.binding.BindUtil;
 import org.tbee.sway.binding.Binding;
+import org.tbee.sway.binding.BindingEndpoint;
 import org.tbee.sway.binding.ExceptionHandler;
 import org.tbee.sway.support.FocusInterpreter;
+import org.tbee.util.ExceptionUtil;
 
+import javax.swing.JComponent;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.SwingUtilities;
 
 public class STextArea extends SBorderPanel {
 
-	final private JTextArea jTextArea;
+    final static private org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(STextArea.class);
+
+    final private JTextArea jTextArea;
 	final private FocusInterpreter focusInterpreter;
 	final private FocusInterpreter.FocusInterpreterListener focusInterpreterListener;
 	
@@ -59,6 +64,9 @@ public class STextArea extends SBorderPanel {
     	setText(v);
     	return this;
     }
+    public BindingEndpoint<String> text$() {
+        return BindingEndpoint.of(this, TEXT, exceptionHandler);
+    }
 
 
     // ===========================================================================
@@ -82,54 +90,66 @@ public class STextArea extends SBorderPanel {
 
 
     // ========================================================
+    // EXCEPTION HANDLER
+
+    /**
+     * Set the ExceptionHandler used a.o. in binding
+     * @param v
+     */
+    public void setExceptionHandler(ExceptionHandler v) {
+        firePropertyChange(EXCEPTIONHANDLER, exceptionHandler, exceptionHandler = v);
+    }
+    public ExceptionHandler getExceptionHandler() {
+        return exceptionHandler;
+    }
+    public STextArea exceptionHandler(ExceptionHandler v) {
+        setExceptionHandler(v);
+        return this;
+    }
+    final static public String EXCEPTIONHANDLER = "exceptionHandler";
+    ExceptionHandler exceptionHandler = this::handleException;
+    public BindingEndpoint<ExceptionHandler> exceptionHandler$() {
+        return BindingEndpoint.of(this, EXCEPTIONHANDLER, exceptionHandler);
+    }
+
+    private boolean handleException(Throwable e, JComponent component, Object oldValue, Object newValue) {
+        return handleException(e);
+    }
+    private boolean handleException(Throwable e) {
+
+        // Force focus back
+        SwingUtilities.invokeLater(() -> this.grabFocus());
+
+        // Display the error
+        if (LOGGER.isDebugEnabled()) LOGGER.debug(e.getMessage(), e);
+        JOptionPane.showMessageDialog(this, ExceptionUtil.determineMessage(e), "ERROR", JOptionPane.ERROR_MESSAGE);
+
+        // Mark exception as handled
+        return true;
+    }
+
+    // ========================================================
     // BIND
 
     /**
-     * Will create a binding to a specific bean/property.
-     * Use binding(BeanBinding, PropertyName) to be able to switch beans while keeping the bind.
+     * Binds the default property 'value'
      *
-     * @param bean
-     * @param propertyName
-     * @return Binding, so unbind() can be called
-     */
-    public Binding binding(Object bean, String propertyName) {
-        return BindUtil.bind(this, TEXT, bean, propertyName, null);
-    }
-
-    /**
-     * Will create a binding to a specific bean/property.
-     * Use bind(BeanBinding, PropertyName) to be able to switch beans while keeping the bind.
-     *
-     * @param bean
-     * @param propertyName
+     * @param bindingEndpoint
      * @return this, for fluent API
      */
-    public STextArea bind(Object bean, String propertyName) {
-        binding(bean, propertyName);
+    public STextArea bind(BindingEndpoint<String> bindingEndpoint) {
+        text$().bind(bindingEndpoint);
         return this;
     }
 
     /**
-     * Bind to a bean wrapper's property.
-     * This will allow the swap the bean (in the BeanBinder) without having to rebind.
+     * Binds the default property 'value'
      *
-     * @param beanBinder
-     * @param propertyName
-     * @return Binding, so unbind() can be called
+     * @param bindingEndpoint
+     * @return
      */
-    public Binding binding(BeanBinder<?> beanBinder, String propertyName) {
-        return BindUtil.bind(this, TEXT, beanBinder, propertyName, (ExceptionHandler) null);
+    public Binding binding(BindingEndpoint<String> bindingEndpoint) {
+        return text$().bind(bindingEndpoint);
     }
 
-    /**
-     * Bind to a bean wrapper's property.
-     * This will allow the swap the bean (in the BeanBinder) without having to rebind.
-     * @param beanBinder
-     * @param propertyName
-     * @return this, for fluent API
-     */
-    public STextArea bind(BeanBinder<?> beanBinder, String propertyName) {
-        binding(beanBinder, propertyName);
-        return this;
-    }
 }
