@@ -86,27 +86,27 @@ public class SwayTestApp {
         migPanel.wrap();
 
         migPanel.addLabel(new SLabel("String -> bean.name"));
-        migPanel.addField(STextField.ofString().bind(bean.name$()));
+        migPanel.addField(STextField.ofString().bindTo(bean.name$()));
         migPanel.wrap();
 
         migPanel.addLabel(new SLabel("StringBlankIsNull -> bean.name"));
-        migPanel.addField(STextField.ofStringBlankIsNull().bind(City.name$(beanBinder)));
+        migPanel.addField(STextField.ofStringBlankIsNull().bindTo(City.name$(beanBinder)));
         migPanel.wrap();
 
         migPanel.addLabel(new SLabel("Integer -> bean.distance"));
-        migPanel.addField(STextField.ofInteger().bind(bean.distance$()));
+        migPanel.addField(STextField.ofInteger().bindTo(bean.distance$()));
         migPanel.wrap();
 
         migPanel.addLabel(new SLabel("Integer -> beanbinder.distance"));
-        migPanel.addField(STextField.ofInteger().bind(City.distance$(beanBinder)));
+        migPanel.addField(STextField.ofInteger().bindTo(City.distance$(beanBinder)));
         migPanel.wrap();
 
         migPanel.addLabel(new SLabel("Integer -> ofBind bean.distance"));
-        migPanel.addField(STextField.ofBind(bean.distance$()));
+        migPanel.addField(STextField.ofBindTo(bean.distance$()));
         migPanel.wrap();
 
         migPanel.addLabel(new SLabel("Integer -> ofBind beanBinder.distance"));
-        migPanel.addField(STextField.ofBind(City.distance$(beanBinder)));
+        migPanel.addField(STextField.ofBindTo(City.distance$(beanBinder)));
         migPanel.wrap();
 
 //        migPanel.addLabel(new SLabel("Integer -> bean.distance add"));
@@ -180,7 +180,6 @@ public class SwayTestApp {
         var cities = List.of(amsterdam, berlin, rome, paris);
 
         var sList = new SList<City>() //
-                .name("mySList") //
                 .render(new CityFormat(cities))
                 .onSelectionChanged(cs -> System.out.println("List: " + cs))
                 .data(cities) //
@@ -199,23 +198,22 @@ public class SwayTestApp {
         var cities = List.of(amsterdam, berlin, rome, paris);
 
         var sComboBox = SComboBox.<City>of() //
-                .name("mySComboBox") //
                 .render(new CityFormat(cities))
                 .onValueChanged(c -> System.out.println("Combobox: " + c))
                 .data(cities);
 
         // The combobox is bound to the textfield, so it should have the value
         STextField<City> sTextFieldDisplay = STextField.of(new CityFormat(cities)).value(cities.get(0)).enabled(false);
-        sComboBox.bind(sTextFieldDisplay.value$());
+        sComboBox.bindTo(sTextFieldDisplay.value$());
 
         // The textfield is bound to the combobox, so the combobox should has the value
         STextField<City> sTextField = STextField.of(new CityFormat(cities));
-        sTextField.bind(sComboBox.value$());
+        sTextField.bindTo(sComboBox.value$());
 
         return SVPanel.of(sComboBox, sTextFieldDisplay, sTextField);
     }
 
-    static private STable<City> sTable() {
+    static private SVPanel sTable() {
 
         City amsterdam = new City("Amsterdam", 150);
         City berlin = new City("Berlin", 560);
@@ -228,7 +226,6 @@ public class SwayTestApp {
         Format<City> cityFormat = new CityFormat(cities);
 
         var sTable = new STable<City>() //
-                .name("mySTable") //
 
                 // add columns via lambda's (no reflection)
                 .column(String.class).title("Name CT").valueSupplier(d -> d.getName()).valueConsumer((d,v) -> d.setName(v)).monitorProperty(City.NAME).table() //
@@ -266,7 +263,16 @@ public class SwayTestApp {
                 // must be last
                 .preferencesId("mySTable") //
          ;
-        return sTable;
+
+        // Bind selection to a list
+        var sList = new SList<City>() //
+                .render(new CityFormat(cities))
+                .data(cities) //
+                .selectionMode(SList.SelectionMode.MULTIPLE)
+                ;
+        sList.selection$().bindTo(sTable.selection$());
+
+        return SVPanel.of(sTable, sList);
     }
 
     static private JPanel sCheckBox() {
@@ -277,14 +283,14 @@ public class SwayTestApp {
 
         migPanel.addField(new SCheckBox("boolean"));
         migPanel.wrap();
-        migPanel.addField(new SCheckBox("boolean bind").bind(city.growing$()));
-        migPanel.addField(new SCheckBox("boolean beanBinder").bind(City.growing$(beanBinder)));
+        migPanel.addField(new SCheckBox("boolean bind").bindTo(city.growing$()));
+        migPanel.addField(new SCheckBox("boolean beanBinder").bindTo(City.growing$(beanBinder)));
         migPanel.wrap();
 
         migPanel.addField(new SCheckBox3("Boolean"));
         migPanel.wrap();
-        migPanel.addField(new SCheckBox3("Boolean bind").bind(city.cityRights$()));
-        migPanel.addField(new SCheckBox3("Boolean beanBinder").bind(City.cityRights$(beanBinder)));
+        migPanel.addField(new SCheckBox3("Boolean bind").bindTo(city.cityRights$()));
+        migPanel.addField(new SCheckBox3("Boolean beanBinder").bindTo(City.cityRights$(beanBinder)));
         migPanel.wrap();
 
         return migPanel;
@@ -294,8 +300,8 @@ public class SwayTestApp {
         City city = new City("test",12);
 
         SMigPanel migPanel = new SMigPanel();
-    	migPanel.addLabelAndField("bind 1", new STextArea().bind(city.name$())).wrap();
-    	migPanel.addLabelAndField("bind 2", new STextArea(5, 10).bind(city.name$())).wrap();
+    	migPanel.addLabelAndField("bind 1", new STextArea().bindTo(city.name$())).wrap();
+    	migPanel.addLabelAndField("bind 2", new STextArea(5, 10).bindTo(city.name$())).wrap();
         return migPanel;
     }
 }

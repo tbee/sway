@@ -61,7 +61,7 @@ public class SButtonGroupTest extends TestBase {
                     .add(1, new SToggleButton("1")) //
                     .add(2, new SToggleButton("2")) //
                     .add(3, new SToggleButton("3")) //
-                    .bind(city, City.DISTANCE);
+                    .bindTo(city.distance$());
             sButtonGroup.getButtons().forEach(b -> b.setName("b" + b.getText())); // to make them findable
             ref.set(sButtonGroup);
             return TestUtil.inJFrame(sButtonGroup.getButtons());

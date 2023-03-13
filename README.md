@@ -15,7 +15,14 @@ var sTable = new STable<City>() //
 Or creating a strongly typed text field the is bound to the property of a Java bean would be as simple as:
 
 ``` java
-var sTextField = STextField.ofBind(city, "name");
+var sTextField = STextField.ofString();
+sTextField.value$().bindTo(city.name$());
+
+// Or a bit compact; value$() is STextField's default property 
+var sTextField = STextField.ofString().bindTo(city.name$());
+
+// Or even more compact
+var sTextField = STextField.ofBindTo(city.name$());
 ```
 
 Well, you've come to the right place. 
@@ -25,12 +32,22 @@ A UI library probably is never truly finished, but Sway is stable and used in pr
 
 ``` java
 // A label can have its text and icon property bound
-var sLabel = new Slabel().bindText(city, "name");
+var sLabel = new Slabel();
+sLabel.text$().bindTo(city.name$());
 
 // SCheckBox can be bound to a boolean property
-var sCheckBox = new SCheckBox("Growing").bind(city, City.GROWING);
+var sCheckBox = new SCheckBox("Growing").bindTo(city.growing$());
 // SCheckBox3 can be bound to a Boolean property, supporting 3 states: TRUE, FALSE, NULL
 var sCheckBox = new SCheckBox3("Cityrights").bind(city, City.CITYRIGHTS);
+
+// Add a list
+var sList = new SList<City>() //
+        .render(new CityFormat(cities))
+        .selectionMode(SList.SelectionMode.MULTIPLE)        
+        .data(cities); // cities is a List<City>
+        
+// Bind the selection of the list to that of the table created above        
+sList.selection$().bindTo(sTable.selection$());
 
 // SButtonGroup revolves around the associated value, not the button
 var sButtonGroup = new SButtonGroup<Integer>() //

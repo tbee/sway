@@ -42,7 +42,7 @@ public class STextAreaTest extends TestBase {
         // GIVEN
         final City city = new City();
         construct(() -> {
-        	sTextArea = new STextArea().name("sTextArea").bind(city.name$());
+        	sTextArea = new STextArea().name("sTextArea").bindTo(city.name$());
             return TestUtil.inJFrame(sTextArea, focusMeComponent());
         });
 

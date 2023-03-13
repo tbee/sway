@@ -51,7 +51,7 @@ public class BindingEndpoint<PropertyClass> {
     // ==================================================
     // BIND
 
-    public Binding bind(BindingEndpoint<PropertyClass> bindingEndpoint) {
+    public Binding bindTo(BindingEndpoint<PropertyClass> bindingEndpoint) {
         if (bindingEndpoint.beanBinder != null) {
             return BindUtil.bind(this.bean, this.propertyName, bindingEndpoint.beanBinder, bindingEndpoint.propertyName, exceptionHandler != null ? exceptionHandler : bindingEndpoint.exceptionHandler, chain);
         }

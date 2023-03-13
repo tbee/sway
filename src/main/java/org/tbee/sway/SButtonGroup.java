@@ -1,7 +1,5 @@
 package org.tbee.sway;
 
-import org.tbee.sway.binding.BeanBinder;
-import org.tbee.sway.binding.BindUtil;
 import org.tbee.sway.binding.Binding;
 import org.tbee.sway.binding.BindingEndpoint;
 import org.tbee.sway.binding.ExceptionHandler;
@@ -200,53 +198,24 @@ public class SButtonGroup<T> extends ButtonGroup {
     // BIND
 
     /**
-     * Will create a binding to a specific bean/property.
-     * Use binding(BeanBinding, PropertyName) to be able to switch beans while keeping the bind.
+     * Binds the default property 'value'
      *
-     * @param bean
-     * @param propertyName
-     * @return Binding, so unbind() can be called
-     */
-    public Binding binding(Object bean, String propertyName) {
-        return BindUtil.bind(this, VALUE, bean, propertyName, this::handleException);
-    }
-
-    /**
-     * Will create a binding to a specific bean/property.
-     * Use bind(BeanBinding, PropertyName) to be able to switch beans while keeping the bind.
-     *
-     * @param bean
-     * @param propertyName
+     * @param bindingEndpoint
      * @return this, for fluent API
      */
-    public SButtonGroup<T> bind(Object bean, String propertyName) {
-        Binding binding = binding(bean, propertyName);
+    public SButtonGroup<T> bindTo(BindingEndpoint<T> bindingEndpoint) {
+        value$().bindTo(bindingEndpoint);
         return this;
     }
 
     /**
-     * Bind to a bean wrapper's property.
-     * This will allow the swap the bean (in the BeanBinder) without having to rebind.
+     * Binds the default property 'value'
      *
-     * @param beanBinder
-     * @param propertyName
-     * @return Binding, so unbind() can be called
+     * @param bindingEndpoint
+     * @return
      */
-    public Binding binding(BeanBinder beanBinder, String propertyName) {
-        return BindUtil.bind(this, VALUE, beanBinder, propertyName, this::handleException);
-    }
-
-    /**
-     * Bind to a bean wrapper's property.
-     * This will allow the swap the bean (in the BeanBinder) without having to rebind.
-     *
-     * @param beanBinder
-     * @param propertyName
-     * @return this, for fluent API
-     */
-    public SButtonGroup<T> bind(BeanBinder beanBinder, String propertyName) {
-        Binding binding = binding(beanBinder, propertyName);
-        return this;
+    public Binding binding(BindingEndpoint<T> bindingEndpoint) {
+        return value$().bindTo(bindingEndpoint);
     }
 
     // ===========================================================================================================================

@@ -3,6 +3,8 @@ package org.tbee.sway;
 import com.google.common.base.Splitter;
 import net.coderazzi.filters.gui.AutoChoices;
 import net.coderazzi.filters.gui.TableFilterHeader;
+import org.tbee.sway.binding.BindingEndpoint;
+import org.tbee.sway.binding.ExceptionHandler;
 import org.tbee.sway.format.Format;
 import org.tbee.sway.format.FormatAsJavaTextFormat;
 import org.tbee.sway.format.FormatRegistry;
@@ -12,7 +14,9 @@ import org.tbee.sway.table.STableCore;
 import org.tbee.sway.table.STableNavigator;
 import org.tbee.sway.table.TableColumn;
 import org.tbee.util.ClassUtil;
+import org.tbee.util.ExceptionUtil;
 
+import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
@@ -186,7 +190,7 @@ import java.util.stream.Collectors;
  * @param <TableType>
  */
 public class STable<TableType> extends SBorderPanel {
-    static private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(STable.class);
+    static private org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(STable.class);
 
     private final STableCore<TableType> sTableCore;
 
@@ -196,6 +200,17 @@ public class STable<TableType> extends SBorderPanel {
         sTableCore = new STableCore<TableType>(this);
         JScrollPane scrollPane = new JScrollPane(sTableCore);
         STableNavigator tableNavigator = new STableNavigator(sTableCore);
+
+        // Start listening for the selection
+        sTableCore.getSelectionModel().addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) {
+                var selectedItems = getSelection();
+                if (selectionChangedListeners != null) {
+                    selectionChangedListeners.forEach(l -> l.accept(selectedItems));
+                }
+                firePropertyChange(SELECTION, null, selectedItems);
+            }
+        });
 
         // Layout
         center(scrollPane);
@@ -479,6 +494,10 @@ public class STable<TableType> extends SBorderPanel {
     public void clearSelection() {
          sTableCore.clearSelection();
     }
+    final static public String SELECTION = "selection";
+    public BindingEndpoint<List<TableType>> selection$() {
+        return BindingEndpoint.of(this, SELECTION, exceptionHandler);
+    }
 
     /**
      *
@@ -487,14 +506,6 @@ public class STable<TableType> extends SBorderPanel {
     synchronized public void addSelectionChangedListener(Consumer<List<TableType>> listener) {
         if (selectionChangedListeners == null) {
             selectionChangedListeners = new ArrayList<>();
-
-            // Start listening
-            sTableCore.getSelectionModel().addListSelectionListener(e -> {
-                if (!e.getValueIsAdjusting()) {
-                    var selectedItems = getSelection();
-                    selectionChangedListeners.forEach(l -> l.accept(selectedItems));
-                }
-            });
         }
         selectionChangedListeners.add(listener);
     }
@@ -578,14 +589,14 @@ public class STable<TableType> extends SBorderPanel {
                 rowIdxs.add(rowIdx);
             }
         }
-        if (logger.isDebugEnabled()) logger.debug("Found bean at row(s) " + rowIdxs);
+        if (LOGGER.isDebugEnabled()) LOGGER.debug("Found bean at row(s) " + rowIdxs);
 
         // Now loop all columns that are bound
         for (int colIdx = 0; colIdx < getTableColumns().size(); colIdx++) {
             String monitorProperty = getTableColumns().get(colIdx).getMonitorProperty();
             if (monitorProperty != null && monitorProperty.equals(evt.getPropertyName())) {
                 for (Integer rowIdx : rowIdxs) {
-                    if (logger.isDebugEnabled()) logger.debug("Invoke fireTableCellUpdated(" + rowIdx + "," + colIdx + ")");
+                    if (LOGGER.isDebugEnabled()) LOGGER.debug("Invoke fireTableCellUpdated(" + rowIdx + "," + colIdx + ")");
                     getSTableCore().getTableModel().fireTableCellUpdated(rowIdx, colIdx);
                 }
             }
@@ -598,7 +609,7 @@ public class STable<TableType> extends SBorderPanel {
         }
         for (Object record : data) {
             try {
-                if (logger.isDebugEnabled()) logger.debug("Register to " + record);
+                if (LOGGER.isDebugEnabled()) LOGGER.debug("Register to " + record);
                 addPropertyChangeListenerMethod.invoke(record, beanPropertyChangeListener);
             }
             catch (IllegalAccessException e) {
@@ -615,7 +626,7 @@ public class STable<TableType> extends SBorderPanel {
         }
         for (Object record : data) {
             try {
-                if (logger.isDebugEnabled()) logger.debug("Unregister from " + record);
+                if (LOGGER.isDebugEnabled()) LOGGER.debug("Unregister from " + record);
                 removePropertyChangeListenerMethod.invoke(record, beanPropertyChangeListener);
             }
             catch (IllegalAccessException e) {
@@ -683,7 +694,7 @@ public class STable<TableType> extends SBorderPanel {
             }
             // If format found, configure it
             if (format != null && tableFilterHeader.getParserModel().getFormat(columnClass) == null) {
-                if (logger.isDebugEnabled()) logger.debug("Found format for " + columnClass + ", add renderer for filter header");
+                if (LOGGER.isDebugEnabled()) LOGGER.debug("Found format for " + columnClass + ", add renderer for filter header");
                 tableFilterHeader.getParserModel().setFormat(columnClass, new FormatAsJavaTextFormat(format));
             }
         }
@@ -715,6 +726,9 @@ public class STable<TableType> extends SBorderPanel {
         setAlternateRowColor(v);
         return this;
     }
+    public BindingEndpoint<Boolean> alternateRowColor$() {
+        return BindingEndpoint.of(this, ALTERNATEROWCOLOR, exceptionHandler);
+    }
 
     /** The color to use for the alternating background color for rows */
     public void setFirstAlternateRowColor(Color v) {
@@ -728,6 +742,9 @@ public class STable<TableType> extends SBorderPanel {
     public STable<TableType> firstAlternateRowColor(Color v) {
         firstAlternateRowColor(v);
         return this;
+    }
+    public BindingEndpoint<Color> firstAlternateRowColor$() {
+        return BindingEndpoint.of(this, FIRSTALTERNATEROWCOLOR, exceptionHandler);
     }
 
     /** The second color to use for the alternating background color for rows */
@@ -743,6 +760,9 @@ public class STable<TableType> extends SBorderPanel {
         setSecondAlternateRowColor(v);
         return this;
     }
+    public BindingEndpoint<Color> secondAlternateRowColor$() {
+        return BindingEndpoint.of(this, SECONDALTERNATEROWCOLOR, exceptionHandler);
+    }
 
     /** UneditableCellsShowAsDisabled */
     public void setUneditableCellsShowAsDisabled(boolean v) {
@@ -757,6 +777,9 @@ public class STable<TableType> extends SBorderPanel {
         setUneditableCellsShowAsDisabled(v);
         return this;
     }
+    public BindingEndpoint<Boolean> uneditableCellsShowAsDisabled$() {
+        return BindingEndpoint.of(this, UNEDITABLECELLSSHOWASDISABLED, exceptionHandler);
+    }
 
     /** DisabledTableShowsCellsAsDisabled */
     public void setDisabledTableShowsCellsAsDisabled(boolean v) {
@@ -770,6 +793,9 @@ public class STable<TableType> extends SBorderPanel {
     public STable<TableType> disabledTableShowsCellsAsDisabled(boolean v) {
         setDisabledTableShowsCellsAsDisabled(v);
         return this;
+    }
+    public BindingEndpoint<Boolean> disabledTableShowsCellsAsDisabled$() {
+        return BindingEndpoint.of(this, DISABLEDTABLESHOWSCELLSASDISABLED, exceptionHandler);
     }
 
     /** Editable */
@@ -798,6 +824,9 @@ public class STable<TableType> extends SBorderPanel {
     public STable<TableType> uneditableTableShowsCellsAsDisabled(boolean v) {
         setUneditableTableShowsCellsAsDisabled(v);
         return this;
+    }
+    public BindingEndpoint<Boolean> uneditableTableShowsCellsAsDisabled$() {
+        return BindingEndpoint.of(this, UNEDITABLETABLESHOWSCELLSASDISABLED, exceptionHandler);
     }
 
     /** must repaint because cells may be shown disabled */
@@ -829,7 +858,10 @@ public class STable<TableType> extends SBorderPanel {
     	setAllowInsertRows(v);
         return this;
     }
-	public boolean checkAllowInsertRows() { 
+    public BindingEndpoint<Boolean> allowInsertRows$() {
+        return BindingEndpoint.of(this, ALLOWINSERTROWS, exceptionHandler);
+    }
+	public boolean checkAllowInsertRows() {
 		return getAllowInsertRows() && isEnabled() && isEditable();
 	}
 
@@ -846,7 +878,10 @@ public class STable<TableType> extends SBorderPanel {
     	setAllowDeleteRows(v);
         return this;
     }
-	public boolean checkAllowDeleteRows() { 
+    public BindingEndpoint<Boolean> allowDeleteRows$() {
+        return BindingEndpoint.of(this, ALLOWDELETEROWS, exceptionHandler);
+    }
+	public boolean checkAllowDeleteRows() {
 		return getAllowDeleteRows() && isEnabled() && isEditable();
 	}
 	
@@ -867,6 +902,9 @@ public class STable<TableType> extends SBorderPanel {
     	setConfirmDeleteRows(v);
         return this;
     }
+    public BindingEndpoint<Boolean> confirmDeleteRows$() {
+        return BindingEndpoint.of(this, CONFIRMDELETEROWS, exceptionHandler);
+    }
 
 
 	/** BeanFactory */
@@ -881,6 +919,9 @@ public class STable<TableType> extends SBorderPanel {
     public STable<TableType> beanFactory(Supplier<TableType> v) {
         setBeanFactory(v);
         return this;
+    }
+    public BindingEndpoint<Supplier<TableType>> beanFactory$() {
+        return BindingEndpoint.of(this, CONFIRMDELETEROWS, exceptionHandler);
     }
 
     /**
@@ -1077,7 +1118,7 @@ public class STable<TableType> extends SBorderPanel {
                 String value = table.getTableModel().getValueAtAsString(selectedRows[i], selectedCols[j]);
 
                 // field
-                if (logger.isDebugEnabled()) logger.debug("copy from table cell " + selectedRows[i] + "," + selectedCols[j] + ": " + value);
+                if (LOGGER.isDebugEnabled()) LOGGER.debug("copy from table cell " + selectedRows[i] + "," + selectedCols[j] + ": " + value);
                 stringBuffer.append( value );
 
                 // field separator
@@ -1117,7 +1158,7 @@ public class STable<TableType> extends SBorderPanel {
             paste(sTableCore, selectedRows, selectedCols, clipboardContents);
         }
         catch (Exception e) {
-            logger.error(e.getMessage(), e);
+            LOGGER.error(e.getMessage(), e);
         }
     }
 
@@ -1140,7 +1181,7 @@ public class STable<TableType> extends SBorderPanel {
         {
             // get single row
             String clipboardRow = clipboardRows[i];
-            if (logger.isDebugEnabled()) logger.debug("pasting row " + i + ": " + clipboardRow);
+            if (LOGGER.isDebugEnabled()) LOGGER.debug("pasting row " + i + ": " + clipboardRow);
 
             // determine the row to paste in
             int rowIdx = (i < selectedRows.length ? selectedRows[i] : -1);
@@ -1150,10 +1191,10 @@ public class STable<TableType> extends SBorderPanel {
                 rowIdx = sTableCore.getSTable().appendRow();
             }
             if (rowIdx < 0) {
-                if (logger.isDebugEnabled()) logger.debug("skipping cell");
+                if (LOGGER.isDebugEnabled()) LOGGER.debug("skipping cell");
                 continue;
             }
-            if (logger.isDebugEnabled()) logger.debug("pasting to sTableCore row " + rowIdx);
+            if (LOGGER.isDebugEnabled()) LOGGER.debug("pasting to sTableCore row " + rowIdx);
 
             // split into columns (and thus individual cells)
             String[] lClipboardCols = Splitter.on(FIELD_SEPARATOR).splitToList(clipboardRow).toArray(new String[]{});
@@ -1161,15 +1202,15 @@ public class STable<TableType> extends SBorderPanel {
 
                 // get cell value
                 String value = lClipboardCols[j];
-                if (logger.isDebugEnabled()) logger.debug("pasting from " + i + "," + j + ": " + value);
+                if (LOGGER.isDebugEnabled()) LOGGER.debug("pasting from " + i + "," + j + ": " + value);
 
                 // determine the column to paste in
                 int colIdx = ( j < selectedCols.length ? selectedCols[j] : -1);
                 if (colIdx < 0) {
-                    if (logger.isDebugEnabled()) logger.debug("skipping cell");
+                    if (LOGGER.isDebugEnabled()) LOGGER.debug("skipping cell");
                     continue;
                 }
-                if (logger.isDebugEnabled()) logger.debug("paste to sTableCore cell " + rowIdx + "," + colIdx + ": " + value);
+                if (LOGGER.isDebugEnabled()) LOGGER.debug("paste to sTableCore cell " + rowIdx + "," + colIdx + ": " + value);
 
                 // if value location
                 if ( rowIdx < sTableCore.getModel().getRowCount() // if we use the sTableCore.getRowCount() we get the filtered amount
@@ -1209,6 +1250,9 @@ public class STable<TableType> extends SBorderPanel {
 		setPreferencesId(value); 
 		return this; 
 	}
+    public BindingEndpoint<String> preferencesId$() {
+        return BindingEndpoint.of(this, PREFERENCESID, exceptionHandler);
+    }
 
     /**
      * save all preferences
@@ -1222,6 +1266,46 @@ public class STable<TableType> extends SBorderPanel {
      */
     public void restorePreferences() {
     	sTableCore.restorePreferences();
+    }
+
+
+    // ========================================================
+    // EXCEPTION HANDLER
+
+    /**
+     * Set the ExceptionHandler used a.o. in binding
+     * @param v
+     */
+    public void setExceptionHandler(ExceptionHandler v) {
+        firePropertyChange(EXCEPTIONHANDLER, exceptionHandler, exceptionHandler = v);
+    }
+    public ExceptionHandler getExceptionHandler() {
+        return exceptionHandler;
+    }
+    public STable<TableType> exceptionHandler(ExceptionHandler v) {
+        setExceptionHandler(v);
+        return this;
+    }
+    final static public String EXCEPTIONHANDLER = "exceptionHandler";
+    ExceptionHandler exceptionHandler = this::handleException;
+    public BindingEndpoint<ExceptionHandler> exceptionHandler$() {
+        return BindingEndpoint.of(this, EXCEPTIONHANDLER, exceptionHandler);
+    }
+
+    private boolean handleException(Throwable e, JComponent component, Object oldValue, Object newValue) {
+        return handleException(e);
+    }
+    private boolean handleException(Throwable e) {
+
+        // Force focus back
+        SwingUtilities.invokeLater(() -> this.grabFocus());
+
+        // Display the error
+        if (LOGGER.isDebugEnabled()) LOGGER.debug(e.getMessage(), e);
+        JOptionPane.showMessageDialog(this, ExceptionUtil.determineMessage(e), "ERROR", JOptionPane.ERROR_MESSAGE);
+
+        // Mark exception as handled
+        return true;
     }
 
 

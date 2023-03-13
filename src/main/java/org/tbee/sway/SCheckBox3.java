@@ -289,8 +289,8 @@ public class SCheckBox3 extends JCheckBox {
 	 * @param bindingEndpoint
 	 * @return this, for fluent API
 	 */
-	public SCheckBox3 bind(BindingEndpoint<Boolean> bindingEndpoint) {
-		selected3$().bind(bindingEndpoint);
+	public SCheckBox3 bindTo(BindingEndpoint<Boolean> bindingEndpoint) {
+		selected3$().bindTo(bindingEndpoint);
 		return this;
 	}
 
@@ -301,7 +301,7 @@ public class SCheckBox3 extends JCheckBox {
 	 * @return
 	 */
 	public Binding binding(BindingEndpoint<Boolean> bindingEndpoint) {
-		return selected3$().bind(bindingEndpoint);
+		return selected3$().bindTo(bindingEndpoint);
 	}
 
 

@@ -96,6 +96,9 @@ public class SComboBox<T> extends JComboBox<T> {
         setAlternateRowColor(v);
         return this;
     }
+    public BindingEndpoint<Boolean> alternateRowColor$() {
+        return BindingEndpoint.of(this, ALTERNATEROWCOLOR, exceptionHandler);
+    }
 
     /** The color to use for the alternating background color for rows */
     public void setFirstAlternateRowColor(Color v) {
@@ -110,6 +113,9 @@ public class SComboBox<T> extends JComboBox<T> {
         firstAlternateRowColor(v);
         return this;
     }
+    public BindingEndpoint<Color> firstAlternateRowColor$() {
+        return BindingEndpoint.of(this, FIRSTALTERNATEROWCOLOR, exceptionHandler);
+    }
 
     /** The second color to use for the alternating background color for rows */
     public void setSecondAlternateRowColor(Color v) {
@@ -123,6 +129,9 @@ public class SComboBox<T> extends JComboBox<T> {
     public SComboBox<T> secondAlternateRowColor(Color v) {
         setSecondAlternateRowColor(v);
         return this;
+    }
+    public BindingEndpoint<Color> secondAlternateRowColor$() {
+        return BindingEndpoint.of(this, SECONDALTERNATEROWCOLOR, exceptionHandler);
     }
 
 
@@ -278,8 +287,8 @@ public class SComboBox<T> extends JComboBox<T> {
      * @param bindingEndpoint
      * @return this, for fluent API
      */
-    public SComboBox<T> bind(BindingEndpoint<T> bindingEndpoint) {
-        value$().bind(bindingEndpoint);
+    public SComboBox<T> bindTo(BindingEndpoint<T> bindingEndpoint) {
+        value$().bindTo(bindingEndpoint);
         return this;
     }
 
@@ -290,7 +299,7 @@ public class SComboBox<T> extends JComboBox<T> {
      * @return
      */
     public Binding binding(BindingEndpoint<T> bindingEndpoint) {
-        return value$().bind(bindingEndpoint);
+        return value$().bindTo(bindingEndpoint);
     }
 
     // TBEERNOT Tests

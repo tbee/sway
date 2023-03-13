@@ -39,10 +39,12 @@ public class DefaultListCellRenderer<T> extends javax.swing.DefaultListCellRende
         }
 
         // Alternate row color
-        if (alternateRowColor) {
-            Color color = ((index % 2 != 0) ? firstAlternateRowColor : secondAlternateRowColor);
-            if (component.getBackground() != color) {
-                component.setBackground(color);
+        if (!isSelected) {
+            if (alternateRowColor) {
+                Color color = ((index % 2 != 0) ? firstAlternateRowColor : secondAlternateRowColor);
+                if (component.getBackground() != color) {
+                    component.setBackground(color);
+                }
             }
         }
 

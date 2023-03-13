@@ -1,13 +1,19 @@
 package org.tbee.sway;
 
+import org.tbee.sway.binding.BindingEndpoint;
+import org.tbee.sway.binding.ExceptionHandler;
 import org.tbee.sway.format.Format;
 import org.tbee.sway.format.FormatRegistry;
 import org.tbee.sway.list.DefaultListCellRenderer;
 import org.tbee.sway.list.SListCore;
 import org.tbee.sway.support.SwayUtil;
+import org.tbee.util.ExceptionUtil;
 
+import javax.swing.JComponent;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingUtilities;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -15,7 +21,7 @@ import java.util.List;
 import java.util.function.Consumer;
 
 public class SList<T> extends SBorderPanel {
-    static private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(SList.class);
+    static private org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(SList.class);
 
     final private SListCore<T> sListCore;
     final private JScrollPane jScrollPane;
@@ -26,6 +32,17 @@ public class SList<T> extends SBorderPanel {
         jScrollPane = new JScrollPane(sListCore);
         center(jScrollPane);
         sListCore.setCellRenderer(new DefaultListCellRenderer(() -> format, () -> alternateRowColor, () -> firstAlternateRowColor, () -> secondAlternateRowColor));
+
+        // Start listening for selection changes
+        sListCore.getSelectionModel().addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) {
+                var selectedItems = getSelection();
+                if (selectionChangedListeners != null) {
+                    selectionChangedListeners.forEach(l -> l.accept(selectedItems));
+                }
+                firePropertyChange(SELECTION, null, selectedItems);
+            }
+        });
     }
 
     public SListCore<T> getSListCore() {
@@ -197,6 +214,11 @@ public class SList<T> extends SBorderPanel {
         sListCore.clearSelection();
     }
 
+    final static public String SELECTION = "selection";
+    public BindingEndpoint<List<T>> selection$() {
+        return BindingEndpoint.of(this, SELECTION, exceptionHandler);
+    }
+
     /**
      *
      * @param listener
@@ -204,14 +226,6 @@ public class SList<T> extends SBorderPanel {
     synchronized public void addSelectionChangedListener(Consumer<List<T>> listener) {
         if (selectionChangedListeners == null) {
             selectionChangedListeners = new ArrayList<>();
-
-            // Start listening
-            sListCore.getSelectionModel().addListSelectionListener(e -> {
-                if (!e.getValueIsAdjusting()) {
-                    var selectedItems = getSelection();
-                    selectionChangedListeners.forEach(l -> l.accept(selectedItems));
-                }
-            });
         }
         selectionChangedListeners.add(listener);
     }
@@ -230,6 +244,45 @@ public class SList<T> extends SBorderPanel {
     public SList<T> onSelectionChanged(Consumer<List<T>> onSelectionChangedListener) {
         addSelectionChangedListener(onSelectionChangedListener);
         return this;
+    }
+
+    // ========================================================
+    // EXCEPTION HANDLER
+
+    /**
+     * Set the ExceptionHandler used a.o. in binding
+     * @param v
+     */
+    public void setExceptionHandler(ExceptionHandler v) {
+        firePropertyChange(EXCEPTIONHANDLER, exceptionHandler, exceptionHandler = v);
+    }
+    public ExceptionHandler getExceptionHandler() {
+        return exceptionHandler;
+    }
+    public SList<T> exceptionHandler(ExceptionHandler v) {
+        setExceptionHandler(v);
+        return this;
+    }
+    final static public String EXCEPTIONHANDLER = "exceptionHandler";
+    ExceptionHandler exceptionHandler = this::handleException;
+    public BindingEndpoint<ExceptionHandler> exceptionHandler$() {
+        return BindingEndpoint.of(this, EXCEPTIONHANDLER, exceptionHandler);
+    }
+
+    private boolean handleException(Throwable e, JComponent component, Object oldValue, Object newValue) {
+        return handleException(e);
+    }
+    private boolean handleException(Throwable e) {
+
+        // Force focus back
+        SwingUtilities.invokeLater(() -> this.grabFocus());
+
+        // Display the error
+        if (LOGGER.isDebugEnabled()) LOGGER.debug(e.getMessage(), e);
+        JOptionPane.showMessageDialog(this, ExceptionUtil.determineMessage(e), "ERROR", JOptionPane.ERROR_MESSAGE);
+
+        // Mark exception as handled
+        return true;
     }
 
 

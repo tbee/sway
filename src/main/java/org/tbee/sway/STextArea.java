@@ -137,8 +137,8 @@ public class STextArea extends SBorderPanel {
      * @param bindingEndpoint
      * @return this, for fluent API
      */
-    public STextArea bind(BindingEndpoint<String> bindingEndpoint) {
-        text$().bind(bindingEndpoint);
+    public STextArea bindTo(BindingEndpoint<String> bindingEndpoint) {
+        text$().bindTo(bindingEndpoint);
         return this;
     }
 
@@ -149,7 +149,7 @@ public class STextArea extends SBorderPanel {
      * @return
      */
     public Binding binding(BindingEndpoint<String> bindingEndpoint) {
-        return text$().bind(bindingEndpoint);
+        return text$().bindTo(bindingEndpoint);
     }
 
 }

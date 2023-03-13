@@ -80,8 +80,8 @@ import java.util.Locale;
  * Directly to a bean:
  * <pre>{@code
  * var someBean = new SomeBean();
- * var sTextField1 = STextField.ofInteger().bind(someBean, "distance");
- * var sTextField2 = STextField.ofBind(someBean, "distance"); // determines property type and binds to it
+ * var sTextField1 = STextField.ofInteger().bindTo(someBean.distance$());
+ * var sTextField2 = STextField.ofBindTo(someBean.distance$()); // determines property type and binds to it
  * }
  * </pre>
  *
@@ -89,8 +89,8 @@ import java.util.Locale;
  * <pre>{@code
  * var someBean = new SomeBean();
  * var someBeanBinder = new BeanBinder<SomeBean>(someBean);
- * var sTextField = STextField.ofInteger().bind(someBeanBinder, "distance");
- * var sTextField = STextField.ofBind(someBeanBinder, "distance"); // determines property type and binds to it
+ * var sTextField = STextField.ofInteger().bindTo(someBeanBinder, "distance");
+ * var sTextField = STextField.ofBindTo(someBeanBinder, "distance"); // determines property type and binds to it
  * ...
  * var someBean2 = new SomeBean();
  * someBeanBinder.set(someBean2);
@@ -150,11 +150,11 @@ public class STextField<T> extends javax.swing.JTextField {
         return of(format);
     }
 
-    static public <T> STextField<T> ofBind(BindingEndpoint<T> bindingEndpoint) {
+    static public <T> STextField<T> ofBindTo(BindingEndpoint<T> bindingEndpoint) {
         if (bindingEndpoint.beanBinder() != null) {
-            return (STextField<T>) ofBind(bindingEndpoint.beanBinder(), bindingEndpoint.propertyName());
+            return (STextField<T>) ofBindTo(bindingEndpoint.beanBinder(), bindingEndpoint.propertyName());
         }
-        return ofBind(bindingEndpoint.bean(), bindingEndpoint.propertyName());
+        return ofBindTo(bindingEndpoint.bean(), bindingEndpoint.propertyName());
     }
 
     /**
@@ -164,7 +164,7 @@ public class STextField<T> extends javax.swing.JTextField {
      * @return
      * @param <T>
      */
-    static public <T> STextField<T> ofBind(Object bean, String propertyName) {
+    static public <T> STextField<T> ofBindTo(Object bean, String propertyName) {
         try {
             // Use Java's bean inspection classes to analyse the bean
             BeanInfo beanInfo = Introspector.getBeanInfo(bean.getClass());
@@ -183,14 +183,14 @@ public class STextField<T> extends javax.swing.JTextField {
             }
 
             // Create TextField
-            return (STextField<T>) of(propertyType).bind(BindingEndpoint.of(bean, propertyName));
+            return (STextField<T>) of(propertyType).bindTo(BindingEndpoint.of(bean, propertyName));
         }
         catch (IntrospectionException e) {
             throw new RuntimeException(e);
         }
     }
 
-    static public <T> STextField<T> ofBind(BeanBinder<T> beanBinder, String propertyName) {
+    static public <T> STextField<T> ofBindTo(BeanBinder<T> beanBinder, String propertyName) {
         try {
             // Use Java's bean inspection classes to analyse the bean
             BeanInfo beanInfo = Introspector.getBeanInfo(beanBinder.get().getClass());
@@ -209,7 +209,7 @@ public class STextField<T> extends javax.swing.JTextField {
             }
 
             // Create TextField
-            return (STextField<T>) of(propertyType).bind(BindingEndpoint.of(beanBinder, propertyName));
+            return (STextField<T>) of(propertyType).bindTo(BindingEndpoint.of(beanBinder, propertyName));
         }
         catch (IntrospectionException e) {
             throw new RuntimeException(e);
@@ -438,8 +438,8 @@ public class STextField<T> extends javax.swing.JTextField {
      * @param bindingEndpoint
      * @return this, for fluent API
      */
-    public STextField<T> bind(BindingEndpoint<T> bindingEndpoint) {
-        value$().bind(bindingEndpoint);
+    public STextField<T> bindTo(BindingEndpoint<T> bindingEndpoint) {
+        value$().bindTo(bindingEndpoint);
         return this;
     }
 
@@ -450,6 +450,6 @@ public class STextField<T> extends javax.swing.JTextField {
      * @return
      */
     public Binding binding(BindingEndpoint<T> bindingEndpoint) {
-        return value$().bind(bindingEndpoint);
+        return value$().bindTo(bindingEndpoint);
     }
 }

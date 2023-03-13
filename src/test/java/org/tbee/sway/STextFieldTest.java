@@ -107,7 +107,7 @@ public class STextFieldTest extends TestBase {
         // GIVEN
         final City city = new City();
         construct(() -> {
-            sTextField = STextField.ofString().name("sTextField").bind(city.name$());
+            sTextField = STextField.ofString().name("sTextField").bindTo(city.name$());
             return TestUtil.inJFrame(sTextField, focusMeComponent());
         });
 
@@ -132,7 +132,7 @@ public class STextFieldTest extends TestBase {
         // GIVEN
         final City city = new City();
         construct(() -> {
-            sTextField = STextField.ofInteger().name("sTextField").bind(city.distance$());
+            sTextField = STextField.ofInteger().name("sTextField").bindTo(city.distance$());
             return TestUtil.inJFrame(sTextField, focusMeComponent());
         });
 
@@ -159,7 +159,7 @@ public class STextFieldTest extends TestBase {
         // GIVEN
         final City city = new City();
         construct(() -> {
-            sTextField = STextField.ofInteger().name("sTextField").bind(city.distance$());
+            sTextField = STextField.ofInteger().name("sTextField").bindTo(city.distance$());
             return TestUtil.inJFrame(sTextField, focusMeComponent());
         });
 
