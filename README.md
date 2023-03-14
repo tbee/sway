@@ -38,7 +38,7 @@ sLabel.text$().bindTo(city.name$());
 // SCheckBox can be bound to a boolean property
 var sCheckBox = new SCheckBox("Growing").bindTo(city.growing$());
 // SCheckBox3 can be bound to a Boolean property, supporting 3 states: TRUE, FALSE, NULL
-var sCheckBox = new SCheckBox3("Cityrights").bind(city, City.CITYRIGHTS);
+var sCheckBox = new SCheckBox3("Cityrights").bindTo(city.cityrights$());
 
 // Add a list
 var sList = new SList<City>() //
@@ -54,7 +54,7 @@ var sButtonGroup = new SButtonGroup<Integer>() //
         .add(1, new SToggleButton("winner")) //
         .add(2, new SToggleButton("2nd")) //
         .add(3, new SToggleButton("3rd")) //
-        .bind(race, "position");
+        .bindTo(race.position$());
 var sPanel = new SFlowPanel(sButtonGroup.getButtons());
 
 // SButtonGroup has some practical convenience methods
