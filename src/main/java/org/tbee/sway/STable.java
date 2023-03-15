@@ -3,6 +3,7 @@ package org.tbee.sway;
 import com.google.common.base.Splitter;
 import net.coderazzi.filters.gui.AutoChoices;
 import net.coderazzi.filters.gui.TableFilterHeader;
+import org.tbee.sway.binding.BeanBinder;
 import org.tbee.sway.binding.BindingEndpoint;
 import org.tbee.sway.binding.ExceptionHandler;
 import org.tbee.sway.format.Format;
@@ -1341,5 +1342,13 @@ public class STable<TableType> extends SBorderPanel {
      */
     public STable<TableType> bindTo(Object bean, String propertyName) {
         return bindTo(BindingEndpoint.of(bean, propertyName));
+    }
+
+    /**
+     * Binds to the default property 'selection'.
+     * Binding in this way is not type safe!
+     */
+    public STable<TableType> bindTo(BeanBinder<?> beanBinder, String propertyName) {
+        return bindTo(BindingEndpoint.of(beanBinder, propertyName));
     }
 }

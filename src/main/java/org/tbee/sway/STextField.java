@@ -446,4 +446,12 @@ public class STextField<T> extends javax.swing.JTextField {
     public STextField<T> bindTo(Object bean, String propertyName) {
         return bindTo(BindingEndpoint.of(bean, propertyName));
     }
+
+    /**
+     * Binds to the default property 'value'.
+     * Binding in this way is not type safe!
+     */
+    public STextField<T> bindTo(BeanBinder<?> beanBinder, String propertyName) {
+        return bindTo(BindingEndpoint.of(beanBinder, propertyName));
+    }
 }

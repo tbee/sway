@@ -12,6 +12,7 @@
 
 package org.tbee.sway;
 
+import org.tbee.sway.binding.BeanBinder;
 import org.tbee.sway.binding.BindingEndpoint;
 import org.tbee.sway.binding.ExceptionHandler;
 import org.tbee.sway.support.IconRegistry;
@@ -342,6 +343,14 @@ public class SCheckBox3 extends JCheckBox {
 	 */
 	public SCheckBox3 bindTo(Object bean, String propertyName) {
 		return bindTo(BindingEndpoint.of(bean, propertyName));
+	}
+
+	/**
+	 * Binds to the default property 'selected3'.
+	 * Binding in this way is not type safe!
+	 */
+	public SCheckBox3 bindTo(BeanBinder<?> beanBinder, String propertyName) {
+		return bindTo(BindingEndpoint.of(beanBinder, propertyName));
 	}
 }
 

@@ -1,5 +1,6 @@
 package org.tbee.sway;
 
+import org.tbee.sway.binding.BeanBinder;
 import org.tbee.sway.binding.BindingEndpoint;
 import org.tbee.sway.binding.ExceptionHandler;
 import org.tbee.sway.format.Format;
@@ -322,6 +323,14 @@ public class SList<T> extends SBorderPanel {
      */
     public SList<T> bindTo(Object bean, String propertyName) {
         return bindTo(BindingEndpoint.of(bean, propertyName));
+    }
+
+    /**
+     * Binds to the default property 'selection'.
+     * Binding in this way is not type safe!
+     */
+    public SList<T> bindTo(BeanBinder<?> beanBinder, String propertyName) {
+        return bindTo(BindingEndpoint.of(beanBinder, propertyName));
     }
 
     // TBEERNOT ExceptionHandler
