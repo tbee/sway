@@ -150,7 +150,7 @@ Just include a dependency in your project. For the latest version see [Maven cen
 <dependency>
     <groupId>org.tbee.sway</groupId>
     <artifactId>sway</artifactId>
-    <version>1.0.0</version>
+    <version>1.1.0</version>
 </dependency>
 ```
 
