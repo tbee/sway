@@ -18,7 +18,7 @@ Or creating a strongly typed text field the is bound to the property of a Java b
 var sTextField = STextField.ofString();
 sTextField.value$().bindTo(city.name$());
 
-// Or a bit compact; value$() is STextField's default property 
+// Or a bit compact; value is STextField's default property 
 var sTextField = STextField.ofString().bindTo(city.name$());
 
 // Or even more compact

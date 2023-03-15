@@ -149,6 +149,13 @@ public class STextField<T> extends javax.swing.JTextField {
         return of(format);
     }
 
+    /**
+     * Determines the correct class, creates a TextField, and binds it to the value property.
+     *
+     * @param bindingEndpoint
+     * @return
+     * @param <T>
+     */
     static public <T> STextField<T> ofBindTo(BindingEndpoint<T> bindingEndpoint) {
         if (bindingEndpoint.beanBinder() != null) {
             return (STextField<T>) ofBindTo(bindingEndpoint.beanBinder(), bindingEndpoint.propertyName());
@@ -157,48 +164,43 @@ public class STextField<T> extends javax.swing.JTextField {
     }
 
     /**
-     * Determines the correct class, creates a TextField, and binds it to the property.
+     * Determines the correct class, creates a TextField, and binds it to the value property.
+     * This binding is not type safe!
+     *
      * @param bean
      * @param propertyName
      * @return
      * @param <T>
      */
-    static public <T> STextField<T> ofBindTo(Object bean, String propertyName) {
-        try {
-            // Use Java's bean inspection classes to analyse the bean
-            BeanInfo beanInfo = Introspector.getBeanInfo(bean.getClass());
-            PropertyDescriptor[] propertyDescriptors = beanInfo.getPropertyDescriptors();
-            PropertyDescriptor propertyDescriptor = Arrays.stream(propertyDescriptors) //
-                    .filter(pd -> pd.getName().equals(propertyName)) //
-                    .findFirst().orElse(null);
-            if (propertyDescriptor == null) {
-                throw new IllegalArgumentException("Property '" + propertyName + "' not found in bean " + bean.getClass());
-            }
-
-            // Handle primitive types
-            Class<?> propertyType = propertyDescriptor.getPropertyType();
-            if (propertyType.isPrimitive()) {
-                propertyType = ClassUtil.primitiveToClass(propertyType);
-            }
-
-            // Create TextField
-            return (STextField<T>) of(propertyType).bindTo(BindingEndpoint.of(bean, propertyName));
-        }
-        catch (IntrospectionException e) {
-            throw new RuntimeException(e);
-        }
+    static private <T> STextField<T> ofBindTo(Object bean, String propertyName) {
+        Class<?> propertyType = determinePropertyType(bean.getClass(), propertyName);
+        return (STextField<T>) of(propertyType).bindTo(BindingEndpoint.of(bean, propertyName));
     }
 
-    static public <T> STextField<T> ofBindTo(BeanBinder<T> beanBinder, String propertyName) {
+    /**
+     * Determines the correct class, creates a TextField, and binds it to the value property.
+     * This binding is not type safe!
+     *
+     * @param beanBinder
+     * @param propertyName
+     * @return
+     * @param <T>
+     */
+    static private <T> STextField<T> ofBindTo(BeanBinder<T> beanBinder, String propertyName) {
+        Class<?> propertyType = determinePropertyType(beanBinder.get().getClass(), propertyName);
+        return (STextField<T>) of(propertyType).bindTo(BindingEndpoint.of(beanBinder, propertyName));
+    }
+
+    static private <T> Class<?> determinePropertyType(Class<?> beanClass, String propertyName) {
         try {
             // Use Java's bean inspection classes to analyse the bean
-            BeanInfo beanInfo = Introspector.getBeanInfo(beanBinder.get().getClass());
+            BeanInfo beanInfo = Introspector.getBeanInfo(beanClass);
             PropertyDescriptor[] propertyDescriptors = beanInfo.getPropertyDescriptors();
             PropertyDescriptor propertyDescriptor = Arrays.stream(propertyDescriptors) //
                     .filter(pd -> pd.getName().equals(propertyName)) //
                     .findFirst().orElse(null);
             if (propertyDescriptor == null) {
-                throw new IllegalArgumentException("Property '" + propertyName + "' not found in bean " + beanBinder.get().getClass());
+                throw new IllegalArgumentException("Property '" + propertyName + "' not found in bean " + beanClass);
             }
 
             // Handle primitive types
@@ -208,7 +210,7 @@ public class STextField<T> extends javax.swing.JTextField {
             }
 
             // Create TextField
-            return (STextField<T>) of(propertyType).bindTo(BindingEndpoint.of(beanBinder, propertyName));
+            return propertyType;
         }
         catch (IntrospectionException e) {
             throw new RuntimeException(e);
