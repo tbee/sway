@@ -77,7 +77,7 @@ public class SwayTestApp {
         City bean = new City("test",12);
         BeanBinder<City> beanBinder = new BeanBinder<>(bean);
 
-        STextField.ofStringBlankIsNull().binding(City.name$(beanBinder)).unbind(); // test unbind
+        STextField.ofStringBlankIsNull().value$().bindTo(City.name$(beanBinder)).unbind(); // test unbind
 
         SMigPanel migPanel = new SMigPanel();
 

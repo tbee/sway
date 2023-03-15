@@ -1,6 +1,5 @@
 package org.tbee.sway;
 
-import org.tbee.sway.binding.Binding;
 import org.tbee.sway.binding.BindingEndpoint;
 import org.tbee.sway.binding.ExceptionHandler;
 import org.tbee.sway.format.Format;
@@ -44,7 +43,7 @@ import java.util.function.Supplier;
  *        .add(1, new SRadioButton("1")) //
  *        .add(2, new SRadioButton("2") //
  *        .add(3, new SRadioButton("3") //
- *        .bind(race, "position");
+ *        .bindTo(race, "position");
  * }
  * </pre>
  * Or combined with Format and FormatRegistry:
@@ -193,30 +192,6 @@ public class SButtonGroup<T> extends ButtonGroup {
         return null;
     }
 
-
-    // ========================================================
-    // BIND
-
-    /**
-     * Binds the default property 'value'
-     *
-     * @param bindingEndpoint
-     * @return this, for fluent API
-     */
-    public SButtonGroup<T> bindTo(BindingEndpoint<T> bindingEndpoint) {
-        value$().bindTo(bindingEndpoint);
-        return this;
-    }
-
-    /**
-     * Binds the default property 'value'
-     *
-     * @param bindingEndpoint
-     * @return
-     */
-    public Binding binding(BindingEndpoint<T> bindingEndpoint) {
-        return value$().bindTo(bindingEndpoint);
-    }
 
     // ===========================================================================================================================
     // CONVENIENCE
@@ -377,5 +352,25 @@ public class SButtonGroup<T> extends ButtonGroup {
 
         // Mark exception as handled
         return true;
+    }
+
+
+    // ========================================================
+    // FLUENT API
+
+    /**
+     * Binds the default property 'value'
+     */
+    public SButtonGroup<T> bindTo(BindingEndpoint<T> bindingEndpoint) {
+        value$().bindTo(bindingEndpoint);
+        return this;
+    }
+
+    /**
+     * Binds to the default property 'value'.
+     * Binding in this way is not type safe!
+     */
+    public SButtonGroup<T> bindTo(Object bean, String propertyName) {
+        return bindTo(BindingEndpoint.of(bean, propertyName));
     }
 }

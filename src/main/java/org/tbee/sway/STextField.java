@@ -1,7 +1,6 @@
 package org.tbee.sway;
 
 import org.tbee.sway.binding.BeanBinder;
-import org.tbee.sway.binding.Binding;
 import org.tbee.sway.binding.BindingEndpoint;
 import org.tbee.sway.binding.ExceptionHandler;
 import org.tbee.sway.format.Format;
@@ -430,13 +429,8 @@ public class STextField<T> extends javax.swing.JTextField {
         return this;
     }
 
-    // ========================================================
-    // BIND
-
     /**
      * Binds the default property 'value'
-     * @param bindingEndpoint
-     * @return this, for fluent API
      */
     public STextField<T> bindTo(BindingEndpoint<T> bindingEndpoint) {
         value$().bindTo(bindingEndpoint);
@@ -444,12 +438,10 @@ public class STextField<T> extends javax.swing.JTextField {
     }
 
     /**
-     * Binds the default property 'value'
-     *
-     * @param bindingEndpoint
-     * @return
+     * Binds to the default property 'value'.
+     * Binding in this way is not type safe!
      */
-    public Binding binding(BindingEndpoint<T> bindingEndpoint) {
-        return value$().bindTo(bindingEndpoint);
+    public STextField<T> bindTo(Object bean, String propertyName) {
+        return bindTo(BindingEndpoint.of(bean, propertyName));
     }
 }

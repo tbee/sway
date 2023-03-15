@@ -1,6 +1,5 @@
 package org.tbee.sway;
 
-import org.tbee.sway.binding.Binding;
 import org.tbee.sway.binding.BindingEndpoint;
 import org.tbee.sway.binding.ExceptionHandler;
 import org.tbee.sway.support.FocusInterpreter;
@@ -69,26 +68,6 @@ public class STextArea extends SBorderPanel {
     }
 
 
-    // ===========================================================================
-    // FLUENT API
-
-    @Override
-    public void setName(String v) {
-        super.setName(v);
-        jTextArea.setName(v + ".jTextArea"); // For tests we need to address the actual list
-    }
-    
-    public STextArea name(String v) {
-        setName(v);
-        return this;
-    }
-
-    public STextArea visible(boolean value) {
-        setVisible(value);
-        return this;
-    }
-
-
     // ========================================================
     // EXCEPTION HANDLER
 
@@ -128,14 +107,28 @@ public class STextArea extends SBorderPanel {
         return true;
     }
 
-    // ========================================================
-    // BIND
+
+    // ===========================================================================
+    // FLUENT API
+
+    @Override
+    public void setName(String v) {
+        super.setName(v);
+        jTextArea.setName(v + ".jTextArea"); // For tests we need to address the actual list
+    }
+
+    public STextArea name(String v) {
+        setName(v);
+        return this;
+    }
+
+    public STextArea visible(boolean value) {
+        setVisible(value);
+        return this;
+    }
 
     /**
-     * Binds the default property 'value'
-     *
-     * @param bindingEndpoint
-     * @return this, for fluent API
+     * Binds the default property 'text'
      */
     public STextArea bindTo(BindingEndpoint<String> bindingEndpoint) {
         text$().bindTo(bindingEndpoint);
@@ -143,13 +136,10 @@ public class STextArea extends SBorderPanel {
     }
 
     /**
-     * Binds the default property 'value'
-     *
-     * @param bindingEndpoint
-     * @return
+     * Binds to the default property 'test'.
+     * Binding in this way is not type safe!
      */
-    public Binding binding(BindingEndpoint<String> bindingEndpoint) {
-        return text$().bindTo(bindingEndpoint);
+    public STextArea bindTo(Object bean, String propertyName) {
+        return bindTo(BindingEndpoint.of(bean, propertyName));
     }
-
 }

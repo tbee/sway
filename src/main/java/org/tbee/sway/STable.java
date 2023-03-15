@@ -529,7 +529,7 @@ public class STable<TableType> extends SBorderPanel {
 
 
     // ===========================================================================
-    // BINING
+    // BINDING
 
     private Method addPropertyChangeListenerMethod = null;
     private Method removePropertyChangeListenerMethod = null;
@@ -1327,8 +1327,19 @@ public class STable<TableType> extends SBorderPanel {
         return this;
     }
 
+    /**
+     * Binds to the default property 'selection'
+     */
+    public STable<TableType> bindTo(BindingEndpoint<List<TableType>> bindingEndpoint) {
+        selection$().bindTo(bindingEndpoint);
+        return this;
+    }
 
-    // TBEERNOT BINDING of selection (bind with SList)
-    // TBEERNOT introduce value as the last selected row? because of: binding of value
-
+    /**
+     * Binds to the default property 'selection'.
+     * Binding in this way is not type safe!
+     */
+    public STable<TableType> bindTo(Object bean, String propertyName) {
+        return bindTo(BindingEndpoint.of(bean, propertyName));
+    }
 }

@@ -12,7 +12,6 @@
 
 package org.tbee.sway;
 
-import org.tbee.sway.binding.Binding;
 import org.tbee.sway.binding.BindingEndpoint;
 import org.tbee.sway.binding.ExceptionHandler;
 import org.tbee.sway.support.IconRegistry;
@@ -280,30 +279,6 @@ public class SCheckBox3 extends JCheckBox {
 		return true;
 	}
 
-	// ==================================================
-	// BIND
-
-	/**
-	 * Binds the default property 'selected3'
-	 *
-	 * @param bindingEndpoint
-	 * @return this, for fluent API
-	 */
-	public SCheckBox3 bindTo(BindingEndpoint<Boolean> bindingEndpoint) {
-		selected3$().bindTo(bindingEndpoint);
-		return this;
-	}
-
-	/**
-	 * Binds the default property 'selected3'
-	 *
-	 * @param bindingEndpoint
-	 * @return
-	 */
-	public Binding binding(BindingEndpoint<Boolean> bindingEndpoint) {
-		return selected3$().bindTo(bindingEndpoint);
-	}
-
 
 	// ==============================================
 	// FLUENT API
@@ -351,6 +326,22 @@ public class SCheckBox3 extends JCheckBox {
 	public SCheckBox3 visible(boolean value) {
 		setVisible(value);
 		return this;
+	}
+
+	/**
+	 * Binds the default property 'selected3'
+	 */
+	public SCheckBox3 bindTo(BindingEndpoint<Boolean> bindingEndpoint) {
+		selected3$().bindTo(bindingEndpoint);
+		return this;
+	}
+
+	/**
+	 * Binds to the default property 'selected3'.
+	 * Binding in this way is not type safe!
+	 */
+	public SCheckBox3 bindTo(Object bean, String propertyName) {
+		return bindTo(BindingEndpoint.of(bean, propertyName));
 	}
 }
 

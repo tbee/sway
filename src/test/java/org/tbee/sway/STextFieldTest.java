@@ -187,7 +187,7 @@ public class STextFieldTest extends TestBase {
         });
 
         // WHEN bind and unbind
-        SwingUtilities.invokeAndWait(() -> sTextField.binding(city.distance$()).unbind());
+        SwingUtilities.invokeAndWait(() -> sTextField.value$().bindTo(city.distance$()).unbind());
         // THEN there was a sync when binding, so textfield was changed
         Assertions.assertEquals("456", sTextField.getText());
         Assertions.assertEquals( 456, city.getDistance());

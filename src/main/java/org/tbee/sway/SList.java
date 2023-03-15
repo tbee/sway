@@ -308,7 +308,21 @@ public class SList<T> extends SBorderPanel {
     	return new SList<T>().data(data);
     }
 
+    /**
+     * Binds to the default property 'selection'
+     */
+    public SList<T> bindTo(BindingEndpoint<List<T>> bindingEndpoint) {
+        selection$().bindTo(bindingEndpoint);
+        return this;
+    }
+
+    /**
+     * Binds to the default property 'selection'.
+     * Binding in this way is not type safe!
+     */
+    public SList<T> bindTo(Object bean, String propertyName) {
+        return bindTo(BindingEndpoint.of(bean, propertyName));
+    }
+
     // TBEERNOT ExceptionHandler
-    // TBEERNOT BINDING of selection (bind with STable)
-    // TBEERNOT introduce value as the last selected row? because of: binding of value
 }

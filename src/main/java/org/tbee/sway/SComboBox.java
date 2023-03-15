@@ -1,6 +1,5 @@
 package org.tbee.sway;
 
-import org.tbee.sway.binding.Binding;
 import org.tbee.sway.binding.BindingEndpoint;
 import org.tbee.sway.binding.ExceptionHandler;
 import org.tbee.sway.format.Format;
@@ -226,20 +225,6 @@ public class SComboBox<T> extends JComboBox<T> {
     }
 
 
-    // ===========================================================================
-    // FLUENT API
-
-    public SComboBox<T> name(String v) {
-        setName(v);
-        return this;
-    }
-
-    public SComboBox<T> visible(boolean v) {
-        setVisible(v);
-        return this;
-    }
-
-
     // ========================================================
     // EXCEPTION HANDLER
 
@@ -279,13 +264,21 @@ public class SComboBox<T> extends JComboBox<T> {
         return true;
     }
 
-    // ========================================================
-    // BIND
+    // ===========================================================================
+    // FLUENT API
+
+    public SComboBox<T> name(String v) {
+        setName(v);
+        return this;
+    }
+
+    public SComboBox<T> visible(boolean v) {
+        setVisible(v);
+        return this;
+    }
 
     /**
-     * Binds the default property 'value'
-     * @param bindingEndpoint
-     * @return this, for fluent API
+     * Binds to the default property 'value'
      */
     public SComboBox<T> bindTo(BindingEndpoint<T> bindingEndpoint) {
         value$().bindTo(bindingEndpoint);
@@ -293,13 +286,11 @@ public class SComboBox<T> extends JComboBox<T> {
     }
 
     /**
-     * Binds the default property 'value'
-     *
-     * @param bindingEndpoint
-     * @return
+     * Binds to the default property 'value'.
+     * Binding in this way is not type safe!
      */
-    public Binding binding(BindingEndpoint<T> bindingEndpoint) {
-        return value$().bindTo(bindingEndpoint);
+    public SComboBox<T> bindTo(Object bean, String propertyName) {
+        return bindTo(BindingEndpoint.of(bean, propertyName));
     }
 
     // TBEERNOT Tests
