@@ -14,8 +14,8 @@ public class SListTest extends TestBase {
     public void happyTest() throws Exception {
 
         // GIVEN
-        City amsterdam = new City("Amsterdam", 150);
-        City berlin = new City("Berlin", 560);
+        City amsterdam = City.of("Amsterdam", 150);
+        City berlin = City.of("Berlin", 560);
         List<City> cities = List.of(amsterdam, berlin);
         var ref = new AtomicReference<SList<City>>();
         construct(() -> {
@@ -35,11 +35,11 @@ public class SListTest extends TestBase {
     public void happySelectionSingleTest() throws Exception {
 
         // GIVEN
-        City amsterdam = new City("Amsterdam", 150);
-        City berlin = new City("Berlin", 560);
-        City bredevoort = new City("Bredevoort", 5);
-        City paris = new City("Paris", 575);
-        City rome = new City("Rome", 1560);
+        City amsterdam = City.of("Amsterdam", 150);
+        City berlin = City.of("Berlin", 560);
+        City bredevoort = City.of("Bredevoort", 5);
+        City paris = City.of("Paris", 575);
+        City rome = City.of("Rome", 1560);
         List<City> cities = List.of(berlin, bredevoort, amsterdam, rome, paris);
 
         var ref = new AtomicReference<SList<City>>();

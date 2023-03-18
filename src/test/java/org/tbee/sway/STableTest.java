@@ -26,8 +26,8 @@ public class STableTest extends TestBase {
     public void happyStringBindingTest() throws Exception {
 
         // GIVEN
-        City amsterdam = new City("Amsterdam", 150);
-        City berlin = new City("Berlin", 560);
+        City amsterdam = City.of("Amsterdam", 150);
+        City berlin = City.of("Berlin", 560);
         List<City> data = List.of(amsterdam, berlin);
         construct(() -> {
             sTable = new STable<City>() //
@@ -53,8 +53,8 @@ public class STableTest extends TestBase {
     public void happyStringPropertyTest() throws Exception {
 
         // GIVEN
-        City amsterdam = new City("Amsterdam", 150);
-        City berlin = new City("Berlin", 560);
+        City amsterdam = City.of("Amsterdam", 150);
+        City berlin = City.of("Berlin", 560);
         List<City> data = List.of(amsterdam, berlin);
         construct(() -> {
             sTable = new STable<City>() //
@@ -78,8 +78,8 @@ public class STableTest extends TestBase {
     public void happyStringMonitorTest() throws Exception {
 
         // GIVEN
-        City amsterdam = new City("Amsterdam", 150);
-        City berlin = new City("Berlin", 560);
+        City amsterdam = City.of("Amsterdam", 150);
+        City berlin = City.of("Berlin", 560);
         List<City> data = List.of(amsterdam, berlin);
         construct(() -> {
             sTable = new STable<City>() //
@@ -103,10 +103,10 @@ public class STableTest extends TestBase {
     public void happyEditorTest() throws Exception {
 
         // GIVEN
-        City amsterdam = new City("Amsterdam", 150);
-        City berlin = new City("Berlin", 560);
-        City rome = new City("Rome", 1560);
-        City paris = new City("Paris", 575);
+        City amsterdam = City.of("Amsterdam", 150);
+        City berlin = City.of("Berlin", 560);
+        City rome = City.of("Rome", 1560);
+        City paris = City.of("Paris", 575);
         amsterdam.sisterCity(berlin);
         List<City> data = List.of(amsterdam, berlin, rome, paris);
 
@@ -133,10 +133,10 @@ public class STableTest extends TestBase {
     public void happyEditorViaFormatRegistryTest() throws Exception {
 
         // GIVEN
-        City amsterdam = new City("Amsterdam", 150);
-        City berlin = new City("Berlin", 560);
-        City rome = new City("Rome", 1560);
-        City paris = new City("Paris", 575);
+        City amsterdam = City.of("Amsterdam", 150);
+        City berlin = City.of("Berlin", 560);
+        City rome = City.of("Rome", 1560);
+        City paris = City.of("Paris", 575);
         amsterdam.sisterCity(berlin);
         List<City> data = List.of(amsterdam, berlin, rome, paris);
 
@@ -167,11 +167,11 @@ public class STableTest extends TestBase {
     public void happySortTest() throws Exception {
 
         // GIVEN
-        City amsterdam = new City("Amsterdam", 150);
-        City berlin = new City("Berlin", 560);
-        City bredevoort = new City("Bredevoort", 5);
-        City paris = new City("Paris", 575);
-        City rome = new City("Rome", 1560);
+        City amsterdam = City.of("Amsterdam", 150);
+        City berlin = City.of("Berlin", 560);
+        City bredevoort = City.of("Bredevoort", 5);
+        City paris = City.of("Paris", 575);
+        City rome = City.of("Rome", 1560);
         amsterdam.sisterCity(berlin);
         bredevoort.sisterCity(rome);
         List<City> data = List.of(berlin, bredevoort, amsterdam, rome, paris);
@@ -224,11 +224,11 @@ public class STableTest extends TestBase {
     public void happyGetSelectionSingleWhileSortedTest() throws Exception {
 
         // GIVEN
-        City amsterdam = new City("Amsterdam", 150);
-        City berlin = new City("Berlin", 560);
-        City bredevoort = new City("Bredevoort", 5);
-        City paris = new City("Paris", 575);
-        City rome = new City("Rome", 1560);
+        City amsterdam = City.of("Amsterdam", 150);
+        City berlin = City.of("Berlin", 560);
+        City bredevoort = City.of("Bredevoort", 5);
+        City paris = City.of("Paris", 575);
+        City rome = City.of("Rome", 1560);
         amsterdam.sisterCity(berlin);
         bredevoort.sisterCity(rome);
         List<City> data = List.of(berlin, bredevoort, amsterdam, rome, paris);
@@ -275,11 +275,11 @@ public class STableTest extends TestBase {
     public void happyGetSelectionMultipleWhileSortedTest() throws Exception {
 
         // GIVEN
-        City amsterdam = new City("Amsterdam", 150);
-        City berlin = new City("Berlin", 560);
-        City bredevoort = new City("Bredevoort", 5);
-        City paris = new City("Paris", 575);
-        City rome = new City("Rome", 1560);
+        City amsterdam = City.of("Amsterdam", 150);
+        City berlin = City.of("Berlin", 560);
+        City bredevoort = City.of("Bredevoort", 5);
+        City paris = City.of("Paris", 575);
+        City rome = City.of("Rome", 1560);
         List<City> data = List.of(berlin, bredevoort, amsterdam, rome, paris);
 
         CityFormat cityFormat = new CityFormat(data);
@@ -325,11 +325,11 @@ public class STableTest extends TestBase {
     public void happySetSelectionSingleWhileSortedTest() throws Exception {
 
         // GIVEN
-        City amsterdam = new City("Amsterdam", 150);
-        City berlin = new City("Berlin", 560);
-        City bredevoort = new City("Bredevoort", 5);
-        City paris = new City("Paris", 575);
-        City rome = new City("Rome", 1560);
+        City amsterdam = City.of("Amsterdam", 150);
+        City berlin = City.of("Berlin", 560);
+        City bredevoort = City.of("Bredevoort", 5);
+        City paris = City.of("Paris", 575);
+        City rome = City.of("Rome", 1560);
         List<City> data = List.of(berlin, bredevoort, amsterdam, rome, paris);
 
         construct(() -> {
@@ -372,11 +372,11 @@ public class STableTest extends TestBase {
     public void happySetSelectionMultipleWhileSortedTest() throws Exception {
 
         // GIVEN
-        City amsterdam = new City("Amsterdam", 150);
-        City berlin = new City("Berlin", 560);
-        City bredevoort = new City("Bredevoort", 5);
-        City paris = new City("Paris", 575);
-        City rome = new City("Rome", 1560);
+        City amsterdam = City.of("Amsterdam", 150);
+        City berlin = City.of("Berlin", 560);
+        City bredevoort = City.of("Bredevoort", 5);
+        City paris = City.of("Paris", 575);
+        City rome = City.of("Rome", 1560);
         List<City> data = List.of(berlin, bredevoort, amsterdam, rome, paris);
 
         construct(() -> {
@@ -413,11 +413,11 @@ public class STableTest extends TestBase {
     public void happySetSelectionIntervalWhileSortedTest() throws Exception {
 
         // GIVEN
-        City amsterdam = new City("Amsterdam", 150);
-        City berlin = new City("Berlin", 560);
-        City bredevoort = new City("Bredevoort", 5);
-        City paris = new City("Paris", 575);
-        City rome = new City("Rome", 1560);
+        City amsterdam = City.of("Amsterdam", 150);
+        City berlin = City.of("Berlin", 560);
+        City bredevoort = City.of("Bredevoort", 5);
+        City paris = City.of("Paris", 575);
+        City rome = City.of("Rome", 1560);
         List<City> data = List.of(berlin, bredevoort, amsterdam, rome, paris);
 
         construct(() -> {

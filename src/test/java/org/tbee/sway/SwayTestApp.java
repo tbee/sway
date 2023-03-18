@@ -74,7 +74,7 @@ public class SwayTestApp {
     }
 
     static private JPanel sTextField() {
-        City bean = new City("test",12);
+        City bean = City.of("test",12);
         BeanBinder<City> beanBinder = new BeanBinder<>(bean);
 
         STextField.ofStringBlankIsNull().value$().bindTo(City.name$(beanBinder)).unbind(); // test unbind
@@ -171,10 +171,10 @@ public class SwayTestApp {
     }
 
     static private SVPanel sList() {
-        City amsterdam = new City("Amsterdam", 150);
-        City berlin = new City("Berlin", 560);
-        City rome = new City("Rome", 1560);
-        City paris = new City("Paris", 575);
+        City amsterdam = City.of("Amsterdam", 150);
+        City berlin = City.of("Berlin", 560);
+        City rome = City.of("Rome", 1560);
+        City paris = City.of("Paris", 575);
         amsterdam.sisterCity(berlin);
         rome.sisterCity(paris);
         var cities = List.of(amsterdam, berlin, rome, paris);
@@ -189,10 +189,10 @@ public class SwayTestApp {
     }
 
     static private SVPanel sComboBox() {
-        City amsterdam = new City("Amsterdam", 150);
-        City berlin = new City("Berlin", 560);
-        City rome = new City("Rome", 1560);
-        City paris = new City("Paris", 575);
+        City amsterdam = City.of("Amsterdam", 150);
+        City berlin = City.of("Berlin", 560);
+        City rome = City.of("Rome", 1560);
+        City paris = City.of("Paris", 575);
         amsterdam.sisterCity(berlin);
         rome.sisterCity(paris);
         var cities = List.of(amsterdam, berlin, rome, paris);
@@ -215,10 +215,10 @@ public class SwayTestApp {
 
     static private SVPanel sTable() {
 
-        City amsterdam = new City("Amsterdam", 150);
-        City berlin = new City("Berlin", 560);
-        City rome = new City("Rome", 1560);
-        City paris = new City("Paris", 575);
+        City amsterdam = City.of("Amsterdam", 150);
+        City berlin = City.of("Berlin", 560);
+        City rome = City.of("Rome", 1560);
+        City paris = City.of("Paris", 575);
         amsterdam.sisterCity(berlin);
         rome.sisterCity(paris);
         var cities = List.of(amsterdam, berlin, rome, paris);
@@ -257,7 +257,7 @@ public class SwayTestApp {
 
                 // data
                 .data(cities) //
-                .beanFactory(() -> new City()) //
+                .beanFactory(() -> City.of()) //
                 .onRowAdded((b, i) -> System.out.println("added " + i + ": " + b)) //
                 
                 // must be last
@@ -276,7 +276,7 @@ public class SwayTestApp {
     }
 
     static private JPanel sCheckBox() {
-        City city = new City("test",12);
+        City city = City.of("test",12);
         BeanBinder<City> beanBinder = new BeanBinder<>(city);
 
         SMigPanel migPanel = new SMigPanel();
@@ -297,7 +297,7 @@ public class SwayTestApp {
     }
     
     static private SMigPanel sTextArea() {
-        City city = new City("test",12);
+        City city = City.of("test",12);
 
         SMigPanel migPanel = new SMigPanel();
     	migPanel.addLabelAndField("bind 1", new STextArea().bindTo(city.name$())).wrap();

@@ -11,7 +11,7 @@ public class SCheckBoxTest extends TestBase {
     public void happyTest() throws Exception {
 
         // GIVEN
-        City city = new City("Amsterdam", 150);
+        City city = City.of("Amsterdam", 150);
         construct(() -> {
             sCheckBox = new SCheckBox() //
                     .bindTo(city.growing$()) //
