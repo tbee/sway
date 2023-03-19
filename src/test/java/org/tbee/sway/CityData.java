@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Bean(stripSuffix = "Data")
-abstract public class CityData extends AbstractBean<CityData> {
+abstract public class CityData extends AbstractBean<City> {
 
     private final City self = (City)this;
 

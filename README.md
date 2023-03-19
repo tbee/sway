@@ -141,7 +141,7 @@ This means you can have a class with only data (instance variables) and using so
 // This will generate a class "City extends CityData" 
 // With a "name" property (setName, getName, name$(), etc).
 @Bean(stripSuffix = "Data")
-abstract public class CityData extends AbstractBean<CityData> {
+abstract public class CityData extends AbstractBean<City> {
     @Property
     String name;
 }
@@ -158,19 +158,21 @@ The triple stack is the most straight forward approach, with three classes,
 where the middle one contains the generated code. 
 
 ``` java
+// Contains the data
 @Bean(stripSuffix = "Data", appendSuffixToBean = "Bean")
-abstract public class TripleStackData extends AbstractBean<CityData> {
+abstract public class TripleStackData extends AbstractBean<TripleStack> {
     @Property
     String name;
 }
 
-// Contains generated code
+// Contains the generated code
 public class TripleStackBean extends TripleStackData {
     public String getName() {...}
     public void setName(String name) {...}
+    public TripleStack name(String v) {...}
 }
 
-// Class you need to write yourself, contains custom code
+// Contains the custom code 
 public class TripleStack extends TripleStackBean {
     public void custom() {
         setName("custom");
@@ -178,14 +180,14 @@ public class TripleStack extends TripleStackBean {
 }
 ```
 
-The triple stack are a lot of classes, ideally one would want to have all code, data and custom in one class. 
-The is where the double stack comes in. 
-It uses a small trick to be able to access the generated methods from the data class through the "self" variable.
+The triple stack approach requires many classes, ideally one would want to have data and custom code in one class. 
+This is where the double stack comes in. 
+It uses a small trick to be able to access the generated methods from the data class, using a "self" variable.
 
 ``` java
-@Bean(stripSuffix = "Data", appendSuffixToBean = "Bean")
-abstract public class DoubleStackData extends AbstractBean<CityData> {
-
+// Contains both data and custom code
+@Bean(stripSuffix = "Data")
+abstract public class DoubleStackData extends AbstractBean<DoubleStack> {
     @Property
     String name;
     
@@ -196,18 +198,19 @@ abstract public class DoubleStackData extends AbstractBean<CityData> {
     }
 }
 
-// Contains generated code
+// Contains the generated code
 public class DoubleStack extends TripleStackData {
     public String getName() {...}
     public void setName(String name) {...}
+    public DoubleStack name(String v) {...}
 }
 ```
 
 Using self seems like a small price to pay for not having to write all the JavaBean methods manually.
 But that is a personal opinion.
 
-The bean generator use compiler annotations, so it will automatically be picked up by build tool.
-IDE usually need to have compiler annotations activated.
+The bean generator uses compiler annotations, so it will automatically be picked up by a build tool like Maven.
+IDEs usually need to have compiler annotations activated.
 
 
 ## Compatibility
