@@ -13,6 +13,9 @@ public class ListPretendingToHaveRemovedItem<T> extends AbstractList<T> {
      * @param supposedlyRemovedIndex
      */
     public ListPretendingToHaveRemovedItem(List<T> list, int supposedlyRemovedIndex) {
+        if (supposedlyRemovedIndex < 0) {
+            throw new IllegalArgumentException("supposedlyRemovedIndex must be >= 0");
+        }
         this.list = list;
         this.supposedlyRemovedIndex = supposedlyRemovedIndex;
     }

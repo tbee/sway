@@ -10,7 +10,7 @@ public class ListPretendingToHaveAddedItem<T>  extends AbstractList<T> {
     final private T supposedlyAddedItem;
 
     /**
-     *
+     * Assumes the item is added at the end.
      * @param list
      * @param supposedlyAddedItem
      */
@@ -26,6 +26,9 @@ public class ListPretendingToHaveAddedItem<T>  extends AbstractList<T> {
      * @param supposedlyAddedItem
      */
     public ListPretendingToHaveAddedItem(List<T> list, int supposedlyAddedIndex, T supposedlyAddedItem) {
+        if (supposedlyAddedIndex < 0) {
+            throw new IllegalArgumentException("supposedlyAddedIndex must be >= 0");
+        }
         this.list = list;
         this.supposedlyAddedIndex = supposedlyAddedIndex;
         this.supposedlyAddedItem = supposedlyAddedItem;

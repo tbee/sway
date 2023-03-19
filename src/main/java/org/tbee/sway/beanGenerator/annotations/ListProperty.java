@@ -11,12 +11,12 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.SOURCE)
 public @interface ListProperty {
     /**
-     * This is the plural form
+     * The plural name
      * @return
      */
     public String name() default "";
     /**
-     * This is the singular form
+     * The singular name
      * @return
      */
     public String nameSingular() default "";
