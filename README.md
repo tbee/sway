@@ -147,7 +147,7 @@ abstract public class CityData extends AbstractBean<CityData> {
 }
 ```
 
-The data class needs to extends AbstractBean in order to provide the expected property change methods.
+The data class needs to extend AbstractBean in order to provide the expected property change methods.
 Or you will need to add them manually.
 
 Things become interesting when custom logic needs to be added. 

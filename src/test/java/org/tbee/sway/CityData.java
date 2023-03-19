@@ -27,8 +27,8 @@ abstract public class CityData extends AbstractBean<CityData> {
     }
 
     /** name: string property */
-    @Property
-    String name;
+    @Property(name="name")
+    String nameNot;
 
     /** distance: integer property */
     @Property
