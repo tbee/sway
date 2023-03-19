@@ -24,8 +24,18 @@ public @interface ListProperty {
     public String nameSingular() default "";
 
     public boolean getter() default true;
+    /**
+     * Some other methods need the getter to be present,
+     * If it should not be visible, then this can make it private
+     * @return
+     */
     public Scope getterScope() default Scope.PUBLIC;
-    public boolean setter() default true;
+    public boolean setter() default false;
+    /**
+     * Some other methods need the setter to be present,
+     * If it should not be visible, then this can make it private
+     * @return
+     */
     public Scope setterScope() default Scope.PUBLIC;
     public boolean wither() default false;
 
@@ -40,7 +50,7 @@ public @interface ListProperty {
      * RecordStyleWither and RecordStyleGetter will conflict
      * @return
      */
-    public boolean recordStyleWither() default true;
+    public boolean recordStyleWither() default false;
 
     public boolean adder() default true;
     public boolean remover() default true;

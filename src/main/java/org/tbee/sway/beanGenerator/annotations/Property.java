@@ -15,8 +15,18 @@ public @interface Property  {
     public String name() default "";
 
     public boolean getter() default true;
+    /**
+     * Some other methods need the getter to be present.
+     * If it should not be visible, then this can make it private
+     * @return
+     */
     public Scope getterScope() default Scope.PUBLIC;
     public boolean setter() default true;
+    /**
+     * Some other methods need the setter to be present,
+     * If it should not be visible, then this can make it private
+     * @return
+     */
     public Scope setterScope() default Scope.PUBLIC;
     public boolean wither() default false;
 
