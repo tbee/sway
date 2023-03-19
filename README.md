@@ -133,6 +133,83 @@ public class ShowOnMapForCityTextFields implements Action {
 }
 ```
 
+## Bean generator
+Sway includes a bean generator.
+This means you can have a class with only data (instance variables) and using some annotations all the methods are generated.
+
+``` java
+// This will generate a class "City extends CityData" 
+// With a "name" property (setName, getName, name$(), etc).
+@Bean(stripSuffix = "Data")
+abstract public class CityData extends AbstractBean<CityData> {
+    @Property
+    String name;
+}
+```
+
+The data class needs to extends AbstractBean in order to provide the expected property change methods.
+Or you will need to add them manually.
+
+Things become interesting when custom logic needs to be added. 
+It is very likely the custom code needs to call a setter in order to send the appropriated events for binding.
+For this the bean generator supports a dual and triple stack approach.
+
+The triple stack is the most straight forward approach, with three classes, 
+where the middle one contains the generated code. 
+
+``` java
+@Bean(stripSuffix = "Data", appendSuffixToBean = "Bean")
+abstract public class TripleStackData extends AbstractBean<CityData> {
+    @Property
+    String name;
+}
+
+// Contains generated code
+public class TripleStackBean extends TripleStackData {
+    public String getName() {...}
+    public void setName(String name) {...}
+}
+
+// Class you need to write yourself, contains custom code
+public class TripleStack extends TripleStackBean {
+    public void custom() {
+        setName("custom");
+    }
+}
+```
+
+The triple stack are a lot of classes, ideally one would want to have all code, data and custom in one class. 
+The is where the double stack comes in. 
+It uses a small trick to be able to access the generated methods from the data class through the "self" variable.
+
+``` java
+@Bean(stripSuffix = "Data", appendSuffixToBean = "Bean")
+abstract public class DoubleStackData extends AbstractBean<CityData> {
+
+    @Property
+    String name;
+    
+    private final DoubleStack self = (DoubleStack)this;
+    
+    public void custom() {
+        self.setName("custom");
+    }
+}
+
+// Contains generated code
+public class DoubleStack extends TripleStackData {
+    public String getName() {...}
+    public void setName(String name) {...}
+}
+```
+
+Using self seems like a small price to pay for not having to write all the JavaBean methods manually.
+But that is a personal opinion.
+
+The bean generator use compiler annotations, so it will automatically be picked up by build tool.
+IDE usually need to have compiler annotations activated.
+
+
 ## Compatibility
 The components are still the standard Swing components, only with an opinionated API, but they should blend-in nicely in existing applications.
 
