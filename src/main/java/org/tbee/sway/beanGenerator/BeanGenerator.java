@@ -182,16 +182,32 @@ public class BeanGenerator extends AbstractProcessor {
         // Property annotation is required
         // TBEERNOT should we assume a default property? And introduce an igonre boolean?
         Property propertyAnnotation = variableElement.getAnnotation(Property.class);
-        if (propertyAnnotation == null) {
+        if (propertyAnnotation != null) {
+            processPropertyAnnotation(propertyAnnotation, writer, variableElement, classContext, variableRecords);
             return;
         }
+    }
+
+    private void processPropertyAnnotation(Property propertyAnnotation, PrintWriter writer, VariableElement variableElement, Map<String, String> classContext, List<VariableRecord> variableRecords) {
+
         Map<String, String> variableContext = new HashMap<>(classContext);
         variableRecords.add(new VariableRecord(propertyAnnotation, variableContext));
 
         // Get info
         String variableType = variableElement.asType().toString();
-        boolean isPrimitive = variableElement.asType().getKind().isPrimitive();
         variableContext.put("VariableType", variableType);
+        String bindType = switch(variableElement.asType().getKind()) {
+            case BOOLEAN -> Boolean.class.getName();
+            case BYTE -> Byte.class.getName();
+            case SHORT -> Short.class.getName();
+            case INT -> Integer.class.getName();
+            case LONG -> Long.class.getName();
+            case CHAR -> Character.class.getName();
+            case FLOAT -> Float.class.getName();
+            case DOUBLE -> Double.class.getName();
+            default -> variableType;
+        };
+        variableContext.put("BindType", bindType);
         String variableName = variableElement.getSimpleName().toString();
         variableContext.put("variableName", variableName);
         variableContext.put("VariableName", firstUpper(variableName));
@@ -248,16 +264,16 @@ public class BeanGenerator extends AbstractProcessor {
                         }
                     """));
         }
-        if (propertyAnnotation.bindEndpoint() && !isPrimitive) {
+        if (propertyAnnotation.bindEndpoint()) {
             writer.print(resolve(variableContext, """
-                        public org.tbee.sway.binding.BindingEndpoint<%VariableType%> %variableName%$() { 
+                        public org.tbee.sway.binding.BindingEndpoint<%BindType%> %variableName%$() { 
                             return org.tbee.sway.binding.BindingEndpoint.of(this, "%variableName%");
                         }
                     """));
         }
-        if (propertyAnnotation.beanBinderEndpoint() && !isPrimitive) {
+        if (propertyAnnotation.beanBinderEndpoint()) {
             writer.print(resolve(variableContext, """
-                        static public org.tbee.sway.binding.BindingEndpoint<%VariableType%> %variableName%$(org.tbee.sway.binding.BeanBinder<%ClassName%> beanBinder) { 
+                        static public org.tbee.sway.binding.BindingEndpoint<%BindType%> %variableName%$(org.tbee.sway.binding.BeanBinder<%ClassName%> beanBinder) { 
                             return org.tbee.sway.binding.BindingEndpoint.of(beanBinder, "%variableName%");
                         }
                     """));

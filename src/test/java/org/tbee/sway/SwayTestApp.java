@@ -32,7 +32,7 @@ public class SwayTestApp {
 
         SwingUtilities.invokeAndWait(() -> {
             SMigPanel panel = new SMigPanel() //
-                    //.debug()
+                    .debug()
                     ;
 
             panel.addField(sTable()).grow();
@@ -46,8 +46,8 @@ public class SwayTestApp {
 
             SFrame jFrame = SFrame.of(panel) //
                     .exitOnClose() //
-                    .sizeToPreferred()
-                    //.maximize() //
+                    .sizeToPreferred() //
+                    .maximize() //
                     .visible(true);
 
             System.out.println(DebugUtil.componentTreeAsString(jFrame));

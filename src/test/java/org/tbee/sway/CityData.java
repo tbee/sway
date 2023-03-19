@@ -2,6 +2,8 @@ package org.tbee.sway;
 
 import org.tbee.sway.beanGenerator.annotations.Bean;
 import org.tbee.sway.beanGenerator.annotations.Property;
+import org.tbee.sway.binding.BeanBinder;
+import org.tbee.sway.binding.BindingEndpoint;
 import org.tbee.util.AbstractBean;
 
 import java.math.BigDecimal;
@@ -28,38 +30,31 @@ abstract public class CityData extends AbstractBean<CityData> {
     /** distance: integer property */
     @Property
     int distance;
-    public org.tbee.sway.binding.BindingEndpoint<java.lang.Integer> distance$() {
-        return org.tbee.sway.binding.BindingEndpoint.of(this, "distance");
-    }
-    static public org.tbee.sway.binding.BindingEndpoint<java.lang.Integer> distance$(org.tbee.sway.binding.BeanBinder<org.tbee.sway.City> beanBinder) {
-        return org.tbee.sway.binding.BindingEndpoint.of(beanBinder, "distance");
-    }
-
 
     /** distanceInt: a property without actual storage, but forwarding to age */
-//    public void setDistanceInt(Integer v) {
-//        setDistance(v);
-//    }
-//    public Integer getDistanceInt() {
-//        return getDistance();
-//    }
-//    static public String DISTANCEINT = "distanceInt";
-//    public CityData distanceInt(Integer v) {
-//        setDistanceInt(v);
-//        return this;
-//    }
+    public void setDistanceInt(Integer v) {
+        self.setDistance(v);
+    }
+    public Integer getDistanceInt() {
+        return self.getDistance();
+    }
+    static public String DISTANCEINT = "distanceInt";
+    public CityData distanceInt(Integer v) {
+        setDistanceInt(v);
+        return this;
+    }
 
     /** calc: a derived property */
-//    public Integer getRoundTrip() {
-//        return distance * 2;
-//    }
-//    static public String ROUNDTRIP = "roundTrip";
-//    public BindingEndpoint<Integer> roundTrip$() {
-//        return BindingEndpoint.of(this, ROUNDTRIP);
-//    }
-//    static public BindingEndpoint<Integer> roundTrip$(BeanBinder<CityData> beanBinder) {
-//        return BindingEndpoint.of(beanBinder, ROUNDTRIP);
-//    }
+    public Integer getRoundTrip() {
+        return distance * 2;
+    }
+    static public String ROUNDTRIP = "roundTrip";
+    public BindingEndpoint<Integer> roundTrip$() {
+        return BindingEndpoint.of(this, ROUNDTRIP);
+    }
+    static public BindingEndpoint<Integer> roundTrip$(BeanBinder<City> beanBinder) {
+        return BindingEndpoint.of(beanBinder, ROUNDTRIP);
+    }
 
     /** surface: BigDecimal property */
     @Property
@@ -68,12 +63,6 @@ abstract public class CityData extends AbstractBean<CityData> {
     /** growing: boolean property */
     @Property
     boolean growing = true;
-    public org.tbee.sway.binding.BindingEndpoint<java.lang.Boolean> growing$() {
-        return org.tbee.sway.binding.BindingEndpoint.of(this, "growing");
-    }
-    static public org.tbee.sway.binding.BindingEndpoint<java.lang.Boolean> growing$(org.tbee.sway.binding.BeanBinder<org.tbee.sway.City> beanBinder) {
-        return org.tbee.sway.binding.BindingEndpoint.of(beanBinder, "growing");
-    }
 
     /** cityRights: Boolean property */
     @Property
