@@ -297,7 +297,6 @@ public class BeanGenerator extends AbstractProcessor {
         DeclaredType declaredType = (DeclaredType) variableElement.asType();
         String listType = declaredType.getTypeArguments().get(0).toString();
         variableContext.put("ListType", listType);
-        variableContext.put("BindType", variableType); // no primaries are possible here
         String variableName = variableElement.getSimpleName().toString();
         variableContext.put("variableName", variableName);
         String propertyName = !listPropertyAnnotation.name().isBlank() ? listPropertyAnnotation.name() : variableName;
@@ -307,7 +306,6 @@ public class BeanGenerator extends AbstractProcessor {
         String propertyNameSingular = !listPropertyAnnotation.nameSingular().isBlank() ? listPropertyAnnotation.nameSingular() : propertyName;
         variableContext.put("propertyNameSingular", propertyNameSingular);
         variableContext.put("PropertyNameSingular", firstUpper(propertyNameSingular));
-        variableContext.put("PROPERTYNAMESingular", propertyNameSingular.toUpperCase());
 
         writer.print(resolve(variableContext, """
                         // --------------------- 
@@ -324,6 +322,40 @@ public class BeanGenerator extends AbstractProcessor {
             writer.print(resolve(variableContext, """
                         public %VariableType% %propertyName%() { 
                             return get%PropertyName%(); 
+                        }
+                    """));
+        }
+        if (listPropertyAnnotation.setter()) {
+            writer.print(resolve(variableContext, """
+                        public void set%PropertyName%(%VariableType% v) {
+                            var oldValue = get%PropertyName%(); 
+                            var newValue = java.util.Collections.unmodifiableList(v);
+                            fireVetoableChange("%propertyName%", oldValue, newValue);
+                            this.%variableName% = v; 
+                            firePropertyChange("%propertyName%", oldValue, newValue); 
+                        }
+                    """));
+        }
+        if (listPropertyAnnotation.recordStyleSetter()) {
+            writer.print(resolve(variableContext, """
+                        public void %propertyName%(%VariableType% v) { 
+                            set%PropertyName%(v);
+                        }
+                    """));
+        }
+        if (listPropertyAnnotation.wither()) {
+            writer.print(resolve(variableContext, """
+                        public %ClassName% with%PropertyName%(%VariableType% v) { 
+                            set%PropertyName%(v);
+                            return (%ClassName%)this;
+                        }
+                    """));
+        }
+        if (listPropertyAnnotation.recordStyleWither()) {
+            writer.print(resolve(variableContext, """
+                        public %ClassName% %propertyName%(%VariableType% v) { 
+                            set%PropertyName%(v);
+                            return (%ClassName%)this;
                         }
                     """));
         }
@@ -355,14 +387,14 @@ public class BeanGenerator extends AbstractProcessor {
         }
         if (listPropertyAnnotation.bindEndpoint()) {
             writer.print(resolve(variableContext, """
-                        public org.tbee.sway.binding.BindingEndpoint<%BindType%> %propertyName%$() { 
+                        public org.tbee.sway.binding.BindingEndpoint<%VariableType%> %propertyName%$() { 
                             return org.tbee.sway.binding.BindingEndpoint.of(this, "%propertyName%");
                         }
                     """));
         }
         if (listPropertyAnnotation.beanBinderEndpoint()) {
             writer.print(resolve(variableContext, """
-                        static public org.tbee.sway.binding.BindingEndpoint<%BindType%> %propertyName%$(org.tbee.sway.binding.BeanBinder<%ClassName%> beanBinder) { 
+                        static public org.tbee.sway.binding.BindingEndpoint<%VariableType%> %propertyName%$(org.tbee.sway.binding.BeanBinder<%ClassName%> beanBinder) { 
                             return org.tbee.sway.binding.BindingEndpoint.of(beanBinder, "%propertyName%");
                         }
                     """));

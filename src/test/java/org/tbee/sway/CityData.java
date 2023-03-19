@@ -76,7 +76,7 @@ abstract public class CityData extends AbstractBean<City> {
     City sisterCity;
 
     /** sisterCity: City property */
-    @ListProperty(nameSingular = "partnerCity", recordStyleGetter = true)
+    @ListProperty(nameSingular = "partnerCity", recordStyleGetter = true, setter = true)
     List<City> partnerCities = new ArrayList<>();
 
     @Override

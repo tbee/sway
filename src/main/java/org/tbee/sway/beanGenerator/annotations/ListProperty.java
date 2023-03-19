@@ -21,8 +21,22 @@ public @interface ListProperty {
      */
     public String nameSingular() default "";
 
+    public boolean setter() default true;
     public boolean getter() default true;
+    public boolean wither() default false;
+
+    /**
+     * RecordStyleGetter and RecordStyleWither will conflict
+     * @return
+     */
     public boolean recordStyleGetter() default false;
+    public boolean recordStyleSetter() default false;
+
+    /**
+     * RecordStyleWither and RecordStyleGetter will conflict
+     * @return
+     */
+    public boolean recordStyleWither() default true;
 
     public boolean adder() default true;
     public boolean remover() default true;
