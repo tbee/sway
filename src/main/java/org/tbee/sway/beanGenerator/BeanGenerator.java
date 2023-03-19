@@ -203,6 +203,8 @@ public class BeanGenerator extends AbstractProcessor {
         variableRecords.add(new VariableRecord(new PropertyRecord(propertyAnnotation.includeInToString()), variableContext));
 
         // Get info
+        variableContext.put("GetterScope", propertyAnnotation.getterScope().code);
+        variableContext.put("SetterScope", propertyAnnotation.setterScope().code);
         String variableType = variableElement.asType().toString();
         variableContext.put("VariableType", variableType);
         String bindType = determineBindType(variableElement.asType().getKind(), variableType);
@@ -220,14 +222,14 @@ public class BeanGenerator extends AbstractProcessor {
                     """));
         if (propertyAnnotation.getter()) {
             writer.print(resolve(variableContext, """
-                        public %VariableType% get%PropertyName%() { 
+                        %GetterScope% %VariableType% get%PropertyName%() { 
                             return this.%variableName%; 
                         }
                     """));
         }
         if (propertyAnnotation.setter()) {
             writer.print(resolve(variableContext, """
-                        public void set%PropertyName%(%VariableType% v) { 
+                        %SetterScope% void set%PropertyName%(%VariableType% v) { 
                             fireVetoableChange("%propertyName%", this.%variableName%, v); 
                             firePropertyChange("%propertyName%", this.%variableName%, this.%variableName% = v); 
                         }
@@ -263,6 +265,8 @@ public class BeanGenerator extends AbstractProcessor {
         variableRecords.add(new VariableRecord(new PropertyRecord(listPropertyAnnotation.includeInToString()), variableContext));
 
         // Get info
+        variableContext.put("GetterScope", listPropertyAnnotation.getterScope().code);
+        variableContext.put("SetterScope", listPropertyAnnotation.setterScope().code);
         String variableType = variableElement.asType().toString();
         variableContext.put("VariableType", variableType);
         DeclaredType declaredType = (DeclaredType) variableElement.asType();
@@ -285,14 +289,14 @@ public class BeanGenerator extends AbstractProcessor {
                     """));
         if (listPropertyAnnotation.getter()) {
             writer.print(resolve(variableContext, """
-                        public %VariableType% get%PropertyName%() { 
+                        %GetterScope% %VariableType% get%PropertyName%() { 
                             return java.util.Collections.unmodifiableList(this.%variableName%); 
                         }
                     """));
         }
         if (listPropertyAnnotation.setter()) {
             writer.print(resolve(variableContext, """
-                        public void set%PropertyName%(%VariableType% v) {
+                        %SetterScope% void set%PropertyName%(%VariableType% v) {
                             var oldValue = get%PropertyName%(); 
                             var newValue = java.util.Collections.unmodifiableList(v);
                             fireVetoableChange("%propertyName%", oldValue, newValue);

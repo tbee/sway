@@ -1,5 +1,6 @@
 package org.tbee.sway;
 
+import org.tbee.sway.beanGenerator.Scope;
 import org.tbee.sway.beanGenerator.annotations.Bean;
 import org.tbee.sway.beanGenerator.annotations.ListProperty;
 import org.tbee.sway.beanGenerator.annotations.Property;
@@ -76,7 +77,7 @@ abstract public class CityData extends AbstractBean<City> {
     City sisterCity;
 
     /** sisterCity: City property */
-    @ListProperty(nameSingular = "partnerCity", recordStyleGetter = true, setter = true)
+    @ListProperty(nameSingular = "partnerCity", recordStyleGetter = true, setter = true, setterScope = Scope.PRIVATE)
     List<City> partnerCities = new ArrayList<>();
 
     @Override

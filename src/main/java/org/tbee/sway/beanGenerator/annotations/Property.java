@@ -1,5 +1,7 @@
 package org.tbee.sway.beanGenerator.annotations;
 
+import org.tbee.sway.beanGenerator.Scope;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -12,8 +14,10 @@ import java.lang.annotation.Target;
 public @interface Property  {
     public String name() default "";
 
-    public boolean setter() default true;
     public boolean getter() default true;
+    public Scope getterScope() default Scope.PUBLIC;
+    public boolean setter() default true;
+    public Scope setterScope() default Scope.PUBLIC;
     public boolean wither() default false;
 
     /**
