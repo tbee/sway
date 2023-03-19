@@ -225,13 +225,6 @@ public class BeanGenerator extends AbstractProcessor {
                         }
                     """));
         }
-        if (propertyAnnotation.recordStyleGetter()) {
-            writer.print(resolve(variableContext, """
-                        public %VariableType% %propertyName%() { 
-                            return this.%variableName%; 
-                        }
-                    """));
-        }
         if (propertyAnnotation.setter()) {
             writer.print(resolve(variableContext, """
                         public void set%PropertyName%(%VariableType% v) { 
@@ -240,51 +233,29 @@ public class BeanGenerator extends AbstractProcessor {
                         }
                     """));
         }
-        if (propertyAnnotation.recordStyleSetter()) {
-            writer.print(resolve(variableContext, """
-                        public void %propertyName%(%VariableType% v) { 
-                            set%PropertyName%(v);
-                        }
-                    """));
-        }
         if (propertyAnnotation.wither()) {
-            writer.print(resolve(variableContext, """
-                        public %ClassName% with%PropertyName%(%VariableType% v) { 
-                            set%PropertyName%(v);
-                            return (%ClassName%)this;
-                        }
-                    """));
+            writeWither(writer, variableContext);
+        }
+        if (propertyAnnotation.recordStyleGetter()) {
+            writeRecordStyleGetter(writer, variableContext);
+        }
+        if (propertyAnnotation.recordStyleSetter()) {
+            writeRecordStyleSetter(writer, variableContext);
         }
         if (propertyAnnotation.recordStyleWither()) {
-            writer.print(resolve(variableContext, """
-                        public %ClassName% %propertyName%(%VariableType% v) { 
-                            set%PropertyName%(v);
-                            return (%ClassName%)this;
-                        }
-                    """));
+            writeRecordStyleWither(writer, variableContext);
         }
         if (propertyAnnotation.bindEndpoint()) {
-            writer.print(resolve(variableContext, """
-                        public org.tbee.sway.binding.BindingEndpoint<%BindType%> %propertyName%$() { 
-                            return org.tbee.sway.binding.BindingEndpoint.of(this, "%propertyName%");
-                        }
-                    """));
+            writeBindEndpoint(writer, variableContext);
         }
         if (propertyAnnotation.beanBinderEndpoint()) {
-            writer.print(resolve(variableContext, """
-                        static public org.tbee.sway.binding.BindingEndpoint<%BindType%> %propertyName%$(org.tbee.sway.binding.BeanBinder<%ClassName%> beanBinder) { 
-                            return org.tbee.sway.binding.BindingEndpoint.of(beanBinder, "%propertyName%");
-                        }
-                    """));
+            writeBeanBinderEndpoint(writer, variableContext);
         }
         if (propertyAnnotation.propertyNameConstant()) {
-            writer.print(resolve(variableContext, """
-                        final static public String %PROPERTYNAME% = \"%propertyName%\"; 
-                    """));
+            writePropertyNameConstant(writer, variableContext);
         }
         writer.print("\n");
     }
-
 
     private void processListPropertyAnnotation(ListProperty listPropertyAnnotation, PrintWriter writer, VariableElement variableElement, Map<String, String> classContext, List<VariableRecord> variableRecords) {
 
@@ -297,6 +268,7 @@ public class BeanGenerator extends AbstractProcessor {
         DeclaredType declaredType = (DeclaredType) variableElement.asType();
         String listType = declaredType.getTypeArguments().get(0).toString();
         variableContext.put("ListType", listType);
+        variableContext.put("BindType", variableType); // no primaries are possible here
         String variableName = variableElement.getSimpleName().toString();
         variableContext.put("variableName", variableName);
         String propertyName = !listPropertyAnnotation.name().isBlank() ? listPropertyAnnotation.name() : variableName;
@@ -318,13 +290,6 @@ public class BeanGenerator extends AbstractProcessor {
                         }
                     """));
         }
-        if (listPropertyAnnotation.recordStyleGetter()) {
-            writer.print(resolve(variableContext, """
-                        public %VariableType% %propertyName%() { 
-                            return get%PropertyName%(); 
-                        }
-                    """));
-        }
         if (listPropertyAnnotation.setter()) {
             writer.print(resolve(variableContext, """
                         public void set%PropertyName%(%VariableType% v) {
@@ -336,28 +301,17 @@ public class BeanGenerator extends AbstractProcessor {
                         }
                     """));
         }
-        if (listPropertyAnnotation.recordStyleSetter()) {
-            writer.print(resolve(variableContext, """
-                        public void %propertyName%(%VariableType% v) { 
-                            set%PropertyName%(v);
-                        }
-                    """));
-        }
         if (listPropertyAnnotation.wither()) {
-            writer.print(resolve(variableContext, """
-                        public %ClassName% with%PropertyName%(%VariableType% v) { 
-                            set%PropertyName%(v);
-                            return (%ClassName%)this;
-                        }
-                    """));
+            writeWither(writer, variableContext);
+        }
+        if (listPropertyAnnotation.recordStyleGetter()) {
+            writeRecordStyleGetter(writer, variableContext);
+        }
+        if (listPropertyAnnotation.recordStyleSetter()) {
+            writeRecordStyleSetter(writer, variableContext);
         }
         if (listPropertyAnnotation.recordStyleWither()) {
-            writer.print(resolve(variableContext, """
-                        public %ClassName% %propertyName%(%VariableType% v) { 
-                            set%PropertyName%(v);
-                            return (%ClassName%)this;
-                        }
-                    """));
+            writeRecordStyleWither(writer, variableContext);
         }
         if (listPropertyAnnotation.adder()) {
             writer.print(resolve(variableContext, """
@@ -386,27 +340,73 @@ public class BeanGenerator extends AbstractProcessor {
                     """));
         }
         if (listPropertyAnnotation.bindEndpoint()) {
-            writer.print(resolve(variableContext, """
-                        public org.tbee.sway.binding.BindingEndpoint<%VariableType%> %propertyName%$() { 
-                            return org.tbee.sway.binding.BindingEndpoint.of(this, "%propertyName%");
-                        }
-                    """));
+            writeBindEndpoint(writer, variableContext);
         }
         if (listPropertyAnnotation.beanBinderEndpoint()) {
-            writer.print(resolve(variableContext, """
-                        static public org.tbee.sway.binding.BindingEndpoint<%VariableType%> %propertyName%$(org.tbee.sway.binding.BeanBinder<%ClassName%> beanBinder) { 
-                            return org.tbee.sway.binding.BindingEndpoint.of(beanBinder, "%propertyName%");
-                        }
-                    """));
+            writeBeanBinderEndpoint(writer, variableContext);
         }
         if (listPropertyAnnotation.propertyNameConstant()) {
-            writer.print(resolve(variableContext, """
-                        final static public String %PROPERTYNAME% = \"%propertyName%\"; 
-                    """));
+            writePropertyNameConstant(writer, variableContext);
         }
         writer.print("\n");
     }
 
+
+    private void writeRecordStyleSetter(PrintWriter writer, Map<String, String> variableContext) {
+        writer.print(resolve(variableContext, """
+                    public void %propertyName%(%VariableType% v) { 
+                        set%PropertyName%(v);
+                    }
+                """));
+    }
+
+    private void writeWither(PrintWriter writer, Map<String, String> variableContext) {
+        writer.print(resolve(variableContext, """
+                    public %ClassName% with%PropertyName%(%VariableType% v) { 
+                        set%PropertyName%(v);
+                        return (%ClassName%)this;
+                    }
+                """));
+    }
+
+    private void writeRecordStyleWither(PrintWriter writer, Map<String, String> variableContext) {
+        writer.print(resolve(variableContext, """
+                    public %ClassName% %propertyName%(%VariableType% v) { 
+                        set%PropertyName%(v);
+                        return (%ClassName%)this;
+                    }
+                """));
+    }
+
+    private void writeRecordStyleGetter(PrintWriter writer, Map<String, String> variableContext) {
+        writer.print(resolve(variableContext, """
+                    public %VariableType% %propertyName%() { 
+                        return get%PropertyName%(); 
+                    }
+                """));
+    }
+
+    private void writeBindEndpoint(PrintWriter writer, Map<String, String> variableContext) {
+        writer.print(resolve(variableContext, """
+                    public org.tbee.sway.binding.BindingEndpoint<%BindType%> %propertyName%$() { 
+                        return org.tbee.sway.binding.BindingEndpoint.of(this, "%propertyName%");
+                    }
+                """));
+    }
+
+    private void writeBeanBinderEndpoint(PrintWriter writer, Map<String, String> variableContext) {
+        writer.print(resolve(variableContext, """
+                    static public org.tbee.sway.binding.BindingEndpoint<%BindType%> %propertyName%$(org.tbee.sway.binding.BeanBinder<%ClassName%> beanBinder) { 
+                        return org.tbee.sway.binding.BindingEndpoint.of(beanBinder, "%propertyName%");
+                    }
+                """));
+    }
+
+    private void writePropertyNameConstant(PrintWriter writer, Map<String, String> variableContext) {
+        writer.print(resolve(variableContext, """
+                    final static public String %PROPERTYNAME% = \"%propertyName%\"; 
+                """));
+    }
 
     private static String determineBindType(TypeKind typeKind, String nonPrimaryType) {
         String bindType = switch(typeKind) {
