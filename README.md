@@ -199,7 +199,7 @@ abstract public class DoubleStackData extends AbstractBean<DoubleStack> {
 }
 
 // Contains the generated code
-public class DoubleStack extends TripleStackData {
+public class DoubleStack extends DoubleStackData {
     public String getName() {...}
     public void setName(String name) {...}
     public DoubleStack name(String v) {...}
