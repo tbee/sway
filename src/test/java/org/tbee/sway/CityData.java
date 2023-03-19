@@ -1,12 +1,15 @@
 package org.tbee.sway;
 
 import org.tbee.sway.beanGenerator.annotations.Bean;
+import org.tbee.sway.beanGenerator.annotations.ListProperty;
 import org.tbee.sway.beanGenerator.annotations.Property;
 import org.tbee.sway.binding.BeanBinder;
 import org.tbee.sway.binding.BindingEndpoint;
 import org.tbee.util.AbstractBean;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 @Bean(stripSuffix = "Data")
 abstract public class CityData extends AbstractBean<CityData> {
@@ -65,12 +68,16 @@ abstract public class CityData extends AbstractBean<CityData> {
     boolean growing = true;
 
     /** cityRights: Boolean property */
-    @Property
+    @Property(recordStyleGetter = true, recordStyleSetter = true, recordStyleWither = false)
     Boolean cityRights = null;
 
     /** sisterCity: City property */
     @Property(includeInToString = false)
-    CityData sisterCity;
+    City sisterCity;
+
+    /** sisterCity: City property */
+    @ListProperty(nameSingular = "partnerCity", recordStyleGetter = true)
+    List<City> partnerCities = new ArrayList<>();
 
     @Override
     public void firePropertyChange(String name, Object before, Object after) {

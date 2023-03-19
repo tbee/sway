@@ -2,6 +2,7 @@ package org.tbee.sway.beanGenerator;
 
 import com.google.auto.service.AutoService;
 import org.tbee.sway.beanGenerator.annotations.Bean;
+import org.tbee.sway.beanGenerator.annotations.ListProperty;
 import org.tbee.sway.beanGenerator.annotations.Property;
 
 import javax.annotation.processing.AbstractProcessor;
@@ -13,6 +14,8 @@ import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.TypeKind;
 import javax.tools.Diagnostic;
 import javax.tools.JavaFileObject;
 import java.io.IOException;
@@ -157,7 +160,7 @@ public class BeanGenerator extends AbstractProcessor {
 
             // toString
             String toString = variableRecords.stream()
-                    .filter(vr -> vr.property.includeInToString())
+                    .filter(vr -> vr.propertyRecord.includeInToString())
                     .map(vr -> vr.variableContext)
                     .map(vc -> "\"," + vc.get("variableName") + "=\" + " + vc.get("variableName"))
                     .collect(Collectors.joining("\n             + "));
@@ -175,15 +178,21 @@ public class BeanGenerator extends AbstractProcessor {
         }
     }
 
-    private record VariableRecord(Property property, Map<String, String> variableContext){}
+    private record PropertyRecord(boolean includeInToString){}
+    private record VariableRecord(PropertyRecord propertyRecord, Map<String, String> variableContext){}
 
     private void instanceVariable(PrintWriter writer, VariableElement variableElement, Map<String, String> classContext, List<VariableRecord> variableRecords) {
 
         // Property annotation is required
-        // TBEERNOT should we assume a default property? And introduce an igonre boolean?
+        // TBEERNOT should we assume a default property? And introduce an ignore boolean?
         Property propertyAnnotation = variableElement.getAnnotation(Property.class);
         if (propertyAnnotation != null) {
             processPropertyAnnotation(propertyAnnotation, writer, variableElement, classContext, variableRecords);
+            return;
+        }
+        ListProperty listPropertyAnnotation = variableElement.getAnnotation(ListProperty.class);
+        if (listPropertyAnnotation != null) {
+            processListPropertyAnnotation(listPropertyAnnotation, writer, variableElement, classContext, variableRecords);
             return;
         }
     }
@@ -191,12 +200,184 @@ public class BeanGenerator extends AbstractProcessor {
     private void processPropertyAnnotation(Property propertyAnnotation, PrintWriter writer, VariableElement variableElement, Map<String, String> classContext, List<VariableRecord> variableRecords) {
 
         Map<String, String> variableContext = new HashMap<>(classContext);
-        variableRecords.add(new VariableRecord(propertyAnnotation, variableContext));
+        variableRecords.add(new VariableRecord(new PropertyRecord(propertyAnnotation.includeInToString()), variableContext));
 
         // Get info
         String variableType = variableElement.asType().toString();
         variableContext.put("VariableType", variableType);
-        String bindType = switch(variableElement.asType().getKind()) {
+        String bindType = determineBindType(variableElement.asType().getKind(), variableType);
+        variableContext.put("BindType", bindType);
+        String variableName = variableElement.getSimpleName().toString();
+        variableContext.put("variableName", variableName);
+        String propertyName = !propertyAnnotation.name().isBlank() ? propertyAnnotation.name() : variableName;
+        variableContext.put("propertyName", propertyName);
+        variableContext.put("PropertyName", firstUpper(propertyName));
+        variableContext.put("PROPERTYNAME", propertyName.toUpperCase());
+
+        writer.print(resolve(variableContext, """
+                        // --------------------- 
+                        // %propertyName%
+                    """));
+        if (propertyAnnotation.getter()) {
+            writer.print(resolve(variableContext, """
+                        public %VariableType% get%PropertyName%() { 
+                            return this.%variableName%; 
+                        }
+                    """));
+        }
+        if (propertyAnnotation.recordStyleGetter()) {
+            writer.print(resolve(variableContext, """
+                        public %VariableType% %propertyName%() { 
+                            return this.%variableName%; 
+                        }
+                    """));
+        }
+        if (propertyAnnotation.setter()) {
+            writer.print(resolve(variableContext, """
+                        public void set%PropertyName%(%VariableType% v) { 
+                            fireVetoableChange("%propertyName%", this.%variableName%, v); 
+                            firePropertyChange("%propertyName%", this.%variableName%, this.%variableName% = v); 
+                        }
+                    """));
+        }
+        if (propertyAnnotation.recordStyleSetter()) {
+            writer.print(resolve(variableContext, """
+                        public void %propertyName%(%VariableType% v) { 
+                            set%PropertyName%(v);
+                        }
+                    """));
+        }
+        if (propertyAnnotation.wither()) {
+            writer.print(resolve(variableContext, """
+                        public %ClassName% with%PropertyName%(%VariableType% v) { 
+                            set%PropertyName%(v);
+                            return (%ClassName%)this;
+                        }
+                    """));
+        }
+        if (propertyAnnotation.recordStyleWither()) {
+            writer.print(resolve(variableContext, """
+                        public %ClassName% %propertyName%(%VariableType% v) { 
+                            set%PropertyName%(v);
+                            return (%ClassName%)this;
+                        }
+                    """));
+        }
+        if (propertyAnnotation.bindEndpoint()) {
+            writer.print(resolve(variableContext, """
+                        public org.tbee.sway.binding.BindingEndpoint<%BindType%> %propertyName%$() { 
+                            return org.tbee.sway.binding.BindingEndpoint.of(this, "%propertyName%");
+                        }
+                    """));
+        }
+        if (propertyAnnotation.beanBinderEndpoint()) {
+            writer.print(resolve(variableContext, """
+                        static public org.tbee.sway.binding.BindingEndpoint<%BindType%> %propertyName%$(org.tbee.sway.binding.BeanBinder<%ClassName%> beanBinder) { 
+                            return org.tbee.sway.binding.BindingEndpoint.of(beanBinder, "%propertyName%");
+                        }
+                    """));
+        }
+        if (propertyAnnotation.propertyNameConstant()) {
+            writer.print(resolve(variableContext, """
+                        final static public String %PROPERTYNAME% = \"%propertyName%\"; 
+                    """));
+        }
+        writer.print("\n");
+    }
+
+
+    private void processListPropertyAnnotation(ListProperty listPropertyAnnotation, PrintWriter writer, VariableElement variableElement, Map<String, String> classContext, List<VariableRecord> variableRecords) {
+
+        Map<String, String> variableContext = new HashMap<>(classContext);
+        variableRecords.add(new VariableRecord(new PropertyRecord(listPropertyAnnotation.includeInToString()), variableContext));
+
+        // Get info
+        String variableType = variableElement.asType().toString();
+        variableContext.put("VariableType", variableType);
+        DeclaredType declaredType = (DeclaredType) variableElement.asType();
+        String listType = declaredType.getTypeArguments().get(0).toString();
+        variableContext.put("ListType", listType);
+        variableContext.put("BindType", variableType); // no primaries are possible here
+        String variableName = variableElement.getSimpleName().toString();
+        variableContext.put("variableName", variableName);
+        String propertyName = !listPropertyAnnotation.name().isBlank() ? listPropertyAnnotation.name() : variableName;
+        variableContext.put("propertyName", propertyName);
+        variableContext.put("PropertyName", firstUpper(propertyName));
+        variableContext.put("PROPERTYNAME", propertyName.toUpperCase());
+        String propertyNameSingular = !listPropertyAnnotation.nameSingular().isBlank() ? listPropertyAnnotation.nameSingular() : propertyName;
+        variableContext.put("propertyNameSingular", propertyNameSingular);
+        variableContext.put("PropertyNameSingular", firstUpper(propertyNameSingular));
+        variableContext.put("PROPERTYNAMESingular", propertyNameSingular.toUpperCase());
+
+        writer.print(resolve(variableContext, """
+                        // --------------------- 
+                        // %propertyName%
+                    """));
+        if (listPropertyAnnotation.getter()) {
+            writer.print(resolve(variableContext, """
+                        public %VariableType% get%PropertyName%() { 
+                            return java.util.Collections.unmodifiableList(this.%variableName%); 
+                        }
+                    """));
+        }
+        if (listPropertyAnnotation.recordStyleGetter()) {
+            writer.print(resolve(variableContext, """
+                        public %VariableType% %propertyName%() { 
+                            return get%PropertyName%(); 
+                        }
+                    """));
+        }
+        if (listPropertyAnnotation.adder()) {
+            writer.print(resolve(variableContext, """
+                        public void add%PropertyNameSingular%(%ListType% v) { 
+                            var pretendedNewValue = java.util.Collections.unmodifiableList(new org.tbee.sway.beanGenerator.ListPretendingToHaveAddedItem<%ListType%>(this.%variableName%, v));
+                            fireVetoableChange("%propertyName%", get%PropertyName%(), pretendedNewValue); 
+                            boolean wasAdded = this.%variableName%.add(v);
+                            if (wasAdded) {
+                                var pretendedOldValue = java.util.Collections.unmodifiableList(new org.tbee.sway.beanGenerator.ListPretendingToHaveRemovedItem<%ListType%>(this.%variableName%, v));
+                                firePropertyChange("%propertyName%", pretendedOldValue, get%PropertyName%());
+                            } 
+                        }
+                    """));
+        }
+        if (listPropertyAnnotation.remover()) {
+            writer.print(resolve(variableContext, """
+                        public void remove%PropertyNameSingular%(%ListType% v) { 
+                            var pretendedNewValue = java.util.Collections.unmodifiableList(new org.tbee.sway.beanGenerator.ListPretendingToHaveRemovedItem<%ListType%>(this.%variableName%, v));
+                            fireVetoableChange("%propertyName%", get%PropertyName%(), pretendedNewValue); 
+                            boolean wasRemoved = this.%variableName%.remove(v);
+                            if (wasRemoved) {
+                                var pretendedOldValue = java.util.Collections.unmodifiableList(new org.tbee.sway.beanGenerator.ListPretendingToHaveAddedItem<%ListType%>(this.%variableName%, v));
+                                firePropertyChange("%propertyName%", pretendedOldValue, get%PropertyName%());
+                            } 
+                        }
+                    """));
+        }
+        if (listPropertyAnnotation.bindEndpoint()) {
+            writer.print(resolve(variableContext, """
+                        public org.tbee.sway.binding.BindingEndpoint<%BindType%> %propertyName%$() { 
+                            return org.tbee.sway.binding.BindingEndpoint.of(this, "%propertyName%");
+                        }
+                    """));
+        }
+        if (listPropertyAnnotation.beanBinderEndpoint()) {
+            writer.print(resolve(variableContext, """
+                        static public org.tbee.sway.binding.BindingEndpoint<%BindType%> %propertyName%$(org.tbee.sway.binding.BeanBinder<%ClassName%> beanBinder) { 
+                            return org.tbee.sway.binding.BindingEndpoint.of(beanBinder, "%propertyName%");
+                        }
+                    """));
+        }
+        if (listPropertyAnnotation.propertyNameConstant()) {
+            writer.print(resolve(variableContext, """
+                        final static public String %PROPERTYNAME% = \"%propertyName%\"; 
+                    """));
+        }
+        writer.print("\n");
+    }
+
+
+    private static String determineBindType(TypeKind typeKind, String nonPrimaryType) {
+        String bindType = switch(typeKind) {
             case BOOLEAN -> Boolean.class.getName();
             case BYTE -> Byte.class.getName();
             case SHORT -> Short.class.getName();
@@ -205,85 +386,9 @@ public class BeanGenerator extends AbstractProcessor {
             case CHAR -> Character.class.getName();
             case FLOAT -> Float.class.getName();
             case DOUBLE -> Double.class.getName();
-            default -> variableType;
+            default -> nonPrimaryType;
         };
-        variableContext.put("BindType", bindType);
-        String variableName = variableElement.getSimpleName().toString();
-        variableContext.put("variableName", variableName);
-        variableContext.put("VariableName", firstUpper(variableName));
-        variableContext.put("VARIABLENAME", variableName.toUpperCase());
-
-        writer.print(resolve(variableContext, """
-                        // --------------------- 
-                        // %variableName%
-                    """));
-
-        // fluentWither
-        if (propertyAnnotation.getter()) {
-            writer.print(resolve(variableContext, """
-                        public %VariableType% get%VariableName%() { 
-                            return this.%variableName%; 
-                        }
-                    """));
-        }
-        if (propertyAnnotation.recordStyleGetter()) {
-            writer.print(resolve(variableContext, """
-                        public %VariableType% %variableName%() { 
-                            return this.%variableName%; 
-                        }
-                    """));
-        }
-        if (propertyAnnotation.setter()) {
-            writer.print(resolve(variableContext, """
-                        public void set%VariableName%(%VariableType% v) { 
-                            fireVetoableChange("%variableName%", this.%variableName%, v); 
-                            firePropertyChange("%variableName%", this.%variableName%, this.%variableName% = v); 
-                        }
-                    """));
-        }
-        if (propertyAnnotation.recordStyleSetter()) {
-            writer.print(resolve(variableContext, """
-                        public void %variableName%(%VariableType% v) { 
-                            set%VariableName%(v);
-                        }
-                    """));
-        }
-        if (propertyAnnotation.wither()) {
-            writer.print(resolve(variableContext, """
-                        public %ClassName% with%VariableName%(%VariableType% v) { 
-                            set%VariableName%(v);
-                            return (%ClassName%)this;
-                        }
-                    """));
-        }
-        if (propertyAnnotation.recordStyleWither()) {
-            writer.print(resolve(variableContext, """
-                        public %ClassName% %variableName%(%VariableType% v) { 
-                            set%VariableName%(v);
-                            return (%ClassName%)this;
-                        }
-                    """));
-        }
-        if (propertyAnnotation.bindEndpoint()) {
-            writer.print(resolve(variableContext, """
-                        public org.tbee.sway.binding.BindingEndpoint<%BindType%> %variableName%$() { 
-                            return org.tbee.sway.binding.BindingEndpoint.of(this, "%variableName%");
-                        }
-                    """));
-        }
-        if (propertyAnnotation.beanBinderEndpoint()) {
-            writer.print(resolve(variableContext, """
-                        static public org.tbee.sway.binding.BindingEndpoint<%BindType%> %variableName%$(org.tbee.sway.binding.BeanBinder<%ClassName%> beanBinder) { 
-                            return org.tbee.sway.binding.BindingEndpoint.of(beanBinder, "%variableName%");
-                        }
-                    """));
-        }
-        if (propertyAnnotation.propertyNameConstant()) {
-            writer.print(resolve(variableContext, """
-                        final static public String %VARIABLENAME% = \"%variableName%\"; 
-                    """));
-        }
-        writer.print("\n");
+        return bindType;
     }
 
     private String resolve(Map<String, String> context, String template) {
