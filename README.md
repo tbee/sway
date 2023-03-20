@@ -144,6 +144,9 @@ This means you can have a class with only data (instance variables) and using so
 abstract public class CityData extends AbstractBean<City> {
     @Property
     String name;
+    
+    @ListProperty(nameSingular="sisterCity")
+    List<City> sisterCities;
 }
 ```
 
