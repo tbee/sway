@@ -140,6 +140,7 @@ This means you can have a class with only data (instance variables) and using so
 ``` java
 // This will generate a class "City extends CityData" 
 // With a "name" property (setName, getName, name$(), etc).
+// And a "sisterCities" property (addSisterCity, removeSisterCity, sisterCities$(), etc).
 @Bean(stripSuffix = "Data")
 abstract public class CityData extends AbstractBean<City> {
     @Property
