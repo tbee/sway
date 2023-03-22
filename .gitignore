@@ -31,3 +31,5 @@ hs_err_pid*
 .settings/org.eclipse.core.resources.prefs
 .settings/org.eclipse.jdt.core.prefs
 .settings/org.eclipse.m2e.core.prefs
+/.apt_generated/
+/.apt_generated_tests/
