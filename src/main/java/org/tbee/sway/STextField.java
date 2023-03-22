@@ -1,20 +1,5 @@
 package org.tbee.sway;
 
-import org.tbee.sway.binding.BeanBinder;
-import org.tbee.sway.binding.BindingEndpoint;
-import org.tbee.sway.binding.ExceptionHandler;
-import org.tbee.sway.format.Format;
-import org.tbee.sway.format.FormatRegistry;
-import org.tbee.sway.format.JavaFormat;
-import org.tbee.sway.format.StringFormat;
-import org.tbee.sway.support.FocusInterpreter;
-import org.tbee.sway.support.HAlign;
-import org.tbee.util.ClassUtil;
-import org.tbee.util.ExceptionUtil;
-
-import javax.swing.JComponent;
-import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
 import java.awt.Font;
 import java.awt.event.KeyEvent;
 import java.beans.BeanInfo;
@@ -31,6 +16,22 @@ import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.Currency;
 import java.util.Locale;
+
+import javax.swing.JComponent;
+import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
+
+import org.tbee.sway.binding.BeanBinder;
+import org.tbee.sway.binding.BindingEndpoint;
+import org.tbee.sway.binding.ExceptionHandler;
+import org.tbee.sway.format.Format;
+import org.tbee.sway.format.FormatRegistry;
+import org.tbee.sway.format.JavaFormat;
+import org.tbee.sway.format.StringFormat;
+import org.tbee.sway.support.FocusInterpreter;
+import org.tbee.sway.support.HAlign;
+import org.tbee.util.ClassUtil;
+import org.tbee.util.ExceptionUtil;
 
 // TODO
 // - popup
@@ -150,7 +151,7 @@ public class STextField<T> extends javax.swing.JTextField {
     }
 
     /**
-     * Determines the correct class, creates a TextField, and binds it to the value property.
+     * Creates a TextField, and binds it to the value property.
      *
      * @param bindingEndpoint
      * @return
@@ -163,29 +164,11 @@ public class STextField<T> extends javax.swing.JTextField {
         return ofBindTo(bindingEndpoint.bean(), bindingEndpoint.propertyName());
     }
 
-    /**
-     * Determines the correct class, creates a TextField, and binds it to the value property.
-     * This binding is not type safe!
-     *
-     * @param bean
-     * @param propertyName
-     * @return
-     * @param <T>
-     */
     static private <T> STextField<T> ofBindTo(Object bean, String propertyName) {
         Class<?> propertyType = determinePropertyType(bean.getClass(), propertyName);
         return (STextField<T>) of(propertyType).bindTo(BindingEndpoint.of(bean, propertyName));
     }
 
-    /**
-     * Determines the correct class, creates a TextField, and binds it to the value property.
-     * This binding is not type safe!
-     *
-     * @param beanBinder
-     * @param propertyName
-     * @return
-     * @param <T>
-     */
     static private <T> STextField<T> ofBindTo(BeanBinder<T> beanBinder, String propertyName) {
         Class<?> propertyType = determinePropertyType(beanBinder.get().getClass(), propertyName);
         return (STextField<T>) of(propertyType).bindTo(BindingEndpoint.of(beanBinder, propertyName));
