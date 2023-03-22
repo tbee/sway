@@ -54,7 +54,7 @@ public class SButtonGroupTest extends TestBase {
     public void happyBindingTest() throws Exception {
 
         // GIVEN
-        City city = new City().distance(1);
+        City city = City.of().distance(1);
         var ref = new AtomicReference<SButtonGroup<Integer>>();
         construct(() -> {
             var sButtonGroup = new SButtonGroup<Integer>() //
@@ -86,11 +86,11 @@ public class SButtonGroupTest extends TestBase {
     public void happyOfTest() throws Exception {
 
         // GIVEN
-        City amsterdam = new City("Amsterdam", 150);
-        City berlin = new City("Berlin", 560);
-        City bredevoort = new City("Bredevoort", 5);
-        City paris = new City("Paris", 575);
-        City rome = new City("Rome", 1560);
+        City amsterdam = City.of("Amsterdam", 150);
+        City berlin = City.of("Berlin", 560);
+        City bredevoort = City.of("Bredevoort", 5);
+        City paris = City.of("Paris", 575);
+        City rome = City.of("Rome", 1560);
         List<City> cities = List.of(berlin, bredevoort, amsterdam, rome, paris);
         var ref = new AtomicReference<SButtonGroup<City>>();
         construct(() -> {
@@ -115,11 +115,11 @@ public class SButtonGroupTest extends TestBase {
     public void happyOfClassTest() throws Exception {
 
         // GIVEN
-        City amsterdam = new City("Amsterdam", 150);
-        City berlin = new City("Berlin", 560);
-        City bredevoort = new City("Bredevoort", 5);
-        City paris = new City("Paris", 575);
-        City rome = new City("Rome", 1560);
+        City amsterdam = City.of("Amsterdam", 150);
+        City berlin = City.of("Berlin", 560);
+        City bredevoort = City.of("Bredevoort", 5);
+        City paris = City.of("Paris", 575);
+        City rome = City.of("Rome", 1560);
         List<City> cities = List.of(berlin, bredevoort, amsterdam, rome, paris);
 
         FormatRegistry.register(City.class, new CityFormat(cities));
@@ -148,11 +148,11 @@ public class SButtonGroupTest extends TestBase {
     public void happyOfListTest() throws Exception {
 
         // GIVEN
-        City amsterdam = new City("Amsterdam", 150);
-        City berlin = new City("Berlin", 560);
-        City bredevoort = new City("Bredevoort", 5);
-        City paris = new City("Paris", 575);
-        City rome = new City("Rome", 1560);
+        City amsterdam = City.of("Amsterdam", 150);
+        City berlin = City.of("Berlin", 560);
+        City bredevoort = City.of("Bredevoort", 5);
+        City paris = City.of("Paris", 575);
+        City rome = City.of("Rome", 1560);
         List<City> cities = List.of(berlin, bredevoort, amsterdam, rome, paris);
 
         FormatRegistry.register(City.class, new CityFormat(cities));
@@ -181,11 +181,11 @@ public class SButtonGroupTest extends TestBase {
     public void happyOfRadioButtonTest() throws Exception {
 
         // GIVEN
-        City amsterdam = new City("Amsterdam", 150);
-        City berlin = new City("Berlin", 560);
-        City bredevoort = new City("Bredevoort", 5);
-        City paris = new City("Paris", 575);
-        City rome = new City("Rome", 1560);
+        City amsterdam = City.of("Amsterdam", 150);
+        City berlin = City.of("Berlin", 560);
+        City bredevoort = City.of("Bredevoort", 5);
+        City paris = City.of("Paris", 575);
+        City rome = City.of("Rome", 1560);
         List<City> cities = List.of(berlin, bredevoort, amsterdam, rome, paris);
 
         FormatRegistry.register(City.class, new CityFormat(cities));
@@ -214,11 +214,11 @@ public class SButtonGroupTest extends TestBase {
     public void happyOfRadioButtonsTest() throws Exception {
 
         // GIVEN
-        City amsterdam = new City("Amsterdam", 150);
-        City berlin = new City("Berlin", 560);
-        City bredevoort = new City("Bredevoort", 5);
-        City paris = new City("Paris", 575);
-        City rome = new City("Rome", 1560);
+        City amsterdam = City.of("Amsterdam", 150);
+        City berlin = City.of("Berlin", 560);
+        City bredevoort = City.of("Bredevoort", 5);
+        City paris = City.of("Paris", 575);
+        City rome = City.of("Rome", 1560);
         List<City> cities = List.of(berlin, bredevoort, amsterdam, rome, paris);
 
         FormatRegistry.register(City.class, new CityFormat(cities));

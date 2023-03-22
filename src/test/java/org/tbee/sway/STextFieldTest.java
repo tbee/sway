@@ -105,7 +105,7 @@ public class STextFieldTest extends TestBase {
     public void stringBindHappyTest() throws Exception {
 
         // GIVEN
-        final City city = new City();
+        final City city = City.of();
         construct(() -> {
             sTextField = STextField.ofString().name("sTextField").bindTo(city.name$());
             return TestUtil.inJFrame(sTextField, focusMeComponent());
@@ -130,7 +130,7 @@ public class STextFieldTest extends TestBase {
     public void integerBindHappyTest() throws Exception {
 
         // GIVEN
-        final City city = new City();
+        final City city = City.of();
         construct(() -> {
             sTextField = STextField.ofInteger().name("sTextField").bindTo(city.distance$());
             return TestUtil.inJFrame(sTextField, focusMeComponent());
@@ -157,7 +157,7 @@ public class STextFieldTest extends TestBase {
     public void integerBindSetterFailureTest() throws Exception {
 
         // GIVEN
-        final City city = new City();
+        final City city = City.of();
         construct(() -> {
             sTextField = STextField.ofInteger().name("sTextField").bindTo(city.distance$());
             return TestUtil.inJFrame(sTextField, focusMeComponent());
@@ -180,7 +180,7 @@ public class STextFieldTest extends TestBase {
     public void integerUnbindHappyTest() throws Exception {
 
         // GIVEN
-        final City city = new City().distance(456);
+        final City city = City.of().distance(456);
         construct(() -> {
             sTextField = STextField.ofInteger().name("sTextField");
             return TestUtil.inJFrame(sTextField, focusMeComponent());

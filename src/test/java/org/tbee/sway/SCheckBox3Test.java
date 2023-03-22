@@ -11,7 +11,7 @@ public class SCheckBox3Test extends TestBase {
     public void happyTest() throws Exception {
 
         // GIVEN
-        City city = new City("Amsterdam", 150);
+        City city = City.of("Amsterdam", 150);
         construct(() -> {
             sCheckBox = new SCheckBox3() //
                     .bindTo(city.cityRights$()) //
@@ -44,7 +44,7 @@ public class SCheckBox3Test extends TestBase {
     public void happyNotAllowUndeterminedTest() throws Exception {
 
         // GIVEN
-        City city = new City("Amsterdam", 150);
+        City city = City.of("Amsterdam", 150);
         construct(() -> {
             sCheckBox = new SCheckBox3() //
                     .bindTo(city.cityRights$()) //
