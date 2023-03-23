@@ -200,6 +200,15 @@ abstract public class DoubleStackData extends AbstractBean<DoubleStack> {
     public void custom() {
         self.setName("custom");
     }
+    
+    public DoubleStackData() {
+        // Sway's AbstractBean has a convenient type safe listener method
+        this.<String>addVetoableChangeListener("name", (oldValue, newValue) -> {
+            if ("notAllowed".equals(newValue)) {
+                throw new IllegalArgumentException("Name is not allowed");
+            }
+        });
+    }
 }
 
 // Contains the generated code
@@ -207,15 +216,6 @@ public class DoubleStack extends DoubleStackData {
     public String getName() {...}
     public void setName(String name) {...}
     public DoubleStack name(String v) {...}
-    
-    public DoubleStack() {
-        // Sway's AbstractBean has a special type safe listener method
-        this.<String>addVetoableChangeListener("name", (oldValue, newValue) -> {
-            if ("notAllowed".equals(newValue)) {
-                throw new IllegalArgumentException("Name is not allowed");
-            }
-        });
-    }
 }
 ```
 

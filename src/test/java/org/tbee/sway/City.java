@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class City extends AbstractBean<City> {
-
     public City() {
         this.<Integer>addVetoableChangeListener(DISTANCE, (oldValue, newValue) -> {
             if (newValue.intValue() < 0) {

@@ -14,6 +14,14 @@ import java.util.List;
 @Bean(stripSuffix = "Data")
 abstract public class City2Data extends AbstractBean<City> {
 
+    public City2Data() {
+        this.<Integer>addVetoableChangeListener(City2.DISTANCE, (oldValue, newValue) -> {
+            if (newValue.intValue() < 0) {
+                throw new IllegalArgumentException("Distance must be >= 0");
+            }
+        });
+    }
+
     private final City2 self = (City2)this;
 
     static public City2 of() {
