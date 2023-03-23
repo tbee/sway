@@ -8,6 +8,7 @@ import java.beans.VetoableChangeListener;
 import java.beans.VetoableChangeSupport;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
 
@@ -67,6 +68,9 @@ implements PropertyChangeProvider, java.io.Serializable {
             propertyChangeSupport = new PropertyChangeSupport(this);
         }
         propertyChangeSupport.addPropertyChangeListener(propertyName, o);
+    }
+    public <T> void addPropertyChangeListener(String property, BiConsumer<T, T> biConsumer) {
+        addPropertyChangeListener(property, evt -> biConsumer.accept((T)evt.getOldValue(), (T)evt.getNewValue()));
     }
 
     @Override
@@ -204,6 +208,9 @@ implements PropertyChangeProvider, java.io.Serializable {
             vetoableChangeSupport = new VetoableChangeSupport(this);
         }
         vetoableChangeSupport.addVetoableChangeListener(property, o);
+    }
+    public <T> void addVetoableChangeListener(String property, BiConsumer<T, T> biConsumer) {
+        addVetoableChangeListener(property, evt -> biConsumer.accept((T)evt.getOldValue(), (T)evt.getNewValue()));
     }
 
     @Override

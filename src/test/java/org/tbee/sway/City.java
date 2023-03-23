@@ -14,11 +14,11 @@ import java.util.List;
 public class City extends AbstractBean<City> {
 
     public City() {
-        addVetoableChangeListener(DISTANCE, e -> {
-            if (((Integer)e.getNewValue()).intValue() < 0) {
-                throw new IllegalArgumentException("Distance must be >= 0"); // TBEERNOT how to add this to generated setters?
+        this.<Integer>addVetoableChangeListener(DISTANCE, (oldValue, newValue) -> {
+            if (newValue.intValue() < 0) {
+                throw new IllegalArgumentException("Distance must be >= 0");
             }
-        } );
+        });
     }
     private final City self = (City)this;
 
