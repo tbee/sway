@@ -207,11 +207,19 @@ public class DoubleStack extends DoubleStackData {
     public String getName() {...}
     public void setName(String name) {...}
     public DoubleStack name(String v) {...}
+    
+    public DoubleStack() {
+        addVetoableChangeListener("name", e -> {
+            if ("notAllowed".equals(e.getNewValue())) {
+                throw new IllegalArgumentException("Name is not allowed");
+            }
+        });
+    }
 }
 ```
 
-Using self seems like a small price to pay for not having to write all the JavaBean methods manually.
-But that is a personal opinion.
+The double stack does not allow for, for example, a setter be overwritten to validate the input value. 
+You have to use the vetoable change property logic to do validation instead.
 
 The bean generator uses compiler annotations, so it will automatically be picked up by a build tool like Maven.
 IDEs usually need to have compiler annotations activated.

@@ -169,7 +169,7 @@ public class STextFieldTest extends TestBase {
 
         // THEN
         JOptionPaneFixture optionPaneFixture = JOptionPaneFinder.findOptionPane().using(frameFixture.robot());
-        optionPaneFixture.requireErrorMessage().requireMessage("Age must be >= 0");
+        optionPaneFixture.requireErrorMessage().requireMessage("Distance must be >= 0");
         optionPaneFixture.okButton().click();
         Assertions.assertTrue(sTextField.hasFocus());
         Assertions.assertEquals("0", sTextField.getText());

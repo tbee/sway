@@ -12,15 +12,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Bean(stripSuffix = "Data")
-abstract public class CityData extends AbstractBean<City> {
+abstract public class City2Data extends AbstractBean<City> {
 
-    private final City self = (City)this;
+    private final City2 self = (City2)this;
 
-    static public City of() {
-        return new City();
+    static public City2 of() {
+        return new City2();
     }
 
-    static public City of(String name, int distance) {
+    static public City2 of(String name, int distance) {
         return of()
                 .name(name)
                 .distance(distance);
@@ -42,7 +42,7 @@ abstract public class CityData extends AbstractBean<City> {
         return self.getDistance();
     }
     static public String DISTANCEINT = "distanceInt";
-    public CityData distanceInt(Integer v) {
+    public City2Data distanceInt(Integer v) {
         setDistanceInt(v);
         return this;
     }
@@ -78,6 +78,9 @@ abstract public class CityData extends AbstractBean<City> {
     /** sisterCity: City property */
     @Property(recordStyleGetter = true, setterScope = Scope.PRIVATE, isList = true, nameSingular = "partnerCity")
     List<City> partnerCities = new ArrayList<>();
+
+    @Property(recordStyleGetter = true, setterScope = Scope.PRIVATE, isList = true, nameSingular = "thing")
+    List things = new ArrayList<>();
 
     @Override
     public void firePropertyChange(String name, Object before, Object after) {
