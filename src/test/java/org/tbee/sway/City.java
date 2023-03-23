@@ -11,6 +11,10 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The BeanGenerator has problems being in the same project as the to-be-generated beans.
+ * So we use a "snapshot" of what it would generate.
+ */
 public class City extends AbstractBean<City> {
     public City() {
         this.<Integer>addVetoableChangeListener(DISTANCE, (oldValue, newValue) -> {
