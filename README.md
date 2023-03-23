@@ -146,7 +146,7 @@ abstract public class CityData extends AbstractBean<City> {
     @Property
     String name;
     
-    @ListProperty(nameSingular="sisterCity")
+    @Property(nameSingular="sisterCity", isList = true)
     List<City> sisterCities;
 }
 ```
