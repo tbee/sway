@@ -14,6 +14,12 @@ import java.lang.annotation.Target;
 public @interface Property  {
     public String name() default "";
 
+    /**
+     * Only relevant for collections like isList
+     * @return
+     */
+    public String nameSingular() default "";
+
     public boolean getter() default true;
     /**
      * Some other methods need the getter to be present.
@@ -49,4 +55,9 @@ public @interface Property  {
     public boolean propertyNameConstant() default true;
 
     public boolean includeInToString() default true;
+
+    public boolean isList() default false;
+    public boolean adder() default true;
+    public boolean remover() default true;
+
 }
