@@ -184,7 +184,7 @@ public class TripleStack extends TripleStackBean {
 }
 ```
 
-The triple stack approach requires many classes, ideally one would want to have data and custom code in one class. 
+The triple stack approach spreads the maintained code over two classes, ideally one would want to have data and custom code in one class. 
 This is where the double stack comes in. 
 It uses a small trick to be able to access the generated methods from the data class, using a "self" variable.
 
