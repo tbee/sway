@@ -299,7 +299,7 @@ public class BeanGenerator extends AbstractProcessor {
 
         if (isList && propertyAnnotation.adder()) {
             writer.print(resolve(variableContext, """
-                        public void add%PropertyNameSingular%(%ListType% v) { 
+                        public boolean add%PropertyNameSingular%(%ListType% v) { 
                             %VariableType% pretendedNewValue = $swayWrap((%VariableType%)new org.tbee.sway.beanGenerator.ListPretendingToHaveAddedItem<%ListType%>(this.%variableName%, v));
                             fireVetoableChange("%propertyName%", get%PropertyName%(), pretendedNewValue); 
                             boolean wasAdded = this.%variableName%.add(v);
@@ -307,12 +307,13 @@ public class BeanGenerator extends AbstractProcessor {
                                 %VariableType% pretendedOldValue = $swayWrap((%VariableType%)new org.tbee.sway.beanGenerator.ListPretendingToHaveRemovedItem<%ListType%>(this.%variableName%, v));
                                 firePropertyChange("%propertyName%", pretendedOldValue, get%PropertyName%());
                             } 
+                            return wasAdded;
                         }
                     """));
         }
         if (isList && propertyAnnotation.remover()) {
             writer.print(resolve(variableContext, """
-                        public void remove%PropertyNameSingular%(%ListType% v) { 
+                        public boolean remove%PropertyNameSingular%(%ListType% v) { 
                             %VariableType% pretendedNewValue = $swayWrap((%VariableType%)new org.tbee.sway.beanGenerator.ListPretendingToHaveRemovedItem<%ListType%>(this.%variableName%, v));
                             fireVetoableChange("%propertyName%", get%PropertyName%(), pretendedNewValue); 
                             boolean wasRemoved = this.%variableName%.remove(v);
@@ -320,6 +321,7 @@ public class BeanGenerator extends AbstractProcessor {
                                 %VariableType% pretendedOldValue = $swayWrap((%VariableType%)new org.tbee.sway.beanGenerator.ListPretendingToHaveAddedItem<%ListType%>(this.%variableName%, v));
                                 firePropertyChange("%propertyName%", pretendedOldValue, get%PropertyName%());
                             } 
+                            return wasRemoved;
                         }
                     """));
         }

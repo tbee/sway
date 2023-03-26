@@ -7,8 +7,8 @@ What if the Swing API would be revisited and made modern, so that using that JTa
 What if creating a table with sorting, filtering, automatic updates of cells when values change only took a few lines of code? 
 
 ``` java
-var sTable = new STable<City>() //
-        .columns(City.class, "name", "distance", "roundtrip") //
+var sTable = new STable<City>()
+        .columns(City.class, "name", "distance", "roundtrip")
         .data(cities); // cities is a List<City>
 ```
 
@@ -41,7 +41,7 @@ var sCheckBox = new SCheckBox("Growing").bindTo(city.growing$());
 var sCheckBox = new SCheckBox3("Cityrights").bindTo(city.cityrights$());
 
 // Add a list
-var sList = new SList<City>() //
+var sList = new SList<City>()
         .render(new CityFormat(cities))
         .selectionMode(SList.SelectionMode.MULTIPLE)        
         .data(cities); // cities is a List<City>
@@ -49,11 +49,17 @@ var sList = new SList<City>() //
 // Bind the selection of the list to that of the table created above        
 sList.selection$().bindTo(sTable.selection$());
 
+// A tree is nothing more than a root and a way to get the children of a node.
+var sTree = new STree<City>()
+        .render(new CityFormat())
+        .root(amsterdam)
+        .children(City::getPartnerCities);
+
 // SButtonGroup revolves around the associated value, not the button
-var sButtonGroup = new SButtonGroup<Integer>() //
-        .add(1, new SToggleButton("winner")) //
-        .add(2, new SToggleButton("2nd")) //
-        .add(3, new SToggleButton("3rd")) //
+var sButtonGroup = new SButtonGroup<Integer>()
+        .add(1, new SToggleButton("winner"))
+        .add(2, new SToggleButton("2nd"))
+        .add(3, new SToggleButton("3rd"))
         .bindTo(race.position$());
 var sPanel = new SFlowPanel(sButtonGroup.getButtons());
 
@@ -62,12 +68,12 @@ var sButtonGroupCities = SButtonGroup.ofRadioButtons(amsterdam, berlin, rome);
 var sPanelCities = new SFlowPanel(sButtonGroupCities.getButtons());
 
 // Explicit panels for layouts, with corresponding methods.
-var sBorderPanel = new SBorderPanel(new STable()) //
-         .west(new SomeNavigationMenu()) //
+var sBorderPanel = new SBorderPanel(new STable())
+         .west(new SomeNavigationMenu())
          .east(new SomeContextLinks());
          
 // MigLayout is used by Sway anyhow         
-var migPanel = new MigPanel().fill(); //
+var migPanel = new MigPanel().fill();
 migPanel.addLabelAndField(someLabel, someField).growX();
 migPanel.wrap();         
 ```

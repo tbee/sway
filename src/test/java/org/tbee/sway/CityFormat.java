@@ -10,6 +10,10 @@ import java.util.List;
 public class CityFormat implements Format<City> {
 
     final private List<City> cities;
+    public CityFormat() {
+        this(List.of());
+    }
+
     public CityFormat(List<City> cities) {
         this.cities = cities;
     }
@@ -21,6 +25,9 @@ public class CityFormat implements Format<City> {
 
     @Override
     public Icon toIcon(City value) {
+        if (cities.isEmpty()) {
+            return null;
+        }
         FontIcon fontIcon = new FontIcon();
         fontIcon.setIkon(MaterialDesignC.values()[cities.indexOf(value)]);
         fontIcon.setIconSize(16);

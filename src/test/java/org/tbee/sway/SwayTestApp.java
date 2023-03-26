@@ -37,6 +37,7 @@ public class SwayTestApp {
 
             panel.addField(sTable()).grow();
             panel.addField(sList()).grow();
+            panel.addField(sTree()).grow();
             panel.addField(sComboBox()).growX();
             panel.addField(sTextField()).grow();
             panel.addField(sTextArea()).grow();
@@ -186,6 +187,26 @@ public class SwayTestApp {
                 ;
 
         return SVPanel.of(sList);
+    }
+
+    static private SVPanel sTree() {
+        City amsterdam = City.of("Amsterdam", 150);
+        City berlin = City.of("Berlin", 560);
+        amsterdam.addPartnerCity(berlin);
+        City rome = City.of("Rome", 1560);
+        amsterdam.addPartnerCity(rome);
+        City paris = City.of("Paris", 575);
+        rome.addPartnerCity(paris);
+        var cities = List.of(amsterdam, berlin, rome, paris);
+
+        var sTree = new STree<City>() //
+                .render(new CityFormat(cities))
+                .root(amsterdam) //
+                .children(City::getPartnerCities)
+//                .onSelectionChanged(cs -> System.out.println("List: " + cs))
+                ;
+
+        return SVPanel.of(sTree);
     }
 
     static private SVPanel sComboBox() {
