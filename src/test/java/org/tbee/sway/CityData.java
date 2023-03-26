@@ -12,23 +12,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Bean(stripSuffix = "Data")
-abstract public class City2Data extends AbstractBean<City> {
+abstract public class CityData extends AbstractBean<City> {
 
-    public City2Data() {
-        this.<Integer>addVetoableChangeListener(City2.DISTANCE, (oldValue, newValue) -> {
+    public CityData() {
+        this.<Integer>addVetoableChangeListener(City.DISTANCE, (oldValue, newValue) -> {
             if (newValue.intValue() < 0) {
                 throw new IllegalArgumentException("Distance must be >= 0");
             }
         });
     }
 
-    private final City2 self = (City2)this;
+    private final City self = (City)this;
 
-    static public City2 of() {
-        return new City2();
+    static public City of() {
+        return new City();
     }
 
-    static public City2 of(String name, int distance) {
+    static public City of(String name, int distance) {
         return of()
                 .name(name)
                 .distance(distance);
@@ -50,7 +50,7 @@ abstract public class City2Data extends AbstractBean<City> {
         return self.getDistance();
     }
     static public String DISTANCEINT = "distanceInt";
-    public City2Data distanceInt(Integer v) {
+    public CityData distanceInt(Integer v) {
         setDistanceInt(v);
         return this;
     }
