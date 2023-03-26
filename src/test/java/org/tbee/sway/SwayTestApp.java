@@ -199,6 +199,8 @@ public class SwayTestApp {
         rome.addPartnerCity(paris);
         var cities = List.of(amsterdam, berlin, rome, paris);
 
+//        FormatRegistry.register(City.class, new CityFormat(cities));
+
         var sTree = new STree<City>() //
                 .render(new CityFormat(cities))
                 .root(amsterdam) //

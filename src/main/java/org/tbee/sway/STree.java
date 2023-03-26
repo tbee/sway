@@ -37,8 +37,11 @@ public class STree<T> extends SBorderPanel {
                                                           boolean leaf, int row, boolean hasFocus) {
                 Component component = super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
 
-                // Apply format
+                // Use format
                 Format format = STree.this.format;
+                if (format == null && root != null) {
+                    format = FormatRegistry.findFor(root.getClass());
+                }
                 if (format != null && component instanceof JLabel jLabel) {
                     jLabel.setText(format.toString((T)value));
                     jLabel.setIcon(format.toIcon((T)value));
