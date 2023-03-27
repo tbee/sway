@@ -332,6 +332,4 @@ public class SList<T> extends SBorderPanel {
     public SList<T> bindTo(BeanBinder<?> beanBinder, String propertyName) {
         return bindTo(BindingEndpoint.of(beanBinder, propertyName));
     }
-
-    // TBEERNOT ExceptionHandler
 }

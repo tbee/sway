@@ -20,14 +20,12 @@ public class STreeModel<T> implements TreeModel {
 
     @Override
     public Object getRoot() {
-        System.out.println("!!!!! getRoot " + sTree.getRoot());
         return sTree.getRoot();
     }
 
     private List<T> getChildren(Object parent) {
         T treeNode = (T)parent;
         List<T> children = sTree.getChildren().apply(treeNode);
-        System.out.println("!!!!! getChildren " + parent + " -> " + children);
         return children;
     }
 
@@ -48,7 +46,6 @@ public class STreeModel<T> implements TreeModel {
 
     @Override
     public void valueForPathChanged(TreePath path, Object newValue) {
-
     }
 
     @Override

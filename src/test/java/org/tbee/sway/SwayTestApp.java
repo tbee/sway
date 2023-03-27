@@ -192,10 +192,10 @@ public class SwayTestApp {
     static private SVPanel sTree() {
         City amsterdam = City.of("Amsterdam", 150);
         City berlin = City.of("Berlin", 560);
-        amsterdam.addPartnerCity(berlin);
         City rome = City.of("Rome", 1560);
-        amsterdam.addPartnerCity(rome);
         City paris = City.of("Paris", 575);
+        amsterdam.addPartnerCity(berlin);
+        amsterdam.addPartnerCity(rome);
         rome.addPartnerCity(paris);
         var cities = List.of(amsterdam, berlin, rome, paris);
 
@@ -291,11 +291,21 @@ public class SwayTestApp {
         var sList = new SList<City>() //
                 .render(new CityFormat(cities))
                 .data(cities) //
-                .selectionMode(SList.SelectionMode.MULTIPLE)
-                ;
+                .selectionMode(SList.SelectionMode.MULTIPLE);
         sList.selection$().bindTo(sTable.selection$());
 
-        return SVPanel.of(sTable, sList);
+        // Bind selection to a tree
+        amsterdam.addPartnerCity(berlin);
+        amsterdam.addPartnerCity(rome);
+        rome.addPartnerCity(paris);
+        var sTree = new STree<City>() //
+                .render(new CityFormat(cities))
+                .root(amsterdam) //
+                .children(City::getPartnerCities)
+                .selectionMode(STree.SelectionMode.MULTIPLE);
+        sTree.selection$().bindTo(sTable.selection$());
+
+        return SVPanel.of(sTable, sList, sTree);
     }
 
     static private JPanel sCheckBox() {

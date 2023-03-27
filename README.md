@@ -42,7 +42,7 @@ var sCheckBox = new SCheckBox3("Cityrights").bindTo(city.cityrights$());
 
 // Add a list
 var sList = new SList<City>()
-        .render(new CityFormat(cities))
+        .render(new CityFormat())
         .selectionMode(SList.SelectionMode.MULTIPLE)        
         .data(cities); // cities is a List<City>
         

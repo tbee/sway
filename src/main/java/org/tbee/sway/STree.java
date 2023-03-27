@@ -1,5 +1,6 @@
 package org.tbee.sway;
 
+import org.tbee.sway.binding.BeanBinder;
 import org.tbee.sway.binding.BindingEndpoint;
 import org.tbee.sway.binding.ExceptionHandler;
 import org.tbee.sway.format.Format;
@@ -23,7 +24,7 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-public class STree<T> extends SBorderPanel {
+public class STree<T> extends SBorderPanel { // TBEERNOT Does it make sense have a Generic STree? Usually Trees hold different classes. A single class is the exception.
     static private org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(STree.class);
 
     final private STreeCore<T> sTreeCore;
@@ -112,6 +113,58 @@ public class STree<T> extends SBorderPanel {
         return this;
     }
 
+    private Function<T, TreePath> toRoot = this::findTreePathByWalkingTheTree;;
+
+    /**
+     *
+     * @param v
+     */
+    public void setToRoot(Function<T, TreePath> v) {
+        this.toRoot = v;
+    }
+    public Function<T, TreePath> getToRoot() {
+        return this.toRoot;
+    }
+    public STree<T> toRoot(Function<T, TreePath> v) {
+        setToRoot(v);
+        return this;
+    }
+
+    public TreePath findTreePathByWalkingTheTree(T child) {
+        if (child.equals(root)) {
+            return new TreePath(new Object[]{root});
+        }
+        List<T> rootToNode = findTreePathByWalkingTheTree(child, root);
+        if (rootToNode != null) {
+            rootToNode.add(0, root);
+            return new TreePath(rootToNode.toArray());
+        }
+        return null;
+    }
+
+    private List<T> findTreePathByWalkingTheTree(T child, T parent) {
+        List<T> children = this.children.apply(parent);
+
+        // Is it one of the parent's children?
+        for (T candidateChild : children) {
+            if (child.equals(candidateChild)) {
+                List<T> rootToNode = new ArrayList<>();
+                rootToNode.add(child);
+                return rootToNode;
+            }
+        }
+
+        // Look a level deeper
+        for (T candidateParent : children) {
+            List<T> rootToNode = findTreePathByWalkingTheTree(child, candidateParent);
+            if (rootToNode != null) {
+                rootToNode.add(0, candidateParent);
+                return rootToNode;
+            }
+        }
+        return null;
+    }
+
     // ===========================================================================
     // RENDERING
 
@@ -190,24 +243,16 @@ public class STree<T> extends SBorderPanel {
         return Collections.unmodifiableList(selectedItems);
     }
 
-// TBEERNOT: how to create a TreePath from a node... Do we need a parent function? (Inverse of children)
-//           the default could be a tree search, user can override with a faster version...
-//    /**
-//     *
-//     */
-//    public void setSelection(List<T> values) {
-//        //sTreeCore.getPathForRow();
-//        sTreeCore.
-//        TreeNode[] nodes = sTreeCore.getSTreeModel().getPathToRoot(node);
-//        m_tree.setExpandsSelectedPaths(true);
-//        m_tree.setSelectionPath(new TreePath(nodes));
-//        clearSelection();
-//        List<T> data = getData();
-//        for (T value : values) {
-//            int index = data.indexOf(value);
-//            sTreeCore.getSelectionModel().addSelectionInterval(index, index);
-//        }
-//    }
+    /**
+     *
+     */
+    public void setSelection(List<T> values) {
+        clearSelection();
+        for (T value : values) {
+            TreePath treePath = toRoot.apply(value);
+            sTreeCore.addSelectionPath(treePath);
+        }
+    }
 
     /**
      *
@@ -310,29 +355,27 @@ public class STree<T> extends SBorderPanel {
     	return new STree<T>().root(root);
     }
 
-//    /**
-//     * Binds to the default property 'selection'
-//     */
-//    public STree<T> bindTo(BindingEndpoint<List<T>> bindingEndpoint) {
-//        selection$().bindTo(bindingEndpoint);
-//        return this;
-//    }
-//
-//    /**
-//     * Binds to the default property 'selection'.
-//     * Binding in this way is not type safe!
-//     */
-//    public STree<T> bindTo(Object bean, String propertyName) {
-//        return bindTo(BindingEndpoint.of(bean, propertyName));
-//    }
-//
-//    /**
-//     * Binds to the default property 'selection'.
-//     * Binding in this way is not type safe!
-//     */
-//    public STree<T> bindTo(BeanBinder<?> beanBinder, String propertyName) {
-//        return bindTo(BindingEndpoint.of(beanBinder, propertyName));
-//    }
+    /**
+     * Binds to the default property 'selection'
+     */
+    public STree<T> bindTo(BindingEndpoint<List<T>> bindingEndpoint) {
+        selection$().bindTo(bindingEndpoint);
+        return this;
+    }
 
-    // TBEERNOT ExceptionHandler
+    /**
+     * Binds to the default property 'selection'.
+     * Binding in this way is not type safe!
+     */
+    public STree<T> bindTo(Object bean, String propertyName) {
+        return bindTo(BindingEndpoint.of(bean, propertyName));
+    }
+
+    /**
+     * Binds to the default property 'selection'.
+     * Binding in this way is not type safe!
+     */
+    public STree<T> bindTo(BeanBinder<?> beanBinder, String propertyName) {
+        return bindTo(BindingEndpoint.of(beanBinder, propertyName));
+    }
 }

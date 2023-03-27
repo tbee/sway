@@ -29,7 +29,7 @@ public class CityFormat implements Format<City> {
             return null;
         }
         FontIcon fontIcon = new FontIcon();
-        fontIcon.setIkon(MaterialDesignC.values()[cities.indexOf(value)]);
+        fontIcon.setIkon(MaterialDesignC.values()[value.getName().charAt(0)]);
         fontIcon.setIconSize(16);
         return fontIcon;
     }
