@@ -185,12 +185,13 @@ public class STree<T> extends SBorderPanel {
         var selectedItems = new ArrayList<T>(sTreeCore.getSelectionModel().getSelectionCount());
         TreePath[] paths = sTreeCore.getSelectionPaths();
         for (TreePath path : paths != null ? paths : new TreePath[0]) {
-            selectedItems.add((T) path.getLastPathComponent()));
+            selectedItems.add((T) path.getLastPathComponent());
         }
         return Collections.unmodifiableList(selectedItems);
     }
 
 // TBEERNOT: how to create a TreePath from a node... Do we need a parent function? (Inverse of children)
+//           the default could be a tree search, user can override with a faster version...
 //    /**
 //     *
 //     */
