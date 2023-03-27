@@ -19,12 +19,13 @@ import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 import java.awt.Component;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-public class STree<T> extends SBorderPanel { // TBEERNOT Does it make sense have a Generic STree? Usually Trees hold different classes. A single class is the exception.
+public class STree<T extends Object> extends SBorderPanel { // TBEERNOT Does it make sense have a Generic STree? Usually Trees hold different classes. A single class is the exception.
     static private org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(STree.class);
 
     final private STreeCore<T> sTreeCore;
@@ -111,6 +112,16 @@ public class STree<T> extends SBorderPanel { // TBEERNOT Does it make sense have
     public STree<T> children(Function<T, List<T>> v) {
         setChildren(v);
         return this;
+    }
+
+    /**
+     * Utility method for children property
+     * @param values
+     * @return
+     * @param <T>
+     */
+    static public <T> List<T> list(List<?> values) {
+        return new ArrayList<T>((Collection<? extends T>) values);
     }
 
     private Function<T, TreePath> toRoot = this::findTreePathByWalkingTheTree;;
@@ -350,7 +361,12 @@ public class STree<T> extends SBorderPanel { // TBEERNOT Does it make sense have
         setVisible(value);
         return this;
     }
-    
+
+    public STree<T> rootVisible(boolean value) {
+        sTreeCore.setRootVisible(value);
+        return this;
+    }
+
     static public <T> STree<T> of(T root) {
     	return new STree<T>().root(root);
     }

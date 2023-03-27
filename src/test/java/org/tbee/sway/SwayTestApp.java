@@ -7,6 +7,7 @@ import org.kordamp.ikonli.materialdesign2.MaterialDesignS;
 import org.kordamp.ikonli.swing.FontIcon;
 import org.tbee.sway.binding.BeanBinder;
 import org.tbee.sway.format.Format;
+import org.tbee.sway.format.FormatRegistry;
 import org.tbee.sway.support.DebugUtil;
 import org.tbee.sway.support.IconRegistry;
 
@@ -190,24 +191,39 @@ public class SwayTestApp {
     }
 
     static private SVPanel sTree() {
+
         City amsterdam = City.of("Amsterdam", 150);
+        amsterdam.addStreet(Street.of("Kalverstraat"));
+        amsterdam.addStreet(Street.of("Leidseplein"));
+
         City berlin = City.of("Berlin", 560);
+        berlin.addStreet(Street.of("Kurfurstendam"));
+
         City rome = City.of("Rome", 1560);
+        rome.addStreet(Street.of("Colloseo"));
+
         City paris = City.of("Paris", 575);
+
         amsterdam.addPartnerCity(berlin);
         amsterdam.addPartnerCity(rome);
         rome.addPartnerCity(paris);
+
         var cities = List.of(amsterdam, berlin, rome, paris);
 
-//        FormatRegistry.register(City.class, new CityFormat(cities));
+        FormatRegistry.register(City.class, new CityFormat(cities));
+        FormatRegistry.register(Street.class, new StreetFormat());
 
-        var sTree = new STree<City>() //
-                .render(new CityFormat(cities))
-                .root(amsterdam) //
-                .children(City::getPartnerCities)
-//                .onSelectionChanged(cs -> System.out.println("List: " + cs))
-                ;
-
+        // TBEERNOT children supplier? format supplier? Renderer supplier?
+        var sTree = new STree<>() //
+                .root(cities) //
+                .children(node -> { // In Java 21 we can do a switch expression here maybe?
+                    if (node == cities) return STree.list(cities);
+                    if (node instanceof City city) return STree.list(city.getStreets());
+                    return List.of();
+                })
+                .rootVisible(false)
+                .onSelectionChanged(cs -> System.out.println("List: " + cs));
+        Object node = null;
         return SVPanel.of(sTree);
     }
 

@@ -54,7 +54,7 @@ public @interface Property  {
 
     public boolean propertyNameConstant() default true;
 
-    public boolean includeInToString() default true;
+    public boolean includeInToString() default false;
 
     public boolean isList() default false;
     public boolean adder() default true;

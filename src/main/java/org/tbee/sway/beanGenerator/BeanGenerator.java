@@ -170,7 +170,7 @@ public class BeanGenerator extends AbstractProcessor {
                                       + %toString%;
                              }
                              
-                         """, Map.of("toString", toString)));
+                         """, Map.of("toString", toString.isBlank() ? "\"\"" : toString)));
 
             writer.print("""
                         private <T> T $swayWrap(T object) {

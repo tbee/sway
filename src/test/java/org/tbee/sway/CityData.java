@@ -35,7 +35,7 @@ abstract public class CityData extends AbstractBean<City> {
     }
 
     /** name: string property */
-    @Property(name="name")
+    @Property(name="name", includeInToString = true)
     String nameNot;
 
     /** distance: integer property */
@@ -67,32 +67,30 @@ abstract public class CityData extends AbstractBean<City> {
         return BindingEndpoint.of(beanBinder, ROUNDTRIP);
     }
 
-    /** surface: BigDecimal property */
     @Property
     BigDecimal surfaceInKM2;
 
-    /** growing: boolean property */
     @Property
     boolean growing = true;
 
-    /** cityRights: Boolean property */
     @Property(recordStyleGetter = true, recordStyleSetter = true, recordStyleWither = false)
     Boolean cityRights = null;
 
-    /** sisterCity: City property */
-    @Property(includeInToString = false)
+    @Property
     City sisterCity;
 
-    /** sisterCity: City property */
-    @Property(recordStyleGetter = true, setterScope = Scope.PRIVATE, isList = true, nameSingular = "partnerCity", includeInToString = false)
+    @Property(recordStyleGetter = true, setterScope = Scope.PRIVATE, isList = true, nameSingular = "partnerCity")
     List<City> partnerCities = new ArrayList<>();
 
-    @Property(recordStyleGetter = true, setterScope = Scope.PRIVATE, isList = true, nameSingular = "thing", includeInToString = false)
+    @Property(recordStyleGetter = true, setterScope = Scope.PRIVATE, isList = true, nameSingular = "street")
+    List<Street> streets = new ArrayList<>();
+
+    @Property(recordStyleGetter = true, setterScope = Scope.PRIVATE, isList = true, nameSingular = "thing")
     List things = new ArrayList<>();
 
-    @Override
-    public void firePropertyChange(String name, Object before, Object after) {
-        System.out.println(this.getClass().getSimpleName() + "." + name + ": " + before + " -> " + after);
-        super.firePropertyChange(name, before, after);
-    }
+//    @Override
+//    public void firePropertyChange(String name, Object before, Object after) {
+//        System.out.println(this.getClass().getSimpleName() + "." + name + ": " + before + " -> " + after);
+//        super.firePropertyChange(name, before, after);
+//    }
 }
