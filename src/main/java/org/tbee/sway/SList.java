@@ -189,7 +189,7 @@ public class SList<T> extends SBorderPanel {
      * @return
      */
     public List<T> getSelection() {
-        var selectedItems = new ArrayList<T>(sListCore.getSelectionModel().getSelectionMode());
+        var selectedItems = new ArrayList<T>(sListCore.getSelectionModel().getSelectedItemsCount());
         for (int rowIdx : sListCore.getSelectionModel().getSelectedIndices()) {
             selectedItems.add(getData().get(rowIdx));
         }

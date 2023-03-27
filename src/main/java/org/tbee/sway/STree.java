@@ -12,11 +12,15 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
-import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.tree.DefaultTreeCellRenderer;
+import javax.swing.tree.TreePath;
+import javax.swing.tree.TreeSelectionModel;
 import java.awt.Component;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class STree<T> extends SBorderPanel {
@@ -33,14 +37,14 @@ public class STree<T> extends SBorderPanel {
 
         sTreeCore.setCellRenderer(new DefaultTreeCellRenderer(){
             @Override
-            public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded,
+            public Component getTreeCellRendererComponent(JTree tree, Object value, boolean selected, boolean expanded,
                                                           boolean leaf, int row, boolean hasFocus) {
-                Component component = super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
+                Component component = super.getTreeCellRendererComponent(tree, value, selected, expanded, leaf, row, hasFocus);
 
                 // Use format
                 Format format = STree.this.format;
-                if (format == null && root != null) {
-                    format = FormatRegistry.findFor(root.getClass());
+                if (format == null) {
+                    format = FormatRegistry.findFor(value.getClass());
                 }
                 if (format != null && component instanceof JLabel jLabel) {
                     jLabel.setText(format.toString((T)value));
@@ -52,16 +56,14 @@ public class STree<T> extends SBorderPanel {
             }
         });
 
-//        // Start listening for selection changes
-//        sTreeCore.getSelectionModel().addListSelectionListener(e -> {
-//            if (!e.getValueIsAdjusting()) {
-//                var selectedItems = getSelection();
-//                if (selectionChangedListeners != null) {
-//                    selectionChangedListeners.forEach(l -> l.accept(selectedItems));
-//                }
-//                firePropertyChange(SELECTION, null, selectedItems);
-//            }
-//        });
+        // Start listening for selection changes
+        sTreeCore.addTreeSelectionListener(e -> {
+            var selectedItems = getSelection();
+            if (selectionChangedListeners != null) {
+                selectionChangedListeners.forEach(l -> l.accept(selectedItems));
+            }
+            firePropertyChange(SELECTION, null, selectedItems);
+        });
     }
 
     public STreeCore<T> getSTreeCore() {
@@ -141,9 +143,9 @@ public class STree<T> extends SBorderPanel {
     // SELECTION
 
     public enum SelectionMode{ //
-        SINGLE(ListSelectionModel.SINGLE_SELECTION), //
-        INTERVAL(ListSelectionModel.SINGLE_INTERVAL_SELECTION), //
-        MULTIPLE(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+        SINGLE(TreeSelectionModel.SINGLE_TREE_SELECTION), //
+        INTERVAL(TreeSelectionModel.CONTIGUOUS_TREE_SELECTION), //
+        MULTIPLE(TreeSelectionModel.DISCONTIGUOUS_TREE_SELECTION);
 
         private int code;
         private SelectionMode(int code) {
@@ -160,37 +162,44 @@ public class STree<T> extends SBorderPanel {
         }
     }
 
-//    /**
-//     *
-//     * @param v
-//     */
-//    public void setSelectionMode(STree.SelectionMode v) {
-//        sTreeCore.setSelectionMode(v.code);
-//    }
-//    public STree.SelectionMode getSelectionMode() {
-//        return STree.SelectionMode.of(sTreeCore.getSelectionModel().getSelectionMode());
-//    }
-//    public STree<T> selectionMode(STree.SelectionMode v) {
-//        setSelectionMode(v);
-//        return this;
-//    }
-//
-//    /**
-//     *
-//     * @return
-//     */
-//    public List<T> getSelection() {
-//        var selectedItems = new ArrayList<T>(sTreeCore.getSelectionModel().getSelectionMode());
-//        for (int rowIdx : sTreeCore.getSelectionModel().getSelectedIndices()) {
-//            selectedItems.add(getData().get(rowIdx));
-//        }
-//        return Collections.unmodifiableList(selectedItems);
-//    }
-//
+    /**
+     *
+     * @param v
+     */
+    public void setSelectionMode(STree.SelectionMode v) {
+        sTreeCore.getSelectionModel().setSelectionMode(v.code);
+    }
+    public STree.SelectionMode getSelectionMode() {
+        return STree.SelectionMode.of(sTreeCore.getSelectionModel().getSelectionMode());
+    }
+    public STree<T> selectionMode(STree.SelectionMode v) {
+        setSelectionMode(v);
+        return this;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public List<T> getSelection() {
+        var selectedItems = new ArrayList<T>(sTreeCore.getSelectionModel().getSelectionCount());
+        TreePath[] paths = sTreeCore.getSelectionPaths();
+        for (TreePath path : paths != null ? paths : new TreePath[0]) {
+            selectedItems.add((T) path.getLastPathComponent()));
+        }
+        return Collections.unmodifiableList(selectedItems);
+    }
+
+// TBEERNOT: how to create a TreePath from a node... Do we need a parent function? (Inverse of children)
 //    /**
 //     *
 //     */
 //    public void setSelection(List<T> values) {
+//        //sTreeCore.getPathForRow();
+//        sTreeCore.
+//        TreeNode[] nodes = sTreeCore.getSTreeModel().getPathToRoot(node);
+//        m_tree.setExpandsSelectedPaths(true);
+//        m_tree.setSelectionPath(new TreePath(nodes));
 //        clearSelection();
 //        List<T> data = getData();
 //        for (T value : values) {
@@ -198,45 +207,45 @@ public class STree<T> extends SBorderPanel {
 //            sTreeCore.getSelectionModel().addSelectionInterval(index, index);
 //        }
 //    }
-//
-//    /**
-//     *
-//     */
-//    public void clearSelection() {
-//        sTreeCore.clearSelection();
-//    }
-//
-//    final static public String SELECTION = "selection";
-//    public BindingEndpoint<List<T>> selection$() {
-//        return BindingEndpoint.of(this, SELECTION, exceptionHandler);
-//    }
-//
-//    /**
-//     *
-//     * @param listener
-//     */
-//    synchronized public void addSelectionChangedListener(Consumer<List<T>> listener) {
-//        if (selectionChangedListeners == null) {
-//            selectionChangedListeners = new ArrayList<>();
-//        }
-//        selectionChangedListeners.add(listener);
-//    }
-//    synchronized public boolean removeSelectionChangedListener(Consumer<List<T>> listener) {
-//        if (selectionChangedListeners == null) {
-//            return false;
-//        }
-//        return selectionChangedListeners.remove(listener);
-//    }
-//    private List<Consumer<List<T>>> selectionChangedListeners;
-//
-//    /**
-//     * @param onSelectionChangedListener
-//     * @return
-//     */
-//    public STree<T> onSelectionChanged(Consumer<List<T>> onSelectionChangedListener) {
-//        addSelectionChangedListener(onSelectionChangedListener);
-//        return this;
-//    }
+
+    /**
+     *
+     */
+    public void clearSelection() {
+        sTreeCore.clearSelection();
+    }
+
+    final static public String SELECTION = "selection";
+    public BindingEndpoint<List<T>> selection$() {
+        return BindingEndpoint.of(this, SELECTION, exceptionHandler);
+    }
+
+    /**
+     *
+     * @param listener
+     */
+    synchronized public void addSelectionChangedListener(Consumer<List<T>> listener) {
+        if (selectionChangedListeners == null) {
+            selectionChangedListeners = new ArrayList<>();
+        }
+        selectionChangedListeners.add(listener);
+    }
+    synchronized public boolean removeSelectionChangedListener(Consumer<List<T>> listener) {
+        if (selectionChangedListeners == null) {
+            return false;
+        }
+        return selectionChangedListeners.remove(listener);
+    }
+    private List<Consumer<List<T>>> selectionChangedListeners;
+
+    /**
+     * @param onSelectionChangedListener
+     * @return
+     */
+    public STree<T> onSelectionChanged(Consumer<List<T>> onSelectionChangedListener) {
+        addSelectionChangedListener(onSelectionChangedListener);
+        return this;
+    }
 
     // ========================================================
     // EXCEPTION HANDLER
