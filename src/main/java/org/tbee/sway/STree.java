@@ -20,6 +20,7 @@ import javax.swing.tree.TreeSelectionModel;
 import java.awt.Component;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
@@ -46,6 +47,9 @@ public class STree<T extends Object> extends SBorderPanel { // TBEERNOT Does it 
 
                 // Use format
                 Format format = STree.this.format;
+                if (format == null) {
+                    format = formats.get(value.getClass());
+                }
                 if (format == null) {
                     format = FormatRegistry.findFor(value.getClass());
                 }
@@ -110,19 +114,47 @@ public class STree<T extends Object> extends SBorderPanel { // TBEERNOT Does it 
 
     final private Map<Function<T, Boolean>, Function<T, List<?>>> childrenOf = new Hashtable<>();
 
-    public STree<T> childrenOf(Function<T, Boolean> expr, Function<T, List<?>> data) {
-        childrenOf.put(expr, data);
+    /**
+     *
+     * @param gateFunction function that returns true if the associated childrenFunction will return a list of children for the provided node
+     * @param childrenFunction function that will return the children of the provided node
+     * @return
+     */
+    public STree<T> childrenOf(Function<T, Boolean> gateFunction, Function<T, List<?>> childrenFunction) {
+        childrenOf.put(gateFunction, childrenFunction);
         sTreeCore.treeStructureChanged();
         return this;
     }
-    public <X> STree<T> childrenOf(Class<X> clazz, Function<X, List<?>> v) {
-        return childrenOf(o -> clazz.isAssignableFrom(o.getClass()), (Function<T, List<?>>)v);
+
+    /**
+     *
+     * @param parentClazz the class for which the childrenFunction is defined
+     * @param childrenFunction the function that will get the children given a node of type parentClazz
+     * @return
+     * @param <X>
+     */
+    public <X> STree<T> childrenOf(Class<X> parentClazz, Function<X, List<?>> childrenFunction) {
+        return childrenOf(o -> parentClazz.isAssignableFrom(o.getClass()), (Function<T, List<?>>)childrenFunction);
     }
-    public STree<T> childrenOf(Function<T, List<?>> v) {
-        return childrenOf(o -> true, v);
+
+    /**
+     *
+     * @param childrenFunction function that will provide children for any node in the tree,
+     *                         or nodes that are not handled by previous declared childrenOf rules.
+     * @return
+     */
+    public STree<T> childrenOf(Function<T, List<?>> childrenFunction) {
+        return childrenOf(o -> true, childrenFunction);
     }
-    public <X> STree<T> childrenOfRoot(List<?> v) {
-        return childrenOf(node -> node == root, node -> v);
+
+    /**
+     * This method is usually used when the root is not visible, like when the root is a list.
+     * @param children list of children of the root node
+     * @return
+     * @param <X>
+     */
+    public <X> STree<T> childrenOfRoot(List<?> children) {
+        return childrenOf(node -> node == root, node -> children);
     }
 
     /**
@@ -131,9 +163,10 @@ public class STree<T extends Object> extends SBorderPanel { // TBEERNOT Does it 
      * @return
      */
     public List<T> determineChildrenOf(T parent) {
-        for (Function<T, Boolean> expr : childrenOf.keySet()) {
-            if (expr.apply(parent)) {
-                List<T> children = (List<T>)this.childrenOf.get(expr).apply(parent);
+        for (Function<T, Boolean> gateFunction : childrenOf.keySet()) {
+            if (gateFunction.apply(parent)) {
+                Function<T, List<?>> childrenFunction = this.childrenOf.get(gateFunction);
+                List<T> children = (List<T>)childrenFunction.apply(parent);
                 return children;
             }
         }
@@ -223,16 +256,22 @@ public class STree<T extends Object> extends SBorderPanel { // TBEERNOT Does it 
         return this;
     }
 
-    // TBEERNOT not sure how to do this, but I know this API needs to be there. TTD? :-D
+    private Map<Class<?>, Format<?>> formats = new HashMap<>();
+
     /**
+     * Register formats only for this tree.
      *
      * @param clazz
+     * @param format
      * @return
      */
-    public STree<T> renderFor(Class<T> clazz) {
-        return render((Format<T>) FormatRegistry.findFor(clazz));
+    public STree<T> registerFormat(Class<?> clazz, Format<?> format) {
+        formats.put(clazz, format);
+        return this;
     }
-
+    public boolean unregisterFormat(Class<?> clazz) {
+        return formats.remove(clazz) != null;
+    }
 
     // ===========================================================================
     // SELECTION

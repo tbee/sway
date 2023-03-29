@@ -25,7 +25,7 @@ public class CityFormat implements Format<City> {
 
     @Override
     public Icon toIcon(City value) {
-        if (cities.isEmpty()) {
+        if (value == null) {
             return null;
         }
         FontIcon fontIcon = new FontIcon();

@@ -240,11 +240,17 @@ The bean generator uses compiler annotations, so it will automatically be picked
 IDEs usually need to have compiler annotations activated.
 
 
-## Compatibility
-The components are still the standard Swing components, only with an opinionated API, but they should blend-in nicely in existing applications.
+## Compatibility / usage
+Sway uses the standard Swing components, only with an opinionated API, so they should blend-in nicely in existing applications.
 
-And as long as you stick to Sway's API upgrading should not be too much of a hassle. 
+But Sway is highly opinionated, trying to make standard stuff as easy as possible.
+Sway assumes some kind of domain model, with is implemented according to the Java Bean specification.
+And as long as you stick to these assumptions, things should go smoothly.
+If you want to do things differently, it's better use the Swing components; they are much more flexible (and because of that more difficult to use).
+
+As long as you stick to Sway's API, upgrading should not be too much of a hassle. 
 If you start poking around, you're on your own ;-)
+
 
 ## Support
 There is no formal support for Sway: this library is an open source hobby project and no claims can be made. 

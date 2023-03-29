@@ -25,7 +25,7 @@ public class StreetFormat implements Format<Street> {
 
     @Override
     public Icon toIcon(Street value) {
-        if (streets.isEmpty()) {
+        if (value == null) {
             return null;
         }
         FontIcon fontIcon = new FontIcon();

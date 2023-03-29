@@ -25,7 +25,7 @@ public class BuildingFormat implements Format<Building> {
 
     @Override
     public Icon toIcon(Building value) {
-        if (buildings.isEmpty()) {
+        if (value == null) {
             return null;
         }
         FontIcon fontIcon = new FontIcon();

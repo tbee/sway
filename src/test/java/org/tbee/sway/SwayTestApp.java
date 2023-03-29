@@ -7,8 +7,6 @@ import org.kordamp.ikonli.materialdesign2.MaterialDesignS;
 import org.kordamp.ikonli.swing.FontIcon;
 import org.tbee.sway.binding.BeanBinder;
 import org.tbee.sway.format.Format;
-import org.tbee.sway.format.FormatRegistry;
-import org.tbee.sway.support.DebugUtil;
 import org.tbee.sway.support.IconRegistry;
 
 import javax.swing.Icon;
@@ -51,8 +49,6 @@ public class SwayTestApp {
                     .sizeToPreferred() //
                     .maximize() //
                     .visible(true);
-
-            System.out.println(DebugUtil.componentTreeAsString(jFrame));
         });
     }
 
@@ -216,15 +212,14 @@ public class SwayTestApp {
 
         var cities = List.of(amsterdam, berlin, rome, paris);
 
-        FormatRegistry.register(City.class, new CityFormat(cities));
-        FormatRegistry.register(Street.class, new StreetFormat());
-        FormatRegistry.register(Building.class, new BuildingFormat());
-
-        // TBEERNOT format supplier? Renderer supplier?
+        // TBEERNOT Renderer supplier?
         var sTree = new STree<>() //
                 .root(cities)
                 .childrenOf(City.class, City::getStreets)
                 .childrenOf(Street.class, Street::getBuildings)
+                .registerFormat(City.class, new CityFormat())
+                .registerFormat(Street.class, new StreetFormat())
+                .registerFormat(Building.class, new BuildingFormat())
                 .onSelectionChanged(cs -> System.out.println("List: " + cs));
         Object node = null;
         return SVPanel.of(sTree);
