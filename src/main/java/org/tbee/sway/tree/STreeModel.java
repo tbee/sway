@@ -25,7 +25,7 @@ public class STreeModel<T> implements TreeModel {
 
     private List<T> getChildren(Object parent) {
         T treeNode = (T)parent;
-        List<T> children = sTree.determineChildren(treeNode);
+        List<T> children = sTree.determineChildrenOf(treeNode);
         return children;
     }
 

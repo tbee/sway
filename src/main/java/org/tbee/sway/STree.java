@@ -75,17 +75,25 @@ public class STree<T extends Object> extends SBorderPanel { // TBEERNOT Does it 
 
 
     // =======================================================================
-    // DATA
+    // ROOT
 
     private T root;
 
     /**
-     *
+     * If root is a list, then tree assumes that is children is the list itself.
+     * And that the root should not be shown.
      * @param v
      */
     public void setRoot(T v) {
 // TBEERNOT       unregisterFromAllBeans();
         this.root = v;
+
+        // if root is a list object, then its children is the list itself
+        if (root instanceof List) {
+            childrenOfRoot((List<?>) root);
+            rootVisible(false);
+        }
+
         sTreeCore.treeStructureChanged();
 // TBEERNOT       registerToAllBeans();
     }
@@ -97,46 +105,54 @@ public class STree<T extends Object> extends SBorderPanel { // TBEERNOT Does it 
         return this;
     }
 
-//    private Function<T, List<T>> children = parent -> List.of(); // no children
-//
-//    /**
-//     *
-//     * @param v
-//     */
-//    public void setChildren(Function<T, List<T>> v) {
-//        this.children = v;
-//        sTreeCore.treeStructureChanged();
-//    }
-//    public Function<T, List<T>> getChildren() {
-//        return this.children;
-//    }
-//    public STree<T> children(Function<T, List<T>> v) {
-//        setChildren(v);
-//        return this;
-//    }
+    // =======================================================================
+    // CHILDREN
 
-    private Map<Function<T, Boolean>, Function<T, List<?>>> children = new Hashtable<>();
-    public STree<T> children(Function<T, Boolean> expr, Function<T, List<?>> data) {
-        children.put(expr, data);
+    final private Map<Function<T, Boolean>, Function<T, List<?>>> childrenOf = new Hashtable<>();
+
+    public STree<T> childrenOf(Function<T, Boolean> expr, Function<T, List<?>> data) {
+        childrenOf.put(expr, data);
         sTreeCore.treeStructureChanged();
         return this;
     }
-    public <X> STree<T> children(Class<X> clazz, Function<X, List<?>> v) {
-        return children(o -> clazz.isAssignableFrom(o.getClass()), (Function<T, List<?>>)v);
+    public <X> STree<T> childrenOf(Class<X> clazz, Function<X, List<?>> v) {
+        return childrenOf(o -> clazz.isAssignableFrom(o.getClass()), (Function<T, List<?>>)v);
     }
-    public STree<T> children(Function<T, List<?>> v) {
-        return children(o -> true, v);
+    public STree<T> childrenOf(Function<T, List<?>> v) {
+        return childrenOf(o -> true, v);
+    }
+    public <X> STree<T> childrenOfRoot(List<?> v) {
+        return childrenOf(node -> node == root, node -> v);
     }
 
-    public List<T> determineChildren(T parent) {
-        for (Function<T, Boolean> expr : children.keySet()) {
+    /**
+     *
+     * @param parent
+     * @return
+     */
+    public List<T> determineChildrenOf(T parent) {
+        for (Function<T, Boolean> expr : childrenOf.keySet()) {
             if (expr.apply(parent)) {
-                List<T> children = (List<T>)this.children.get(expr).apply(parent);
+                List<T> children = (List<T>)this.childrenOf.get(expr).apply(parent);
                 return children;
             }
         }
         return List.of();
     }
+
+    /**
+     * Erase all parent to children mappings
+     * @return
+     */
+    public STree<T> clearChildrenOf() {
+        childrenOf.clear();
+        sTreeCore.treeStructureChanged();
+        return this;
+    }
+
+
+    // =======================================================================
+    // TREEPATH TO ROOT
 
     private Function<T, TreePath> toRoot = this::findTreePathByWalkingTheTree;;
 
@@ -169,7 +185,7 @@ public class STree<T extends Object> extends SBorderPanel { // TBEERNOT Does it 
 
     private List<T> findTreePathByWalkingTheTree(T child, T parent) {
 //        List<T> children = this.children.apply(parent);
-        List<T> children = determineChildren(parent);
+        List<T> children = determineChildrenOf(parent);
 
         // Is it one of the parent's children?
         for (T candidateChild : children) {

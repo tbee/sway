@@ -220,15 +220,11 @@ public class SwayTestApp {
         FormatRegistry.register(Street.class, new StreetFormat());
         FormatRegistry.register(Building.class, new BuildingFormat());
 
-        // TBEERNOT children supplier? format supplier? Renderer supplier?
+        // TBEERNOT format supplier? Renderer supplier?
         var sTree = new STree<>() //
-                .root(cities) //
-                .children(City.class, City::getStreets)
-                .children(Street.class, Street::getBuildings)
-// Can we somehow make this a default:
-                .children(node -> node == cities, root -> cities) // root is a list object, its children is the list itself
-//                .children(root -> cities)
-                .rootVisible(false)
+                .root(cities)
+                .childrenOf(City.class, City::getStreets)
+                .childrenOf(Street.class, Street::getBuildings)
                 .onSelectionChanged(cs -> System.out.println("List: " + cs));
         Object node = null;
         return SVPanel.of(sTree);
@@ -324,7 +320,7 @@ public class SwayTestApp {
         var sTree = new STree<City>() //
                 .render(new CityFormat(cities))
                 .root(amsterdam) //
-                .children(City::getPartnerCities)
+                .childrenOf(City::getPartnerCities)
                 .selectionMode(STree.SelectionMode.MULTIPLE);
         sTree.selection$().bindTo(sTable.selection$());
 

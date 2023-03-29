@@ -53,13 +53,14 @@ sList.selection$().bindTo(sTable.selection$());
 var sTree = new STree<City>()
         .render(new CityFormat())
         .root(amsterdam)
-        .children(City::getPartnerCities);
+        .childrenOf(City::getPartnerCities);
 
-// Often a tree does not show uniform nodes
+// A tree often shows different classes as nodes, so several children mappings are needed.
+// FormatRegistry is used to render.
 var sTree = new STree<City>()
-        .root(cities)
-        .children(City.class, City::getStreets)
-        .children(Street.class, Street::getBuildings);
+        .root(cities) // a list as root is automatically handled
+        .childrenOf(City.class, City::getStreets)
+        .childrenOf(Street.class, Street::getBuildings);
 
 // SButtonGroup revolves around the associated value, not the button
 var sButtonGroup = new SButtonGroup<Integer>()
