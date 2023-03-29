@@ -56,7 +56,7 @@ var sTree = new STree<City>()
         .childrenOf(City::getPartnerCities);
 
 // A tree often shows different classes as nodes, so several children mappings are needed.
-// FormatRegistry is used to render.
+// The Formats registered in the FormatRegistry are used for rendering automatically.
 var sTree = new STree<City>()
         .root(cities) // a list as root is automatically handled
         .childrenOf(City.class, City::getStreets)
@@ -109,9 +109,9 @@ public class LongFormat implements Format<Long> {
 FormatRegistry.register(Long.class, new LongFormat()); // Formats must be stateless and thread safe.   
 ```
 
-The FormatRegisty is used by all components, STextField, STable, SButtonGroup, ..., so it is only necessary to register a format once.
+The FormatRegisty is used by all components, STextField, STable, STree, SButtonGroup, ..., 
+so it is only necessary to register a format once.
 This also is true for domain entities, like for example a "City" or "Employee".
-
 
 Format also allows to define things like horizontal alignment and icon.
 
