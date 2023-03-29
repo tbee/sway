@@ -193,8 +193,14 @@ public class SwayTestApp {
     static private SVPanel sTree() {
 
         City amsterdam = City.of("Amsterdam", 150);
-        amsterdam.addStreet(Street.of("Kalverstraat"));
-        amsterdam.addStreet(Street.of("Leidseplein"));
+        Street kalverstraat = amsterdam.addStreet(Street.of("Kalverstraat"));
+        kalverstraat.addBuilding(Building.of(1));
+        kalverstraat.addBuilding(Building.of(3));
+        kalverstraat.addBuilding(Building.of(5));
+        Street leidseplein = amsterdam.addStreet(Street.of("Leidseplein"));
+        leidseplein.addBuilding(Building.of(2));
+        leidseplein.addBuilding(Building.of(4));
+        leidseplein.addBuilding(Building.of(8));
 
         City berlin = City.of("Berlin", 560);
         berlin.addStreet(Street.of("Kurfurstendam"));
@@ -212,15 +218,16 @@ public class SwayTestApp {
 
         FormatRegistry.register(City.class, new CityFormat(cities));
         FormatRegistry.register(Street.class, new StreetFormat());
+        FormatRegistry.register(Building.class, new BuildingFormat());
 
         // TBEERNOT children supplier? format supplier? Renderer supplier?
         var sTree = new STree<>() //
                 .root(cities) //
-                .children(node -> { // In Java 21 we can do a switch expression here maybe?
-                    if (node == cities) return STree.list(cities);
-                    if (node instanceof City city) return STree.list(city.getStreets());
-                    return List.of();
-                })
+                .children(City.class, City::getStreets)
+                .children(Street.class, Street::getBuildings)
+// Can we somehow make this a default:
+                .children(node -> node == cities, root -> cities) // root is a list object, its children is the list itself
+//                .children(root -> cities)
                 .rootVisible(false)
                 .onSelectionChanged(cs -> System.out.println("List: " + cs));
         Object node = null;

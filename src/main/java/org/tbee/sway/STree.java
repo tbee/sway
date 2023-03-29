@@ -19,9 +19,10 @@ import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 import java.awt.Component;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
+import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -96,32 +97,45 @@ public class STree<T extends Object> extends SBorderPanel { // TBEERNOT Does it 
         return this;
     }
 
-    private Function<T, List<T>> children = parent -> List.of(); // no children
+//    private Function<T, List<T>> children = parent -> List.of(); // no children
+//
+//    /**
+//     *
+//     * @param v
+//     */
+//    public void setChildren(Function<T, List<T>> v) {
+//        this.children = v;
+//        sTreeCore.treeStructureChanged();
+//    }
+//    public Function<T, List<T>> getChildren() {
+//        return this.children;
+//    }
+//    public STree<T> children(Function<T, List<T>> v) {
+//        setChildren(v);
+//        return this;
+//    }
 
-    /**
-     *
-     * @param v
-     */
-    public void setChildren(Function<T, List<T>> v) {
-        this.children = v;
+    private Map<Function<T, Boolean>, Function<T, List<?>>> children = new Hashtable<>();
+    public STree<T> children(Function<T, Boolean> expr, Function<T, List<?>> data) {
+        children.put(expr, data);
         sTreeCore.treeStructureChanged();
-    }
-    public Function<T, List<T>> getChildren() {
-        return this.children;
-    }
-    public STree<T> children(Function<T, List<T>> v) {
-        setChildren(v);
         return this;
     }
+    public <X> STree<T> children(Class<X> clazz, Function<X, List<?>> v) {
+        return children(o -> clazz.isAssignableFrom(o.getClass()), (Function<T, List<?>>)v);
+    }
+    public STree<T> children(Function<T, List<?>> v) {
+        return children(o -> true, v);
+    }
 
-    /**
-     * Utility method for children property
-     * @param values
-     * @return
-     * @param <T>
-     */
-    static public <T> List<T> list(List<?> values) {
-        return new ArrayList<T>((Collection<? extends T>) values);
+    public List<T> determineChildren(T parent) {
+        for (Function<T, Boolean> expr : children.keySet()) {
+            if (expr.apply(parent)) {
+                List<T> children = (List<T>)this.children.get(expr).apply(parent);
+                return children;
+            }
+        }
+        return List.of();
     }
 
     private Function<T, TreePath> toRoot = this::findTreePathByWalkingTheTree;;
@@ -154,7 +168,8 @@ public class STree<T extends Object> extends SBorderPanel { // TBEERNOT Does it 
     }
 
     private List<T> findTreePathByWalkingTheTree(T child, T parent) {
-        List<T> children = this.children.apply(parent);
+//        List<T> children = this.children.apply(parent);
+        List<T> children = determineChildren(parent);
 
         // Is it one of the parent's children?
         for (T candidateChild : children) {

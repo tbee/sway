@@ -55,6 +55,12 @@ var sTree = new STree<City>()
         .root(amsterdam)
         .children(City::getPartnerCities);
 
+// Often a tree does not show uniform nodes
+var sTree = new STree<City>()
+        .root(cities)
+        .children(City.class, City::getStreets)
+        .children(Street.class, Street::getBuildings);
+
 // SButtonGroup revolves around the associated value, not the button
 var sButtonGroup = new SButtonGroup<Integer>()
         .add(1, new SToggleButton("winner"))

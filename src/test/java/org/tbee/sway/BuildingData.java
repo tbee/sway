@@ -1,36 +1,31 @@
 package org.tbee.sway;
 
-import org.tbee.sway.beanGenerator.Scope;
 import org.tbee.sway.beanGenerator.annotations.Bean;
 import org.tbee.sway.beanGenerator.annotations.Property;
 import org.tbee.util.AbstractBean;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Bean(stripSuffix = "Data")
-abstract public class StreetData extends AbstractBean<City> {
+abstract public class BuildingData extends AbstractBean<City> {
 
-    public StreetData() {
+    public BuildingData() {
     }
 
-    private final Street self = (Street)this;
+    private final Building self = (Building)this;
 
-    static public Street of() {
-        return new Street();
+    static public Building of() {
+        return new Building();
     }
 
-    static public Street of(String name) {
+    static public Building of(int number) {
         return of()
-                .name(name);
+                .number(number);
     }
 
     @Property
-    String name;
+    int number;
 
-    @Property(recordStyleGetter = true, setterScope = Scope.PRIVATE, isList = true, nameSingular = "building")
-    List<Building> buildings = new ArrayList<>();
-
+    @Property
+    String suffix;
 
 //    @Override
 //    public void firePropertyChange(String name, Object before, Object after) {
