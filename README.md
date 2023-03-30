@@ -12,7 +12,7 @@ var sTable = new STable<City>()
         .data(cities); // cities is a List<City>
 ```
 
-Or creating a strongly typed text field the is bound to the property of a Java bean would be as simple as:
+Or creating a strongly typed text field that is bound to the property of a Java bean would be as simple as:
 
 ``` java
 var sTextField = STextField.ofString();
