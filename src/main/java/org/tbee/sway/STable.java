@@ -9,6 +9,7 @@ import org.tbee.sway.binding.ExceptionHandler;
 import org.tbee.sway.format.Format;
 import org.tbee.sway.format.FormatAsJavaTextFormat;
 import org.tbee.sway.format.FormatRegistry;
+import org.tbee.sway.support.BeanUtil;
 import org.tbee.sway.support.SwayUtil;
 import org.tbee.sway.table.FormatCellRenderer;
 import org.tbee.sway.table.STableCore;
@@ -34,7 +35,6 @@ import java.beans.Introspector;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -532,17 +532,16 @@ public class STable<TableType> extends SBorderPanel {
     // ===========================================================================
     // BINDING
 
-    private Method addPropertyChangeListenerMethod = null;
-    private Method removePropertyChangeListenerMethod = null;
-    private boolean boundToBean = false;
+    private BeanUtil.PropertyChangeConnector propertyChangeConnector = null;
+    private boolean registerToAllBeans = false;
 
     /**
-     * bindToBean
+     *
      */
     public void setMonitorBean(Class<TableType> v) {
 
         // unregister if already registered
-        if (monitorBean != null) {
+        if (registerToAllBeans) {
             unregisterFromAllBeans();
         }
 
@@ -550,23 +549,8 @@ public class STable<TableType> extends SBorderPanel {
         monitorBean = v;
 
         // Find the binding methods
-        addPropertyChangeListenerMethod = null;
-        removePropertyChangeListenerMethod = null;
-        if (monitorBean != null) {
-            try {
-                addPropertyChangeListenerMethod = monitorBean.getMethod("addPropertyChangeListener", new Class<?>[]{PropertyChangeListener.class});
-            }
-            catch (NoSuchMethodException e) {
-                // ignore silently throw new RuntimeException(e);
-            }
-            try {
-                removePropertyChangeListenerMethod = monitorBean.getMethod("removePropertyChangeListener", new Class<?>[]{PropertyChangeListener.class});
-            }
-            catch (NoSuchMethodException e) {
-                // ignore silently throw new RuntimeException(e);
-            }
-            boundToBean = (addPropertyChangeListenerMethod != null && removePropertyChangeListenerMethod != null);
-        }
+        propertyChangeConnector = BeanUtil.getPropertyChangeConnector(v);
+        registerToAllBeans = propertyChangeConnector.isComplete();
 
         // Register
         registerToAllBeans();
@@ -605,37 +589,21 @@ public class STable<TableType> extends SBorderPanel {
     };
 
     protected void registerToAllBeans() {
-        if (!boundToBean) {
+        if (!registerToAllBeans) {
             return;
         }
         for (Object record : data) {
-            try {
-                if (LOGGER.isDebugEnabled()) LOGGER.debug("Register to " + record);
-                addPropertyChangeListenerMethod.invoke(record, beanPropertyChangeListener);
-            }
-            catch (IllegalAccessException e) {
-                throw new RuntimeException(e);
-            }
-            catch (InvocationTargetException e) {
-                throw new RuntimeException(e);
-            }
+            if (LOGGER.isDebugEnabled()) LOGGER.debug("Register to " + record);
+            propertyChangeConnector.register(record, beanPropertyChangeListener);
         }
     }
     protected void unregisterFromAllBeans() {
-        if (!boundToBean) {
+        if (!registerToAllBeans) {
             return;
         }
         for (Object record : data) {
-            try {
-                if (LOGGER.isDebugEnabled()) LOGGER.debug("Unregister from " + record);
-                removePropertyChangeListenerMethod.invoke(record, beanPropertyChangeListener);
-            }
-            catch (IllegalAccessException e) {
-                throw new RuntimeException(e);
-            }
-            catch (InvocationTargetException e) {
-                throw new RuntimeException(e);
-            }
+            if (LOGGER.isDebugEnabled()) LOGGER.debug("Unregister from " + record);
+            propertyChangeConnector.unregister(record, beanPropertyChangeListener);
         }
     }
 

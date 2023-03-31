@@ -109,7 +109,7 @@ public class LongFormat implements Format<Long> {
 FormatRegistry.register(Long.class, new LongFormat()); // Formats must be stateless and thread safe.   
 ```
 
-The FormatRegisty is used by all components, STextField, STable, STree, SButtonGroup, ..., 
+The FormatRegistry is used by all components, STextField, STable, STree, SButtonGroup, ..., 
 so it is only necessary to register a format once.
 This also is true for domain entities, like for example a "City" or "Employee".
 
@@ -271,7 +271,7 @@ Just include a dependency in your project. For the latest version see [Maven cen
 * Binding uses Karsten Lentzsch's JGoodies underneath (https://www.jgoodies.com/freeware/libraries/binding/).
 * STable's filter header is provided by Coderazzi (https://coderazzi.net/tablefilter/).
 * STable's navigation bar is based on CoMedia's implementation (project is no longer available online).
-* Mikael Grev's excelent MigLayout is used for several layouts (https://www.miglayout.com/).
+* Mikael Grev's excellent MigLayout is used for several layouts (https://www.miglayout.com/).
 
 And if icons are needed in an application Ikonli is highly suggested! (https://kordamp.org/ikonli/)
 
