@@ -32,9 +32,9 @@ abstract public class StreetData extends AbstractBean<City> {
     List<Building> buildings = new ArrayList<>();
 
 
-//    @Override
-//    public void firePropertyChange(String name, Object before, Object after) {
-//        System.out.println(this.getClass().getSimpleName() + "." + name + ": " + before + " -> " + after);
-//        super.firePropertyChange(name, before, after);
-//    }
+    @Override
+    public void firePropertyChange(String name, Object before, Object after) {
+        System.out.println(this.getClass().getSimpleName() + "." + name + ": " + before + " -> " + after);
+        super.firePropertyChange(name, before, after);
+    }
 }

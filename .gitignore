@@ -33,3 +33,4 @@ hs_err_pid*
 .settings/org.eclipse.m2e.core.prefs
 /.apt_generated/
 /.apt_generated_tests/
+pom.xml.versionsBackup

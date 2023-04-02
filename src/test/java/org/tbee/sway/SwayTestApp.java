@@ -179,7 +179,7 @@ public class SwayTestApp {
 
         var sList = new SList<City>() //
                 .render(new CityFormat(cities))
-                .onSelectionChanged(cs -> System.out.println("List: " + cs))
+                .onSelectionChanged(cs -> System.out.println("List selection: " + cs))
                 .data(cities) //
                 ;
 
@@ -220,9 +220,11 @@ public class SwayTestApp {
                 .registerFormat(City.class, new CityFormat())
                 .registerFormat(Street.class, new StreetFormat())
                 .registerFormat(Building.class, new BuildingFormat())
-                .onSelectionChanged(cs -> System.out.println("List: " + cs));
-        Object node = null;
-        return SVPanel.of(sTree);
+                .monitorBeans(true)
+                .onSelectionChanged(cs -> System.out.println("Tree selection: " + cs));
+
+        STextField<String> leidsepleinNameSTextField = STextField.ofBindTo(leidseplein.name$());
+        return SVPanel.of(sTree, leidsepleinNameSTextField);
     }
 
     static private SVPanel sComboBox() {
@@ -287,7 +289,7 @@ public class SwayTestApp {
 
                 // selection
                 .selectionMode(STable.SelectionMode.MULTIPLE) //
-                .onSelectionChanged(selection -> System.out.println("onSelectionChanged: " + selection)) //
+                .onSelectionChanged(selection -> System.out.println("Table selection: " + selection)) //
 
                 // filter
                 //.filterHeaderEnabled(true) //

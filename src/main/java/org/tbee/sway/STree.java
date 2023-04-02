@@ -5,6 +5,7 @@ import org.tbee.sway.binding.BindingEndpoint;
 import org.tbee.sway.binding.ExceptionHandler;
 import org.tbee.sway.format.Format;
 import org.tbee.sway.format.FormatRegistry;
+import org.tbee.sway.support.BeanMonitor;
 import org.tbee.sway.tree.STreeCore;
 import org.tbee.util.ExceptionUtil;
 
@@ -18,6 +19,7 @@ import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 import java.awt.Component;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -163,6 +165,9 @@ public class STree<T extends Object> extends SBorderPanel { // TBEERNOT Does it 
      * @return
      */
     public List<T> determineChildrenOf(T parent) {
+        if (beanMonitor != null) {
+            beanMonitor.monitor(parent);
+        }
         for (Function<T, Boolean> gateFunction : childrenOf.keySet()) {
             if (gateFunction.apply(parent)) {
                 Function<T, List<?>> childrenFunction = this.childrenOf.get(gateFunction);
@@ -373,6 +378,32 @@ public class STree<T extends Object> extends SBorderPanel { // TBEERNOT Does it 
         addSelectionChangedListener(onSelectionChangedListener);
         return this;
     }
+
+    // ===========================================================================
+    // MONITORING
+
+    private BeanMonitor beanMonitor = null;
+
+    public STree<T> monitorBeans(boolean v) {
+        if (this.beanMonitor != null) {
+            beanMonitor.unmonitorAll();
+            beanMonitor = null;
+        }
+        if (v) {
+            beanMonitor = new BeanMonitor(beanPropertyChangeListener);
+        }
+        sTreeCore.treeStructureChanged();
+        return this;
+    }
+
+    final private PropertyChangeListener beanPropertyChangeListener = evt -> {
+        T evtSource = (T)evt.getSource();
+        if (LOGGER.isDebugEnabled()) LOGGER.debug("Property change event for " + evtSource);
+
+        // find the place in the tree what changed
+        //TreePath treePath = toRoot.apply(evtSource);
+        //STree.this.sTreeCore.treeStructureChanged(treePath);
+    };
 
     // ========================================================
     // EXCEPTION HANDLER
