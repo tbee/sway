@@ -1,22 +1,21 @@
 package org.tbee.sway;
 
-import java.awt.Component;
-import java.util.Collection;
-
-import javax.swing.JComponent;
-
 import net.miginfocom.layout.AC;
 import net.miginfocom.layout.CC;
 import net.miginfocom.layout.LC;
 import net.miginfocom.swing.MigLayout;
+
+import javax.swing.JComponent;
+import java.awt.Component;
+import java.util.Collection;
 
 // TODO
 // - strongly typed API calls for all MigLayout stuff
 
 public class SMigPanel extends SPanelExtendable<SMigPanel> {
 	
-	static public enum AlignX {LEADING, LEFT, RIGHT, TRAILING}
-	static public enum AlignY {TOP, BOTTOM, BASELINE}
+	static public enum AlignX {LEADING, LEFT, CENTER, RIGHT, TRAILING}
+	static public enum AlignY {TOP, CENTER, BOTTOM, BASELINE}
 
 
     // Need to declare these specifically, because the getters return String

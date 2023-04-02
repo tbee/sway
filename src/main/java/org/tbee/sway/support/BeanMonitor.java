@@ -37,6 +37,7 @@ public class BeanMonitor {
 
         // Start monitoring
         propertyChangeConnector.register(bean, propertyChangeListener);
+        System.out.println("Monitoring " + bean);
         monitoredBeans.add(bean);
     }
 

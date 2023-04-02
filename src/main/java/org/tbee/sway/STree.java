@@ -399,10 +399,11 @@ public class STree<T extends Object> extends SBorderPanel { // TBEERNOT Does it 
     final private PropertyChangeListener beanPropertyChangeListener = evt -> {
         T evtSource = (T)evt.getSource();
         if (LOGGER.isDebugEnabled()) LOGGER.debug("Property change event for " + evtSource);
+        System.out.println("Property change event for " + evtSource);
 
-        // find the place in the tree what changed
-        //TreePath treePath = toRoot.apply(evtSource);
-        //STree.this.sTreeCore.treeStructureChanged(treePath);
+        // Find the place in the tree that changed and refresh (TBEERNOT can we only repaint the node)
+        TreePath treePath = toRoot.apply(evtSource);
+        STree.this.sTreeCore.treeStructureChanged(treePath);
     };
 
     // ========================================================

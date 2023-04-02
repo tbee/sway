@@ -30,17 +30,14 @@ public class SwayTestApp {
         registerIcons();
 
         SwingUtilities.invokeAndWait(() -> {
-            SMigPanel panel = new SMigPanel() //
-                    .debug()
-                    ;
-
-            panel.addField(sTable()).grow();
-            panel.addField(sList()).grow();
-            panel.addField(sTree()).grow();
-            panel.addField(sComboBox()).growX();
-            panel.addField(sTextField()).grow();
-            panel.addField(sTextArea()).grow();
-            panel.addField(sCheckBox()).grow();
+            SHPanel panel = SHPanel.of(
+                    sTable(),
+                    sList(),
+                    sTree(),
+                    sComboBox(),
+                    sTextField(),
+                    sTextArea(),
+                    sCheckBox()).align(SHPanel.Align.TOP);
 
             SContextMenu.install();
 
@@ -183,7 +180,7 @@ public class SwayTestApp {
                 .data(cities) //
                 ;
 
-        return SVPanel.of(sList);
+        return SVPanel.of(sList).fillWidth(true);
     }
 
     static private SVPanel sTree() {
@@ -224,7 +221,8 @@ public class SwayTestApp {
                 .onSelectionChanged(cs -> System.out.println("Tree selection: " + cs));
 
         STextField<String> leidsepleinNameSTextField = STextField.ofBindTo(leidseplein.name$());
-        return SVPanel.of(sTree, leidsepleinNameSTextField);
+        SButton sButton = new SButton("set").onAction(e -> leidseplein.setName(leidseplein.getName() + "s"));
+        return SVPanel.of(sTree, leidsepleinNameSTextField, sButton).fillWidth(true);
     }
 
     static private SVPanel sComboBox() {
@@ -249,7 +247,7 @@ public class SwayTestApp {
         STextField<City> sTextField = STextField.of(new CityFormat(cities));
         sTextField.bindTo(sComboBox.value$());
 
-        return SVPanel.of(sComboBox, sTextFieldDisplay, sTextField);
+        return SVPanel.of(sComboBox, sTextFieldDisplay, sTextField).fillWidth(true);
     }
 
     static private SVPanel sTable() {
@@ -321,7 +319,7 @@ public class SwayTestApp {
                 .selectionMode(STree.SelectionMode.MULTIPLE);
         sTree.selection$().bindTo(sTable.selection$());
 
-        return SVPanel.of(sTable, sList, sTree);
+        return SVPanel.of(sTable, sList, sTree).fillWidth(true);
     }
 
     static private JPanel sCheckBox() {
