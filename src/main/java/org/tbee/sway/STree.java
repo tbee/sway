@@ -15,7 +15,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
 import javax.swing.SwingUtilities;
-import javax.swing.event.TreeModelEvent;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
@@ -192,20 +191,12 @@ public class STree<T extends Object> extends SBorderPanel { // TBEERNOT Does it 
     // EVENTS
 
     public void treeStructureChanged() {
-        sTreeCore.getSTreeModel().treeStructureChanged(new TreeModelEvent(root, new Object[]{root}));
+        TreePath treePath = toRoot.apply(root);
+        sTreeCore.getSTreeModel().treeStructureChanged(treePath);
     }
-    public void treeStructureChanged(TreePath treePath) {
-        sTreeCore.getSTreeModel().treeStructureChanged(new TreeModelEvent(root, treePath));
-    }
-
-    public void treeNodesInserted(TreePath treePath) {
-        sTreeCore.getSTreeModel().treeNodesInserted(new TreeModelEvent(root, treePath));
-    }
-    public void treeNodesRemoved(TreePath treePath) {
-        sTreeCore.getSTreeModel().treeNodesRemoved(new TreeModelEvent(root, treePath));
-    }
-    public void treeNodesChanged(TreePath treePath) {
-        sTreeCore.getSTreeModel().treeNodesChanged(new TreeModelEvent(root, treePath));
+    public void treeNodesChanged(T node) {
+        TreePath treePath = toRoot.apply(node);
+        sTreeCore.getSTreeModel().treeNodesChanged(treePath);
     }
 
 
@@ -421,9 +412,9 @@ public class STree<T extends Object> extends SBorderPanel { // TBEERNOT Does it 
         System.out.println("Property change event for " + evtSource);
 
         // Find the place in the tree that changed and refresh (TBEERNOT can we only repaint the node)
-        TreePath treePath = toRoot.apply(evtSource);
-        //STree.this.treeStructureChanged(treePath);
-        STree.this.treeNodesChanged(treePath);
+        STree.this.treeStructureChanged();
+//        STree.this.treeStructureChanged(treePath);
+//        STree.this.treeNodesChanged(evtSource);
     };
 
     // ========================================================

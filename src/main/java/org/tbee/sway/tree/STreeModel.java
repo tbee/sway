@@ -45,7 +45,8 @@ public class STreeModel<T> implements TreeModel {
     }
 
     @Override
-    public void valueForPathChanged(TreePath path, Object newValue) {
+    public void valueForPathChanged(TreePath treePath, Object newValue) {
+        treeNodesChanged(new TreeModelEvent(this, treePath));
     }
 
     @Override
@@ -61,16 +62,29 @@ public class STreeModel<T> implements TreeModel {
     public void removeTreeModelListener(TreeModelListener l) {
         treeModelListeners.remove(l);
     }
+
     public void treeStructureChanged(TreeModelEvent e) {
         treeModelListeners.forEach(tml -> tml.treeStructureChanged(e));
+    }
+    public void treeStructureChanged(TreePath treePath) {
+        treeStructureChanged(new TreeModelEvent(this, treePath));
     }
     public void treeNodesInserted(TreeModelEvent e) {
         treeModelListeners.forEach(tml -> tml.treeNodesInserted(e));
     }
+    public void treeNodesInserted(TreePath treePath) {
+        treeNodesInserted(new TreeModelEvent(this, treePath));
+    }
     public void treeNodesRemoved(TreeModelEvent e) {
         treeModelListeners.forEach(tml -> tml.treeNodesRemoved(e));
     }
+    public void treeNodesRemoved(TreePath treePath) {
+        treeNodesRemoved(new TreeModelEvent(this, treePath));
+    }
     public void treeNodesChanged(TreeModelEvent e) {
         treeModelListeners.forEach(tml -> tml.treeNodesChanged(e));
+    }
+    public void treeNodesChanged(TreePath treePath) {
+        treeNodesChanged(new TreeModelEvent(this, treePath));
     }
 }
