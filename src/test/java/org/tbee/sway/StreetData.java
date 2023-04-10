@@ -25,7 +25,7 @@ abstract public class StreetData extends AbstractBean<Street> {
                 .name(name);
     }
 
-    @Property
+    @Property(includeInToString = true)
     String name;
 
     @Property(recordStyleGetter = true, setterScope = Scope.PRIVATE, isList = true, nameSingular = "building")

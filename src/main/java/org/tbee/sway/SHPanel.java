@@ -19,7 +19,7 @@ public class SHPanel extends SPanelExtendable<SHPanel> {
 
     public SHPanel() {
         setLayout(migLayout);
-        lc.debug();
+        //lc.debug();
     }
 
     protected void addImpl(Component comp, Object constraints, int index) {

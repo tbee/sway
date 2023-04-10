@@ -196,6 +196,7 @@ public class STree<T extends Object> extends SBorderPanel { // TBEERNOT Does it 
     }
     public void treeNodesChanged(T node) {
         TreePath treePath = toRoot.apply(node);
+        System.out.println("!!!! treePath " + treePath);
         sTreeCore.getSTreeModel().treeNodesChanged(treePath);
     }
 
@@ -407,14 +408,13 @@ public class STree<T extends Object> extends SBorderPanel { // TBEERNOT Does it 
     }
 
     final private PropertyChangeListener beanPropertyChangeListener = evt -> {
-        T evtSource = (T)evt.getSource();
-        if (LOGGER.isDebugEnabled()) LOGGER.debug("Property change event for " + evtSource);
-        System.out.println("Property change event for " + evtSource);
+        T node = (T)evt.getSource();
+        if (LOGGER.isDebugEnabled()) LOGGER.debug("Property change event for " + node);
+        System.out.println("Property change event for " + node);
 
         // Find the place in the tree that changed and refresh (TBEERNOT can we only repaint the node)
-        STree.this.treeStructureChanged();
-//        STree.this.treeStructureChanged(treePath);
-//        STree.this.treeNodesChanged(evtSource);
+//        STree.this.treeStructureChanged();
+        STree.this.treeNodesChanged(node);
     };
 
     // ========================================================
