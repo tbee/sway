@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Bean(stripSuffix = "Data")
-abstract public class StreetData extends AbstractBean<City> {
+abstract public class StreetData extends AbstractBean<Street> {
 
     public StreetData() {
     }

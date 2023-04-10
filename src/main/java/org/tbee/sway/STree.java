@@ -15,6 +15,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
 import javax.swing.SwingUtilities;
+import javax.swing.event.TreeModelEvent;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
@@ -91,7 +92,6 @@ public class STree<T extends Object> extends SBorderPanel { // TBEERNOT Does it 
      * @param v
      */
     public void setRoot(T v) {
-// TBEERNOT       unregisterFromAllBeans();
         this.root = v;
 
         // if root is a list object, then its children is the list itself
@@ -100,8 +100,7 @@ public class STree<T extends Object> extends SBorderPanel { // TBEERNOT Does it 
             rootVisible(false);
         }
 
-        sTreeCore.treeStructureChanged();
-// TBEERNOT       registerToAllBeans();
+        treeStructureChanged();
     }
     public T getRoot() {
         return this.root;
@@ -124,7 +123,7 @@ public class STree<T extends Object> extends SBorderPanel { // TBEERNOT Does it 
      */
     public STree<T> childrenOf(Function<T, Boolean> gateFunction, Function<T, List<?>> childrenFunction) {
         childrenOf.put(gateFunction, childrenFunction);
-        sTreeCore.treeStructureChanged();
+        treeStructureChanged();
         return this;
     }
 
@@ -184,8 +183,29 @@ public class STree<T extends Object> extends SBorderPanel { // TBEERNOT Does it 
      */
     public STree<T> clearChildrenOf() {
         childrenOf.clear();
-        sTreeCore.treeStructureChanged();
+        treeStructureChanged();
         return this;
+    }
+
+
+    // =======================================================================
+    // EVENTS
+
+    public void treeStructureChanged() {
+        sTreeCore.getSTreeModel().treeStructureChanged(new TreeModelEvent(root, new Object[]{root}));
+    }
+    public void treeStructureChanged(TreePath treePath) {
+        sTreeCore.getSTreeModel().treeStructureChanged(new TreeModelEvent(root, treePath));
+    }
+
+    public void treeNodesInserted(TreePath treePath) {
+        sTreeCore.getSTreeModel().treeNodesInserted(new TreeModelEvent(root, treePath));
+    }
+    public void treeNodesRemoved(TreePath treePath) {
+        sTreeCore.getSTreeModel().treeNodesRemoved(new TreeModelEvent(root, treePath));
+    }
+    public void treeNodesChanged(TreePath treePath) {
+        sTreeCore.getSTreeModel().treeNodesChanged(new TreeModelEvent(root, treePath));
     }
 
 
@@ -222,7 +242,6 @@ public class STree<T extends Object> extends SBorderPanel { // TBEERNOT Does it 
     }
 
     private List<T> findTreePathByWalkingTheTree(T child, T parent) {
-//        List<T> children = this.children.apply(parent);
         List<T> children = determineChildrenOf(parent);
 
         // Is it one of the parent's children?
@@ -392,7 +411,7 @@ public class STree<T extends Object> extends SBorderPanel { // TBEERNOT Does it 
         if (v) {
             beanMonitor = new BeanMonitor(beanPropertyChangeListener);
         }
-        sTreeCore.treeStructureChanged();
+        treeStructureChanged();
         return this;
     }
 
@@ -403,7 +422,8 @@ public class STree<T extends Object> extends SBorderPanel { // TBEERNOT Does it 
 
         // Find the place in the tree that changed and refresh (TBEERNOT can we only repaint the node)
         TreePath treePath = toRoot.apply(evtSource);
-        STree.this.sTreeCore.treeStructureChanged(treePath);
+        //STree.this.treeStructureChanged(treePath);
+        STree.this.treeNodesChanged(treePath);
     };
 
     // ========================================================

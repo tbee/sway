@@ -61,16 +61,16 @@ public class STreeModel<T> implements TreeModel {
     public void removeTreeModelListener(TreeModelListener l) {
         treeModelListeners.remove(l);
     }
-    protected void treeStructureChanged(TreeModelEvent e) {
+    public void treeStructureChanged(TreeModelEvent e) {
         treeModelListeners.forEach(tml -> tml.treeStructureChanged(e));
     }
-    protected void treeNodesInserted(TreeModelEvent e) {
+    public void treeNodesInserted(TreeModelEvent e) {
         treeModelListeners.forEach(tml -> tml.treeNodesInserted(e));
     }
-    protected void treeNodesRemoved(TreeModelEvent e) {
+    public void treeNodesRemoved(TreeModelEvent e) {
         treeModelListeners.forEach(tml -> tml.treeNodesRemoved(e));
     }
-    protected void treeNodesChanged(TreeModelEvent e) {
+    public void treeNodesChanged(TreeModelEvent e) {
         treeModelListeners.forEach(tml -> tml.treeNodesChanged(e));
     }
 }

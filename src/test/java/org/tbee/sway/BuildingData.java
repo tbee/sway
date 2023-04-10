@@ -5,7 +5,7 @@ import org.tbee.sway.beanGenerator.annotations.Property;
 import org.tbee.util.AbstractBean;
 
 @Bean(stripSuffix = "Data")
-abstract public class BuildingData extends AbstractBean<City> {
+abstract public class BuildingData extends AbstractBean<Building> {
 
     public BuildingData() {
     }
@@ -21,7 +21,7 @@ abstract public class BuildingData extends AbstractBean<City> {
                 .number(number);
     }
 
-    @Property
+    @Property(includeInToString = true)
     int number;
 
     @Property

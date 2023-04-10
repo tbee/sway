@@ -172,7 +172,7 @@ public class BeanGenerator extends AbstractProcessor {
                          """, Map.of("toString", toString.isBlank() ? "\"\"" : toString)));
 
             writer.print("""
-                        private <T> T $swayWrap(T object) {
+                        protected <T> T $swayWrap(T object) {
                             if (object instanceof java.util.List<?>) {
                                 return (T)java.util.Collections.unmodifiableList((java.util.List<?>)object);
                             }
