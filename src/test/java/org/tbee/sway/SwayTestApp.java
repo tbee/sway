@@ -203,11 +203,7 @@ public class SwayTestApp {
 
         City paris = City.of("Paris", 575);
 
-        amsterdam.addPartnerCity(berlin);
-        amsterdam.addPartnerCity(rome);
-        rome.addPartnerCity(paris);
-
-        var cities = List.of(amsterdam, berlin, rome, paris);
+        var cities = List.of(amsterdam, berlin);//, rome, paris);
 
         // TBEERNOT Renderer supplier?
         var sTree = new STree<>() //

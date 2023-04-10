@@ -165,7 +165,7 @@ public class BeanGenerator extends AbstractProcessor {
             writer.print(resolve(classContext, """
                              @Override 
                              public String toString() {
-                                 return super.toString()
+                                 return super.toString() + "#" + java.lang.Integer.toHexString(java.lang.System.identityHashCode(this))
                                       + %toString%;
                              }
                              
