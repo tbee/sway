@@ -160,7 +160,7 @@ public class BeanGenerator extends AbstractProcessor {
             String toString = variableRecords.stream()
                     .filter(vr -> vr.propertyRecord.includeInToString())
                     .map(vr -> vr.variableContext)
-                    .map(vc -> "\"," + vc.get("variableName") + "=\" + " + vc.get("variableName"))
+                    .map(vc -> "\"," + vc.get("propertyName") + "=\" + " + vc.get("variableName"))
                     .collect(Collectors.joining("\n             + "));
             writer.print(resolve(classContext, """
                              @Override 
