@@ -7,6 +7,7 @@ import org.tbee.sway.format.Format;
 import org.tbee.sway.format.FormatRegistry;
 import org.tbee.sway.support.BeanMonitor;
 import org.tbee.sway.tree.STreeCore;
+import org.tbee.sway.tree.STreeModel;
 import org.tbee.util.ExceptionUtil;
 
 import javax.swing.JComponent;
@@ -43,16 +44,17 @@ public class STree<T extends Object> extends SBorderPanel { // TBEERNOT Does it 
 
         sTreeCore.setCellRenderer(new DefaultTreeCellRenderer(){
             @Override
-            public Component getTreeCellRendererComponent(JTree tree, Object value, boolean selected, boolean expanded,
+            public Component getTreeCellRendererComponent(JTree tree, Object node, boolean selected, boolean expanded,
                                                           boolean leaf, int row, boolean hasFocus) {
-                Component component = super.getTreeCellRendererComponent(tree, value, selected, expanded, leaf, row, hasFocus);
+                Component component = super.getTreeCellRendererComponent(tree, node, selected, expanded, leaf, row, hasFocus);
+                Object value = ((STreeModel.Node)node).value;
 
                 // Use format
                 Format format = STree.this.format;
-                if (format == null) {
+                if (format == null && value != null) {
                     format = formats.get(value.getClass());
                 }
-                if (format == null) {
+                if (format == null && value != null) {
                     format = FormatRegistry.findFor(value.getClass());
                 }
                 if (format != null && component instanceof JLabel jLabel) {
@@ -198,6 +200,10 @@ public class STree<T extends Object> extends SBorderPanel { // TBEERNOT Does it 
         TreePath treePath = toRoot.apply(node);
         sTreeCore.getSTreeModel().treeNodesChanged(treePath);
     }
+    public void treeNodeInserted(T node) {
+        TreePath treePath = toRoot.apply(node);
+        sTreeCore.getSTreeModel().treeNodesInserted(treePath);
+    }
 
 
     // =======================================================================
@@ -220,35 +226,40 @@ public class STree<T extends Object> extends SBorderPanel { // TBEERNOT Does it 
         return this;
     }
 
+    private STreeModel.Node node(T value) {
+        return sTreeCore.getSTreeModel().node(value);
+    }
+
+
     public TreePath findTreePathByWalkingTheTree(T child) {
         if (child.equals(root)) {
-            return new TreePath(new Object[]{root});
+            return new TreePath(new Object[]{node(root)});
         }
-        List<T> rootToNode = findTreePathByWalkingTheTree(child, root);
+        List<STreeModel.Node> rootToNode = findTreePathByWalkingTheTree(child, root);
         if (rootToNode != null) {
-            rootToNode.add(0, root);
+            rootToNode.add(0, node(root));
             return new TreePath(rootToNode.toArray());
         }
         return null;
     }
 
-    private List<T> findTreePathByWalkingTheTree(T child, T parent) {
+    private List<STreeModel.Node> findTreePathByWalkingTheTree(T child, T parent) {
         List<T> children = determineChildrenOf(parent);
 
         // Is it one of the parent's children?
         for (T candidateChild : children) {
             if (child.equals(candidateChild)) {
-                List<T> rootToNode = new ArrayList<>();
-                rootToNode.add(child);
+                List<STreeModel.Node> rootToNode = new ArrayList<>();
+                rootToNode.add(node(child));
                 return rootToNode;
             }
         }
 
         // Look a level deeper
         for (T candidateParent : children) {
-            List<T> rootToNode = findTreePathByWalkingTheTree(child, candidateParent);
+            List<STreeModel.Node> rootToNode = findTreePathByWalkingTheTree(child, candidateParent);
             if (rootToNode != null) {
-                rootToNode.add(0, candidateParent);
+                rootToNode.add(0, node(candidateParent));
                 return rootToNode;
             }
         }
@@ -334,7 +345,8 @@ public class STree<T extends Object> extends SBorderPanel { // TBEERNOT Does it 
         var selectedItems = new ArrayList<T>(sTreeCore.getSelectionModel().getSelectionCount());
         TreePath[] paths = sTreeCore.getSelectionPaths();
         for (TreePath path : paths != null ? paths : new TreePath[0]) {
-            selectedItems.add((T) path.getLastPathComponent());
+            STreeModel.Node node = (STreeModel.Node)path.getLastPathComponent();
+            selectedItems.add((T)node.value);
         }
         return Collections.unmodifiableList(selectedItems);
     }
@@ -411,8 +423,7 @@ public class STree<T extends Object> extends SBorderPanel { // TBEERNOT Does it 
         if (LOGGER.isDebugEnabled()) LOGGER.debug("Property change event for " + node);
         System.out.println("Property change event for " + node);
 
-        // Find the place in the tree that changed and refresh (TBEERNOT can we only repaint the node)
-//        STree.this.treeStructureChanged();
+        // Find the place in the tree that changed and refresh
         STree.this.treeNodeChanged(node);
     };
 

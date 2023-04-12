@@ -11,6 +11,26 @@ import java.util.List;
 
 public class STreeModel<T> implements TreeModel {
 
+    public class Node {
+        final public Object value;
+
+        public Node(Object value) {
+            this.value = value;
+        }
+        @Override
+        public int hashCode() {
+            return System.identityHashCode(value);
+        }
+        @Override
+        public String toString() {
+            return "" + value;
+        }
+    }
+
+    public Node node(T value) {
+        return new Node(value); // TBEERNOT caching?
+    }
+
     private final STree<T> sTree;
     protected List<TreeModelListener> treeModelListeners = new ArrayList<>();
 
@@ -20,12 +40,15 @@ public class STreeModel<T> implements TreeModel {
 
     @Override
     public Object getRoot() {
-        return sTree.getRoot();
+        return node(sTree.getRoot());
     }
 
-    private List<T> getChildren(Object parent) {
-        T treeNode = (T)parent;
-        List<T> children = sTree.determineChildrenOf(treeNode);
+    private List<Node> getChildren(Object parent) {
+        Node parentNode = (Node)parent;
+        T value = (T)parentNode.value;
+        List<Node> children = sTree.determineChildrenOf(value).stream()
+                .map(child -> node(child))
+                .toList(); // TBEERNOT caching?
         return children;
     }
 

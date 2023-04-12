@@ -154,6 +154,7 @@ public class BeanGenerator extends AbstractProcessor {
                                  %BeanClassName% other = (%BeanClassName%)obj;    
                                  return %equals%;
                              }
+                             
                          """, Map.of("equals", equals)));
 
             // toString

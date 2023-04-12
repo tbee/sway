@@ -203,7 +203,7 @@ public class SwayTestApp {
 
         City paris = City.of("Paris", 575);
 
-        var cities = List.of(amsterdam, berlin);//, rome, paris);
+        var cities = List.of(amsterdam, berlin, rome, paris);
 
         // TBEERNOT Renderer supplier?
         var sTree = new STree<>() //
@@ -217,8 +217,12 @@ public class SwayTestApp {
                 .onSelectionChanged(cs -> System.out.println("Tree selection: " + cs));
 
         STextField<String> leidsepleinNameSTextField = STextField.ofBindTo(leidseplein.name$());
-        SButton sButton = new SButton("set").onAction(e -> leidseplein.setName(leidseplein.getName() + "s"));
-        return SVPanel.of(sTree, leidsepleinNameSTextField, sButton).fillWidth(true);
+        SButton changeButton = new SButton("set").onAction(e -> leidseplein.setName(leidseplein.getName() + "s"));
+        SButton addButton = new SButton("add").onAction(e -> {
+            Street street = rome.addStreet(Street.of("" + System.currentTimeMillis()));
+            sTree.treeNodeInserted(street);
+        });
+        return SVPanel.of(sTree, leidsepleinNameSTextField, changeButton, addButton).fillWidth(true);
     }
 
     static private SVPanel sComboBox() {
@@ -304,7 +308,7 @@ public class SwayTestApp {
                 .selectionMode(SList.SelectionMode.MULTIPLE);
         sList.selection$().bindTo(sTable.selection$());
 
-        // Bind selection to a tree
+        // Bind selection to a tree (TBEERNOT does not work after Node)
         amsterdam.addPartnerCity(berlin);
         amsterdam.addPartnerCity(rome);
         rome.addPartnerCity(paris);
