@@ -22,8 +22,20 @@ public class STreeModel<T> implements TreeModel {
             return System.identityHashCode(value);
         }
         @Override
+        public boolean equals(Object o) {
+            if (o == null) {
+                return false;
+            }
+            if (!(o instanceof STreeModel.Node)) {
+                return false;
+            }
+            STreeModel.Node other = (STreeModel.Node)o;
+
+            return System.identityHashCode(other.value) == System.identityHashCode(value);
+        }
+        @Override
         public String toString() {
-            return "" + value;
+            return "Node->" + value;
         }
     }
 

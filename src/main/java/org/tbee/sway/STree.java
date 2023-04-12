@@ -196,6 +196,10 @@ public class STree<T extends Object> extends SBorderPanel { // TBEERNOT Does it 
         TreePath treePath = toRoot.apply(root);
         sTreeCore.getSTreeModel().treeStructureChanged(treePath);
     }
+    public void treeStructureChanged(T node) {
+        TreePath treePath = toRoot.apply(node);
+        sTreeCore.getSTreeModel().treeStructureChanged(treePath);
+    }
     public void treeNodeChanged(T node) {
         TreePath treePath = toRoot.apply(node);
         sTreeCore.getSTreeModel().treeNodesChanged(treePath);
@@ -424,7 +428,8 @@ public class STree<T extends Object> extends SBorderPanel { // TBEERNOT Does it 
         System.out.println("Property change event for " + node);
 
         // Find the place in the tree that changed and refresh
-        STree.this.treeNodeChanged(node);
+        // This does not work for changes to children: STree.this.treeNodeChanged(node);
+        STree.this.treeStructureChanged(node);
     };
 
     // ========================================================

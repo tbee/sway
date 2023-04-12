@@ -220,7 +220,6 @@ public class SwayTestApp {
         SButton changeButton = new SButton("set").onAction(e -> leidseplein.setName(leidseplein.getName() + "s"));
         SButton addButton = new SButton("add").onAction(e -> {
             Street street = rome.addStreet(Street.of("" + System.currentTimeMillis()));
-            sTree.treeNodeInserted(street);
         });
         return SVPanel.of(sTree, leidsepleinNameSTextField, changeButton, addButton).fillWidth(true);
     }
