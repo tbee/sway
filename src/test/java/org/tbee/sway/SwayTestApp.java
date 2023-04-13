@@ -217,11 +217,8 @@ public class SwayTestApp {
                 .onSelectionChanged(cs -> System.out.println("Tree selection: " + cs));
 
         STextField<String> leidsepleinNameSTextField = STextField.ofBindTo(leidseplein.name$());
-        SButton changeButton = new SButton("set").onAction(e -> leidseplein.setName(leidseplein.getName() + "s"));
-        SButton addButton = new SButton("add").onAction(e -> {
-            Street street = rome.addStreet(Street.of("" + System.currentTimeMillis()));
-        });
-        return SVPanel.of(sTree, leidsepleinNameSTextField, changeButton, addButton).fillWidth(true);
+        SButton addButton = new SButton("Add street to Rome").onAction(e -> rome.addStreet(Street.of("Street" + System.currentTimeMillis())));
+        return SVPanel.of(sTree, leidsepleinNameSTextField, addButton).fillWidth(true);
     }
 
     static private SVPanel sComboBox() {
