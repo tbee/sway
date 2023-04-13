@@ -11,34 +11,6 @@ import java.util.List;
 
 public class STreeModel<T> implements TreeModel {
 
-    public class Node {
-        final public Object value;
-
-        public Node(Object value) {
-            this.value = value;
-        }
-        @Override
-        public int hashCode() {
-            return System.identityHashCode(value);
-        }
-        @Override
-        public boolean equals(Object o) {
-            if (o == null) {
-                return false;
-            }
-            if (!(o instanceof STreeModel.Node)) {
-                return false;
-            }
-            STreeModel.Node other = (STreeModel.Node)o;
-
-            return System.identityHashCode(other.value) == System.identityHashCode(value);
-        }
-        @Override
-        public String toString() {
-            return "Node->" + value;
-        }
-    }
-
     public Node node(T value) {
         return new Node(value); // TBEERNOT caching?
     }

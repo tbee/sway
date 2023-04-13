@@ -6,8 +6,8 @@ import org.tbee.sway.binding.ExceptionHandler;
 import org.tbee.sway.format.Format;
 import org.tbee.sway.format.FormatRegistry;
 import org.tbee.sway.support.BeanMonitor;
+import org.tbee.sway.tree.Node;
 import org.tbee.sway.tree.STreeCore;
-import org.tbee.sway.tree.STreeModel;
 import org.tbee.util.ExceptionUtil;
 
 import javax.swing.JComponent;
@@ -47,7 +47,7 @@ public class STree<T extends Object> extends SBorderPanel { // TBEERNOT Does it 
             public Component getTreeCellRendererComponent(JTree tree, Object node, boolean selected, boolean expanded,
                                                           boolean leaf, int row, boolean hasFocus) {
                 Component component = super.getTreeCellRendererComponent(tree, node, selected, expanded, leaf, row, hasFocus);
-                Object value = ((STreeModel.Node)node).value;
+                Object value = ((Node)node).value;
 
                 // Use format
                 Format format = STree.this.format;
@@ -230,7 +230,7 @@ public class STree<T extends Object> extends SBorderPanel { // TBEERNOT Does it 
         return this;
     }
 
-    private STreeModel.Node node(T value) {
+    private Node node(T value) {
         return sTreeCore.getSTreeModel().node(value);
     }
 
@@ -239,7 +239,7 @@ public class STree<T extends Object> extends SBorderPanel { // TBEERNOT Does it 
         if (child.equals(root)) {
             return new TreePath(new Object[]{node(root)});
         }
-        List<STreeModel.Node> rootToNode = findTreePathByWalkingTheTree(child, root);
+        List<Node> rootToNode = findTreePathByWalkingTheTree(child, root);
         if (rootToNode != null) {
             rootToNode.add(0, node(root));
             return new TreePath(rootToNode.toArray());
@@ -247,13 +247,13 @@ public class STree<T extends Object> extends SBorderPanel { // TBEERNOT Does it 
         return null;
     }
 
-    private List<STreeModel.Node> findTreePathByWalkingTheTree(T child, T parent) {
+    private List<Node> findTreePathByWalkingTheTree(T child, T parent) {
         List<T> children = determineChildrenOf(parent);
 
         // Is it one of the parent's children?
         for (T candidateChild : children) {
             if (child.equals(candidateChild)) {
-                List<STreeModel.Node> rootToNode = new ArrayList<>();
+                List<Node> rootToNode = new ArrayList<>();
                 rootToNode.add(node(child));
                 return rootToNode;
             }
@@ -261,7 +261,7 @@ public class STree<T extends Object> extends SBorderPanel { // TBEERNOT Does it 
 
         // Look a level deeper
         for (T candidateParent : children) {
-            List<STreeModel.Node> rootToNode = findTreePathByWalkingTheTree(child, candidateParent);
+            List<Node> rootToNode = findTreePathByWalkingTheTree(child, candidateParent);
             if (rootToNode != null) {
                 rootToNode.add(0, node(candidateParent));
                 return rootToNode;
@@ -349,7 +349,7 @@ public class STree<T extends Object> extends SBorderPanel { // TBEERNOT Does it 
         var selectedItems = new ArrayList<T>(sTreeCore.getSelectionModel().getSelectionCount());
         TreePath[] paths = sTreeCore.getSelectionPaths();
         for (TreePath path : paths != null ? paths : new TreePath[0]) {
-            STreeModel.Node node = (STreeModel.Node)path.getLastPathComponent();
+            Node node = (Node)path.getLastPathComponent();
             selectedItems.add((T)node.value);
         }
         return Collections.unmodifiableList(selectedItems);
