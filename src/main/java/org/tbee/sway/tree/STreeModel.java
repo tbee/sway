@@ -8,11 +8,26 @@ import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class STreeModel<T> implements TreeModel {
 
-    public Node node(T value) {
-        return new Node(value); // TBEERNOT caching?
+    private Map<T, Node> valueToNode = new TreeMap<>((o1, o2) -> {
+        int h1 = o1 == null ? 0 : System.identityHashCode(o1);
+        int h2 = o2 == null ? 0 : System.identityHashCode(o2);
+        return Integer.compare(h1, h2);
+    });
+
+    public Node node(T value, T parent) {
+        Node node = new Node(value, parent, (Map<Object, Node>) valueToNode); // TBEERNOT caching?
+        if (value != null) {
+            valueToNode.put(value, node);
+        }
+        return node;
+    }
+    public Node findNode(T value) {
+        return valueToNode.get(value);
     }
 
     private final STree<T> sTree;
@@ -24,14 +39,14 @@ public class STreeModel<T> implements TreeModel {
 
     @Override
     public Object getRoot() {
-        return node(sTree.getRoot());
+        return node(sTree.getRoot(), null);
     }
 
     private List<Node> getChildren(Object parent) {
         Node parentNode = (Node)parent;
-        T value = (T)parentNode.value;
+        T value = (T)parentNode.value();
         List<Node> children = sTree.determineChildrenOf(value).stream()
-                .map(child -> node(child))
+                .map(child -> node(child, value))
                 .toList(); // TBEERNOT caching?
         return children;
     }

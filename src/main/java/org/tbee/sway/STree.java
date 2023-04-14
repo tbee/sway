@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -47,7 +48,7 @@ public class STree<T extends Object> extends SBorderPanel { // TBEERNOT Does it 
             public Component getTreeCellRendererComponent(JTree tree, Object node, boolean selected, boolean expanded,
                                                           boolean leaf, int row, boolean hasFocus) {
                 Component component = super.getTreeCellRendererComponent(tree, node, selected, expanded, leaf, row, hasFocus);
-                Object value = ((Node)node).value;
+                Object value = ((Node)node).value();
 
                 // Use format
                 Format format = STree.this.format;
@@ -213,10 +214,11 @@ public class STree<T extends Object> extends SBorderPanel { // TBEERNOT Does it 
     // =======================================================================
     // TREEPATH TO ROOT
 
-    private Function<T, TreePath> toRoot = this::findTreePathByWalkingTheTree;;
+    private Function<T, TreePath> toRoot = this::findTreePath;;
 
     /**
-     *
+     * A custom function to determine the path to the root node (TreePath).
+     * See findTreePath
      * @param v
      */
     public void setToRoot(Function<T, TreePath> v) {
@@ -230,44 +232,80 @@ public class STree<T extends Object> extends SBorderPanel { // TBEERNOT Does it 
         return this;
     }
 
-    private Node node(T value) {
-        return sTreeCore.getSTreeModel().node(value);
+    private Node node(T value, T parent) {
+        return sTreeCore.getSTreeModel().node(value, parent);
     }
 
-
-    public TreePath findTreePathByWalkingTheTree(T child) {
-        if (child.equals(root)) {
-            return new TreePath(new Object[]{node(root)});
+    /**
+     * This method tries to determine the path from a node to the root (TreePath).
+     * Per default it does so in three ways:
+     * 1. (TODO) Use the displayed nodes so see if there is a path. The tree has stored information of everything it has rendered so far.
+     * 2. (TODO) Use the toParent methods to determine if a path can be determined
+     * 3. Walk the complete tree in search of the specified node.
+     *
+     * It is obvious that the last approach is the most expensive, but the first two are not guaranteed to lead to success.
+     * The user may also provide a custom toRoot function, if the default approach does not suffice.
+     */
+    public TreePath findTreePath(T value) {
+        if (Objects.equals(value, root)) {
+            return new TreePath(new Object[]{node(root, null)});
         }
-        List<Node> rootToNode = findTreePathByWalkingTheTree(child, root);
-        if (rootToNode != null) {
-            rootToNode.add(0, node(root));
+
+        // This is the resulting path
+        List<Node> rootToNode = new ArrayList<>();
+
+        // First try the efficient but not guaranteed approach
+        boolean rootFound = findTreePathByNodeAndToParent(value, rootToNode);
+        if (rootFound) {
+            return new TreePath(rootToNode.toArray());
+        }
+        // If partially found
+        if (!rootToNode.isEmpty()) {
+            value = (T) rootToNode.get(0).parent();
+        }
+
+        // Walk the tree
+        findTreePathByWalkingTheTree(value, root, rootToNode);
+        if (!rootToNode.isEmpty()) {
+            rootToNode.add(0, node(root, null));
             return new TreePath(rootToNode.toArray());
         }
         return null;
     }
 
-    private List<Node> findTreePathByWalkingTheTree(T child, T parent) {
-        List<T> children = determineChildrenOf(parent);
+    private boolean findTreePathByNodeAndToParent(T value, List<Node> rootToNode) {
+        Node node = sTreeCore.getSTreeModel().findNode(value);
+        if (node != null) {
+            rootToNode.add(0, node);
+            if (Objects.equals(value, root)) {
+                return true; // path to root found
+            }
+            return findTreePathByNodeAndToParent((T)node.parent(), rootToNode);
+        }
+        // TODO: toParent
+        return false; // path to root not found
+    }
 
-        // Is it one of the parent's children?
-        for (T candidateChild : children) {
-            if (child.equals(candidateChild)) {
-                List<Node> rootToNode = new ArrayList<>();
-                rootToNode.add(node(child));
-                return rootToNode;
+    private void findTreePathByWalkingTheTree(T value, T parent, List<Node> rootToNode) {
+
+        // Try to find the node we are looking for
+        List<T> children = determineChildrenOf(parent);
+        for (T child : children) {
+            if (Objects.equals(value, child)) {
+                rootToNode.add(node(value, parent));
+                return;
             }
         }
 
         // Look a level deeper
-        for (T candidateParent : children) {
-            List<Node> rootToNode = findTreePathByWalkingTheTree(child, candidateParent);
-            if (rootToNode != null) {
-                rootToNode.add(0, node(candidateParent));
-                return rootToNode;
+        for (T child : children) {
+            findTreePathByWalkingTheTree(value, child, rootToNode);
+            // If the node was found on this path, add ourselves
+            if (!rootToNode.isEmpty()) {
+                rootToNode.add(0, node(child, parent));
+                return;
             }
         }
-        return null;
     }
 
     // ===========================================================================
@@ -350,7 +388,7 @@ public class STree<T extends Object> extends SBorderPanel { // TBEERNOT Does it 
         TreePath[] paths = sTreeCore.getSelectionPaths();
         for (TreePath path : paths != null ? paths : new TreePath[0]) {
             Node node = (Node)path.getLastPathComponent();
-            selectedItems.add((T)node.value);
+            selectedItems.add((T)node.value());
         }
         return Collections.unmodifiableList(selectedItems);
     }

@@ -1,15 +1,33 @@
 package org.tbee.sway.tree;
 
-public class Node {
-    final public Object value;
+import java.lang.ref.WeakReference;
+import java.util.Map;
 
-    public Node(Object value) {
-        this.value = value;
+public class Node {
+    final private WeakReference<Object> value;
+    final private WeakReference<Object> parent;
+    final private Map<Object, Node> valueToNode;
+
+    public Node(Object value, Object parent, Map<Object, Node> valueToNode) {
+        this.value = new WeakReference<>(value);
+        this.parent = new WeakReference<>(parent);
+        this.valueToNode = valueToNode;
+    }
+
+    public Object value() {
+        Object v = value.get();
+        if (v == null) {
+            valueToNode.remove(this);
+        }
+        return v;
+    }
+    public Object parent() {
+        return parent.get();
     }
 
     @Override
     public int hashCode() {
-        return System.identityHashCode(value);
+        return System.identityHashCode(value.get());
     }
 
     @Override
@@ -22,11 +40,11 @@ public class Node {
         }
         Node other = (Node) o;
 
-        return System.identityHashCode(other.value) == System.identityHashCode(value);
+        return System.identityHashCode(other.value.get()) == System.identityHashCode(value.get());
     }
 
     @Override
     public String toString() {
-        return "Node->" + value;
+        return "Node->" + value.get();
     }
 }
