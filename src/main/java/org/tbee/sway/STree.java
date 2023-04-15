@@ -31,7 +31,7 @@ import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-public class STree<T extends Object> extends SBorderPanel { // TBEERNOT Does it make sense have a Generic STree? Usually Trees hold different classes. A single class is the exception.
+public class STree<T extends Object> extends SBorderPanel {
     static private org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(STree.class);
 
     final private STreeCore<T> sTreeCore;
@@ -250,61 +250,77 @@ public class STree<T extends Object> extends SBorderPanel { // TBEERNOT Does it 
         if (Objects.equals(value, root)) {
             return new TreePath(new Object[]{node(root, null)});
         }
-
-        // This is the resulting path
-        List<Node> rootToNode = new ArrayList<>();
+        TreePath treePath = null;
 
         // First try the efficient but not guaranteed approach
-        boolean rootFound = findTreePathByNodeAndToParent(value, rootToNode);
-        if (rootFound) {
-            return new TreePath(rootToNode.toArray());
-        }
-        // If partially found
-        if (!rootToNode.isEmpty()) {
-            value = (T) rootToNode.get(0).parent();
+        treePath = findTreePathByNodeAndToParent(value);
+        if (treePath != null) {
+            return treePath;
         }
 
         // Walk the tree
-        findTreePathByWalkingTheTree(value, root, rootToNode);
-        if (!rootToNode.isEmpty()) {
-            rootToNode.add(0, node(root, null));
-            return new TreePath(rootToNode.toArray());
+        treePath = findTreePathByWalkingTheTree(value);
+        if (treePath != null) {
+            return treePath;
+        }
+
+        // not found
+        return null;
+    }
+
+    private TreePath findTreePathByNodeAndToParent(T value) {
+        List<Node> rootToNode = new ArrayList<>();
+        while (true) {
+            // Find the node
+            Node node = sTreeCore.getSTreeModel().findNode(value);
+            // TODO: toParent
+            if (node == null) {
+                return null; // path to root not found
+            }
+
+            // If found add it to the start of the path
+            rootToNode.add(0, node);
+
+            // If it is the root, we're done
+            if (Objects.equals(value, root)) {
+                return new TreePath(rootToNode.toArray());
+            }
+
+            // Try to solve the parent (and in doing so work our way up to the root)
+            value = (T)node.parent();
+        }
+    }
+
+    // Breadth first (not depth)
+    private TreePath findTreePathByWalkingTheTree(T value) {
+
+        // init
+        List<TreePath> toExamineTreePaths = new ArrayList<>();
+        toExamineTreePaths.add(new TreePath(node(root, null)));
+
+        // process
+        while (!toExamineTreePaths.isEmpty()) {
+            TreePath treePath = toExamineTreePaths.remove(0);
+            Node node = (Node)treePath.getLastPathComponent();
+            T nodeValue = (T)node.value();
+
+            // If value found
+            if (Objects.equals(value, nodeValue)) {
+                return treePath;
+            }
+
+            // Create more treepaths to examine
+            for (T child : determineChildrenOf(nodeValue)) {
+                toExamineTreePaths.add(new MyTreePath(treePath, node(child, nodeValue)));
+            }
         }
         return null;
     }
 
-    private boolean findTreePathByNodeAndToParent(T value, List<Node> rootToNode) {
-        Node node = sTreeCore.getSTreeModel().findNode(value);
-        if (node != null) {
-            rootToNode.add(0, node);
-            if (Objects.equals(value, root)) {
-                return true; // path to root found
-            }
-            return findTreePathByNodeAndToParent((T)node.parent(), rootToNode);
-        }
-        // TODO: toParent
-        return false; // path to root not found
-    }
-
-    private void findTreePathByWalkingTheTree(T value, T parent, List<Node> rootToNode) {
-
-        // Try to find the node we are looking for
-        List<T> children = determineChildrenOf(parent);
-        for (T child : children) {
-            if (Objects.equals(value, child)) {
-                rootToNode.add(node(value, parent));
-                return;
-            }
-        }
-
-        // Look a level deeper
-        for (T child : children) {
-            findTreePathByWalkingTheTree(value, child, rootToNode);
-            // If the node was found on this path, add ourselves
-            if (!rootToNode.isEmpty()) {
-                rootToNode.add(0, node(child, parent));
-                return;
-            }
+    // Only needed to make the MyTreePath(TreePath parent, Object lastPathComponent) constructor accessible
+    class MyTreePath extends TreePath {
+        public MyTreePath(TreePath parent, Object lastPathComponent) {
+            super(parent, lastPathComponent);
         }
     }
 
