@@ -82,7 +82,7 @@ abstract public class CityData extends AbstractBean<City> {
     @Property(recordStyleGetter = true, setterScope = Scope.PRIVATE, isList = true, nameSingular = "partnerCity")
     List<City> partnerCities = new ArrayList<>();
 
-    @Property(recordStyleGetter = true, setterScope = Scope.PRIVATE, isList = true, nameSingular = "street")
+    @Property(recordStyleGetter = true, setterScope = Scope.PRIVATE, isList = true, nameSingular = "street", opposingProperty="city")
     List<Street> streets = new ArrayList<>();
 
     @Property(recordStyleGetter = true, setterScope = Scope.PRIVATE, isList = true, nameSingular = "thing")

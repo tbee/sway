@@ -31,10 +31,12 @@ abstract public class StreetData extends AbstractBean<Street> {
     @Property(recordStyleGetter = true, setterScope = Scope.PRIVATE, isList = true, nameSingular = "building")
     List<Building> buildings = new ArrayList<>();
 
+    @Property
+    City city;
 
-    @Override
-    public void firePropertyChange(String name, Object before, Object after) {
-        System.out.println(this.getClass().getSimpleName() + "." + name + ": " + before + " -> " + after);
-        super.firePropertyChange(name, before, after);
-    }
+//    @Override
+//    public void firePropertyChange(String name, Object before, Object after) {
+//        System.out.println(this.getClass().getSimpleName() + "." + name + ": " + before + " -> " + after);
+//        super.firePropertyChange(name, before, after);
+//    }
 }

@@ -12,52 +12,48 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.SOURCE)
 public @interface Property  {
-    public String name() default "";
+    String name() default "";
 
     /**
      * Only relevant for collections like isList
-     * @return
      */
-    public String nameSingular() default "";
+    String nameSingular() default "";
 
-    public boolean getter() default true;
+    boolean getter() default true;
     /**
      * Some other methods need the getter to be present.
      * If it should not be visible, then this can make it private
-     * @return
      */
-    public Scope getterScope() default Scope.PUBLIC;
-    public boolean setter() default true;
+    Scope getterScope() default Scope.PUBLIC;
+    boolean setter() default true;
     /**
      * Some other methods need the setter to be present,
      * If it should not be visible, then this can make it private
-     * @return
      */
-    public Scope setterScope() default Scope.PUBLIC;
-    public boolean wither() default false;
+    Scope setterScope() default Scope.PUBLIC;
+    boolean wither() default false;
 
     /**
      * RecordStyleGetter and RecordStyleWither will conflict
-     * @return
      */
-    public boolean recordStyleGetter() default false;
-    public boolean recordStyleSetter() default false;
+    boolean recordStyleGetter() default false;
+    boolean recordStyleSetter() default false;
 
     /**
      * RecordStyleWither and RecordStyleGetter will conflict
-     * @return
      */
-    public boolean recordStyleWither() default true;
+    boolean recordStyleWither() default true;
 
-    public boolean bindEndpoint() default true;
-    public boolean beanBinderEndpoint() default true;
+    boolean bindEndpoint() default true;
+    boolean beanBinderEndpoint() default true;
 
-    public boolean propertyNameConstant() default true;
+    boolean propertyNameConstant() default true;
 
-    public boolean includeInToString() default false;
+    boolean includeInToString() default false;
 
-    public boolean isList() default false;
-    public boolean adder() default true;
-    public boolean remover() default true;
+    boolean isList() default false;
+    boolean adder() default true;
+    boolean remover() default true;
 
+    String opposingProperty() default "";
 }

@@ -107,15 +107,17 @@ public class BeanGenerator extends AbstractProcessor {
 
             // package
             if (packageName != null) {
-                writer.print(resolve(classContext, """
-                         package %packageName%; 
+                writer.print(resolve(classContext,
+                 """
+                         package %packageName%;
                              
                          """));
             }
 
             // class declaration
-            writer.print(resolve(classContext, """
-                         public class %BeanClassSimpleName% extends %AnnotatedClassName% { 
+            writer.print(resolve(classContext,
+                 """
+                         public class %BeanClassSimpleName% extends %AnnotatedClassName% {
                              
                          """));
 
@@ -132,9 +134,10 @@ public class BeanGenerator extends AbstractProcessor {
                     .map(vr -> vr.variableContext)
                     .map(vc -> vc.get("variableName"))
                     .collect(Collectors.joining(","));
-            writer.print(resolve(classContext, """
-                             @Override 
-                             public int hashCode() {    
+            writer.print(resolve(classContext,
+                 """
+                             @Override
+                             public int hashCode() {
                                  return java.util.Objects.hash(%variableNames%);
                              }
                              
@@ -145,13 +148,14 @@ public class BeanGenerator extends AbstractProcessor {
                     .map(vr -> vr.variableContext)
                     .map(vc -> "java.util.Objects.equals(this." + vc.get("variableName") + ", other." + vc.get("variableName") + ")")
                     .collect(Collectors.joining("\n            && "));
-            writer.print(resolve(classContext, """
-                             @Override 
+            writer.print(resolve(classContext,
+                 """
+                             @Override
                              public boolean equals(Object obj) {
                                  if (this == obj) return true;
                                  if (obj == null) return false;
                                  if (getClass() != obj.getClass()) return false;
-                                 %BeanClassName% other = (%BeanClassName%)obj;    
+                                 %BeanClassName% other = (%BeanClassName%)obj;
                                  return %equals%;
                              }
                              
@@ -163,8 +167,9 @@ public class BeanGenerator extends AbstractProcessor {
                     .map(vr -> vr.variableContext)
                     .map(vc -> "\"," + vc.get("propertyName") + "=\" + " + vc.get("variableName"))
                     .collect(Collectors.joining("\n             + "));
-            writer.print(resolve(classContext, """
-                             @Override 
+            writer.print(resolve(classContext,
+                 """
+                             @Override
                              public String toString() {
                                  return super.toString() + "#" + java.lang.Integer.toHexString(java.lang.System.identityHashCode(this))
                                       + %toString%;
@@ -172,15 +177,16 @@ public class BeanGenerator extends AbstractProcessor {
                              
                          """, Map.of("toString", toString.isBlank() ? "\"\"" : toString)));
 
-            writer.print("""
-                        protected <T> T $swayWrap(T object) {
-                            if (object instanceof java.util.List<?>) {
-                                return (T)java.util.Collections.unmodifiableList((java.util.List<?>)object);
+            writer.print(resolve(classContext,
+                """
+                            protected <T> T $swayWrap(T object) {
+                                if (object instanceof java.util.List<?>) {
+                                    return (T)java.util.Collections.unmodifiableList((java.util.List<?>)object);
+                                }
+                                return object;
                             }
-                            return object;
-                        }
-                                         
-                     """);
+                                             
+                         """));
             // close class
             writer.println("}");
         }
@@ -220,6 +226,9 @@ public class BeanGenerator extends AbstractProcessor {
         String propertyNameSingular = !propertyAnnotation.nameSingular().isBlank() ? propertyAnnotation.nameSingular() : propertyName;
         variableContext.put("propertyNameSingular", propertyNameSingular);
         variableContext.put("PropertyNameSingular", firstUpper(propertyNameSingular));
+        String opposingProperty = ""; // TBEERNOT propertyAnnotation.opposingProperty();
+        variableContext.put("OpposingProperty", firstUpper(opposingProperty));
+
         // List
         boolean isList = propertyAnnotation.isList(); // TBEERNOT Somehow we need to figure this out automatically
         if (isList) {
@@ -228,101 +237,150 @@ public class BeanGenerator extends AbstractProcessor {
             variableContext.put("ListType", listType);
         }
 
-        writer.print(resolve(variableContext, """
-                        // --------------------- 
+        writer.print(resolve(variableContext,
+            """
+                        // ---------------------
                         // %propertyName%
                     """));
         if (propertyAnnotation.getter()) {
-            writer.print(resolve(variableContext, """
-                        %GetterScope% %VariableType% get%PropertyName%() { 
-                            return $swayWrap(this.%variableName%); 
+            writer.print(resolve(variableContext,
+            """
+                        %GetterScope% %VariableType% get%PropertyName%() {
+                            return $swayWrap(this.%variableName%);
                         }
                     """));
         }
         if (propertyAnnotation.setter()) {
-            writer.print(resolve(variableContext, """
-                        %SetterScope% void set%PropertyName%(%VariableType% v) { 
-                            fireVetoableChange("%propertyName%", $swayWrap(this.%variableName%), $swayWrap(v)); 
-                            firePropertyChange("%propertyName%", $swayWrap(this.%variableName%), $swayWrap(this.%variableName% = v)); 
+            variableContext.put("opposingPropertyUnset", opposingProperty.isBlank() || isList ? ""  : resolve(variableContext,
+            """
+                            if (this.%variableName% != null) {
+                                this.%variableName%.set%OpposingProperty%(null);
+                            }
+                    """).trim());
+            variableContext.put("opposingPropertySet", opposingProperty.isBlank() || isList ? ""  : resolve(variableContext,
+            """
+                            if (this.%variableName% != null) {
+                                this.%variableName%.set%OpposingProperty%(this);
+                            }
+                    """).trim());
+            writer.print(resolve(variableContext,
+            """
+                        %SetterScope% void set%PropertyName%(%VariableType% v) {
+                            if (this.%variableName% == v) {
+                                return;
+                            }
+                            fireVetoableChange("%propertyName%", $swayWrap(this.%variableName%), $swayWrap(v));
+                            %opposingPropertyUnset%
+                            firePropertyChange("%propertyName%", $swayWrap(this.%variableName%), $swayWrap(this.%variableName% = v));
+                            %opposingPropertySet%
                         }
                     """));
         }
         if (propertyAnnotation.wither()) {
-            writer.print(resolve(variableContext, """
-                    public %ClassName% with%PropertyName%(%VariableType% v) { 
+            writer.print(resolve(variableContext,
+        """
+                    public %ClassName% with%PropertyName%(%VariableType% v) {
                         set%PropertyName%(v);
                         return (%ClassName%)this;
                     }
                 """));
         }
         if (propertyAnnotation.recordStyleGetter()) {
-            writer.print(resolve(variableContext, """
-                    public %VariableType% %propertyName%() { 
-                        return get%PropertyName%(); 
+            writer.print(resolve(variableContext,
+        """
+                    public %VariableType% %propertyName%() {
+                        return get%PropertyName%();
                     }
                 """));
         }
         if (propertyAnnotation.recordStyleSetter()) {
-            writer.print(resolve(variableContext, """
-                    public void %propertyName%(%VariableType% v) { 
+            writer.print(resolve(variableContext,
+        """
+                    public void %propertyName%(%VariableType% v) {
                         set%PropertyName%(v);
                     }
                 """));
         }
         if (propertyAnnotation.recordStyleWither()) {
-            writer.print(resolve(variableContext, """
-                    public %ClassName% %propertyName%(%VariableType% v) { 
+            writer.print(resolve(variableContext,
+        """
+                    public %ClassName% %propertyName%(%VariableType% v) {
                         set%PropertyName%(v);
                         return (%ClassName%)this;
                     }
                 """));
         }
         if (propertyAnnotation.bindEndpoint()) {
-            writer.print(resolve(variableContext, """
-                    public org.tbee.sway.binding.BindingEndpoint<%BindType%> %propertyName%$() { 
+            writer.print(resolve(variableContext,
+        """
+                    public org.tbee.sway.binding.BindingEndpoint<%BindType%> %propertyName%$() {
                         return org.tbee.sway.binding.BindingEndpoint.of(this, "%propertyName%");
                     }
                 """));
         }
         if (propertyAnnotation.beanBinderEndpoint()) {
-            writer.print(resolve(variableContext, """
-                    static public org.tbee.sway.binding.BindingEndpoint<%BindType%> %propertyName%$(org.tbee.sway.binding.BeanBinder<%ClassName%> beanBinder) { 
+            writer.print(resolve(variableContext,
+        """
+                    static public org.tbee.sway.binding.BindingEndpoint<%BindType%> %propertyName%$(org.tbee.sway.binding.BeanBinder<%ClassName%> beanBinder) {
                         return org.tbee.sway.binding.BindingEndpoint.of(beanBinder, "%propertyName%");
                     }
                 """));
         }
         if (propertyAnnotation.propertyNameConstant()) {
-            writer.print(resolve(variableContext, """
-                    final static public String %PROPERTYNAME% = \"%propertyName%\"; 
+            writer.print(resolve(variableContext,
+        """
+                    final static public String %PROPERTYNAME% = "%propertyName%";
                 """));
         }
 
         if (isList && propertyAnnotation.adder()) {
-            writer.print(resolve(variableContext, """
-                        public %ListType% add%PropertyNameSingular%(%ListType% v) { 
+            variableContext.put("opposingPropertySet", opposingProperty.isBlank() ? ""  : resolve(variableContext,
+            """
+                                if (v != null) {
+                                    v.set%OpposingProperty%(this);
+                                }
+                    """).trim());
+            writer.print(resolve(variableContext,
+            """
+                        public %ListType% add%PropertyNameSingular%(%ListType% v) {
+                            if (this.%variableName%.contains(v)) {
+                                return null;
+                            }
                             %VariableType% pretendedNewValue = $swayWrap((%VariableType%)new org.tbee.sway.beanGenerator.ListPretendingToHaveAddedItem<%ListType%>(this.%variableName%, v));
-                            fireVetoableChange("%propertyName%", get%PropertyName%(), pretendedNewValue); 
+                            fireVetoableChange("%propertyName%", get%PropertyName%(), pretendedNewValue);
                             boolean wasAdded = this.%variableName%.add(v);
                             if (wasAdded) {
                                 %VariableType% pretendedOldValue = $swayWrap((%VariableType%)new org.tbee.sway.beanGenerator.ListPretendingToHaveRemovedItem<%ListType%>(this.%variableName%, v));
                                 firePropertyChange("%propertyName%", pretendedOldValue, get%PropertyName%());
+                                %opposingPropertySet%
                                 return v;
-                            } 
+                            }
                             return null;
                         }
                     """));
         }
         if (isList && propertyAnnotation.remover()) {
-            writer.print(resolve(variableContext, """
-                        public %ListType% remove%PropertyNameSingular%(%ListType% v) { 
+            variableContext.put("opposingPropertyUnset", opposingProperty.isBlank() ? ""  : resolve(variableContext,
+            """
+                                if (v != null) {
+                                    v.set%OpposingProperty%(null);
+                                }
+                    """).trim());
+            writer.print(resolve(variableContext,
+            """
+                        public %ListType% remove%PropertyNameSingular%(%ListType% v) {
+                            if (!this.%variableName%.contains(v)) {
+                                return null;
+                            }
                             %VariableType% pretendedNewValue = $swayWrap((%VariableType%)new org.tbee.sway.beanGenerator.ListPretendingToHaveRemovedItem<%ListType%>(this.%variableName%, v));
-                            fireVetoableChange("%propertyName%", get%PropertyName%(), pretendedNewValue); 
+                            fireVetoableChange("%propertyName%", get%PropertyName%(), pretendedNewValue);
                             boolean wasRemoved = this.%variableName%.remove(v);
                             if (wasRemoved) {
                                 %VariableType% pretendedOldValue = $swayWrap((%VariableType%)new org.tbee.sway.beanGenerator.ListPretendingToHaveAddedItem<%ListType%>(this.%variableName%, v));
                                 firePropertyChange("%propertyName%", pretendedOldValue, get%PropertyName%());
+                                %opposingPropertyUnset%
                                 return v;
-                            } 
+                            }
                             return null;
                         }
                     """));
@@ -331,7 +389,7 @@ public class BeanGenerator extends AbstractProcessor {
     }
 
     private static String determineBindType(TypeKind typeKind, String nonPrimaryType) {
-        String bindType = switch(typeKind) {
+        return switch(typeKind) {
             case BOOLEAN -> Boolean.class.getName();
             case BYTE -> Byte.class.getName();
             case SHORT -> Short.class.getName();
@@ -342,7 +400,6 @@ public class BeanGenerator extends AbstractProcessor {
             case DOUBLE -> Double.class.getName();
             default -> nonPrimaryType;
         };
-        return bindType;
     }
 
     private String resolve(Map<String, String> context, String template) {
@@ -359,10 +416,16 @@ public class BeanGenerator extends AbstractProcessor {
     }
 
     private String firstUpper(String s) {
+        if (s == null || s.isEmpty()) {
+            return s;
+        }
         return s.substring(0, 1).toUpperCase() + s.substring(1);
     }
 
     private String firstLower(String s) {
+        if (s == null || s.isEmpty()) {
+            return s;
+        }
         return s.substring(0, 1).toLowerCase() + s.substring(1);
     }
 }

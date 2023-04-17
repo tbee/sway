@@ -15,6 +15,6 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE) // this is class
 @Retention(RetentionPolicy.SOURCE)
 public @interface Bean {
-    public String stripSuffix() default "";
-    public String appendSuffixToBean() default "";
+    String stripSuffix() default "";
+    String appendSuffixToBean() default "";
 }
