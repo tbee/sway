@@ -89,10 +89,9 @@ public class STableTest extends TestBase {
             return TestUtil.inJFrame(sTable, focusMeComponent());
         });
 
-        // WHEN
-        SwingUtilities.invokeAndWait(() -> {
-            amsterdam.setName("Rome");
-        });
+        // WHEN (in a differtent thread!)
+        amsterdam.setName("Rome");
+        SwingUtilities.invokeAndWait(() -> amsterdam.getName()); // dummy code, but this is scheduled after the invokeLater in STree, so nicely waits
 
         // THEN
         Assertions.assertEquals("Rome", sTable.getSTableCore().getValueAt(0, 0));

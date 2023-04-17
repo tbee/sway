@@ -3,6 +3,7 @@ package org.tbee.sway;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import javax.swing.SwingUtilities;
 import java.awt.event.KeyEvent;
 import java.util.List;
 
@@ -96,7 +97,6 @@ public class STreeTest extends TestBase {
         // THEN
         Assertions.assertEquals(1, sTree.getSelection().size());
         Assertions.assertEquals(amsterdam, sTree.getSelection().get(0));
-        sleep(2000);
 
         // WHEN
         frameFixture.tree("tree.sTreeCore").clickPath("Amsterdam/Leidseplein");
@@ -113,5 +113,11 @@ public class STreeTest extends TestBase {
         Assertions.assertTrue(sTree.getSelection().contains(amsterdam));
         Assertions.assertTrue(sTree.getSelection().contains(kalverstraat));
         Assertions.assertTrue(sTree.getSelection().contains(leidseplein));
+
+        // WHEN
+        leidseplein.setName("Leidscheplein");
+        SwingUtilities.invokeAndWait(() -> leidseplein.getName()); // dummy code, but this is scheduled after the invokeLater in STree, so nicely waits
+        // THEN view is updated
+        Assertions.assertEquals("Leidscheplein", frameFixture.tree("tree.sTreeCore").valueAt("Amsterdam/Leidscheplein"));
     }
 }

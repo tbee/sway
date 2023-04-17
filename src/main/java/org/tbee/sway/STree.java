@@ -482,8 +482,13 @@ public class STree<T extends Object> extends SBorderPanel {
         System.out.println("Property change event for " + node);
 
         // Find the place in the tree that changed and refresh
-        // This does not work for changes to children: STree.this.treeNodeChanged(node);
-        STree.this.treeStructureChanged(node);
+        // This does not work for changes in children collections: STree.this.treeNodeChanged(node);
+        if (SwingUtilities.isEventDispatchThread()) {
+            STree.this.treeStructureChanged(node);
+        }
+        else {
+            SwingUtilities.invokeLater(() -> STree.this.treeStructureChanged(node));
+        }
     };
 
     // ========================================================

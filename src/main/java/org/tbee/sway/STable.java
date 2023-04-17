@@ -582,7 +582,13 @@ public class STable<TableType> extends SBorderPanel {
             if (monitorProperty != null && monitorProperty.equals(evt.getPropertyName())) {
                 for (Integer rowIdx : rowIdxs) {
                     if (LOGGER.isDebugEnabled()) LOGGER.debug("Invoke fireTableCellUpdated(" + rowIdx + "," + colIdx + ")");
-                    getSTableCore().getTableModel().fireTableCellUpdated(rowIdx, colIdx);
+                    if (SwingUtilities.isEventDispatchThread()) {
+                        getSTableCore().getTableModel().fireTableCellUpdated(rowIdx, colIdx);
+                    }
+                    else {
+                        int colIdxFinal = colIdx;
+                        SwingUtilities.invokeLater(() -> getSTableCore().getTableModel().fireTableCellUpdated(rowIdx, colIdxFinal));
+                    }
                 }
             }
         }
