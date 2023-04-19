@@ -28,6 +28,11 @@ abstract public class CityData extends AbstractBean<City> {
         return new City();
     }
 
+    static public City of(String name) {
+        return of()
+                .name(name);
+    }
+
     static public City of(String name, int distance) {
         return of()
                 .name(name)
