@@ -50,10 +50,11 @@ public @interface Property  {
     boolean propertyNameConstant() default true;
 
     boolean includeInToString() default false;
+    boolean includeInEqualsAndHashcode() default false;
+    boolean includeInHasSameIdentity() default false;
+    boolean includeInHasSameState() default false;
 
     boolean isList() default false;
-    boolean adder() default true;
-    boolean remover() default true;
 
     String opposingProperty() default "";
 }

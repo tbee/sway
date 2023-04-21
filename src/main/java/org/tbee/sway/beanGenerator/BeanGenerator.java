@@ -29,6 +29,18 @@ import java.util.stream.Collectors;
 // https://www.baeldung.com/java-annotation-processing-builder
 // https://hannesdorfmann.com/annotation-processing/annotationprocessing101/
 
+/**
+ * Equals and hashcode are some interesting concepts; when are two entities equals, and when are two value objects?
+ * So BeanGenerator supports generating multiple comparison methods based on the following Property settings:
+ * - includeInEqualsAndHashcode
+ * - includeInHasSameIdentity
+ * - includeInHasSameState
+ *
+ * For value object equals and hashcode need to be generated.
+ * For entities one would generate the latter two, where the id and version would be used for hasSameIdentity.
+ * Null id's should not exist and an entity should get (temporarily) ids immediately,
+ * this is why GUID are so well suited as ids for entities.
+ */
 @SupportedAnnotationTypes("org.tbee.sway.beanGenerator.annotations.Bean")
 @SupportedSourceVersion(SourceVersion.RELEASE_17)
 @AutoService(Processor.class)
@@ -130,36 +142,74 @@ public class BeanGenerator extends AbstractProcessor {
             }
 
             // hashcode
-            String variableNames = variableRecords.stream()
+            String hashCode = variableRecords.stream()
+                    .filter(vr -> vr.propertyRecord.includeInEqualsAndHashcode())
                     .map(vr -> vr.variableContext)
                     .map(vc -> vc.get("variableName"))
                     .collect(Collectors.joining(","));
-            writer.print(resolve(classContext,
-                 """
-                             @Override
-                             public int hashCode() {
-                                 return java.util.Objects.hash(%variableNames%);
-                             }
-                             
-                         """, Map.of("variableNames", variableNames)));
+            if (!hashCode.isBlank()) {
+                writer.print(resolve(classContext,
+                        """
+                                    @Override
+                                    public int hashCode() {
+                                        return java.util.Objects.hash(%hashCode%);
+                                    }
+                                    
+                                """, Map.of("hashCode", hashCode)));
+            }
 
             // equals
             String equals = variableRecords.stream()
+                    .filter(vr -> vr.propertyRecord.includeInEqualsAndHashcode())
                     .map(vr -> vr.variableContext)
                     .map(vc -> "java.util.Objects.equals(this." + vc.get("variableName") + ", other." + vc.get("variableName") + ")")
                     .collect(Collectors.joining("\n            && "));
-            writer.print(resolve(classContext,
-                 """
-                             @Override
-                             public boolean equals(Object obj) {
-                                 if (this == obj) return true;
-                                 if (obj == null) return false;
-                                 if (getClass() != obj.getClass()) return false;
-                                 %BeanClassName% other = (%BeanClassName%)obj;
-                                 return %equals%;
-                             }
-                             
-                         """, Map.of("equals", equals)));
+            if (!equals.isBlank()) {
+                writer.print(resolve(classContext,
+                        """
+                                    @Override
+                                    public boolean equals(Object obj) {
+                                        if (this == obj) return true;
+                                        if (obj == null) return false;
+                                        if (getClass() != obj.getClass()) return false;
+                                        %BeanClassName% other = (%BeanClassName%)obj;
+                                        return %equals%;
+                                    }
+                                    
+                                """, Map.of("equals", equals)));
+            }
+
+            // hasSameIdentity
+            String hasSameIdentity = variableRecords.stream()
+                    .filter(vr -> vr.propertyRecord.includeInHasSameIdentity())
+                    .map(vr -> vr.variableContext)
+                    .map(vc -> "java.util.Objects.equals(this." + vc.get("variableName") + ", other." + vc.get("variableName") + ")")
+                    .collect(Collectors.joining("\n            && "));
+            if (!hasSameIdentity.isBlank()) {
+                writer.print(resolve(classContext,
+                        """
+                                    public boolean hasSameIdentity(%BeanClassSimpleName% other) {
+                                        return %hasSameIdentity%;
+                                    }
+                                    
+                                """, Map.of("%hasSameIdentity%", hasSameIdentity)));
+            }
+
+            // hasSameState
+            String hasSameState = variableRecords.stream()
+                    .filter(vr -> vr.propertyRecord.includeInHasSameState())
+                    .map(vr -> vr.variableContext)
+                    .map(vc -> "java.util.Objects.equals(this." + vc.get("variableName") + ", other." + vc.get("variableName") + ")")
+                    .collect(Collectors.joining("\n            && "));
+            if (!hasSameState.isBlank()) {
+                writer.print(resolve(classContext,
+                        """
+                                    public boolean hasSameState(%BeanClassSimpleName% other) {
+                                        return %hasSameState%;
+                                    }
+                                    
+                                """, Map.of("hasSameState", hasSameState)));
+            }
 
             // toString
             String toString = variableRecords.stream()
@@ -192,7 +242,7 @@ public class BeanGenerator extends AbstractProcessor {
         }
     }
 
-    private record PropertyRecord(boolean includeInToString){}
+    private record PropertyRecord(boolean includeInToString, boolean includeInHasSameIdentity, boolean includeInHasSameState, boolean includeInEqualsAndHashcode){}
     private record VariableRecord(PropertyRecord propertyRecord, Map<String, String> variableContext){}
 
     private void instanceVariable(PrintWriter writer, VariableElement variableElement, Map<String, String> classContext, List<VariableRecord> variableRecords) {
@@ -208,7 +258,7 @@ public class BeanGenerator extends AbstractProcessor {
     private void processPropertyAnnotation(Property propertyAnnotation, PrintWriter writer, VariableElement variableElement, Map<String, String> classContext, List<VariableRecord> variableRecords) {
 
         Map<String, String> variableContext = new HashMap<>(classContext);
-        variableRecords.add(new VariableRecord(new PropertyRecord(propertyAnnotation.includeInToString()), variableContext));
+        variableRecords.add(new VariableRecord(new PropertyRecord(propertyAnnotation.includeInToString(), propertyAnnotation.includeInHasSameIdentity(), propertyAnnotation.includeInHasSameState(), propertyAnnotation.includeInEqualsAndHashcode()), variableContext));
 
         // Basic property
         variableContext.put("GetterScope", propertyAnnotation.getterScope().code);
@@ -333,7 +383,7 @@ public class BeanGenerator extends AbstractProcessor {
                 """));
         }
 
-        if (isList && propertyAnnotation.adder()) {
+        if (isList) {
             variableContext.put("opposingPropertySet", opposingProperty.isBlank() ? ""  : resolve(variableContext,
             """
                                 if (v != null) {
@@ -358,8 +408,7 @@ public class BeanGenerator extends AbstractProcessor {
                             return null;
                         }
                     """));
-        }
-        if (isList && propertyAnnotation.remover()) {
+
             variableContext.put("opposingPropertyUnset", opposingProperty.isBlank() ? ""  : resolve(variableContext,
             """
                                 if (v != null) {
