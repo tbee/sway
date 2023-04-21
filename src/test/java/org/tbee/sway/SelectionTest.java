@@ -1,5 +1,7 @@
 package org.tbee.sway;
 
+import org.assertj.swing.core.MouseButton;
+import org.assertj.swing.data.TableCell;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.tbee.sway.format.FormatRegistry;
@@ -61,13 +63,13 @@ public class SelectionTest extends TestBase {
         STree<City> sTree = treeRef.get();
 
         // WHEN
-        frameFixture.tree("tree.sTreeCore").clickPath("Amsterdam");
+        frameFixture.table("table.sTableCore").click(TableCell.row(0).column(0), MouseButton.LEFT_BUTTON);;
         // THEN
         assertSize(1, sList.getSelection(), sTable.getSelection(), sTree.getSelection());
         assertContains(amsterdam, sList.getSelection(), sTable.getSelection(), sTree.getSelection());
 
         // WHEN
-        frameFixture.tree("tree.sTreeCore").clickPath("Amsterdam/Rome");
+        frameFixture.list("list.sListCore").clickItem("Rome");
         // THEN
         assertSize(1, sList.getSelection(), sTable.getSelection(), sTree.getSelection());
         assertContains(rome, sList.getSelection(), sTable.getSelection(), sTree.getSelection());
