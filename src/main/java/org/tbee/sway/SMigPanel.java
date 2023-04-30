@@ -1,7 +1,10 @@
 package org.tbee.sway;
 
 import net.miginfocom.layout.AC;
+import net.miginfocom.layout.AlignX;
+import net.miginfocom.layout.AlignY;
 import net.miginfocom.layout.CC;
+import net.miginfocom.layout.HideMode;
 import net.miginfocom.layout.LC;
 import net.miginfocom.swing.MigLayout;
 
@@ -9,14 +12,7 @@ import javax.swing.JComponent;
 import java.awt.Component;
 import java.util.Collection;
 
-// TODO
-// - strongly typed API calls for all MigLayout stuff
-
 public class SMigPanel extends SPanelExtendable<SMigPanel> {
-	
-	static public enum AlignX {LEADING, LEFT, CENTER, RIGHT, TRAILING}
-	static public enum AlignY {TOP, CENTER, BOTTOM, BASELINE}
-
 
     // Need to declare these specifically, because the getters return String
     final private LC lc = new LC();
@@ -50,16 +46,16 @@ public class SMigPanel extends SPanelExtendable<SMigPanel> {
 
     public CC addLabel(JComponent component) {
         CC cc = new CC() //
-            .alignX("trailing") //
-            .alignY("baseline");
+            .alignX(AlignX.TRAILING) //
+            .alignY(AlignY.BASELINE);
         add(component, cc);
         return cc;
     }
 
     public CC addField(JComponent component) {
         CC cc = new CC() //
-                .alignX("leading") //
-                .alignY("top");
+                .alignX(AlignX.LEADING) //
+                .alignY(AlignY.TOP);
         add(component, cc);
         return cc;
     }
@@ -146,8 +142,11 @@ public class SMigPanel extends SPanelExtendable<SMigPanel> {
         migLayout.setLayoutConstraints(lc); // reapply
         return this;
     }
-    public SMigPanel alignX(AlignX alignX) {
-        return alignX(alignX == null ? null : alignX.toString().toLowerCase());
+
+    public SMigPanel alignX(AlignX v) {
+        lc.alignX(v);
+        migLayout.setLayoutConstraints(lc); // reapply
+        return this;
     }
 
     public SMigPanel alignY(String v) {
@@ -155,8 +154,10 @@ public class SMigPanel extends SPanelExtendable<SMigPanel> {
         migLayout.setLayoutConstraints(lc); // reapply
         return this;
     }
-    public SMigPanel alignY(AlignY alignY) {
-        return alignX(alignY == null ? null : alignY.toString().toLowerCase());
+    public SMigPanel alignY(AlignY v) {
+        lc.alignY(v);
+        migLayout.setLayoutConstraints(lc); // reapply
+        return this;
     }
 
     /**
@@ -175,30 +176,12 @@ public class SMigPanel extends SPanelExtendable<SMigPanel> {
      * SIZE_0_GAPS_0: If hidden the size will be 0, 0 and gaps set to zero.<br>
      * DISREGARD: If hidden the component will be disregarded completely and not take up a cell in the grid..
      */
-    public SMigPanel hideMode(HideMode v)
-    {
-        lc.setHideMode(v.code);
+    public SMigPanel hideMode(HideMode v) {
+        lc.hideMode(v);
         migLayout.setLayoutConstraints(lc); // reapply
         return this;
     }
-    enum HideMode {
-        NORMAL(0), SIZE_0_RETAIN_GAPS(1), SIZE_0_GAPS_0(2), DISREGARD(3);
 
-        private final int code;
-
-        private HideMode(int code) {
-            this.code = code;
-        }
-
-        static public HideMode of(int code) {
-            for (HideMode hideMode : values()) {
-                if (hideMode.code == code) {
-                    return hideMode;
-                }
-            }
-            throw new IllegalArgumentException("Code does not exist " + code);
-        }
-    }
     
     // ---
     // SBorderPanel like

@@ -28,8 +28,8 @@ public class SLabel extends JLabel {
         super(text);
     }
 
-    public SLabel(Icon image) {
-        super(image);
+    public SLabel(Icon icon) {
+        super(icon);
     }
 
     // ===========================================================================================================================
@@ -105,6 +105,21 @@ public class SLabel extends JLabel {
 
     // ===========================================================================================================================
     // FLUENT API
+
+    static public SLabel of() {
+        return new SLabel();
+    }
+    static public SLabel of(String text, Icon icon) {
+        return of().text(text).icon(icon).hAlign(HAlign.CENTER);
+    }
+
+    static public SLabel of(String text) {
+        return of().text(text);
+    }
+
+    static public SLabel of(Icon icon) {
+        return of().icon(icon);
+    }
 
     public SLabel name(String v) {
         setName(v);
