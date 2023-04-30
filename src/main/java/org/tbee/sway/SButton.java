@@ -130,43 +130,63 @@ public class SButton extends JButton {
     // ==============================================
     // FLUENT API
 
+    static public SButton of() {
+        return new SButton();
+    }
+
+    static public SButton of(Icon icon) {
+        return of().icon(icon);
+    }
+
+    static public SButton of(String text) {
+        return of().text(text);
+    }
+
+    static public SButton of(Action a) {
+        return of().action(a);
+    }
+
+    static public SButton of(String text, Icon icon) {
+        return of().text(text).icon(icon);
+    }
+
     public SButton name(String v) {
         setName(v);
         return this;
     }
 
     public SButton toolTipText(String t) {
-        super.setToolTipText(t);
+        setToolTipText(t);
         return this;
     }
 
     public SButton enabled(boolean v) {
-        super.setEnabled(v);
+        setEnabled(v);
         return this;
     }
 
     public SButton margin(Insets m) {
-        super.setMargin(m);
+        setMargin(m);
         return this;
     }
 
     public SButton onAction(ActionListener l) {
-        super.addActionListener(l);
+        addActionListener(l);
         return this;
     }
 
     public SButton action(Action v) {
-        super.setAction(v);
+        setAction(v);
         return this;
     }
 
     public SButton icon(Icon v) {
-        super.setIcon(v);
+        setIcon(v);
         return this;
     }
 
     public SButton text(String v) {
-        super.setText(v);
+        setText(v);
         return this;
     }
 

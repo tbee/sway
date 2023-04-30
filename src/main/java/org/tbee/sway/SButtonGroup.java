@@ -197,6 +197,10 @@ public class SButtonGroup<T> extends ButtonGroup {
     // ===========================================================================================================================
     // CONVENIENCE
 
+    static public <T> SButtonGroup of() {
+        return new SButtonGroup<T>();
+    }
+
     /**
      * Create a buttongroup using a format and factory (supplier)
      * @param format

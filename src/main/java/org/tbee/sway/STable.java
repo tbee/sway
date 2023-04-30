@@ -20,10 +20,12 @@ import org.tbee.util.ExceptionUtil;
 
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.table.TableCellRenderer;
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
@@ -190,7 +192,7 @@ import java.util.stream.Collectors;
  *
  * @param <TableType>
  */
-public class STable<TableType> extends SBorderPanel {
+public class STable<TableType> extends JPanel {
     static private org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(STable.class);
 
     private final STableCore<TableType> sTableCore;
@@ -214,8 +216,9 @@ public class STable<TableType> extends SBorderPanel {
         });
 
         // Layout
-        center(scrollPane);
-        south(tableNavigator);
+        setLayout(new BorderLayout());
+        add(scrollPane, BorderLayout.CENTER);
+        add(tableNavigator, BorderLayout.SOUTH);
     }
 
     public STableCore<TableType> getSTableCore() {
@@ -1286,6 +1289,14 @@ public class STable<TableType> extends SBorderPanel {
 
     // ===========================================================================
     // FLUENT API
+
+    static public <TableType> STable<TableType> of() {
+        return new STable<TableType>();
+    }
+
+    static public <TableType> STable<TableType> of(List<TableType> data) {
+        return new STable<TableType>().data(data);
+    }
 
     @Override
     public void setName(String v) {

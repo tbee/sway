@@ -56,7 +56,7 @@ public class TestBase extends AssertJSwingTestCaseTemplate {
     }
 
     protected SButton focusMeComponent() {
-        return new SButton("focus me").name(FOCUS_ME);
+        return SButton.of("focus me").name(FOCUS_ME);
     }
     protected void moveFocus() {
         frameFixture.button(FOCUS_ME).click();

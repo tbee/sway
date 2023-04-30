@@ -112,6 +112,14 @@ public class STextArea extends SBorderPanel {
     // ===========================================================================
     // FLUENT API
 
+    static public STextArea of() {
+        return new STextArea();
+    }
+
+    static public STextArea of(int rows, int cols) {
+        return new STextArea(rows, cols);
+    }
+
     @Override
     public void setName(String v) {
         super.setName(v);

@@ -284,38 +284,55 @@ public class SCheckBox3 extends JCheckBox {
 	// ==============================================
 	// FLUENT API
 
+	static public SCheckBox3 of() {
+		return new SCheckBox3();
+	}
+
+	static public SCheckBox3 of(String text) {
+		return of().text(text);
+	}
+
+	static public SCheckBox3 of(Icon icon) {
+		return of().icon(icon);
+	}
+
+	static public SCheckBox3 of(String text, Icon icon) {
+		return of().text(text).icon(icon);
+	}
+
+
 	public SCheckBox3 name(String v) {
 		setName(v);
 		return this;
 	}
 
 	public SCheckBox3 toolTipText(String t) {
-		super.setToolTipText(t);
+		setToolTipText(t);
 		return this;
 	}
 
 	public SCheckBox3 enabled(boolean v) {
-		super.setEnabled(v);
+		setEnabled(v);
 		return this;
 	}
 
 	public SCheckBox3 margin(Insets m) {
-		super.setMargin(m);
+		setMargin(m);
 		return this;
 	}
 
 	public SCheckBox3 onAction(ActionListener l) {
-		super.addActionListener(l);
+		addActionListener(l);
 		return this;
 	}
 
 	public SCheckBox3 action(Action v) {
-		super.setAction(v);
+		setAction(v);
 		return this;
 	}
 
 	public SCheckBox3 icon(Icon v) {
-		super.setIcon(v);
+		setIcon(v);
 		return this;
 	}
 

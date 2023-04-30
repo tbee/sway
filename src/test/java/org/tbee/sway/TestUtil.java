@@ -7,12 +7,12 @@ import java.util.Collection;
 public class TestUtil {
 
     static public JFrame inJFrame(Collection<? extends JComponent> components) {
-        var sPanel = new SMigPanel(components);
+        var sPanel = SMigPanel.of(components);
         return inJFrame(sPanel);
     }
 
     static public JFrame inJFrame(JComponent... components) {
-        var sPanel = new SMigPanel(components);
+        var sPanel = SMigPanel.of(components);
         return inJFrame(sPanel);
     }
 

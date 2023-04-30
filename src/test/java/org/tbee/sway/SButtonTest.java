@@ -13,7 +13,7 @@ public class SButtonTest extends TestBase {
 
         // GIVEN
         construct(() -> {
-        	sButton = new SButton("test") //
+        	sButton = SButton.of("test") //
                     .onAction(e -> {
 						throw new RuntimeException("oops");
 					}) //

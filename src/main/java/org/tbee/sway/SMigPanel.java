@@ -102,6 +102,18 @@ public class SMigPanel extends SPanelExtendable<SMigPanel> {
     // =========================================================================
     // FLUENT API panel level
 
+    static public SMigPanel of() {
+        return new SMigPanel();
+    }
+
+    static public SMigPanel of(JComponent... components) {
+        return of().add(components);
+    }
+
+    static public SMigPanel of(Collection<? extends JComponent> components) {
+        return of().add(components);
+    }
+
     /**
      * Toggle debug
      * @return
@@ -215,6 +227,4 @@ public class SMigPanel extends SPanelExtendable<SMigPanel> {
         super.add(component, new CC().dockWest());
         return this;
     }
-
-
 }
