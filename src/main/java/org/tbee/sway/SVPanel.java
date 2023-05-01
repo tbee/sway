@@ -67,4 +67,11 @@ public class SVPanel extends SPanelExtendable<SVPanel> {
         }
         return this;
     }
+
+    @Override
+    public SVPanel margin(int top, int left, int bottom, int right) {
+        lc.insets(top + "px", left + "px", bottom + "px", right + "px");
+        migLayout.setLayoutConstraints(lc); // reapply
+        return this;
+    }
 }

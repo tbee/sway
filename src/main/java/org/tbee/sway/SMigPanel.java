@@ -183,7 +183,13 @@ public class SMigPanel extends SPanelExtendable<SMigPanel> {
         return this;
     }
 
-    
+    @Override
+    public SMigPanel margin(int top, int left, int bottom, int right) {
+        lc.insets(top + "px", left + "px", bottom + "px", right + "px");
+        migLayout.setLayoutConstraints(lc); // reapply
+        return this;
+    }
+
     // ---
     // SBorderPanel like
     

@@ -27,7 +27,7 @@ import java.util.Locale;
 public class SwayTestApp {
 
     static public void main(String[] args) throws Exception {
-        SLookAndFeel.installFlatLAFBright();
+        SLookAndFeel.installDefault();
 
         registerIcons();
 
@@ -145,7 +145,7 @@ public class SwayTestApp {
                 .onAction(e -> bean.setName("name" + System.currentTimeMillis()));
         migPanel.addField(jButton).skip(1);
 
-        return SVPanel.of(SLabel.of("STextField"), migPanel);
+        return SVPanel.of(SLabel.of("STextField"), migPanel).margin(0);
     }
 
     static private SVPanel sList() {
@@ -161,7 +161,7 @@ public class SwayTestApp {
                 .render(new CityFormat(cities))
                 .onSelectionChanged(cs -> System.out.println("List selection: " + cs));
 
-        return SVPanel.of(SLabel.of("SList"), sList).fillWidth(true);
+        return SVPanel.of(SLabel.of("SList"), sList).fillWidth(true).margin(0);
     }
 
     static private SVPanel sTree() {
@@ -197,7 +197,7 @@ public class SwayTestApp {
 
         STextField<String> leidsepleinNameSTextField = STextField.ofBindTo(leidseplein.name$());
         SButton addButton = SButton.of("Add street to Rome").onAction(e -> rome.addStreet(Street.of("Street" + System.currentTimeMillis())));
-        return SVPanel.of(SLabel.of("STree"), sTree, leidsepleinNameSTextField, addButton).fillWidth(true);
+        return SVPanel.of(SLabel.of("STree"), sTree, leidsepleinNameSTextField, addButton).fillWidth(true).margin(0);
     }
 
     static private SVPanel sComboBox() {
@@ -222,7 +222,7 @@ public class SwayTestApp {
         STextField<City> sTextField = STextField.of(new CityFormat(cities));
         sTextField.bindTo(sComboBox.value$());
 
-        return SVPanel.of(SLabel.of("SComboBox"), sComboBox, sTextFieldDisplay, sTextField).fillWidth(true);
+        return SVPanel.of(SLabel.of("SComboBox"), sComboBox, sTextFieldDisplay, sTextField).fillWidth(true).margin(0);
     }
 
     static private SVPanel sTable() {
@@ -292,7 +292,7 @@ public class SwayTestApp {
                 .selectionMode(STree.SelectionMode.MULTIPLE);
         sTree.selection$().bindTo(sTable.selection$());
 
-        return SVPanel.of(SLabel.of("STable"), sTable, SLabel.of("Bound selection"), sList, sTree).fillWidth(true);
+        return SVPanel.of(SLabel.of("STable"), sTable, SLabel.of("Bound selection"), sList, sTree).fillWidth(true).margin(0);
     }
 
     static private JPanel sCheckBox() {
@@ -313,7 +313,7 @@ public class SwayTestApp {
         migPanel.addField(SCheckBox3.of("Boolean beanBinder").bindTo(City.cityRights$(beanBinder)));
         migPanel.wrap();
 
-        return SVPanel.of(SLabel.of("SCheckbox"), migPanel);
+        return SVPanel.of(SLabel.of("SCheckbox"), migPanel).margin(0);
     }
     
     static private JPanel sTextArea() {
@@ -322,6 +322,6 @@ public class SwayTestApp {
         SMigPanel migPanel = SMigPanel.of();
     	migPanel.addLabelAndField("bind 1", STextArea.of().bindTo(city.name$())).wrap();
     	migPanel.addLabelAndField("bind 2", STextArea.of(5, 10).bindTo(city.name$())).wrap();
-        return SVPanel.of(SLabel.of("STextArea"), migPanel);
+        return SVPanel.of(SLabel.of("STextArea"), migPanel).margin(0);
     }
 }

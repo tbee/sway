@@ -57,4 +57,11 @@ public class SHPanel extends SPanelExtendable<SHPanel> {
         migLayout.setLayoutConstraints(lc); // reapply
         return this;
     }
+
+    @Override
+    public SHPanel margin(int top, int left, int bottom, int right) {
+        lc.insets(top + "px", left + "px", bottom + "px", right + "px");
+        migLayout.setLayoutConstraints(lc); // reapply
+        return this;
+    }
 }
