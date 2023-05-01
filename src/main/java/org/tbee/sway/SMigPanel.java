@@ -46,8 +46,8 @@ public class SMigPanel extends SPanelExtendable<SMigPanel> {
 
     public CC addLabel(JComponent component) {
         CC cc = new CC() //
-            .alignX(AlignX.TRAILING) //
-            .alignY(AlignY.BASELINE);
+                .alignX(AlignX.TRAILING) //
+                .alignY(AlignY.BASELINE);
         add(component, cc);
         return cc;
     }
@@ -68,8 +68,9 @@ public class SMigPanel extends SPanelExtendable<SMigPanel> {
      */
     public CC addLabelAndField(JComponent labelComponent, JComponent fieldComponent) {
     	CC labelCC = addLabel(labelComponent);
+        // Automatically switch label to alignY top if the field is larger than roughly 1 line
         if (fieldComponent.getPreferredSize().height > (1.1 * STextField.ofString().value("X").getPreferredSize().height)) { // if (fieldComponent instanceof STextArea)        
-        	labelCC.alignY("top");
+        	labelCC.alignY(AlignY.TOP);
         }
         return addField(fieldComponent);
     }

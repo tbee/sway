@@ -76,32 +76,25 @@ public class SwayTestApp {
 
         SMigPanel migPanel = SMigPanel.of();
 
-        migPanel.addLabel(SLabel.of("String"));
-        migPanel.addField(STextField.ofString().value("abc"));
+        migPanel.addLabelAndField("String", STextField.ofString().value("abc"));
         migPanel.wrap();
 
-        migPanel.addLabel(SLabel.of("String -> bean.name"));
-        migPanel.addField(STextField.ofString().bindTo(bean.name$()));
+        migPanel.addLabelAndField("String -> bean.name", STextField.ofString().bindTo(bean.name$()));
         migPanel.wrap();
 
-        migPanel.addLabel(SLabel.of("StringBlankIsNull -> bean.name"));
-        migPanel.addField(STextField.ofStringBlankIsNull().bindTo(City.name$(beanBinder)));
+        migPanel.addLabelAndField("StringBlankIsNull -> bean.name", STextField.ofStringBlankIsNull().bindTo(City.name$(beanBinder)));
         migPanel.wrap();
 
-        migPanel.addLabel(SLabel.of("Integer -> bean.distance"));
-        migPanel.addField(STextField.ofInteger().bindTo(bean.distance$()));
+        migPanel.addLabelAndField("Integer -> bean.distance", STextField.ofInteger().bindTo(bean.distance$()));
         migPanel.wrap();
 
-        migPanel.addLabel(SLabel.of("Integer -> beanbinder.distance"));
-        migPanel.addField(STextField.ofInteger().bindTo(City.distance$(beanBinder)));
+        migPanel.addLabelAndField("Integer -> beanbinder.distance", STextField.ofInteger().bindTo(City.distance$(beanBinder)));
         migPanel.wrap();
 
-        migPanel.addLabel(SLabel.of("Integer -> ofBind bean.distance"));
-        migPanel.addField(STextField.ofBindTo(bean.distance$()));
+        migPanel.addLabelAndField("Integer -> ofBind bean.distance", STextField.ofBindTo(bean.distance$()));
         migPanel.wrap();
 
-        migPanel.addLabel(SLabel.of("Integer -> ofBind beanBinder.distance"));
-        migPanel.addField(STextField.ofBindTo(City.distance$(beanBinder)));
+        migPanel.addLabelAndField("Integer -> ofBind beanBinder.distance", STextField.ofBindTo(City.distance$(beanBinder)));
         migPanel.wrap();
 
 //        migPanel.addLabel(SLabel.of("Integer -> bean.distance add"));
@@ -110,56 +103,44 @@ public class SwayTestApp {
 //        migPanel.addField(integerSTextField);
 //        migPanel.wrap();
 
-        migPanel.addLabel(SLabel.of("Long"));
-        migPanel.addField(STextField.ofLong().value(123l));
+        migPanel.addLabelAndField("Long", STextField.ofLong().value(123l));
         migPanel.wrap();
 
-        migPanel.addLabel(SLabel.of("Double"));
-        migPanel.addField(STextField.ofDouble().value(1.23));
+        migPanel.addLabelAndField("Double", STextField.ofDouble().value(1.23));
         migPanel.wrap();
 
-        migPanel.addLabel(SLabel.of("Percent"));
-        migPanel.addField(STextField.ofPercent().value(1.23));
+        migPanel.addLabelAndField("Percent", STextField.ofPercent().value(1.23));
         migPanel.wrap();
 
-        migPanel.addLabel(SLabel.of("Currency"));
-        migPanel.addField(STextField.ofCurrency().value(1.23));
+        migPanel.addLabelAndField("Currency", STextField.ofCurrency().value(1.23));
         migPanel.wrap();
 
-        migPanel.addLabel(SLabel.of("Currency JAPAN"));
-        migPanel.addField(STextField.ofCurrency(Locale.JAPAN).value(1.23));
+        migPanel.addLabelAndField("Currency JAPAN", STextField.ofCurrency(Locale.JAPAN).value(1.23));
         migPanel.wrap();
 
-        migPanel.addLabel(SLabel.of("Currency EURO"));
-        migPanel.addField(STextField.ofCurrency(Currency.getInstance("EUR")).value(1.23));
+        migPanel.addLabelAndField("Currency EURO", STextField.ofCurrency(Currency.getInstance("EUR")).value(1.23));
         migPanel.wrap();
 
-        migPanel.addLabel(SLabel.of("BigInteger"));
-        migPanel.addField(STextField.ofBigInteger().value(BigInteger.ONE));
+        migPanel.addLabelAndField("BigInteger", STextField.ofBigInteger().value(BigInteger.ONE));
         migPanel.wrap();
 
-        migPanel.addLabel(SLabel.of("BigDecimal"));
-        migPanel.addField(STextField.ofBigDecimal().value(BigDecimal.TEN));
+        migPanel.addLabelAndField("BigDecimal", STextField.ofBigDecimal().value(BigDecimal.TEN));
         migPanel.wrap();
 
-        migPanel.addLabel(SLabel.of("LocalDate"));
-        migPanel.addField(STextField.ofLocalDate().value(LocalDate.now()));
+        migPanel.addLabelAndField("LocalDate", STextField.ofLocalDate().value(LocalDate.now()));
         migPanel.wrap();
 
-        migPanel.addLabel(SLabel.of("LocalDateTime"));
-        migPanel.addField(STextField.ofLocalDateTime().value(LocalDateTime.now()));
+        migPanel.addLabelAndField("LocalDateTime", STextField.ofLocalDateTime().value(LocalDateTime.now()));
         migPanel.wrap();
 
-        migPanel.addLabel(SLabel.of("ZonedDateTime"));
-        migPanel.addField(STextField.ofZonedDateTime().value(ZonedDateTime.now()));
+        migPanel.addLabelAndField("ZonedDateTime", STextField.ofZonedDateTime().value(ZonedDateTime.now()));
         migPanel.wrap();
 
-        migPanel.addLabel(SLabel.of("OffsetDateTime"));
-        migPanel.addField(STextField.ofOffsetDateTime().value(OffsetDateTime.now()));
+        migPanel.addLabelAndField("OffsetDateTime", STextField.ofOffsetDateTime().value(OffsetDateTime.now()));
         migPanel.wrap();
 
-        JButton jButton = SButton.of("set name");
-        jButton.addActionListener(e -> bean.setName("name" + System.currentTimeMillis()));
+        JButton jButton = SButton.of("set name")
+                .onAction(e -> bean.setName("name" + System.currentTimeMillis()));
         migPanel.addField(jButton).skip(1);
 
         return migPanel;
@@ -203,7 +184,6 @@ public class SwayTestApp {
 
         var cities = List.of(amsterdam, berlin, rome, paris);
 
-        // TBEERNOT Renderer supplier?
         var sTree = STree.of(cities)
                 .childrenOf(City.class, City::getStreets)
                 .childrenOf(Street.class, Street::getBuildings)
@@ -283,7 +263,7 @@ public class SwayTestApp {
                 .onSelectionChanged(selection -> System.out.println("Table selection: " + selection)) //
 
                 // filter
-                //.filterHeaderEnabled(true) //
+                .filterHeaderEnabled(true) //
 
                 // data
                 .data(cities) //
@@ -300,7 +280,7 @@ public class SwayTestApp {
                 .selectionMode(SList.SelectionMode.MULTIPLE);
         sList.selection$().bindTo(sTable.selection$());
 
-        // Bind selection to a tree (TBEERNOT does not work after Node)
+        // Bind selection to a tree
         amsterdam.addPartnerCity(berlin);
         amsterdam.addPartnerCity(rome);
         rome.addPartnerCity(paris);
