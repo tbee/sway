@@ -239,6 +239,14 @@ Decide what you prefer.
 The bean generator uses compiler annotations, so it will automatically be picked up by a build tool like Maven.
 IDEs usually need to have compiler annotations activated.
 
+## Look and Feel
+Sway includes what is considered the most popular Look-and-Feels for Java, which at the moment is FlatLAF.
+
+``` java
+SLookAndFeel.installFlatLAFBright();
+```
+
+These popular LAFs are known to change over time, so in the future FlatLAF may become deprecated and be replaced.
 
 ## Compatibility / usage
 Sway uses the standard Swing components, only with an opinionated API, so they should blend-in nicely in existing applications.
@@ -250,7 +258,6 @@ If you want to do things differently, it's better use the Swing components; they
 
 As long as you stick to Sway's API, upgrading should not be too much of a hassle. 
 If you start poking around, you're on your own ;-)
-
 
 ## Support
 There is no formal support for Sway: this library is an open source hobby project and no claims can be made. 
@@ -272,6 +279,7 @@ Just include a dependency in your project. For the latest version see [Maven cen
 * STable's filter header is provided by Coderazzi (https://coderazzi.net/tablefilter/).
 * STable's navigation bar is based on CoMedia's implementation (project is no longer available online).
 * Mikael Grev's excellent MigLayout is used for several layouts (https://www.miglayout.com/).
+* FlatLAF is a modern high quality Look and Feel (https://www.formdev.com/flatlaf/).
 
 And if icons are needed in an application Ikonli is highly suggested! (https://kordamp.org/ikonli/)
 

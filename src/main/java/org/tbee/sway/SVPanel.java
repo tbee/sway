@@ -9,7 +9,10 @@ import javax.swing.JComponent;
 import java.awt.Component;
 import java.util.Collection;
 
-public class SVPanel extends SMigPanel {
+/**
+ * Vertical layout panel
+ */
+public class SVPanel extends SPanelExtendable<SVPanel> {
 
     // Need to declare these specifically, because the getters return String
     final private LC lc = new LC();
