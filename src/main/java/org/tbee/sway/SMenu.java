@@ -57,6 +57,19 @@ public class SMenu extends JMenu {
 	/**
 	 * Add PCE event
 	 */
+	public void setEnabled(boolean v) {
+		boolean old = super.isEnabled();
+		super.setEnabled(v);
+		firePropertyChange(ENABLED, old, v);
+	}
+	final static public String ENABLED = "enabled";
+	public BindingEndpoint<Boolean> enabled$() {
+		return BindingEndpoint.of(this, ENABLED);
+	}
+
+	/**
+	 * Add PCE event
+	 */
 	public void setText(String v) {
 		String old = super.getText();
 		super.setText(v);
