@@ -100,7 +100,7 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>31.1-jre</version>
+            <version>32.1.1-jre</version>
         </dependency>
 
         <dependency>
@@ -140,7 +140,7 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.10.1</version>
             </plugin>
-            
+
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.0.0-M8</version>
