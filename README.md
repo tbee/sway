@@ -263,9 +263,9 @@ These popular LAFs are known to change over time, so in the future FlatLAF may b
 Sway uses the standard Swing components, only with an opinionated API, so they should blend-in nicely in existing applications.
 
 But Sway is highly opinionated, trying to make standard stuff as easy as possible.
-Sway assumes some kind of domain model, with is implemented according to the Java Bean specification.
+Sway assumes some kind of domain model, which is implemented according to the Java Bean specification, including PropertyChangeEvents if you want to do binding.
 And as long as you stick to these assumptions, things should go smoothly.
-If you want to do things differently, it's better use the Swing components; they are much more flexible (and because of that more difficult to use).
+If you want to do things differently than Sway envisions, it's better use the Swing components; they are much more flexible (and because of that more difficult to use).
 
 As long as you stick to Sway's API, upgrading should not be too much of a hassle. 
 If you start poking around, you're on your own ;-)
