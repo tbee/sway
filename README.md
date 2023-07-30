@@ -15,10 +15,9 @@ var sTable = new STable<City>()
 Or creating a strongly typed text field that is bound to the property of a Java bean would be as simple as:
 
 ``` java
-var sTextField = STextField.ofString();
-sTextField.value$().bindTo(city.name$());
+var sTextField = STextField.ofString().value$().bindTo(city.name$());
 
-// Or a bit compact; value is STextField's default property 
+// Or a bit compact; value is STextField's default bind property 
 var sTextField = STextField.ofString().bindTo(city.name$());
 
 // Or even more compact
