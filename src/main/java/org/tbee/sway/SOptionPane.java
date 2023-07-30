@@ -2,9 +2,8 @@ package org.tbee.sway;
 
 import org.tbee.sway.support.IconRegistry;
 
-import javax.swing.JOptionPane;
-import javax.swing.UIManager;
-import java.awt.Component;
+import javax.swing.*;
+import java.awt.*;
 import java.util.Locale;
 
 public class SOptionPane extends JOptionPane {
@@ -12,7 +11,15 @@ public class SOptionPane extends JOptionPane {
 	static public void ofInfo(Component parent, String title, String text) {
 		SOptionPane.showMessageDialog(parent, text, title, JOptionPane.INFORMATION_MESSAGE);
 	}
-	
+
+	static public void ofWarning(Component parent, String title, String text) {
+		SOptionPane.showMessageDialog(parent, text, title, JOptionPane.WARNING_MESSAGE);
+	}
+
+	static public void ofError(Component parent, String title, String text) {
+		SOptionPane.showMessageDialog(parent, text, title, JOptionPane.ERROR_MESSAGE);
+	}
+
 	static SButton okButton() {
 		return SButton.of(UIManager.getString("OptionPane.okButtonText", Locale.getDefault()), IconRegistry.find(IconRegistry.SwayInternallyUsedIcon.BUTTON_OK));
 	}

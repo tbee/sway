@@ -9,10 +9,9 @@ import org.tbee.sway.binding.BeanBinder;
 import org.tbee.sway.format.Format;
 import org.tbee.sway.support.IconRegistry;
 
-import javax.swing.Icon;
-import javax.swing.JButton;
-import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDate;
@@ -48,7 +47,28 @@ public class SwayTestApp {
                     .sizeToPreferred() //
                     .maximize() //
                     .visible(true);
+
+            sMenu(jFrame);
         });
+    }
+
+    private static void sMenu(SFrame jFrame) {
+        SMenuBar.of(jFrame)
+            .add(SMenu.of("menu1", createIcon(MaterialDesignC.CACHED, 16))
+                .add(SMenuItem.of("menuitem 1a", createIcon(MaterialDesignC.CALENDAR_CHECK, 16), SwayTestApp::menuEvent))
+                .add(SMenuItem.of("menuitem 1b", SwayTestApp::menuEvent))
+            )
+            .add(SMenu.of("menu2")
+                .add(SMenuItem.of("menuitem 2a", SwayTestApp::menuEvent))
+                .add(SMenuItem.of("menuitem 2b", SwayTestApp::menuEvent))
+                .add(SMenuItem.of("menuitem 2c", SwayTestApp::menuEvent))
+            )
+            .add(SMenu.of("menu3")
+                .add(SMenuItem.of("menuitem 3a", SwayTestApp::menuEvent))
+            );
+    }
+    static private void menuEvent(ActionEvent e) {
+        SOptionPane.ofInfo((Component) e.getSource(), "Menu event", e.getActionCommand());
     }
 
     private static void registerIcons() {
@@ -141,8 +161,7 @@ public class SwayTestApp {
         migPanel.addLabelAndField("OffsetDateTime", STextField.ofOffsetDateTime().value(OffsetDateTime.now()));
         migPanel.wrap();
 
-        JButton jButton = SButton.of("set name")
-                .onAction(e -> bean.setName("name" + System.currentTimeMillis()));
+        JButton jButton = SButton.of("set name", e -> bean.setName("name" + System.currentTimeMillis()));
         migPanel.addField(jButton).skip(1);
 
         return SVPanel.of(SLabel.of("STextField"), migPanel).margin(0);
@@ -196,7 +215,7 @@ public class SwayTestApp {
                 .onSelectionChanged(cs -> System.out.println("Tree selection: " + cs));
 
         STextField<String> leidsepleinNameSTextField = STextField.ofBindTo(leidseplein.name$());
-        SButton addButton = SButton.of("Add street to Rome").onAction(e -> rome.addStreet(Street.of("Street" + System.currentTimeMillis())));
+        SButton addButton = SButton.of("Add street to Rome", e -> rome.addStreet(Street.of("Street" + System.currentTimeMillis())));
         return SVPanel.of(SLabel.of("STree"), sTree, leidsepleinNameSTextField, addButton).fillWidth(true).margin(0);
     }
 

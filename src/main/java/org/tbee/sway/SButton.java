@@ -6,12 +6,8 @@ import org.tbee.sway.support.HAlign;
 import org.tbee.sway.support.VAlign;
 import org.tbee.util.ExceptionUtil;
 
-import javax.swing.Action;
-import javax.swing.Icon;
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JOptionPane;
-import java.awt.Insets;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -142,12 +138,24 @@ public class SButton extends JButton {
         return of().text(text);
     }
 
+    static public SButton of(String text, Icon icon) {
+        return of().text(text).icon(icon);
+    }
+
     static public SButton of(Action a) {
         return of().action(a);
     }
 
-    static public SButton of(String text, Icon icon) {
-        return of().text(text).icon(icon);
+    static public SButton of(Icon icon, ActionListener actionListener) {
+        return of().icon(icon).onAction(actionListener);
+    }
+
+    static public SButton of(String text, ActionListener actionListener) {
+        return of().text(text).onAction(actionListener);
+    }
+
+    static public SButton of(String text, Icon icon, ActionListener actionListener) {
+        return of().text(text).icon(icon).onAction(actionListener);
     }
 
     public SButton name(String v) {

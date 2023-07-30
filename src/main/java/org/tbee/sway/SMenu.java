@@ -1,9 +1,7 @@
 package org.tbee.sway;
 
+import javax.swing.*;
 import java.awt.event.ActionListener;
-
-import javax.swing.Icon;
-import javax.swing.JMenu;
 
 public class SMenu extends JMenu {
 
@@ -42,6 +40,37 @@ public class SMenu extends JMenu {
 	// ===========================================================================================================================
     // FLUENT API
 
+	static public SMenu of() {
+		return new SMenu();
+	}
+
+	/**
+	 * @param s
+	 */
+	static public SMenu of(String s) {
+		return of().text(s);
+	}
+
+	/**
+	 * @param icon
+	 */
+	static public SMenu of(Icon icon) {
+		return of().icon(icon);
+	}
+
+	/**
+	 * @param s
+	 * @param icon
+	 */
+	static public SMenu of(String s, Icon icon) {
+		return of().text(s).icon(icon);
+	}
+
+	public SMenu add(SMenuItem v) {
+		super.add(v);
+		return this;
+	}
+
 	public SMenu name(String v) {
         setName(v);
         return this;
@@ -66,5 +95,4 @@ public class SMenu extends JMenu {
         super.addActionListener(v);
         return this;
     }
-
 }

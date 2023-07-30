@@ -82,7 +82,19 @@ var sBorderPanel = new SBorderPanel(new STable())
 // MigLayout is used by Sway anyhow         
 var migPanel = new MigPanel().fill();
 migPanel.addLabelAndField(someLabel, someField).growX();
-migPanel.wrap();         
+migPanel.wrap();      
+
+// Construct menus without those pesky in-between variables
+SMenuBar.of(jFrame)
+    .add(SMenu.of("menu1")
+        .add(SMenuItem.of("menuitem 1a", myApp::menuEvent))
+        .add(SMenuItem.of("menuitem 1b", myApp::menuEvent))
+    )
+    .add(SMenu.of("menu2")
+        .add(SMenuItem.of("menuitem 2a", myApp::menuEvent))
+        .add(SMenuItem.of("menuitem 2b", myApp::menuEvent))
+        .add(SMenuItem.of("menuitem 2c", myApp::menuEvent))
+    );  
 ```
 
 ## Format
@@ -270,7 +282,7 @@ Just include a dependency in your project. For the latest version see [Maven cen
 <dependency>
     <groupId>org.tbee.sway</groupId>
     <artifactId>sway</artifactId>
-    <version>1.1.0</version>
+    <version>1.3.0</version>
 </dependency>
 ```
 
