@@ -1,5 +1,7 @@
 package org.tbee.sway;
 
+import org.tbee.sway.binding.BindingEndpoint;
+
 import javax.swing.*;
 import java.awt.event.ActionListener;
 
@@ -32,6 +34,48 @@ public class SMenuItem extends javax.swing.JMenuItem {
 	 */
 	public SMenuItem(String text) {
 		super(text);
+	}
+
+	// ===========================================================================================================================
+	// JavaBean
+
+	/**
+	 * Add PCE event
+	 */
+	public void setVisible(boolean v) {
+		boolean old = super.isVisible();
+		super.setVisible(v);
+		firePropertyChange(VISIBLE, old, v);
+	}
+	final static public String VISIBLE = "visible";
+	public BindingEndpoint<Boolean> visible$() {
+		return BindingEndpoint.of(this, VISIBLE);
+	}
+
+	/**
+	 * Add PCE event
+	 */
+	public void setText(String v) {
+		String old = super.getText();
+		super.setText(v);
+		firePropertyChange(TEXT, old, v);
+	}
+	final static public String TEXT = "text";
+	public BindingEndpoint<String> text$() {
+		return BindingEndpoint.of(this, TEXT);
+	}
+
+	/**
+	 * Add PCE event
+	 */
+	public void setIcon(Icon v) {
+		Icon old = super.getIcon();
+		super.setIcon(v);
+		firePropertyChange(TEXT, old, v);
+	}
+	final static public String ICON = "icon";
+	public BindingEndpoint<Icon> ioon$() {
+		return BindingEndpoint.of(this, ICON);
 	}
 
 	// ===========================================================================================================================
@@ -84,9 +128,6 @@ public class SMenuItem extends javax.swing.JMenuItem {
 	static public SMenuItem of(String s, Icon icon, ActionListener actionListener) {
 		return of().text(s).icon(icon).onAction(actionListener);
 	}
-
-	// ===========================================================================================================================
-    // FLUENT API
 
 	public SMenuItem name(String v) {
         setName(v);

@@ -4,11 +4,8 @@ import org.tbee.sway.binding.BindingEndpoint;
 import org.tbee.sway.support.HAlign;
 import org.tbee.sway.support.VAlign;
 
-import javax.swing.Icon;
-import javax.swing.JLabel;
-import javax.swing.SwingConstants;
-import java.awt.Color;
-import java.awt.Font;
+import javax.swing.*;
+import java.awt.*;
 
 // TODO:
 
@@ -44,7 +41,7 @@ public class SLabel extends JLabel {
         firePropertyChange(VISIBLE, old, v);
     }
     final static public String VISIBLE = "visible";
-    public BindingEndpoint<String> visible$() {
+    public BindingEndpoint<Boolean> visible$() {
         return BindingEndpoint.of(this, VISIBLE);
     }
 
@@ -59,6 +56,19 @@ public class SLabel extends JLabel {
     final static public String TEXT = "text";
     public BindingEndpoint<String> text$() {
         return BindingEndpoint.of(this, TEXT);
+    }
+
+    /**
+     * Add PCE event
+     */
+    public void setIcon(Icon v) {
+        Icon old = super.getIcon();
+        super.setIcon(v);
+        firePropertyChange(TEXT, old, v);
+    }
+    final static public String ICON = "icon";
+    public BindingEndpoint<Icon> ioon$() {
+        return BindingEndpoint.of(this, ICON);
     }
 
     /**
@@ -154,12 +164,5 @@ public class SLabel extends JLabel {
     public SLabel toolTipText(String text) {
         setToolTipText(text);
         return this;
-    }
-
-    // ===========================================================================================================================
-    // BINDING
-
-    public BindingEndpoint<Icon> icon$() {
-        return BindingEndpoint.of(this, "icon");
     }
 }
