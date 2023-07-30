@@ -12,6 +12,7 @@ import org.tbee.sway.support.IconRegistry;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDate;
@@ -26,6 +27,10 @@ import java.util.Locale;
 public class SwayTestApp {
 
     static public void main(String[] args) throws Exception {
+        new SwayTestApp().run();
+    }
+
+    private void run() throws InterruptedException, InvocationTargetException {
         SLookAndFeel.installDefault();
 
         registerIcons();
@@ -42,18 +47,17 @@ public class SwayTestApp {
 
             SContextMenu.install();
 
-            SFrame jFrame = SFrame.of(panel) //
-                    .exitOnClose() //
-                    .sizeToPreferred() //
-                    .maximize() //
+            SFrame.of(panel)
+                    .exitOnClose()
+                    .sizeToPreferred()
+                    .maximize()
+                    .menuBar(this::createFrameMenu)
                     .visible(true);
-
-            sMenu(jFrame);
         });
     }
 
-    private static void sMenu(SFrame jFrame) {
-        SMenuBar.of(jFrame)
+    private void createFrameMenu(SMenuBar sMenuBar) {
+        sMenuBar
             .add(SMenu.of("menu1", createIcon(MaterialDesignC.CACHED, 16))
                 .add(SMenuItem.of("menuitem 1a", createIcon(MaterialDesignC.CALENDAR_CHECK, 16), SwayTestApp::menuEvent))
                 .add(SMenuItem.of("menuitem 1b", SwayTestApp::menuEvent))
@@ -67,11 +71,11 @@ public class SwayTestApp {
                 .add(SMenuItem.of("menuitem 3a", SwayTestApp::menuEvent))
             );
     }
-    static private void menuEvent(ActionEvent e) {
+    static void menuEvent(ActionEvent e) {
         SOptionPane.ofInfo((Component) e.getSource(), "Menu event", e.getActionCommand());
     }
 
-    private static void registerIcons() {
+    private void registerIcons() {
         // https://kordamp.org/ikonli/cheat-sheet-material2.html
         IconRegistry.register(IconRegistry.SwayInternallyUsedIcon.MENU_COPY, createIcon(MaterialDesignC.CONTENT_COPY, IconRegistry.SwayInternallyUsedIcon.MENU_COPY.typicalSize()));
         IconRegistry.register(IconRegistry.SwayInternallyUsedIcon.MENU_CUT, createIcon(MaterialDesignC.CONTENT_CUT, IconRegistry.SwayInternallyUsedIcon.MENU_CUT.typicalSize()));
@@ -83,14 +87,14 @@ public class SwayTestApp {
 //        IconRegistry.register(IconRegistry.SwayInternallyUsedIcon.CHECKBOX_UNSELECTED, createIcon(MaterialDesignS.SELECT_INVERSE, IconRegistry.SwayInternallyUsedIcon.CHECKBOX_UNSELECTED.typicalSize()));
 //        IconRegistry.register(IconRegistry.SwayInternallyUsedIcon.CHECKBOX_UNDETERMINED, createIcon(MaterialDesignS.SELECT_OFF, IconRegistry.SwayInternallyUsedIcon.CHECKBOX_UNDETERMINED.typicalSize()));
     }
-    private static Icon createIcon(Ikon ikon, int size) {
+    private Icon createIcon(Ikon ikon, int size) {
         FontIcon fontIcon = new FontIcon();
         fontIcon.setIkon(ikon);
         fontIcon.setIconSize(size);
         return fontIcon;
     }
 
-    static private JPanel sTextField() {
+    static JPanel sTextField() {
         City bean = City.of("test",12);
         BeanBinder<City> beanBinder = new BeanBinder<>(bean);
 
@@ -167,7 +171,7 @@ public class SwayTestApp {
         return SVPanel.of(SLabel.of("STextField"), migPanel).margin(0);
     }
 
-    static private SVPanel sList() {
+    static SVPanel sList() {
         City amsterdam = City.of("Amsterdam", 150);
         City berlin = City.of("Berlin", 560);
         City rome = City.of("Rome", 1560);
@@ -183,7 +187,7 @@ public class SwayTestApp {
         return SVPanel.of(SLabel.of("SList"), sList).fillWidth(true).margin(0);
     }
 
-    static private SVPanel sTree() {
+    static SVPanel sTree() {
 
         City amsterdam = City.of("Amsterdam", 150);
         Street kalverstraat = amsterdam.addStreet(Street.of("Kalverstraat"));
@@ -219,7 +223,7 @@ public class SwayTestApp {
         return SVPanel.of(SLabel.of("STree"), sTree, leidsepleinNameSTextField, addButton).fillWidth(true).margin(0);
     }
 
-    static private SVPanel sComboBox() {
+    static SVPanel sComboBox() {
         City amsterdam = City.of("Amsterdam", 150);
         City berlin = City.of("Berlin", 560);
         City rome = City.of("Rome", 1560);
@@ -244,7 +248,7 @@ public class SwayTestApp {
         return SVPanel.of(SLabel.of("SComboBox"), sComboBox, sTextFieldDisplay, sTextField).fillWidth(true).margin(0);
     }
 
-    static private SVPanel sTable() {
+    static SVPanel sTable() {
 
         City amsterdam = City.of("Amsterdam", 150);
         City berlin = City.of("Berlin", 560);
@@ -314,7 +318,7 @@ public class SwayTestApp {
         return SVPanel.of(SLabel.of("STable"), sTable, SLabel.of("Bound selection"), sList, sTree).fillWidth(true).margin(0);
     }
 
-    static private JPanel sCheckBox() {
+    static JPanel sCheckBox() {
         City city = City.of("test",12);
         BeanBinder<City> beanBinder = new BeanBinder<>(city);
 
@@ -335,7 +339,7 @@ public class SwayTestApp {
         return SVPanel.of(SLabel.of("SCheckbox"), migPanel).margin(0);
     }
     
-    static private JPanel sTextArea() {
+    static JPanel sTextArea() {
         City city = City.of("test",12);
 
         SMigPanel migPanel = SMigPanel.of();

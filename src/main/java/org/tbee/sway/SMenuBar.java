@@ -9,17 +9,32 @@ import javax.swing.*;
  * <pre>{@code
  *     SMenuBar.of(jFrame)
  *         .add(SMenu.of("menu1")
- *             .add(SMenuItem.of("menuitem 1a", myApp::menuEvent))
- *             .add(SMenuItem.of("menuitem 1b", myApp::menuEvent))
+ *             .add(SMenuItem.of("menuitem 1a", this::menu1aHandler))
+ *             .add(SMenuItem.of("menuitem 1b", this::menu1bHandler))
  *         )
  *         .add(SMenu.of("menu2")
- *             .add(SMenuItem.of("menuitem 2a", myApp::menuEvent))
- *             .add(SMenuItem.of("menuitem 2b", myApp::menuEvent))
- *             .add(SMenuItem.of("menuitem 2c", myApp::menuEvent))
+ *             .add(SMenuItem.of("menuitem 2a", this::menu2aHandler))
+ *             .add(SMenuItem.of("menuitem 2b", this::menu2bHandler))
+ *             .add(SMenuItem.of("menuitem 2c", this::menu2cHandler))
  *         )
  *         .add(SMenu.of("menu3")
- *             .add(SMenuItem.of("menuitem 3a", myApp::menuEvent))
+ *             .add(SMenuItem.of("menuitem 3a", this::menu3aHandler))
  *         );
+ * }</pre>
+ *
+ * Or via the menuBar method on SFrame and SDialog:
+ * <pre>{@code
+ *     SFrame.of(panel)
+ *           .menuBar(this::populateMenuBar)
+ *           .visible(true);
+ *     ...
+ *     private void populateMenuBar(SMenuBar sMenuBar) {
+ *         sMenuBar
+ *             .add(SMenu.of("menu1")
+ *                 .add(SMenuItem.of("menuitem 1a")
+ *                 .add(SMenuItem.of("menuitem 1b")
+ *             );
+ *     }
  * }</pre>
  */
 public class SMenuBar extends JMenuBar {

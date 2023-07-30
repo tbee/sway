@@ -1,7 +1,7 @@
 package org.tbee.sway;
 
-import javax.swing.JComponent;
-import javax.swing.JFrame;
+import javax.swing.*;
+import java.util.function.Consumer;
 
 public class SFrame extends JFrame {
 
@@ -70,6 +70,34 @@ public class SFrame extends JFrame {
 
     public SFrame iconify() {
         setExtendedState(JFrame.ICONIFIED);
+        return this;
+    }
+
+    /**
+     * Use this method like so:
+     * <pre>{@code
+     *     private void run() {
+     *             SFrame.of(panel)
+     *                     .menuBar(this::populateMenuBar)
+     *                     .visible(true);
+     *         });
+     *     }
+     *
+     *     private void populateMenuBar(SMenuBar sMenuBar) {
+     *         sMenuBar
+     *             .add(SMenu.of("menu1")
+     *                 .add(SMenuItem.of("menuitem 1a")
+     *                 .add(SMenuItem.of("menuitem 1b")
+     *             );
+     *     }
+     * }</pre>
+     * @param sMenuBarConsumer
+     * @return
+     */
+    public SFrame menuBar(Consumer<SMenuBar> sMenuBarConsumer) {
+        SMenuBar sMenuBar = SMenuBar.of(this);
+        sMenuBarConsumer.accept(sMenuBar);
+        setJMenuBar(sMenuBar);
         return this;
     }
 }

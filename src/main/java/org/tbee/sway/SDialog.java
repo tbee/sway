@@ -1,14 +1,9 @@
 package org.tbee.sway;
 
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JDialog;
-import javax.swing.KeyStroke;
-import javax.swing.SwingUtilities;
-import java.awt.Component;
-import java.awt.Dialog;
-import java.awt.Window;
+import javax.swing.*;
+import java.awt.*;
 import java.util.ArrayList;
+import java.util.function.Consumer;
 
 public class SDialog extends JDialog {
 	
@@ -85,7 +80,7 @@ public class SDialog extends JDialog {
 		return dialog;
 	}
 
-	
+
 	// =======================================================================================================
 	// FLUENT API
 	
@@ -116,6 +111,34 @@ public class SDialog extends JDialog {
 	
 	public SDialog showAndWait() {
 		setVisible(true);
+		return this;
+	}
+
+	/**
+	 * Use this method like so:
+	 * <pre>{@code
+	 *     private void run() {
+	 *             SDialog.of(panel)
+	 *                     .menuBar(this::populateMenuBar)
+	 *                     .visible(true);
+	 *         });
+	 *     }
+	 *
+	 *     private void populateMenuBar(SMenuBar sMenuBar) {
+	 *         sMenuBar
+	 *             .add(SMenu.of("menu1")
+	 *                 .add(SMenuItem.of("menuitem 1a")
+	 *                 .add(SMenuItem.of("menuitem 1b")
+	 *             );
+	 *     }
+	 * }</pre>
+	 * @param sMenuBarConsumer
+	 * @return
+	 */
+	public SDialog menuBar(Consumer<SMenuBar> sMenuBarConsumer) {
+		SMenuBar sMenuBar = SMenuBar.of(this);
+		sMenuBarConsumer.accept(sMenuBar);
+		setJMenuBar(sMenuBar);
 		return this;
 	}
 }

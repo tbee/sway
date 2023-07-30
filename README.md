@@ -86,13 +86,13 @@ migPanel.wrap();
 // Construct menus without those pesky in-between variables
 SMenuBar.of(jFrame)
     .add(SMenu.of("menu1")
-        .add(SMenuItem.of("menuitem 1a", myApp::menuEvent))
-        .add(SMenuItem.of("menuitem 1b", myApp::menuEvent))
+        .add(SMenuItem.of("menuitem 1a", this::menu1aHandler))
+        .add(SMenuItem.of("menuitem 1b", this::menu1bHandler))
     )
     .add(SMenu.of("menu2")
-        .add(SMenuItem.of("menuitem 2a", myApp::menuEvent))
-        .add(SMenuItem.of("menuitem 2b", myApp::menuEvent))
-        .add(SMenuItem.of("menuitem 2c", myApp::menuEvent))
+        .add(SMenuItem.of("menuitem 2a", this::menu2aHandler))
+        .add(SMenuItem.of("menuitem 2b", this::menu2bHandler))
+        .add(SMenuItem.of("menuitem 2c", this::menu2cHandler))
     );  
 ```
 
