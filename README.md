@@ -26,7 +26,7 @@ var sTextField = STextField.ofBindTo(city.name$());
 
 Well, you've come to the right place. 
 Take a look at the examples here, and the JavaDoc present in org.tbee.sway, and see if they are easy enough to use.
-A UI library probably is never truly finished, but Sway is stable and used in production.
+A UI library probably is never truly finished, but Sway is stable and used in production, but also probably not bug free.
 
 
 ``` java
