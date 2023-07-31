@@ -254,7 +254,7 @@ IDEs usually need to have compiler annotations activated.
 Sway includes what is considered the most popular Look-and-Feels for Java, which at the moment is FlatLAF.
 
 ``` java
-SLookAndFeel.installFlatLAFBright();
+SLookAndFeel.installDefault();
 ```
 
 These popular LAFs are known to change over time, so in the future FlatLAF may become deprecated and be replaced.
