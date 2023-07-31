@@ -9,7 +9,7 @@ What if creating a table with sorting, filtering, automatic updates of cells whe
 ``` java
 var sTable = new STable<City>()
         .columns(City.class, "name", "distance", "roundtrip")
-        .data(cities); // cities is a List<City>
+        .data(cities); // cities is a List<City>, and City is a Java Bean with PropertyChangeEvents
 ```
 
 Or creating a strongly typed text field that is bound to the property of a Java bean would be as simple as:
