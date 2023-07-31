@@ -35,9 +35,9 @@ var sLabel = new Slabel();
 sLabel.text$().bindTo(city.name$());
 
 // SCheckBox can be bound to a boolean property
-var sCheckBox = new SCheckBox("Growing").bindTo(city.growing$());
+var sCheckBox = SCheckBox.of("Growing").bindTo(city.growing$());
 // SCheckBox3 can be bound to a Boolean property, supporting 3 states: TRUE, FALSE, NULL
-var sCheckBox = new SCheckBox3("Cityrights").bindTo(city.cityrights$());
+var sCheckBox = SCheckBox3.of("Cityrights").bindTo(city.cityrights$());
 
 // Add a list
 var sList = new SList<City>()
@@ -67,14 +67,14 @@ var sButtonGroup = new SButtonGroup<Integer>()
         .add(2, new SToggleButton("2nd"))
         .add(3, new SToggleButton("3rd"))
         .bindTo(race.position$());
-var sPanel = new SFlowPanel(sButtonGroup.getButtons());
+var sPanel = SFlowPanel.of(sButtonGroup.getButtons());
 
 // SButtonGroup has some practical convenience methods
 var sButtonGroupCities = SButtonGroup.ofRadioButtons(amsterdam, berlin, rome);
-var sPanelCities = new SFlowPanel(sButtonGroupCities.getButtons());
+var sPanelCities = SFlowPanel.of(sButtonGroupCities.getButtons());
 
 // Explicit panels for layouts, with corresponding methods.
-var sBorderPanel = new SBorderPanel(new STable())
+var sBorderPanel = SBorderPanel.of(new STable())
          .west(new SomeNavigationMenu())
          .east(new SomeContextLinks());
          
