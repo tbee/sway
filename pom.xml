@@ -6,7 +6,7 @@
 
     <groupId>org.tbee.sway</groupId>
     <artifactId>sway</artifactId>
-    <version>2.0.0-SNAPSHOT</version>
+    <version>1.3.1</version>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
