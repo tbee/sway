@@ -24,10 +24,9 @@ public class STreeTest extends TestBase {
         rome.addPartnerCity(paris);
         var cities = List.of(amsterdam, berlin, rome, paris);
         construct(() -> {
-            sTree = new STree<City>()
+            sTree = STree.of(amsterdam)
                     .name("tree")
                     .render(new CityFormat(cities))
-                    .root(amsterdam)
                     .childrenOf(City::getPartnerCities)
                     .selectionMode(STree.SelectionMode.MULTIPLE);
             return TestUtil.inJFrame(sTree, focusMeComponent());
@@ -80,9 +79,8 @@ public class STreeTest extends TestBase {
         var cities = List.of(amsterdam, berlin, rome, paris);
 
         construct(() -> {
-            sTree = new STree<Object>()
+            sTree = STree.of(cities)
                     .name("tree")
-                    .root(cities)
                     .childrenOf(City.class, City::getStreets)
                     .childrenOf(Street.class, Street::getBuildings)
                     .registerFormat(City.class, new CityFormat())

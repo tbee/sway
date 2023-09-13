@@ -16,7 +16,7 @@ public class SButtonGroupTest extends TestBase {
         // GIVEN
         var ref = new AtomicReference<SButtonGroup<Integer>>();
         construct(() -> {
-            var sButtonGroup = new SButtonGroup<Integer>() //
+            var sButtonGroup = SButtonGroup.<Integer>of() //
                     .add(1, new SToggleButton("1")) //
                     .add(2, new SToggleButton("2")) //
                     .add(3, new SToggleButton("3"));

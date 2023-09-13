@@ -197,14 +197,14 @@ public class SButtonGroup<T> extends ButtonGroup {
     // ===========================================================================================================================
     // CONVENIENCE
 
-    static public <T> SButtonGroup of() {
+    static public <T> SButtonGroup<T> of() {
         return new SButtonGroup<T>();
     }
 
     /**
      * Create a buttongroup using a format and factory (supplier)
      * @param format
-     * @param supplier
+     * @param supplier creates a button component for each value
      * @param values
      * @return
      * @param <T>
@@ -223,7 +223,7 @@ public class SButtonGroup<T> extends ButtonGroup {
 
     /**
      * Create a buttongroup using FormatRegistry and factory (supplier)
-     * @param supplier
+     * @param supplier creates a button component for each value
      * @param values, cannot be empty
      * @return
      * @param <T>
@@ -235,7 +235,7 @@ public class SButtonGroup<T> extends ButtonGroup {
 
     /**
      * Create a buttongroup using FormatRegistry and factory (supplier)
-     * @param supplier
+     * @param supplier creates a button component for each value
      * @param values, cannot be empty
      * @return
      * @param <T>

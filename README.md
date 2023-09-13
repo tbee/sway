@@ -49,20 +49,18 @@ var sList = new SList<City>()
 sList.selection$().bindTo(sTable.selection$());
 
 // A tree is nothing more than a root and a way to get the children of a node.
-var sTree = new STree<City>()
+var sTree = STree.of(amsterdam)
         .render(new CityFormat())
-        .root(amsterdam)
         .childrenOf(City::getPartnerCities);
 
 // A tree often shows different classes as nodes, so several children mappings are needed.
 // The Formats registered in the FormatRegistry are used for rendering automatically.
-var sTree = new STree<City>()
-        .root(cities) // a list as root is automatically handled
+var sTree = STree.of(cities) // a list as root is automatically handled
         .childrenOf(City.class, City::getStreets)
         .childrenOf(Street.class, Street::getBuildings);
 
 // SButtonGroup revolves around the associated value, not the button
-var sButtonGroup = new SButtonGroup<Integer>()
+var sButtonGroup = SButtonGroup.<Integer>of()
         .add(1, new SToggleButton("winner"))
         .add(2, new SToggleButton("2nd"))
         .add(3, new SToggleButton("3rd"))
@@ -78,8 +76,8 @@ var sBorderPanel = SBorderPanel.of(new STable())
          .west(new SomeNavigationMenu())
          .east(new SomeContextLinks());
          
-// MigLayout is used by Sway anyhow         
-var migPanel = new MigPanel().fill();
+// MigLayout is used by Sway internally anyhow, so the user can use this great layout as well.         
+var migPanel = MigPanel.of().fill();
 migPanel.addLabelAndField(someLabel, someField).growX();
 migPanel.wrap();      
 
