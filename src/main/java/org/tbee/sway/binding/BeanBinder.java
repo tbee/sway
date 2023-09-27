@@ -21,10 +21,9 @@ public class BeanBinder<T> {
     }
 
     /**
-     * Do not use this method directly
-     * @return
+     * Do not use this method directly, intended for internal use
      */
-    public BeanAdapter getBeanAdapter() {
+    public BeanAdapter<T> getBeanAdapter() {
         return beanAdapter;
     }
 }
