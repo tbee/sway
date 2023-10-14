@@ -9,8 +9,11 @@ import org.tbee.sway.binding.BeanBinder;
 import org.tbee.sway.format.Format;
 import org.tbee.sway.support.IconRegistry;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.Icon;
+import javax.swing.JButton;
+import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
@@ -43,7 +46,9 @@ public class SwayTestApp {
                     sComboBox(),
                     sTextField(),
                     sTextArea(),
-                    sCheckBox()).align(SHPanel.Align.TOP);
+                    sCheckBox(),
+                    sTabbedPane())
+                    .align(SHPanel.Align.TOP);
 
             SContextMenu.install();
 
@@ -346,5 +351,22 @@ public class SwayTestApp {
     	migPanel.addLabelAndField("bind 1", STextArea.of().bindTo(city.name$())).wrap();
     	migPanel.addLabelAndField("bind 2", STextArea.of(5, 10).bindTo(city.name$())).wrap();
         return SVPanel.of(SLabel.of("STextArea"), migPanel).margin(0);
+    }
+
+    static JPanel sTabbedPane() {
+
+        STextField<String> masterSTextField = STextField.ofString().value("master");
+
+        STabbedPane<String> sTabbedPane = STabbedPane.<String>of()
+            .bindTo(masterSTextField.value$())
+            .addTab("tab1", STextField.ofString(), (v, c) -> c.setValue("child1 " + v))
+            .addTab("tab2", STextField.ofString(), (v, c) -> c.setValue("child2 " + v))
+            .addTab("tab", STextField.ofInteger()
+                    , s -> s.hashCode()
+                    , (v, c) -> c.setValue(v)
+                    , (e, c) -> System.out.println("onFailure " + e))
+            ;
+
+        return SBorderPanel.of(sTabbedPane).north(masterSTextField);
     }
 }
