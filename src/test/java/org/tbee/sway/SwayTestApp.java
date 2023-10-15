@@ -364,12 +364,12 @@ public class SwayTestApp {
             .addTab("tab1", STextField.ofString(), (v, c) -> c.setValue("child1 " + v))
             .addTab("tab2", STextField.ofString(), (v, c) -> c.setValue("child2 " + v))
             .addTab("tabAsync", STextField.ofInteger()
-                    , s -> {
-                        if (s.contains("exc")) throw new RuntimeException("oops");
-                        return s.hashCode();
+                    , value -> {
+                        if (value.contains("exc")) throw new RuntimeException("oops");
+                        return value.hashCode();
                     }
-                    , (v, c) -> c.setValue(v)
-                    , (e, c) -> JOptionPane.showMessageDialog(masterSTextField, ExceptionUtil.determineMessage(e), "ERROR", JOptionPane.ERROR_MESSAGE)
+                    , (result, component) -> component.setValue(result)
+                    , (throwable, component) -> JOptionPane.showMessageDialog(masterSTextField, ExceptionUtil.determineMessage(throwable), "ERROR", JOptionPane.ERROR_MESSAGE)
             );
 
         return SBorderPanel.of(sTabbedPane).north(masterSTextField);

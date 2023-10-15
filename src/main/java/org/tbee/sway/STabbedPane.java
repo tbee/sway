@@ -5,6 +5,7 @@ import org.tbee.sway.binding.BindingEndpoint;
 import org.tbee.sway.binding.ExceptionHandler;
 import org.tbee.util.ExceptionUtil;
 
+import javax.swing.Icon;
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.JTabbedPane;
@@ -20,11 +21,34 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 /**
- * This TabbedPane supports lazy loading, this means that data in a tab is only updated if it becomes or is visible.
- * This is done by binding or setting the value of the TabbedPane to some other data.
- * If that value changes, each tab's onActiveCallback is called with the data value.
+ * This TabbedPane supports lazy loading, this means that when adding a tab a callback is registered as well,
+ * which is called when the tab becomes visible or new data is shown.
+ * This is intended for a parent-child setup (but since the concept of parent already exists, we use value-child).
  *
- * @param <T>
+ * The value can either be set or bound, but is not displayed by this tabbed pane in any way.
+ * It's only used to call the callbacks.
+ *
+ * If the value changes or the visible tab changes, the visible tab's (synchronous) onActive callback is called,
+ * or the (asynchronous) sequences of onLoad / onSuccess / onFailure callbacks are called.
+ * The onLoad callback is called in a separate thread, so not to block the UI.
+ * The other callbacks are called within the EDT.
+ *
+ * Example
+ * <pre>{@code
+ * // This is the main data
+ * STextField<String> valueSTextField = STextField.ofString().value("value");
+ *
+ * // The tabbed pane reacts to changes in the value by binding
+ * STabbedPane<String> sTabbedPane = STabbedPane.<String>of()
+ *     .bindTo(valueSTextField.value$())
+ *     .addTab("sync", STextField.ofString(), (value, component) -> component.setValue(...))
+ *     .addTab("async", STextField.ofInteger()
+ *         , value -> value.loadResult...; // the value leads to some result being loaded (in a separate worker)
+ *         , (result, component) -> component.setValue(result) // The result is then displayed
+ *         , (throwable, component) -> ... // or something went wrong
+ *     );
+ * </pre>
+ * @param <T> the type of the value.
  */
 public class STabbedPane<T> extends JTabbedPane {
     static private org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(STabbedPane.class);
@@ -123,23 +147,31 @@ public class STabbedPane<T> extends JTabbedPane {
     // ===========================================================================================================================
     // Tabs
 
-//    public void addTab(String title, Icon icon, Component component, String tip) {
-//    }
-//    public void addTab(String title, Icon icon, Component component) {
-//    }
-//    public void addTab(String title, Component component) {
-//    }
-    public <C extends Component> STabbedPane<T> addTab(String title, C component, BiConsumer<T, C> onActiveCallback) {
+    public <C extends Component> STabbedPane<T> addTab(String title, Icon icon, Component component, String tip, BiConsumer<T, C> onActiveCallback) {
         onActiveCallbacks.put(component, (BiConsumer<T, Component>) onActiveCallback);
         super.addTab(title, component);
         return this;
     }
-    public <R, C extends Component> STabbedPane<T> addTab(String title, C component, Function<T, R> onLoadCallback, BiConsumer<R, C> onSuccessCallback, BiConsumer<Throwable, C> onFailureCallback) {
+    public <R, C extends Component> STabbedPane<T> addTab(String title, Icon icon, Component component, String tip, Function<T, R> onLoadCallback, BiConsumer<R, C> onSuccessCallback, BiConsumer<Throwable, C> onFailureCallback) {
         onLoadCallbacks.put(component, (Function<T, Object>) onLoadCallback);
         onSuccessCallbacks.put(component, (BiConsumer<Object, Component>)onSuccessCallback);
         onFailureCallbacks.put(component, (BiConsumer<Throwable, Component>)onFailureCallback);
         super.addTab(title, component);
         return this;
+    }
+
+    public <C extends Component> STabbedPane<T> addTab(String title, Icon icon, Component component, BiConsumer<T, C> onActiveCallback) {
+        return addTab(title, icon, component, null, onActiveCallback);
+    }
+    public <R, C extends Component> STabbedPane<T> addTab(String title, Icon icon, Component component, Function<T, R> onLoadCallback, BiConsumer<R, C> onSuccessCallback, BiConsumer<Throwable, C> onFailureCallback) {
+        return addTab(title, icon, component, null, onLoadCallback, onSuccessCallback, onFailureCallback);
+    }
+
+    public <C extends Component> STabbedPane<T> addTab(String title, C component, BiConsumer<T, C> onActiveCallback) {
+        return addTab(title, null, component, null, onActiveCallback);
+    }
+    public <R, C extends Component> STabbedPane<T> addTab(String title, C component, Function<T, R> onLoadCallback, BiConsumer<R, C> onSuccessCallback, BiConsumer<Throwable, C> onFailureCallback) {
+        return addTab(title, null, component, null, onLoadCallback, onSuccessCallback, onFailureCallback);
     }
 
     public void removeTabAt(int index) {

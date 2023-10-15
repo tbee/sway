@@ -71,6 +71,17 @@ var sPanel = SFlowPanel.of(sButtonGroup.getButtons());
 var sButtonGroupCities = SButtonGroup.ofRadioButtons(amsterdam, berlin, rome);
 var sPanelCities = SFlowPanel.of(sButtonGroupCities.getButtons());
 
+// The tabbed pane supports loading-on-demand, synchronous and asynchronous, 
+// when the visible tab changes, or a new value is set.
+STabbedPane<String> sTabbedPane = STabbedPane.<String>of()
+    .bindTo(city.name$())
+    .addTab("sync", STextField.ofString(), (value, component) -> component.setValue(...))
+    .addTab("async", STextField.ofInteger()
+        , value -> value.loadResult...; // the value leads to some result being loaded (in a separate worker)
+        , (result, component) -> component.setValue(result) // The result is then displayed
+        , (throwable, component) -> ... // or something went wrong
+    );
+
 // Explicit panels for layouts, with corresponding methods.
 var sBorderPanel = SBorderPanel.of(new STable())
          .west(new SomeNavigationMenu())
