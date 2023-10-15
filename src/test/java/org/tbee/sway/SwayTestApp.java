@@ -8,9 +8,11 @@ import org.kordamp.ikonli.swing.FontIcon;
 import org.tbee.sway.binding.BeanBinder;
 import org.tbee.sway.format.Format;
 import org.tbee.sway.support.IconRegistry;
+import org.tbee.util.ExceptionUtil;
 
 import javax.swing.Icon;
 import javax.swing.JButton;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import java.awt.Component;
@@ -361,11 +363,14 @@ public class SwayTestApp {
             .bindTo(masterSTextField.value$())
             .addTab("tab1", STextField.ofString(), (v, c) -> c.setValue("child1 " + v))
             .addTab("tab2", STextField.ofString(), (v, c) -> c.setValue("child2 " + v))
-            .addTab("tab", STextField.ofInteger()
-                    , s -> s.hashCode()
+            .addTab("tabAsync", STextField.ofInteger()
+                    , s -> {
+                        if (s.contains("exc")) throw new RuntimeException("oops");
+                        return s.hashCode();
+                    }
                     , (v, c) -> c.setValue(v)
-                    , (e, c) -> System.out.println("onFailure " + e))
-            ;
+                    , (e, c) -> JOptionPane.showMessageDialog(masterSTextField, ExceptionUtil.determineMessage(e), "ERROR", JOptionPane.ERROR_MESSAGE)
+            );
 
         return SBorderPanel.of(sTabbedPane).north(masterSTextField);
     }

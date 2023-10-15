@@ -14,6 +14,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ForkJoinPool;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
@@ -31,8 +33,10 @@ public class STabbedPane<T> extends JTabbedPane {
     private final Map<Component, BiConsumer<T, Component>> onActiveCallbacks = new HashMap<>();
     private final Map<Component, Function<T, Object>> onLoadCallbacks = new HashMap<>();
     private final Map<Component, BiConsumer<Object, Component>> onSuccessCallbacks = new HashMap<>();
-    private final Map<Component, BiConsumer<Object, Component>> onFailureCallbacks = new HashMap<>();
+    private final Map<Component, BiConsumer<Throwable, Component>> onFailureCallbacks = new HashMap<>();
     private final List<Component> performedCallbacks = new ArrayList<>();
+
+    private ExecutorService executorService = ForkJoinPool.commonPool();
 
     public STabbedPane() {
         addPropertyChangeListener(VALUE, evt -> {
@@ -44,7 +48,7 @@ public class STabbedPane<T> extends JTabbedPane {
     // ===========================================================================================================================
     // JavaBean
 
-    /** Value (through Format) */
+    /** Value */
     public void setValue(T v) {
         firePropertyChange(VALUE, this.value, this.value = v);
     }
@@ -59,6 +63,22 @@ public class STabbedPane<T> extends JTabbedPane {
         return BindingEndpoint.of(this, VALUE, exceptionHandler);
     }
     final static public String VALUE = "value";
+
+    /** ExecutorService: use to run async tasks */
+    public void setExecutorService(ExecutorService v) {
+        firePropertyChange(EXECUTORSERVICE, this.executorService, this.executorService = v);
+    }
+    public ExecutorService getExecutorService() {
+        return this.executorService;
+    }
+    public STabbedPane<T> executorService(ExecutorService v) {
+        setExecutorService(v);
+        return this;
+    }
+    public BindingEndpoint<ExecutorService> executorService$() {
+        return BindingEndpoint.of(this, EXECUTORSERVICE, exceptionHandler);
+    }
+    final static public String EXECUTORSERVICE = "executorService";
 
 
     // ========================================================
@@ -114,12 +134,21 @@ public class STabbedPane<T> extends JTabbedPane {
         super.addTab(title, component);
         return this;
     }
-    public <R, C extends Component> STabbedPane<T> addTab(String title, C component, Function<T, R> onLoadCallback, BiConsumer<R, C> onSuccessCallback, BiConsumer<R, C> onFailureCallback) {
+    public <R, C extends Component> STabbedPane<T> addTab(String title, C component, Function<T, R> onLoadCallback, BiConsumer<R, C> onSuccessCallback, BiConsumer<Throwable, C> onFailureCallback) {
         onLoadCallbacks.put(component, (Function<T, Object>) onLoadCallback);
         onSuccessCallbacks.put(component, (BiConsumer<Object, Component>)onSuccessCallback);
-        onFailureCallbacks.put(component, (BiConsumer<Object, Component>)onFailureCallback);
+        onFailureCallbacks.put(component, (BiConsumer<Throwable, Component>)onFailureCallback);
         super.addTab(title, component);
         return this;
+    }
+
+    public void removeTabAt(int index) {
+        Component component = getComponentAt(index);
+        super.removeTabAt(index);
+        onActiveCallbacks.remove(component);
+        onLoadCallbacks.remove(component);
+        onSuccessCallbacks.remove(component);
+        onFailureCallbacks.remove(component);
     }
 
     protected void fireStateChanged() {
@@ -144,21 +173,35 @@ public class STabbedPane<T> extends JTabbedPane {
         // Async
         Function<T, Object> onLoadCallback = onLoadCallbacks.get(component);
         BiConsumer<Object, Component> onSuccessCallback = onSuccessCallbacks.get(component);
-        BiConsumer<Object, Component> onFailureCallback = onFailureCallbacks.get(component);
+        BiConsumer<Throwable, Component> onFailureCallback = onFailureCallbacks.get(component);
         if (onLoadCallback != null) {
-            try {
-                // TBEERNOT: introduce worker pool
-                // TBEERNOT: introduce busy icon
-                Object result = onLoadCallback.apply(value);
-                if (onSuccessCallback != null) {
-                    onSuccessCallback.accept(result, component);
+            // TBEERNOT: introduce busy icon
+            executorService.submit(() -> {
+                try {
+                    final Object result = onLoadCallback.apply(value);
+                    invokeLater(onSuccessCallback, result, component);
+                } catch (Throwable e) {
+                    if (!invokeLater(onFailureCallback, e, component)) {
+                        handleException(e);
+                    }
                 }
-            } catch (RuntimeException e) {
-                if (onFailureCallback != null) {
-                    onFailureCallback.accept(e, component);
-                }
-            }
+            });
         }
+    }
+
+    private <R> boolean invokeLater(BiConsumer<R, Component> callback, R value, Component component) {
+        if (callback == null) {
+            return false;
+        }
+
+        SwingUtilities.invokeLater(() -> {
+            try {
+                callback.accept(value, component);
+            } catch (RuntimeException e) {
+                handleException(e);
+            }
+        });
+        return true;
     }
 
     // ===========================================================================================================================
@@ -166,6 +209,26 @@ public class STabbedPane<T> extends JTabbedPane {
 
     static public <T> STabbedPane<T> of() {
         return new STabbedPane<T>();
+    }
+
+    public STabbedPane<T> name(String v) {
+        setName(v);
+        return this;
+    }
+
+    public STabbedPane<T> toolTipText(String t) {
+        setToolTipText(t);
+        return this;
+    }
+
+    public STabbedPane<T> enabled(boolean v) {
+        setEnabled(v);
+        return this;
+    }
+
+    public STabbedPane<T> visible(boolean value) {
+        setVisible(value);
+        return this;
     }
 
 
