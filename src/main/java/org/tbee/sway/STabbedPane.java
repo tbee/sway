@@ -47,6 +47,7 @@ import java.util.function.Function;
  *         , (result, component) -> component.setValue(result) // The result is then displayed
  *         , (throwable, component) -> ... // or something went wrong
  *     );
+ * }
  * </pre>
  * @param <T> the type of the value.
  */
