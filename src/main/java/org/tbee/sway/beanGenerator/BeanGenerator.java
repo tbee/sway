@@ -1,9 +1,11 @@
 package org.tbee.sway.beanGenerator;
 
+import com.google.auto.service.AutoService;
 import org.tbee.sway.beanGenerator.annotations.Bean;
 import org.tbee.sway.beanGenerator.annotations.Property;
 
 import javax.annotation.processing.AbstractProcessor;
+import javax.annotation.processing.Processor;
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.annotation.processing.SupportedSourceVersion;
@@ -41,6 +43,7 @@ import java.util.stream.Collectors;
  */
 @SupportedAnnotationTypes("org.tbee.sway.beanGenerator.annotations.Bean")
 @SupportedSourceVersion(SourceVersion.RELEASE_17)
+@AutoService(Processor.class)
 public class BeanGenerator extends AbstractProcessor {
 
     @Override
