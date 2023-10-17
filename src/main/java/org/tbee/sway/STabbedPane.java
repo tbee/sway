@@ -65,8 +65,7 @@ public class STabbedPane<T> extends JTabbedPane {
 
     public STabbedPane() {
         addPropertyChangeListener(VALUE, evt -> {
-            performedCallbacks.clear();
-            callCallbacksForActiveTab();
+            reload();
         });
     }
 
@@ -175,8 +174,9 @@ public class STabbedPane<T> extends JTabbedPane {
         return addTab(title, null, component, null, onLoadCallback, onSuccessCallback, onFailureCallback);
     }
 
+    @Override
     public void removeTabAt(int index) {
-        Component component = getComponentAt(index);
+        Component component = super.getComponentAt(index);
         super.removeTabAt(index);
         onActiveCallbacks.remove(component);
         onLoadCallbacks.remove(component);
@@ -184,31 +184,48 @@ public class STabbedPane<T> extends JTabbedPane {
         onFailureCallbacks.remove(component);
     }
 
+    @Override
     protected void fireStateChanged() {
         super.fireStateChanged();
-        callCallbacksForActiveTab();
+        loadVisibleTabIfNeeded();
     }
 
-    protected void callCallbacksForActiveTab() {
+    /**
+     * Immediately reloads the visible tab, and other tabs when they become visible.
+     */
+    public void reload() {
+        performedCallbacks.clear();
+        loadVisibleTabIfNeeded();
+    }
 
+    /**
+     * Immediately reloads the visible tab only.
+     */
+    public void reloadVisibleTab() {
+        performedCallbacks.remove(getSelectedComponent());
+        loadVisibleTabIfNeeded();
+    }
+
+    protected boolean loadVisibleTabIfNeeded() {
+
+        // If already loaded, bail out
         Component component = getSelectedComponent();
-        if (performedCallbacks.contains(component)) {
-            return;
+        if (component == null || performedCallbacks.contains(component)) {
+            return false;
         }
         performedCallbacks.add(component);
 
-        // Sync
+        // Synchronous loading
         BiConsumer<T, Component> onActiveCallback = onActiveCallbacks.get(component);
         if (onActiveCallback != null) {
             onActiveCallback.accept(value, component);
         }
 
-        // Async
+        // Asynchronous loading
         Function<T, Object> onLoadCallback = onLoadCallbacks.get(component);
         BiConsumer<Object, Component> onSuccessCallback = onSuccessCallbacks.get(component);
         BiConsumer<Throwable, Component> onFailureCallback = onFailureCallbacks.get(component);
         if (onLoadCallback != null) {
-            // TBEERNOT: introduce busy icon
             executorService.submit(() -> {
                 try {
                     final Object result = onLoadCallback.apply(value);
@@ -220,6 +237,7 @@ public class STabbedPane<T> extends JTabbedPane {
                 }
             });
         }
+        return true;
     }
 
     private <R> boolean invokeLater(BiConsumer<R, Component> callback, R value, Component component) {
