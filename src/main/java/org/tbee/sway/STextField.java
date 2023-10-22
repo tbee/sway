@@ -1,5 +1,21 @@
 package org.tbee.sway;
 
+import org.tbee.sway.binding.BeanBinder;
+import org.tbee.sway.binding.BindingEndpoint;
+import org.tbee.sway.binding.ExceptionHandler;
+import org.tbee.sway.format.Format;
+import org.tbee.sway.format.FormatRegistry;
+import org.tbee.sway.format.JavaFormat;
+import org.tbee.sway.format.StringFormat;
+import org.tbee.sway.support.FocusInterpreter;
+import org.tbee.sway.support.HAlign;
+import org.tbee.util.ClassUtil;
+import org.tbee.util.ExceptionUtil;
+
+import javax.swing.JComponent;
+import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
+import java.awt.Component;
 import java.awt.Font;
 import java.awt.event.KeyEvent;
 import java.beans.BeanInfo;
@@ -16,22 +32,6 @@ import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.Currency;
 import java.util.Locale;
-
-import javax.swing.JComponent;
-import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
-
-import org.tbee.sway.binding.BeanBinder;
-import org.tbee.sway.binding.BindingEndpoint;
-import org.tbee.sway.binding.ExceptionHandler;
-import org.tbee.sway.format.Format;
-import org.tbee.sway.format.FormatRegistry;
-import org.tbee.sway.format.JavaFormat;
-import org.tbee.sway.format.StringFormat;
-import org.tbee.sway.support.FocusInterpreter;
-import org.tbee.sway.support.HAlign;
-import org.tbee.util.ClassUtil;
-import org.tbee.util.ExceptionUtil;
 
 // TODO
 // - popup
@@ -380,7 +380,6 @@ public class STextField<T> extends javax.swing.JTextField {
         return BindingEndpoint.of(this, HALIGN, exceptionHandler);
     }
 
-
     // ==============================================
     // FLUENT API
 
@@ -411,6 +410,15 @@ public class STextField<T> extends javax.swing.JTextField {
 
     public STextField<T> editable(boolean enabled) {
         setEditable(enabled);
+        return this;
+    }
+
+    public STextField<T> overlayWith(Component overlayComponent) {
+        SOverlay.overlayWith(this, overlayComponent);
+        return this;
+    }
+    public STextField<T> removeOverlay(Component overlayComponent) {
+        SOverlay.removeOverlay(this, overlayComponent);
         return this;
     }
 

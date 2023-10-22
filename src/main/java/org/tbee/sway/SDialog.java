@@ -1,11 +1,17 @@
 package org.tbee.sway;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JDialog;
+import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
+import java.awt.Component;
+import java.awt.Dialog;
+import java.awt.Window;
 import java.util.ArrayList;
 import java.util.function.Consumer;
 
-public class SDialog extends JDialog {
+public class SDialog extends JDialog implements SOverlay.OverlayProvider {
 	
 	/**
 	 * @param owner
@@ -14,7 +20,8 @@ public class SDialog extends JDialog {
 	 */
 	public SDialog(Window owner, String title, ModalityType modalityType) {
 		super(owner, title, modalityType);
-		setDefaultCloseOperation(SDialog.DISPOSE_ON_CLOSE);		
+		setDefaultCloseOperation(SDialog.DISPOSE_ON_CLOSE);
+		setGlassPane(new SOverlay());
 	}
 
 

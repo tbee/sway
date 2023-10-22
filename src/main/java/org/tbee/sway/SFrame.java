@@ -1,16 +1,25 @@
 package org.tbee.sway;
 
-import javax.swing.*;
+import javax.swing.JComponent;
+import javax.swing.JFrame;
 import java.util.function.Consumer;
 
-public class SFrame extends JFrame {
+// TBEERNOT: constructor with title plus of methods, dito SDialog
+// TBEERNOT Javadoc on how to use SFrame dito SDialog
 
-    public void SFrame() {
+public class SFrame extends JFrame implements SOverlay.OverlayProvider {
+
+    public SFrame() {
         disposeOnClose();
+        setGlassPane(new SOverlay());
     }
 
     // ===========================================================================
     // FACTORY
+
+    static public SFrame of() {
+        return new SFrame();
+    }
 
     static public SFrame of(JComponent component) {
         SFrame sFrame = new SFrame();

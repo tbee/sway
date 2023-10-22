@@ -6,8 +6,13 @@ import org.tbee.sway.support.HAlign;
 import org.tbee.sway.support.VAlign;
 import org.tbee.util.ExceptionUtil;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.Action;
+import javax.swing.Icon;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JOptionPane;
+import java.awt.Component;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -200,6 +205,15 @@ public class SButton extends JButton {
 
     public SButton visible(boolean value) {
         setVisible(value);
+        return this;
+    }
+
+    public SButton overlayWith(Component overlayComponent) {
+        SOverlay.overlayWith(this, overlayComponent);
+        return this;
+    }
+    public SButton removeOverlay(Component overlayComponent) {
+        SOverlay.removeOverlay(this, overlayComponent);
         return this;
     }
 }
