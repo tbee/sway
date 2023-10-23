@@ -1,9 +1,8 @@
 package org.tbee.sway.support;
 
+import javax.swing.Icon;
 import java.util.HashMap;
 import java.util.Map;
-
-import javax.swing.Icon;
 
 /**
  * This is where the components in Sway come looking for their icons.
@@ -24,7 +23,9 @@ public class IconRegistry {
     	MENU_SELECTION("selection@menu", 16), //
     	CHECKBOX_SELECTED("selected@checkbox", 24), //
     	CHECKBOX_UNSELECTED("unselected@checkbox", 24), //
-    	CHECKBOX_UNDETERMINED("undetermined@checkbox", 24); //
+    	CHECKBOX_UNDETERMINED("undetermined@checkbox", 24),
+        OVERLAY_LOADING("loading@overlay", 48),
+        ; //
 
         final String id;
         final int typicalSize;

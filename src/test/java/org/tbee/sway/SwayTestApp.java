@@ -3,6 +3,7 @@ package org.tbee.sway;
 import org.kordamp.ikonli.Ikon;
 import org.kordamp.ikonli.materialdesign2.MaterialDesignC;
 import org.kordamp.ikonli.materialdesign2.MaterialDesignF;
+import org.kordamp.ikonli.materialdesign2.MaterialDesignR;
 import org.kordamp.ikonli.materialdesign2.MaterialDesignS;
 import org.kordamp.ikonli.swing.FontIcon;
 import org.tbee.sway.binding.BeanBinder;
@@ -89,6 +90,7 @@ public class SwayTestApp {
         IconRegistry.register(IconRegistry.SwayInternallyUsedIcon.MENU_PASTE, createIcon(MaterialDesignC.CONTENT_PASTE, IconRegistry.SwayInternallyUsedIcon.MENU_PASTE.typicalSize()));
         IconRegistry.register(IconRegistry.SwayInternallyUsedIcon.MENU_FILTER, createIcon(MaterialDesignF.FILTER, IconRegistry.SwayInternallyUsedIcon.MENU_FILTER.typicalSize()));
         IconRegistry.register(IconRegistry.SwayInternallyUsedIcon.MENU_SELECTION, createIcon(MaterialDesignS.SELECTION, IconRegistry.SwayInternallyUsedIcon.MENU_SELECTION.typicalSize()));
+        IconRegistry.register(IconRegistry.SwayInternallyUsedIcon.OVERLAY_LOADING, createIcon(MaterialDesignR.REFRESH, IconRegistry.SwayInternallyUsedIcon.OVERLAY_LOADING.typicalSize()));
 
 //        IconRegistry.register(IconRegistry.SwayInternallyUsedIcon.CHECKBOX_SELECTED, createIcon(MaterialDesignS.SELECT, IconRegistry.SwayInternallyUsedIcon.CHECKBOX_SELECTED.typicalSize()));
 //        IconRegistry.register(IconRegistry.SwayInternallyUsedIcon.CHECKBOX_UNSELECTED, createIcon(MaterialDesignS.SELECT_INVERSE, IconRegistry.SwayInternallyUsedIcon.CHECKBOX_UNSELECTED.typicalSize()));
@@ -359,16 +361,24 @@ public class SwayTestApp {
 
         STextField<String> masterSTextField = STextField.ofString().value("master");
 
+        STextField<String> sync1Textfield = STextField.ofString();
+        STextField<String> sync2Textfield = STextField.ofString();
+        STextField<Integer> asyncTextfield = STextField.ofInteger();
         STabbedPane<String> sTabbedPane = STabbedPane.<String>of()
             .bindTo(masterSTextField.value$())
-            .addTab("tab1", STextField.ofString(), (v, c) -> c.setValue("child1 " + v))
-            .addTab("tab2", STextField.ofString(), (v, c) -> c.setValue("child2 " + v))
-            .addTab("tabAsync", STextField.ofInteger()
+            .addTab("tab1", SHPanel.of(sync1Textfield), (v, c) -> sync1Textfield.setValue("child1 " + v))
+            .addTab("tab2", SHPanel.of(sync2Textfield), (v, c) -> sync2Textfield.setValue("child2 " + v))
+            .addTab("tabAsync", SHPanel.of(asyncTextfield)
                     , value -> {
                         if (value.contains("exc")) throw new RuntimeException("oops");
+                        try {
+                            Thread.sleep(3000);
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
                         return value.hashCode();
                     }
-                    , (result, component) -> component.setValue(result)
+                    , (result, component) -> asyncTextfield.setValue(result)
                     , (throwable, component) -> JOptionPane.showMessageDialog(masterSTextField, ExceptionUtil.determineMessage(throwable), "ERROR", JOptionPane.ERROR_MESSAGE)
             );
 

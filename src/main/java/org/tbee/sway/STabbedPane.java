@@ -60,6 +60,7 @@ public class STabbedPane<T> extends JTabbedPane {
     private final Map<Component, BiConsumer<Object, Component>> onSuccessCallbacks = new HashMap<>();
     private final Map<Component, BiConsumer<Throwable, Component>> onFailureCallbacks = new HashMap<>();
     private final List<Component> performedCallbacks = new ArrayList<>();
+    private final Map<Component, SLoadingOverlay> overlays = new HashMap<>();
 
     private ExecutorService executorService = ForkJoinPool.commonPool();
 
@@ -226,9 +227,11 @@ public class STabbedPane<T> extends JTabbedPane {
         BiConsumer<Object, Component> onSuccessCallback = onSuccessCallbacks.get(component);
         BiConsumer<Throwable, Component> onFailureCallback = onFailureCallbacks.get(component);
         if (onLoadCallback != null) {
+            showOverlay(component);
             executorService.submit(() -> {
                 try {
                     final Object result = onLoadCallback.apply(value);
+                    hideOverlay(component);
                     invokeLater(onSuccessCallback, result, component);
                 } catch (Throwable e) {
                     if (!invokeLater(onFailureCallback, e, component)) {
@@ -238,6 +241,25 @@ public class STabbedPane<T> extends JTabbedPane {
             });
         }
         return true;
+    }
+
+    private void showOverlay(Component component) {
+        SLoadingOverlay overlay = overlays.get(component);
+        if (overlay == null) {
+            overlay = new SLoadingOverlay();
+            SOverlay.overlayWith(component, overlay);
+            overlays.put(component, overlay);
+        }
+        overlay.setVisible(true);
+    }
+
+    private void hideOverlay(Component component) {
+        SLoadingOverlay overlay = overlays.remove(component);
+        if (overlay != null) {
+            SwingUtilities.invokeLater(() -> {
+                overlay.setVisible(false);
+            });
+        }
     }
 
     private <R> boolean invokeLater(BiConsumer<R, Component> callback, R value, Component component) {

@@ -22,7 +22,6 @@ import java.util.function.Consumer;
 public class SOverlay extends JPanel {
 
     private Map<Component, ComponentListener> componentListeners = new WeakHashMap<>();
-    private int zOrder = 0;
 
     final private LC lc = new LC();
     final private AC rowAC = new AC();
@@ -47,23 +46,23 @@ public class SOverlay extends JPanel {
         }
     }
 
+    /**
+     * Components that are added later are drawn on top of previous components.
+     * @param component
+     * @param overlayComponent
+     */
     static public void overlayWith(Component component, Component overlayComponent) {
-        findOverlayProviderAndCall(component, overlayComponent, overlayProvider -> overlayWith(component, overlayComponent, overlayProvider, -1));
+        findOverlayProviderAndCall(component, overlayComponent, overlayProvider -> overlayWith(component, overlayComponent, overlayProvider));
     }
 
-    static public void overlayWith(Component component, Component overlayComponent, int zOrder) {
-        findOverlayProviderAndCall(component, overlayComponent, overlayProvider -> overlayWith(component, overlayComponent, overlayProvider, zOrder));
-    }
-
-    static void overlayWith(Component component, Component overlayComponent, OverlayProvider overlayProvider, int zOrder) {
+    static void overlayWith(Component component, Component overlayComponent, OverlayProvider overlayProvider) {
 
         // Make overlay visible
         SOverlay overlay = overlayProvider.getOverlay();
         overlay.setVisible(true);
 
         // Add component to overlay and position it for the first time
-        overlay.add(overlayComponent, new CC());
-        overlay.setComponentZOrder(overlayComponent, zOrder >= 0 ? zOrder : overlay.zOrder++); // If overlay.zOrder++ overflows, the user must handle zOrder himself
+        overlay.add(overlayComponent, new CC(), 0); // index 0 means newer components are drawn on top of previously added
         overlay(component, overlayComponent);
 
         // Create the listener to update the overlay
@@ -144,7 +143,6 @@ public class SOverlay extends JPanel {
     }
 
     public static void main(String[] args) {
-
         SPanel frameContentPanel2 = new SPanel().name("frameContentPanel2");
         frameContentPanel2.setLayout(new MigLayout(new LC().fill()));
         SButton showButton = new SButton("Show");
@@ -157,11 +155,14 @@ public class SOverlay extends JPanel {
         frameContentPanel.add(new JButton("No-op"), new CC());
 
         // overlay with a button
+        SBlockingOverlay blockingOverlay = new SBlockingOverlay();
         SButton hideButton = new SButton("Hide");
         showButton.addActionListener(e -> {
+            blockingOverlay.setVisible(true);
             hideButton.setVisible(true);
         });
         hideButton.addActionListener(e -> {
+            blockingOverlay.setVisible(false);
             hideButton.setVisible(false);
         });
 
@@ -169,7 +170,9 @@ public class SOverlay extends JPanel {
         sFrame.pack();
         sFrame.setLocationRelativeTo(null);
 
+        SOverlay.overlayWith(frameContentPanel, blockingOverlay);
         showButton.overlayWith(hideButton);
+        blockingOverlay.setVisible(false);
         hideButton.setVisible(false);
 
         sFrame.setVisible(true);
