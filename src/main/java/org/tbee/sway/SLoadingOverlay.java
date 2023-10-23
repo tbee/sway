@@ -1,12 +1,15 @@
 package org.tbee.sway;
 
+import org.tbee.sway.support.HAlign;
 import org.tbee.sway.support.IconRegistry;
+
+import java.awt.BorderLayout;
 
 public class SLoadingOverlay extends SBlockingOverlay {
 
-    private final SLabel label = SLabel.of();
-
     public SLoadingOverlay() {
-        super(IconRegistry.find(IconRegistry.SwayInternallyUsedIcon.OVERLAY_LOADING));
+        super();
+        setLayout(new BorderLayout());
+        add(SLabel.of(IconRegistry.find(IconRegistry.SwayInternallyUsedIcon.OVERLAY_LOADING)).hAlign(HAlign.CENTER), BorderLayout.CENTER);
     }
 }
