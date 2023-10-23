@@ -14,6 +14,7 @@ import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
@@ -41,20 +42,19 @@ public class SwayTestApp {
         registerIcons();
 
         SwingUtilities.invokeAndWait(() -> {
-            SHPanel panel = SHPanel.of(
-                    sTable(),
-                    sList(),
-                    sTree(),
-                    sComboBox(),
-                    sTextField(),
-                    sTextArea(),
-                    sCheckBox(),
-                    sTabbedPane())
-                    .align(SHPanel.Align.TOP);
+            JTabbedPane tabbedPane = new JTabbedPane();
+            tabbedPane.addTab("sTable", sTable());
+            tabbedPane.addTab("sList", sList());
+            tabbedPane.addTab("sTree", sTree());
+            tabbedPane.addTab("sComboBox", sComboBox());
+            tabbedPane.addTab("sTextField", sTextField());
+            tabbedPane.addTab("sTextArea", sTextArea());
+            tabbedPane.addTab("sCheckBox", sCheckBox());
+            tabbedPane.addTab("sTabbedPane", sTabbedPane());
 
             SContextMenu.install();
 
-            SFrame.of(panel)
+            SFrame.of(tabbedPane)
                     .exitOnClose()
                     .sizeToPreferred()
                     .maximize()
