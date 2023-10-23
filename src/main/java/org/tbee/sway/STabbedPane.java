@@ -254,7 +254,7 @@ public class STabbedPane<T> extends JTabbedPane {
     }
 
     private void hideOverlay(Component component) {
-        SLoadingOverlay overlay = overlays.remove(component);
+        SLoadingOverlay overlay = overlays.get(component);
         if (overlay != null) {
             SwingUtilities.invokeLater(() -> {
                 overlay.setVisible(false);
