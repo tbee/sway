@@ -7,11 +7,11 @@ import java.util.function.Consumer;
 // TBEERNOT: constructor with title plus of methods, dito SDialog
 // TBEERNOT Javadoc on how to use SFrame dito SDialog
 
-public class SFrame extends JFrame implements SOverlay.OverlayProvider {
+public class SFrame extends JFrame implements SOverlayPane.OverlayProvider {
 
     public SFrame() {
         disposeOnClose();
-        setGlassPane(new SOverlay());
+        setGlassPane(new SOverlayPane());
     }
 
     // ===========================================================================

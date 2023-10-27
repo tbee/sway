@@ -244,20 +244,16 @@ public class STabbedPane<T> extends JTabbedPane {
     }
 
     private void showOverlay(Component component) {
-        SLoadingOverlay overlay = overlays.get(component);
-        if (overlay == null) {
-            overlay = new SLoadingOverlay();
-            SOverlay.overlayWith(component, overlay);
-            overlays.put(component, overlay);
-        }
-        overlay.setVisible(true);
+        SLoadingOverlay overlay = new SLoadingOverlay(component);
+        SOverlayPane.overlayWith(component, overlay);
+        overlays.put(component, overlay);
     }
 
     private void hideOverlay(Component component) {
-        SLoadingOverlay overlay = overlays.get(component);
+        SLoadingOverlay overlay = overlays.remove(component);
         if (overlay != null) {
             SwingUtilities.invokeLater(() -> {
-                overlay.setVisible(false);
+                SOverlayPane.removeOverlay(component, overlay);
             });
         }
     }

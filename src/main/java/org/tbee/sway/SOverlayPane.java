@@ -1,10 +1,5 @@
 package org.tbee.sway;
 
-import net.miginfocom.layout.AC;
-import net.miginfocom.layout.CC;
-import net.miginfocom.layout.LC;
-import net.miginfocom.swing.MigLayout;
-
 import javax.swing.JPanel;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -16,35 +11,45 @@ import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.function.Consumer;
 
-public class SOverlay extends JPanel {
+/**
+ * This pane handles painting overlay components over other components in the glasspane of a SFrame of SDialog.
+ * Overlay components can be added and removed as needed, using overlayWith() and removeOverlay().
+ */
+public class SOverlayPane extends JPanel {
 
-    private Map<Component, ComponentListener> componentListeners = new WeakHashMap<>();
-
-    final private LC lc = new LC();
-    final private AC rowAC = new AC();
-    final private AC colAC = new AC();
-    final private MigLayout migLayout = new MigLayout(lc, colAC, rowAC);
+    final private Map<Component, ComponentListener> componentListeners = new WeakHashMap<>();
 
 
-    public SOverlay() {
-        setLayout(migLayout);
+    public SOverlayPane() {
+        setLayout(null); // manual layout
         setOpaque(false);
         setVisible(true);
+        //setBorder(BorderFactory.createLineBorder(Color.GREEN, 5));
     }
 
     // =========================================================================
     // overlayWith and removeOverlay
 
+    /**
+     * This interface is to allow an overlay to setup and cleanup
+     */
+    interface Overlay {
+        void onAdd();
+        void onRemove();
+    }
+
     interface OverlayProvider {
         Component getGlassPane();
+        void invalidate();
+        void repaint();
 
-        default SOverlay getOverlay() {
-            return (SOverlay) getGlassPane();
+        default SOverlayPane getOverlayPane() {
+            return (SOverlayPane) getGlassPane();
         }
     }
 
     /**
-     * Components that are added later are drawn on top of previous components.
+     * Overlays that are added later (in call sequence) are drawn on top of earlier overlays.
      * @param component
      * @param overlayComponent
      */
@@ -54,15 +59,19 @@ public class SOverlay extends JPanel {
 
     static void overlayWith(Component component, Component overlayComponent, OverlayProvider overlayProvider) {
 
-        // Make overlay visible
-        SOverlay overlay = overlayProvider.getOverlay();
-        overlay.setVisible(true);
+        // Make sure overlayPane is visible
+        SOverlayPane overlayPane = overlayProvider.getOverlayPane();
+        overlayPane.setVisible(true);
 
-        // Add component to overlay and position it for the first time
-        overlay.add(overlayComponent, new CC(), 0); // index 0 means newer components are drawn on top of previously added
+        // Add component to overlayPane and position it for the first time
+        //((JComponent)overlayComponent).setBorder(BorderFactory.createLineBorder(Color.BLUE, 3));
+        overlayPane.add(overlayComponent, 0); // index 0 means newer components are drawn on top of previously added
         overlay(component, overlayComponent, overlayProvider);
+        if (overlayComponent instanceof Overlay overlay) {
+            overlay.onAdd();
+        }
 
-        // Create the listener to update the overlay
+        // Create the listener to update the overlayPane
         ComponentListener componentListener = new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
@@ -78,7 +87,7 @@ public class SOverlay extends JPanel {
         };
 
         // Register the listener to all layers
-        overlay.componentListeners.put(overlayComponent, componentListener);
+        overlayPane.componentListeners.put(overlayComponent, componentListener);
         Component scanner = component;
         while (scanner != null) {
             scanner.addComponentListener(componentListener);
@@ -92,12 +101,16 @@ public class SOverlay extends JPanel {
 
     static void removeOverlay(Component component, Component overlayComponent, OverlayProvider overlayProvider) {
 
-        // Remove component from overlay
-        SOverlay overlay = (SOverlay)overlayProvider.getGlassPane();
-        overlay.remove(overlayComponent);
+        // Remove component from overlayPane
+        SOverlayPane overlayPane = overlayProvider.getOverlayPane();
+        overlayPane.remove(overlayComponent);
+        if (overlayComponent instanceof Overlay overlay) {
+            overlay.onRemove();
+        }
+        component.repaint();
 
         // Find the listener and remove it from all layers
-        ComponentListener componentListener = overlay.componentListeners.remove(overlayComponent);
+        ComponentListener componentListener = overlayPane.componentListeners.remove(overlayComponent);
         Component scanner = component;
         while (scanner != null) {
             scanner.removeComponentListener(componentListener);
@@ -119,14 +132,20 @@ public class SOverlay extends JPanel {
 
     static void overlay(final Component originalComponent, final Component overlayComponent, OverlayProvider overlayProvider) {
 
-        // Determine the location of the overlay
-        SOverlay overlay = overlayProvider.getOverlay();
-        Point overlayLocation = overlay.getLocationOnScreen();
+        // Determine the location of the overlayPane
+        SOverlayPane overlayPane = overlayProvider.getOverlayPane();
+        Point overlayLocation = overlayPane.getLocationOnScreen();
         Point originalComponentLocation = originalComponent.getLocationOnScreen();
         Point location = new Point(originalComponentLocation.x- overlayLocation.x, originalComponentLocation.y - overlayLocation.y);
 
-        // Position the overlay
+        // Place the overlayComponent
         Dimension size = originalComponent.getSize();
-        overlay.migLayout.setComponentConstraints(overlayComponent, new CC().pos(location.x + "px", location.y + "px", (location.x + size.width) + "px",(location.y + size.height) + "px"));
+        overlayComponent.setLocation(location);
+        overlayComponent.setSize(size);
+        if (overlayComponent.isVisible()) {
+            // No repainting or invalidating updates the UI as well as this toggle
+            overlayComponent.setVisible(false);
+            overlayComponent.setVisible(true);
+        }
     }
 }

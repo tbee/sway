@@ -414,11 +414,11 @@ public class STextField<T> extends javax.swing.JTextField {
     }
 
     public STextField<T> overlayWith(Component overlayComponent) {
-        SOverlay.overlayWith(this, overlayComponent);
+        SOverlayPane.overlayWith(this, overlayComponent);
         return this;
     }
     public STextField<T> removeOverlay(Component overlayComponent) {
-        SOverlay.removeOverlay(this, overlayComponent);
+        SOverlayPane.removeOverlay(this, overlayComponent);
         return this;
     }
 

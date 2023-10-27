@@ -11,7 +11,7 @@ import java.awt.Window;
 import java.util.ArrayList;
 import java.util.function.Consumer;
 
-public class SDialog extends JDialog implements SOverlay.OverlayProvider {
+public class SDialog extends JDialog implements SOverlayPane.OverlayProvider {
 	
 	/**
 	 * @param owner
@@ -21,7 +21,7 @@ public class SDialog extends JDialog implements SOverlay.OverlayProvider {
 	public SDialog(Window owner, String title, ModalityType modalityType) {
 		super(owner, title, modalityType);
 		setDefaultCloseOperation(SDialog.DISPOSE_ON_CLOSE);
-		setGlassPane(new SOverlay());
+		setGlassPane(new SOverlayPane());
 	}
 
 

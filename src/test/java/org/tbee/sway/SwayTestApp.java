@@ -61,6 +61,7 @@ public class SwayTestApp {
                     .maximize()
                     .menuBar(this::createFrameMenu)
                     .visible(true);
+
         });
     }
 

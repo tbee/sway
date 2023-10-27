@@ -209,11 +209,11 @@ public class SButton extends JButton {
     }
 
     public SButton overlayWith(Component overlayComponent) {
-        SOverlay.overlayWith(this, overlayComponent);
+        SOverlayPane.overlayWith(this, overlayComponent);
         return this;
     }
     public SButton removeOverlay(Component overlayComponent) {
-        SOverlay.removeOverlay(this, overlayComponent);
+        SOverlayPane.removeOverlay(this, overlayComponent);
         return this;
     }
 }
