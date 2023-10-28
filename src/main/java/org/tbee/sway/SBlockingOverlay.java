@@ -6,60 +6,65 @@ import java.awt.Component;
 import java.awt.KeyboardFocusManager;
 import java.awt.event.KeyAdapter;
 import java.awt.event.MouseAdapter;
+import java.beans.PropertyChangeListener;
 
 /**
  * Placing a blocking overlay over a component will block mouse clicks.
  */
-public class SBlockingOverlay extends JPanel implements SOverlayPane.OnOverlayCallback, SOverlayPane.OnRemoveCallback {
+public class SBlockingOverlay extends JPanel implements SOverlayPane.OverlaidComponentCallback, SOverlayPane.OnOverlayCallback, SOverlayPane.OnRemoveCallback {
 
-    final private Component component;
+    final static private String FOCUS_OWNER = "focusOwner";
+
+    private Component component = null;
 
     /**
-     * Use this constructor is the overlay completely convers the Frame/Dialog.
-     * Otherwise the user might move the keyboard focus under the overlay by pressing TAB from an unoverlaid field.
+     *
      */
     public SBlockingOverlay() {
-        this(null);
-    }
-
-    /**
-     * Use this constructor if the overlay does cover the whole Frame/Dialog,
-     * and you want to prevent the keyboard focus moving under the overlay by pressing TAB from an unoverlaid field.
-     *
-     * @param component the component being overlaid
-     */
-    public SBlockingOverlay(Component component) {
-        this.component = component;
 
         setOpaque(true);
         setBackground(new Color(150, 150, 150, 123));
+        setFocusable(true);
+        setRequestFocusEnabled(true);
+        setFocusTraversalKeysEnabled(false);
 
         addKeyListener(new KeyAdapter() {});
         addMouseListener(new MouseAdapter() {});
+    }
 
+
+    @Override
+    public void setComponent(Component component) {
+        this.component = component;
     }
 
     @Override
     public void onOverlay() {
-        setFocusable(true);
-        setRequestFocusEnabled(true);
-        requestFocus();
-        requestFocusInWindow();
-        setFocusTraversalKeysEnabled(false);
-
-        KeyboardFocusManager.getCurrentKeyboardFocusManager().addPropertyChangeListener("focusOwner", evt -> System.out.println("propertyChange " + evt));
-
-//
-//        ((JPanel)component).getComponent(0).addFocusListener(new FocusAdapter() {
-//            @Override
-//            public void focusGained(FocusEvent e) {
-//                SBlockingOverlay.this.requestFocus();
-//            }
-//        });
+        claimFocus();
+        KeyboardFocusManager.getCurrentKeyboardFocusManager().addPropertyChangeListener(FOCUS_OWNER, focusOwnerListener);
     }
 
     @Override
     public void onRemove() {
-
+        KeyboardFocusManager.getCurrentKeyboardFocusManager().removePropertyChangeListener(FOCUS_OWNER, focusOwnerListener);
     }
+
+    private void claimFocus() {
+        requestFocus();
+        requestFocusInWindow();
+    }
+
+    // Listen for if a component has gotten focus that is (a child of) the overlaid component.
+    // If that is so, move the focus back to the overlay.
+    PropertyChangeListener focusOwnerListener = evt -> {
+        Object newValue = evt.getNewValue();
+        if (SBlockingOverlay.this.component != null && newValue != null && newValue instanceof Component focussedComponent) {
+            while (focussedComponent != null) {
+                if (focussedComponent == SBlockingOverlay.this.component) {
+                    claimFocus();
+                }
+                focussedComponent = focussedComponent.getParent();
+            }
+        }
+    };
 }

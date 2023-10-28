@@ -250,7 +250,7 @@ public class STabbedPane<T> extends JTabbedPane {
         // If the overlay is already active only increase the counter
         OverlayData overlayData = this.overlayDatas.get(component);
         if (overlayData == null) {
-            SLoadingOverlay overlay = new SLoadingOverlay(component);
+            SLoadingOverlay overlay = new SLoadingOverlay();
             SOverlayPane.overlayWith(component, overlay);
             this.overlayDatas.put(component, new OverlayData(overlay, 1));
         } else {

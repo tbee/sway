@@ -31,21 +31,26 @@ public class SOverlayPane extends JPanel {
     // overlayWith and removeOverlay
 
     /**
-     * This interface is to allow an overlay to setup and cleanup
+     * This interface is to allow an overlay to get access to the overlaid component
+     */
+    interface OverlaidComponentCallback {
+        void setComponent(Component component);
+    }
+    /**
+     * This interface is to allow an overlay to do setup
      */
     interface OnOverlayCallback {
         void onOverlay();
-        void onRemove();
     }
+    /**
+     * This interface is to allow an overlay to do cleanup
+     */
     interface OnRemoveCallback {
-        void onOverlay();
         void onRemove();
     }
 
     interface OverlayProvider {
         Component getGlassPane();
-        void invalidate();
-        void repaint();
 
         default SOverlayPane getOverlayPane() {
             return (SOverlayPane) getGlassPane();
@@ -62,6 +67,11 @@ public class SOverlayPane extends JPanel {
     }
 
     static void overlayWith(Component component, Component overlayComponent, OverlayProvider overlayProvider) {
+
+        // Callback
+        if (overlayComponent instanceof OverlaidComponentCallback overlaidComponentCallback) {
+            overlaidComponentCallback.setComponent(component);
+        }
 
         // Make sure overlayPane is visible
         SOverlayPane overlayPane = overlayProvider.getOverlayPane();
