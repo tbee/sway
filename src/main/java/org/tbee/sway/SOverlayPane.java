@@ -33,8 +33,12 @@ public class SOverlayPane extends JPanel {
     /**
      * This interface is to allow an overlay to setup and cleanup
      */
-    interface Overlay {
-        void onAdd();
+    interface OnOverlayCallback {
+        void onOverlay();
+        void onRemove();
+    }
+    interface OnRemoveCallback {
+        void onOverlay();
         void onRemove();
     }
 
@@ -67,8 +71,8 @@ public class SOverlayPane extends JPanel {
         //((JComponent)overlayComponent).setBorder(BorderFactory.createLineBorder(Color.BLUE, 3));
         overlayPane.add(overlayComponent, 0); // index 0 means newer components are drawn on top of previously added
         overlay(component, overlayComponent, overlayProvider);
-        if (overlayComponent instanceof Overlay overlay) {
-            overlay.onAdd();
+        if (overlayComponent instanceof OnOverlayCallback callback) {
+            callback.onOverlay();
         }
 
         // Create the listener to update the overlayPane
@@ -104,8 +108,8 @@ public class SOverlayPane extends JPanel {
         // Remove component from overlayPane
         SOverlayPane overlayPane = overlayProvider.getOverlayPane();
         overlayPane.remove(overlayComponent);
-        if (overlayComponent instanceof Overlay overlay) {
-            overlay.onRemove();
+        if (overlayComponent instanceof OnRemoveCallback callback) {
+            callback.onRemove();
         }
         component.repaint();
 

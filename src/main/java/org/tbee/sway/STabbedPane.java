@@ -60,7 +60,9 @@ public class STabbedPane<T> extends JTabbedPane {
     private final Map<Component, BiConsumer<Object, Component>> onSuccessCallbacks = new HashMap<>();
     private final Map<Component, BiConsumer<Throwable, Component>> onFailureCallbacks = new HashMap<>();
     private final List<Component> performedCallbacks = new ArrayList<>();
-    private final Map<Component, SLoadingOverlay> overlays = new HashMap<>();
+    private final Map<Component, OverlayData> overlayDatas = new HashMap<>();
+
+    private record OverlayData(SLoadingOverlay overlay, int count){}
 
     private ExecutorService executorService = ForkJoinPool.commonPool();
 
@@ -244,17 +246,27 @@ public class STabbedPane<T> extends JTabbedPane {
     }
 
     private void showOverlay(Component component) {
-        SLoadingOverlay overlay = new SLoadingOverlay(component);
-        SOverlayPane.overlayWith(component, overlay);
-        overlays.put(component, overlay);
+
+        // If the overlay is already active only increase the counter
+        OverlayData overlayData = this.overlayDatas.get(component);
+        if (overlayData == null) {
+            SLoadingOverlay overlay = new SLoadingOverlay(component);
+            SOverlayPane.overlayWith(component, overlay);
+            this.overlayDatas.put(component, new OverlayData(overlay, 1));
+        } else {
+            this.overlayDatas.put(component, new OverlayData(overlayData.overlay(), overlayData.count() + 1));
+        }
     }
 
     private void hideOverlay(Component component) {
-        SLoadingOverlay overlay = overlays.remove(component);
-        if (overlay != null) {
+        OverlayData overlayData = this.overlayDatas.get(component);
+        if (overlayData.count() == 1) {
+            this.overlayDatas.remove(component);
             SwingUtilities.invokeLater(() -> {
-                SOverlayPane.removeOverlay(component, overlay);
+                SOverlayPane.removeOverlay(component, overlayData.overlay());
             });
+        } else {
+            this.overlayDatas.put(component, new OverlayData(overlayData.overlay(), overlayData.count() - 1));
         }
     }
 
