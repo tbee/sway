@@ -173,8 +173,15 @@ public class STabbedPane<T> extends JTabbedPane {
     public <C extends Component> STabbedPane<T> addTab(String title, C component, BiConsumer<T, C> onActiveCallback) {
         return addTab(title, null, component, null, onActiveCallback);
     }
+    public <R, C extends Component> STabbedPane<T> addTab(String title, C component, Function<T, R> onLoadCallback, BiConsumer<R, C> onSuccessCallback) {
+        return addTab(title, null, component, null, onLoadCallback, onSuccessCallback, null);
+    }
     public <R, C extends Component> STabbedPane<T> addTab(String title, C component, Function<T, R> onLoadCallback, BiConsumer<R, C> onSuccessCallback, BiConsumer<Throwable, C> onFailureCallback) {
         return addTab(title, null, component, null, onLoadCallback, onSuccessCallback, onFailureCallback);
+    }
+    public  STabbedPane<T> addTab(String title, STabbedPane<?> component) {
+        super.addTab(title, component);
+        return this;
     }
 
     @Override

@@ -365,24 +365,45 @@ public class SwayTestApp {
         STextField<String> sync1Textfield = STextField.ofString();
         STextField<String> sync2Textfield = STextField.ofString();
         STextField<Integer> asyncTextfield = STextField.ofInteger();
+        STextField<String> subsyncTextfield = STextField.ofString();
+        STextField<Integer> subasyncTextfield = STextField.ofInteger();
+        
         STabbedPane<String> sTabbedPane = STabbedPane.<String>of()
             .bindTo(masterSTextField.value$())
             .addTab("tab1", SHPanel.of(sync1Textfield), (v, c) -> sync1Textfield.setValue("child1 " + v))
             .addTab("tab2", SHPanel.of(sync2Textfield), (v, c) -> sync2Textfield.setValue("child2 " + v))
             .addTab("tabAsync", SHPanel.of(asyncTextfield)
-                    , value -> {
-                        if (value.contains("exc")) throw new RuntimeException("oops");
-                        try {
-                            Thread.sleep(3000);
-                        } catch (InterruptedException e) {
-                            throw new RuntimeException(e);
-                        }
-                        return value.hashCode();
-                    }
+                    , value -> doSomeBackgroundStuff(value)
                     , (result, component) -> asyncTextfield.setValue(result)
-                    , (throwable, component) -> JOptionPane.showMessageDialog(masterSTextField, ExceptionUtil.determineMessage(throwable), "ERROR", JOptionPane.ERROR_MESSAGE)
+                    , (throwable, component) -> showExceptionInDialog(throwable, masterSTextField))
+            .addTab("subtab", STabbedPane.<String>of()
+                            .bindTo(masterSTextField.value$())
+                            .addTab("sync", SHPanel.of(subsyncTextfield), (v, c) -> subsyncTextfield.setValue("child1 " + v))
+                            .addTab("async", SHPanel.of(subasyncTextfield)
+                                    , value -> doSomeBackgroundStuff(value)
+                                    , (result, component) -> asyncTextfield.setValue(result))
             );
 
+
+
         return SBorderPanel.of(sTabbedPane).north(masterSTextField);
+    }
+
+    private static int doSomeBackgroundStuff(String value) {
+        if (value.contains("exc")) throw new RuntimeException("oops");
+        sleep(3000);
+        return value.hashCode();
+    }
+
+    private static void showExceptionInDialog(Throwable throwable, STextField<String> masterSTextField) {
+        JOptionPane.showMessageDialog(masterSTextField, ExceptionUtil.determineMessage(throwable), "ERROR", JOptionPane.ERROR_MESSAGE);
+    }
+
+    private static void sleep(int ms) {
+        try {
+            Thread.sleep(ms);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
