@@ -18,7 +18,7 @@ public class SButtonTest extends TestBase {
 						throw new RuntimeException("oops");
 					}) //
                     .name("sButton");
-            return TestUtil.inJFrame(sButton, focusMeComponent());
+            return TestUtil.inSFrame(sButton, focusMeComponent());
         });
 
         // WHEN

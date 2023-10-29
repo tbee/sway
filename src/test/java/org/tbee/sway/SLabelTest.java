@@ -17,7 +17,7 @@ public class SLabelTest extends TestBase {
         construct(() -> {
             sLabel = new SLabel("initial");
             sLabel.text$().bindTo(city.name$());
-            return TestUtil.inJFrame(sLabel, focusMeComponent());
+            return TestUtil.inSFrame(sLabel, focusMeComponent());
         });
 
         // WHEN
@@ -36,7 +36,7 @@ public class SLabelTest extends TestBase {
         final City city = new City().name("name");
         construct(() -> {
             sLabel = new SLabel("initial");
-            return TestUtil.inJFrame(sLabel, focusMeComponent());
+            return TestUtil.inSFrame(sLabel, focusMeComponent());
         });
 
         // WHEN bind and unbind

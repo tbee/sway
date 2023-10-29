@@ -29,7 +29,7 @@ public class STreeTest extends TestBase {
                     .render(new CityFormat(cities))
                     .childrenOf(City::getPartnerCities)
                     .selectionMode(STree.SelectionMode.MULTIPLE);
-            return TestUtil.inJFrame(sTree, focusMeComponent());
+            return TestUtil.inSFrame(sTree, focusMeComponent());
         });
 
         // WHEN
@@ -87,7 +87,7 @@ public class STreeTest extends TestBase {
                     .registerFormat(Street.class, new StreetFormat())
                     .registerFormat(Building.class, new BuildingFormat())
                     .monitorBeans(true);
-            return TestUtil.inJFrame(sTree, focusMeComponent());
+            return TestUtil.inSFrame(sTree, focusMeComponent());
         });
 
         // WHEN
@@ -139,7 +139,7 @@ public class STreeTest extends TestBase {
                     .root(amsterdam)
                     .childrenOf(City::getPartnerCities)
                     .selectionMode(STree.SelectionMode.MULTIPLE);
-            return TestUtil.inJFrame(sTree, focusMeComponent());
+            return TestUtil.inSFrame(sTree, focusMeComponent());
         });
 
         // WHEN

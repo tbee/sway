@@ -24,7 +24,7 @@ public class STextAreaTest extends TestBase {
         // GIVEN
         construct(() -> {
         	sTextArea = new STextArea().name("sTextArea");
-            return TestUtil.inJFrame(sTextArea, focusMeComponent());
+            return TestUtil.inSFrame(sTextArea, focusMeComponent());
         });
 
         // WHEN
@@ -43,7 +43,7 @@ public class STextAreaTest extends TestBase {
         final City city = new City();
         construct(() -> {
         	sTextArea = new STextArea().name("sTextArea").bindTo(city.name$());
-            return TestUtil.inJFrame(sTextArea, focusMeComponent());
+            return TestUtil.inSFrame(sTextArea, focusMeComponent());
         });
 
         // WHEN

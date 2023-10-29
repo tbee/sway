@@ -16,7 +16,7 @@ public class SCheckBox3Test extends TestBase {
             sCheckBox = new SCheckBox3() //
                     .bindTo(city.cityRights$()) //
                     .name("sCheckBox");
-            return TestUtil.inJFrame(sCheckBox, focusMeComponent());
+            return TestUtil.inSFrame(sCheckBox, focusMeComponent());
         });
         Assertions.assertEquals(null, sCheckBox.getSelected3());
         Assertions.assertEquals(null, city.getCityRights());
@@ -50,7 +50,7 @@ public class SCheckBox3Test extends TestBase {
                     .bindTo(city.cityRights$()) //
                     .allowUndetermined(false) //
                     .name("sCheckBox");
-            return TestUtil.inJFrame(sCheckBox, focusMeComponent());
+            return TestUtil.inSFrame(sCheckBox, focusMeComponent());
         });
         Assertions.assertEquals(false, sCheckBox.getSelected3());
         Assertions.assertEquals(false, city.getCityRights());

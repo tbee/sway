@@ -23,7 +23,7 @@ public class SListTest extends TestBase {
                     .render(new CityFormat(cities)) //
                     .data(cities);
             ref.set(sList);
-            return TestUtil.inJFrame(sList, focusMeComponent());
+            return TestUtil.inSFrame(sList, focusMeComponent());
         });
         var sList = ref.get();
 
@@ -50,7 +50,7 @@ public class SListTest extends TestBase {
                     .selectionMode(SList.SelectionMode.SINGLE) //
                     .data(cities);
             ref.set(sList);
-            return TestUtil.inJFrame(sList);
+            return TestUtil.inSFrame(sList);
         });
         var sList = ref.get();
 

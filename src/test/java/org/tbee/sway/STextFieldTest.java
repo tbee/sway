@@ -28,7 +28,7 @@ public class STextFieldTest extends TestBase {
         // GIVEN
         construct(() -> {
             sTextField = STextField.ofInteger().name("sTextField");
-            return TestUtil.inJFrame(sTextField, focusMeComponent());
+            return TestUtil.inSFrame(sTextField, focusMeComponent());
         });
 
         // WHEN
@@ -47,7 +47,7 @@ public class STextFieldTest extends TestBase {
         // GIVEN
         construct(() -> {
             sTextField = STextField.ofInteger().name("sTextField");
-            return TestUtil.inJFrame(sTextField, focusMeComponent());
+            return TestUtil.inSFrame(sTextField, focusMeComponent());
         });
 
         // WHEN
@@ -84,7 +84,7 @@ public class STextFieldTest extends TestBase {
         // GIVEN
         construct(() -> {
             sTextField = STextField.ofInteger().name("sTextField");
-            return TestUtil.inJFrame(sTextField, focusMeComponent());
+            return TestUtil.inSFrame(sTextField, focusMeComponent());
         });
 
         // WHEN
@@ -108,7 +108,7 @@ public class STextFieldTest extends TestBase {
         final City city = City.of();
         construct(() -> {
             sTextField = STextField.ofString().name("sTextField").bindTo(city.name$());
-            return TestUtil.inJFrame(sTextField, focusMeComponent());
+            return TestUtil.inSFrame(sTextField, focusMeComponent());
         });
 
         // WHEN
@@ -133,7 +133,7 @@ public class STextFieldTest extends TestBase {
         final City city = City.of();
         construct(() -> {
             sTextField = STextField.ofInteger().name("sTextField").bindTo(city.distance$());
-            return TestUtil.inJFrame(sTextField, focusMeComponent());
+            return TestUtil.inSFrame(sTextField, focusMeComponent());
         });
 
         // WHEN
@@ -160,7 +160,7 @@ public class STextFieldTest extends TestBase {
         final City city = City.of();
         construct(() -> {
             sTextField = STextField.ofInteger().name("sTextField").bindTo(city.distance$());
-            return TestUtil.inJFrame(sTextField, focusMeComponent());
+            return TestUtil.inSFrame(sTextField, focusMeComponent());
         });
 
         // WHEN
@@ -183,7 +183,7 @@ public class STextFieldTest extends TestBase {
         final City city = City.of().distance(456);
         construct(() -> {
             sTextField = STextField.ofInteger().name("sTextField");
-            return TestUtil.inJFrame(sTextField, focusMeComponent());
+            return TestUtil.inSFrame(sTextField, focusMeComponent());
         });
 
         // WHEN bind and unbind

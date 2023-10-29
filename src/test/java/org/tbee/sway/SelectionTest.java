@@ -56,7 +56,7 @@ public class SelectionTest extends TestBase {
             sTree.selection$().bindTo(sTable.selection$());
             treeRef.set(sTree);
 
-            return TestUtil.inJFrame(sTable, sList, sTree, focusMeComponent());
+            return TestUtil.inSFrame(sTable, sList, sTree, focusMeComponent());
         });
         STable<City> sTable = tableRef.get();
         SList<City> sList = listRef.get();

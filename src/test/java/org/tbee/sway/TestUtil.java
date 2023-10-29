@@ -6,21 +6,21 @@ import java.util.Collection;
 
 public class TestUtil {
 
-    static public JFrame inJFrame(Collection<? extends JComponent> components) {
+    static public JFrame inSFrame(Collection<? extends JComponent> components) {
         var sPanel = SMigPanel.of(components);
-        return inJFrame(sPanel);
+        return inSFrame(sPanel);
     }
 
-    static public JFrame inJFrame(JComponent... components) {
+    static public JFrame inSFrame(JComponent... components) {
         var sPanel = SMigPanel.of(components);
-        return inJFrame(sPanel);
+        return inSFrame(sPanel);
     }
 
-    static public JFrame inJFrame(JComponent component) {
-        JFrame jFrame = new JFrame();
-        jFrame.setContentPane(component);
-        jFrame.pack();
-        return jFrame;
+    static public SFrame inSFrame(JComponent component) {
+        SFrame sFrame = new SFrame();
+        sFrame.setContentPane(component);
+        sFrame.pack();
+        return sFrame;
     }
 
     static public void sleep(int ms) {

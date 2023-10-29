@@ -16,7 +16,7 @@ public class SCheckBoxTest extends TestBase {
             sCheckBox = new SCheckBox() //
                     .bindTo(city.growing$()) //
                     .name("sCheckBox");
-            return TestUtil.inJFrame(sCheckBox, focusMeComponent());
+            return TestUtil.inSFrame(sCheckBox, focusMeComponent());
         });
         Assertions.assertEquals(true, sCheckBox.isSelected());
         Assertions.assertEquals(true, city.getGrowing());
