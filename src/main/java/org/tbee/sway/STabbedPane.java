@@ -52,7 +52,8 @@ import java.util.function.Function;
  * @param <T> the type of the value.
  */
 public class STabbedPane<T> extends JTabbedPane {
-    static private org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(STabbedPane.class);
+    public static final org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(STabbedPane.class);
+    public static final String LOADED_COMPONENT = "loadedComponent";
 
     private T value = null;
     private final Map<Component, BiConsumer<T, Component>> onActiveCallbacks = new HashMap<>();
@@ -229,6 +230,7 @@ public class STabbedPane<T> extends JTabbedPane {
         BiConsumer<T, Component> onActiveCallback = onActiveCallbacks.get(component);
         if (onActiveCallback != null) {
             onActiveCallback.accept(value, component);
+            firePropertyChange("loadedComponent", null, component);
         }
 
         // Asynchronous loading
@@ -278,6 +280,8 @@ public class STabbedPane<T> extends JTabbedPane {
     }
 
     private <R> boolean invokeLater(BiConsumer<R, Component> callback, R value, Component component) {
+        firePropertyChange(LOADED_COMPONENT, null, component);
+
         if (callback == null) {
             return false;
         }

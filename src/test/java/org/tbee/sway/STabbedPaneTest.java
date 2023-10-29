@@ -8,15 +8,17 @@ import javax.swing.JOptionPane;
 
 public class STabbedPaneTest extends TestBase {
 
-    STextField<String> masterSTextField;
+    private STextField<String> masterSTextField;
 
-    STextField<String> sync1Textfield;
-    STextField<String> sync1aTextfield;
-    STextField<String> async1Textfield;
-    STextField<String> sync2Textfield;
-    STextField<String> async2Textfield;
+    private STextField<String> sync1Textfield;
+    private STextField<String> sync1aTextfield;
+    private STextField<String> async1Textfield;
+    private STextField<String> sync2Textfield;
+    private STextField<String> async2Textfield;
 
     private STabbedPane<String> sTabbedPane;
+
+    private int pceCount = 0;
 
     @Test
     public void selectionModeMultiple() throws Exception {
@@ -45,6 +47,8 @@ public class STabbedPaneTest extends TestBase {
                                     , value -> doSomeBackgroundStuff(value)
                                     , (result, component) -> async2Textfield.setValue("async2 " + result))
                     );
+
+            sTabbedPane.addPropertyChangeListener(STabbedPane.LOADED_COMPONENT, evt -> pceCount++);
             return TestUtil.inSFrame(SVPanel.of(masterSTextField, sTabbedPane, focusMeComponent()));
         });
 
@@ -53,19 +57,21 @@ public class STabbedPaneTest extends TestBase {
         Assertions.assertEquals(null, sync1aTextfield.getValue());
 
         // WHEN click second tab
+        pceCount = 0;
         frameFixture.tabbedPane("sTabbedPane").selectTab("sync1a");
-        sleep(1000); // TBEERNOT wait for tab to be loaded, can we do this without a sleep?
+        waitFor(() -> pceCount > 0);
 
         // THEN second tab is lazy loaded
         Assertions.assertEquals("sync1a master", sync1aTextfield.getValue());
 
         // WHEN click third tab
+        pceCount = 0;
         frameFixture.tabbedPane("sTabbedPane").selectTab("async1");
-        sleep(2000); // TBEERNOT wait for tab to be loaded, this is releated to the sleep in the background action, but still can we wait for the tab to be loaded
+        waitFor(() -> pceCount > 0);
 
         // THEN third tab is lazy loaded
         Assertions.assertEquals("async1 #master", async1Textfield.getValue());
-        sleep(5000);
+//        sleep(5000);
     }
 
     private String doSomeBackgroundStuff(String value) {

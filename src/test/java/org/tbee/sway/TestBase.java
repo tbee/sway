@@ -14,6 +14,7 @@ import org.junit.jupiter.api.BeforeEach;
 import javax.swing.JFrame;
 import java.awt.GraphicsEnvironment;
 import java.util.concurrent.Callable;
+import java.util.function.Supplier;
 
 public class TestBase extends AssertJSwingTestCaseTemplate {
 
@@ -64,5 +65,16 @@ public class TestBase extends AssertJSwingTestCaseTemplate {
 
     protected void sleep(int ms) {
         TestUtil.sleep(ms);
+    }
+
+
+    protected void waitFor(Supplier<Boolean> supplier) {
+        int retryCount = 10;
+        while (!supplier.get() && retryCount-- >= 0) {
+            sleep(500);
+        }
+        if (retryCount < 0) {
+            throw new IllegalStateException("waitFor timed out");
+        }
     }
 }
