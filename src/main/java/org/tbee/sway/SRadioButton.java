@@ -3,6 +3,7 @@ package org.tbee.sway;
 import javax.swing.Action;
 import javax.swing.Icon;
 import javax.swing.JRadioButton;
+import java.awt.Component;
 import java.awt.Insets;
 import java.awt.event.ActionListener;
 
@@ -85,5 +86,13 @@ public class SRadioButton extends JRadioButton {
         setVisible(value);
         return this;
     }
-    
+
+    public SRadioButton overlayWith(Component overlayComponent) {
+        SOverlayPane.overlayWith(this, overlayComponent);
+        return this;
+    }
+    public SRadioButton removeOverlay(Component overlayComponent) {
+        SOverlayPane.removeOverlay(this, overlayComponent);
+        return this;
+    }
 }

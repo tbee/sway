@@ -27,6 +27,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.table.TableCellRenderer;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
@@ -1310,6 +1311,15 @@ public class STable<TableType> extends JPanel {
 
     public STable<TableType> visible(boolean value) {
         setVisible(value);
+        return this;
+    }
+
+    public STable<TableType> overlayWith(Component overlayComponent) {
+        SOverlayPane.overlayWith(this, overlayComponent);
+        return this;
+    }
+    public STable<TableType> removeOverlay(Component overlayComponent) {
+        SOverlayPane.removeOverlay(this, overlayComponent);
         return this;
     }
 

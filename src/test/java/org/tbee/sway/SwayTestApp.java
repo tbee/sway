@@ -367,7 +367,7 @@ public class SwayTestApp {
         STextField<Integer> asyncTextfield = STextField.ofInteger();
         STextField<String> subsyncTextfield = STextField.ofString();
         STextField<Integer> subasyncTextfield = STextField.ofInteger();
-        
+
         STabbedPane<String> sTabbedPane = STabbedPane.<String>of()
             .bindTo(masterSTextField.value$())
             .addTab("tab1", SHPanel.of(sync1Textfield), (v, c) -> sync1Textfield.setValue("child1 " + v))

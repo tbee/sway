@@ -86,6 +86,9 @@ STabbedPane<String> sTabbedPane = STabbedPane.<String>of()
 var sBorderPanel = SBorderPanel.of(new STable())
          .west(new SomeNavigationMenu())
          .east(new SomeContextLinks());
+
+// Any component can have an overlay of any component, but there are a few practical ones
+sBorderPanel.overlayWith(new SLoadingOverlay());
          
 // MigLayout is used by Sway internally anyhow, so the user can use this great layout as well.         
 var migPanel = MigPanel.of().fill();

@@ -28,6 +28,7 @@ import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.plaf.ActionMapUIResource;
+import java.awt.Component;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -343,6 +344,16 @@ public class SCheckBox3 extends JCheckBox {
 
 	public SCheckBox3 visible(boolean value) {
 		setVisible(value);
+		return this;
+	}
+
+
+	public SCheckBox3 overlayWith(Component overlayComponent) {
+		SOverlayPane.overlayWith(this, overlayComponent);
+		return this;
+	}
+	public SCheckBox3 removeOverlay(Component overlayComponent) {
+		SOverlayPane.removeOverlay(this, overlayComponent);
 		return this;
 	}
 

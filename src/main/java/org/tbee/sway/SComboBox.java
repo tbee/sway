@@ -15,6 +15,7 @@ import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import java.awt.Color;
+import java.awt.Component;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -275,6 +276,15 @@ public class SComboBox<T> extends JComboBox<T> {
 
     public SComboBox<T> visible(boolean v) {
         setVisible(v);
+        return this;
+    }
+
+    public SComboBox<T> overlayWith(Component overlayComponent) {
+        SOverlayPane.overlayWith(this, overlayComponent);
+        return this;
+    }
+    public SComboBox<T> removeOverlay(Component overlayComponent) {
+        SOverlayPane.removeOverlay(this, overlayComponent);
         return this;
     }
 

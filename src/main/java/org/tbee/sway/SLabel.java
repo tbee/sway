@@ -4,8 +4,12 @@ import org.tbee.sway.binding.BindingEndpoint;
 import org.tbee.sway.support.HAlign;
 import org.tbee.sway.support.VAlign;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.Icon;
+import javax.swing.JLabel;
+import javax.swing.SwingConstants;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Font;
 
 // TODO:
 
@@ -163,6 +167,15 @@ public class SLabel extends JLabel {
 
     public SLabel toolTipText(String text) {
         setToolTipText(text);
+        return this;
+    }
+
+    public SLabel overlayWith(Component overlayComponent) {
+        SOverlayPane.overlayWith(this, overlayComponent);
+        return this;
+    }
+    public SLabel removeOverlay(Component overlayComponent) {
+        SOverlayPane.removeOverlay(this, overlayComponent);
         return this;
     }
 }

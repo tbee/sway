@@ -12,6 +12,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
+import java.awt.Component;
 import java.awt.Insets;
 import java.awt.event.ActionListener;
 
@@ -176,6 +177,16 @@ public class SCheckBox extends JCheckBox {
 
     public SCheckBox visible(boolean value) {
         setVisible(value);
+        return this;
+    }
+
+
+    public SCheckBox overlayWith(Component overlayComponent) {
+        SOverlayPane.overlayWith(this, overlayComponent);
+        return this;
+    }
+    public SCheckBox removeOverlay(Component overlayComponent) {
+        SOverlayPane.removeOverlay(this, overlayComponent);
         return this;
     }
 

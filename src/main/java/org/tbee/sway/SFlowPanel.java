@@ -1,12 +1,12 @@
 package org.tbee.sway;
 
 import javax.swing.JComponent;
-import javax.swing.JPanel;
+import java.awt.Component;
 import java.awt.FlowLayout;
 import java.util.Arrays;
 import java.util.Collection;
 
-public class SFlowPanel extends JPanel {
+public class SFlowPanel extends SPanelExtendable<SFlowPanel> {
 
     public SFlowPanel() {
         super();
@@ -20,6 +20,15 @@ public class SFlowPanel extends JPanel {
 
     public SFlowPanel add(Collection<? extends JComponent> components) {
         components.forEach(c -> super.add(c));
+        return this;
+    }
+
+    public SFlowPanel overlayWith(Component overlayComponent) {
+        SOverlayPane.overlayWith(this, overlayComponent);
+        return this;
+    }
+    public SFlowPanel removeOverlay(Component overlayComponent) {
+        SOverlayPane.removeOverlay(this, overlayComponent);
         return this;
     }
 

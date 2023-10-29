@@ -3,6 +3,7 @@ package org.tbee.sway;
 import javax.swing.Action;
 import javax.swing.Icon;
 import javax.swing.JToggleButton;
+import java.awt.Component;
 import java.awt.event.ActionListener;
 
 // TODO:
@@ -79,6 +80,15 @@ public class SToggleButton extends JToggleButton {
 
     public SToggleButton toolTipText(String text) {
         setToolTipText(text);
+        return this;
+    }
+
+    public SToggleButton overlayWith(Component overlayComponent) {
+        SOverlayPane.overlayWith(this, overlayComponent);
+        return this;
+    }
+    public SToggleButton removeOverlay(Component overlayComponent) {
+        SOverlayPane.removeOverlay(this, overlayComponent);
         return this;
     }
 }

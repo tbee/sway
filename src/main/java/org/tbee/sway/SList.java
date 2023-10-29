@@ -16,6 +16,7 @@ import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import java.awt.Color;
+import java.awt.Component;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -304,7 +305,16 @@ public class SList<T> extends SBorderPanel {
         setVisible(value);
         return this;
     }
-    
+
+    public SList<T> overlayWith(Component overlayComponent) {
+        SOverlayPane.overlayWith(this, overlayComponent);
+        return this;
+    }
+    public SList<T> removeOverlay(Component overlayComponent) {
+        SOverlayPane.removeOverlay(this, overlayComponent);
+        return this;
+    }
+
     static public <T> SList<T> of(List<T> data) {
     	return new SList<T>().data(data);
     }

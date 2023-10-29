@@ -11,6 +11,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
+import java.awt.Component;
 
 public class STextArea extends SBorderPanel {
 
@@ -133,6 +134,15 @@ public class STextArea extends SBorderPanel {
 
     public STextArea visible(boolean value) {
         setVisible(value);
+        return this;
+    }
+
+    public SBorderPanel overlayWith(Component overlayComponent) {
+        SOverlayPane.overlayWith(this, overlayComponent);
+        return this;
+    }
+    public SBorderPanel removeOverlay(Component overlayComponent) {
+        SOverlayPane.removeOverlay(this, overlayComponent);
         return this;
     }
 

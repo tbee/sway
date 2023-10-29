@@ -558,6 +558,15 @@ public class STree<T extends Object> extends SBorderPanel {
     	return new STree<T>().root(root);
     }
 
+    public SBorderPanel overlayWith(Component overlayComponent) {
+        SOverlayPane.overlayWith(this, overlayComponent);
+        return this;
+    }
+    public SBorderPanel removeOverlay(Component overlayComponent) {
+        SOverlayPane.removeOverlay(this, overlayComponent);
+        return this;
+    }
+
     /**
      * Binds to the default property 'selection'
      */

@@ -1,12 +1,12 @@
 package org.tbee.sway;
 
-import java.awt.LayoutManager;
-import java.util.Arrays;
-import java.util.Collection;
-
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
+import java.awt.Component;
+import java.awt.LayoutManager;
+import java.util.Arrays;
+import java.util.Collection;
 
 abstract public class SPanelExtendable<T> extends JPanel {
     public SPanelExtendable() {
@@ -62,6 +62,16 @@ abstract public class SPanelExtendable<T> extends JPanel {
 
     public T doubleBuffered(boolean v) {
         super.setDoubleBuffered(v);
+        return (T)this;
+    }
+
+
+    public T overlayWith(Component overlayComponent) {
+        SOverlayPane.overlayWith(this, overlayComponent);
+        return (T)this;
+    }
+    public T removeOverlay(Component overlayComponent) {
+        SOverlayPane.removeOverlay(this, overlayComponent);
         return (T)this;
     }
 }
