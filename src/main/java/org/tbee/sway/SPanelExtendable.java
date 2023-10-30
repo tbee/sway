@@ -5,6 +5,7 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 import java.awt.Component;
 import java.awt.LayoutManager;
+import java.beans.PropertyChangeListener;
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -65,6 +66,14 @@ abstract public class SPanelExtendable<T> extends JPanel {
         return (T)this;
     }
 
+    public SPanelExtendable<T> withPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
+        super.addPropertyChangeListener(propertyName, listener);
+        return this;
+    }
+    public SPanelExtendable<T> withPropertyChangeListener(PropertyChangeListener listener) {
+        super.addPropertyChangeListener(listener);
+        return this;
+    }
 
     public T overlayWith(Component overlayComponent) {
         SOverlayPane.overlayWith(this, overlayComponent);

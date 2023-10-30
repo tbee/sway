@@ -554,17 +554,26 @@ public class STree<T extends Object> extends SBorderPanel {
         return this;
     }
 
-    static public <T> STree<T> of(T root) {
-    	return new STree<T>().root(root);
+    public STree<T> withPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
+        super.addPropertyChangeListener(propertyName, listener);
+        return this;
+    }
+    public STree<T> withPropertyChangeListener(PropertyChangeListener listener) {
+        super.addPropertyChangeListener(listener);
+        return this;
     }
 
-    public SBorderPanel overlayWith(Component overlayComponent) {
+    public STree<T> overlayWith(Component overlayComponent) {
         SOverlayPane.overlayWith(this, overlayComponent);
         return this;
     }
-    public SBorderPanel removeOverlay(Component overlayComponent) {
+    public STree<T> removeOverlay(Component overlayComponent) {
         SOverlayPane.removeOverlay(this, overlayComponent);
         return this;
+    }
+
+    static public <T> STree<T> of(T root) {
+        return new STree<T>().root(root);
     }
 
     /**

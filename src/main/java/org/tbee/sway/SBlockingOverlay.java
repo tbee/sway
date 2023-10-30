@@ -1,6 +1,5 @@
 package org.tbee.sway;
 
-import javax.swing.JPanel;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.KeyboardFocusManager;
@@ -11,7 +10,7 @@ import java.beans.PropertyChangeListener;
 /**
  * Placing a blocking overlay over a component will block mouse clicks.
  */
-public class SBlockingOverlay extends JPanel implements SOverlayPane.OverlaidComponentCallback, SOverlayPane.OnOverlayCallback, SOverlayPane.OnRemoveCallback {
+public class SBlockingOverlay extends SPanel implements SOverlayPane.OverlaidComponentCallback, SOverlayPane.OnOverlayCallback, SOverlayPane.OnRemoveCallback {
 
     final static private String FOCUS_OWNER = "focusOwner";
 

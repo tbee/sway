@@ -10,6 +10,7 @@ import javax.swing.SwingConstants;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
+import java.beans.PropertyChangeListener;
 
 // TODO:
 
@@ -167,6 +168,15 @@ public class SLabel extends JLabel {
 
     public SLabel toolTipText(String text) {
         setToolTipText(text);
+        return this;
+    }
+
+    public SLabel withPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
+        super.addPropertyChangeListener(propertyName, listener);
+        return this;
+    }
+    public SLabel withPropertyChangeListener(PropertyChangeListener listener) {
+        super.addPropertyChangeListener(listener);
         return this;
     }
 

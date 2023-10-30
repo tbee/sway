@@ -11,6 +11,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
 import java.awt.Component;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -323,6 +324,23 @@ public class STabbedPane<T> extends JTabbedPane {
         return this;
     }
 
+    public STabbedPane<T> overlayWith(Component overlayComponent) {
+        SOverlayPane.overlayWith(this, overlayComponent);
+        return this;
+    }
+    public STabbedPane<T> removeOverlay(Component overlayComponent) {
+        SOverlayPane.removeOverlay(this, overlayComponent);
+        return this;
+    }
+
+    public STabbedPane<T> withPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
+        super.addPropertyChangeListener(propertyName, listener);
+        return this;
+    }
+    public STabbedPane<T> withPropertyChangeListener(PropertyChangeListener listener) {
+        super.addPropertyChangeListener(listener);
+        return this;
+    }
 
     /**
      * Binds the default property 'value'

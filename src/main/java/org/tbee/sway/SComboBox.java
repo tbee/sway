@@ -16,6 +16,7 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import java.awt.Color;
 import java.awt.Component;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -276,6 +277,15 @@ public class SComboBox<T> extends JComboBox<T> {
 
     public SComboBox<T> visible(boolean v) {
         setVisible(v);
+        return this;
+    }
+
+    public SComboBox<T> withPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
+        super.addPropertyChangeListener(propertyName, listener);
+        return this;
+    }
+    public SComboBox<T> withPropertyChangeListener(PropertyChangeListener listener) {
+        super.addPropertyChangeListener(listener);
         return this;
     }
 

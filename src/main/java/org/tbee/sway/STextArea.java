@@ -12,6 +12,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 import java.awt.Component;
+import java.beans.PropertyChangeListener;
 
 public class STextArea extends SBorderPanel {
 
@@ -137,11 +138,20 @@ public class STextArea extends SBorderPanel {
         return this;
     }
 
-    public SBorderPanel overlayWith(Component overlayComponent) {
+    public STextArea withPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
+        super.addPropertyChangeListener(propertyName, listener);
+        return this;
+    }
+    public STextArea withPropertyChangeListener(PropertyChangeListener listener) {
+        super.addPropertyChangeListener(listener);
+        return this;
+    }
+
+    public STextArea overlayWith(Component overlayComponent) {
         SOverlayPane.overlayWith(this, overlayComponent);
         return this;
     }
-    public SBorderPanel removeOverlay(Component overlayComponent) {
+    public STextArea removeOverlay(Component overlayComponent) {
         SOverlayPane.removeOverlay(this, overlayComponent);
         return this;
     }

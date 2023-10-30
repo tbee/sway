@@ -1,6 +1,7 @@
 package org.tbee.sway;
 
-import javax.swing.*;
+import javax.swing.JMenuBar;
+import java.beans.PropertyChangeListener;
 
 
 /**
@@ -75,6 +76,15 @@ public class SMenuBar extends JMenuBar {
 
     public SMenuBar visible(boolean v) {
         setVisible(v);
+        return this;
+    }
+
+    public SMenuBar withPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
+        super.addPropertyChangeListener(propertyName, listener);
+        return this;
+    }
+    public SMenuBar withPropertyChangeListener(PropertyChangeListener listener) {
+        super.addPropertyChangeListener(listener);
         return this;
     }
 }

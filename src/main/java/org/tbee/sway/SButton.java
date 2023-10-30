@@ -15,6 +15,7 @@ import java.awt.Component;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.beans.PropertyChangeListener;
 
 public class SButton extends JButton {
     final static private org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(SButton.class);
@@ -205,6 +206,15 @@ public class SButton extends JButton {
 
     public SButton visible(boolean value) {
         setVisible(value);
+        return this;
+    }
+
+    public SButton withPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
+        super.addPropertyChangeListener(propertyName, listener);
+        return this;
+    }
+    public SButton withPropertyChangeListener(PropertyChangeListener listener) {
+        super.addPropertyChangeListener(listener);
         return this;
     }
 

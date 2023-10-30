@@ -2,6 +2,7 @@ package org.tbee.sway;
 
 import javax.swing.JComponent;
 import javax.swing.JFrame;
+import java.beans.PropertyChangeListener;
 import java.util.function.Consumer;
 
 // TBEERNOT: constructor with title plus of methods, dito SDialog
@@ -107,6 +108,15 @@ public class SFrame extends JFrame implements SOverlayPane.OverlayProvider {
         SMenuBar sMenuBar = SMenuBar.of(this);
         sMenuBarConsumer.accept(sMenuBar);
         setJMenuBar(sMenuBar);
+        return this;
+    }
+
+    public SFrame withPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
+        super.addPropertyChangeListener(propertyName, listener);
+        return this;
+    }
+    public SFrame withPropertyChangeListener(PropertyChangeListener listener) {
+        super.addPropertyChangeListener(listener);
         return this;
     }
 }

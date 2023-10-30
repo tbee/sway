@@ -2,8 +2,10 @@ package org.tbee.sway;
 
 import org.tbee.sway.binding.BindingEndpoint;
 
-import javax.swing.*;
+import javax.swing.Icon;
+import javax.swing.JMenu;
 import java.awt.event.ActionListener;
+import java.beans.PropertyChangeListener;
 
 public class SMenu extends JMenu {
 
@@ -152,4 +154,13 @@ public class SMenu extends JMenu {
         super.addActionListener(v);
         return this;
     }
+
+	public SMenu withPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
+		super.addPropertyChangeListener(propertyName, listener);
+		return this;
+	}
+	public SMenu withPropertyChangeListener(PropertyChangeListener listener) {
+		super.addPropertyChangeListener(listener);
+		return this;
+	}
 }

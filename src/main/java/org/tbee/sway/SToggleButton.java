@@ -5,6 +5,7 @@ import javax.swing.Icon;
 import javax.swing.JToggleButton;
 import java.awt.Component;
 import java.awt.event.ActionListener;
+import java.beans.PropertyChangeListener;
 
 // TODO:
 // - binding (2/3? values)
@@ -80,6 +81,15 @@ public class SToggleButton extends JToggleButton {
 
     public SToggleButton toolTipText(String text) {
         setToolTipText(text);
+        return this;
+    }
+
+    public SToggleButton withPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
+        super.addPropertyChangeListener(propertyName, listener);
+        return this;
+    }
+    public SToggleButton withPropertyChangeListener(PropertyChangeListener listener) {
+        super.addPropertyChangeListener(listener);
         return this;
     }
 

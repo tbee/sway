@@ -15,6 +15,7 @@ import javax.swing.SwingUtilities;
 import java.awt.Component;
 import java.awt.Insets;
 import java.awt.event.ActionListener;
+import java.beans.PropertyChangeListener;
 
 /**
  * If the SELECTED, UNSELECTED icons are specified in the IconRegistry, then these will be drawn.
@@ -180,6 +181,14 @@ public class SCheckBox extends JCheckBox {
         return this;
     }
 
+    public SCheckBox withPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
+        super.addPropertyChangeListener(propertyName, listener);
+        return this;
+    }
+    public SCheckBox withPropertyChangeListener(PropertyChangeListener listener) {
+        super.addPropertyChangeListener(listener);
+        return this;
+    }
 
     public SCheckBox overlayWith(Component overlayComponent) {
         SOverlayPane.overlayWith(this, overlayComponent);

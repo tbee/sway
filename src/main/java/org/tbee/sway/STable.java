@@ -1314,6 +1314,15 @@ public class STable<TableType> extends JPanel {
         return this;
     }
 
+    public STable<TableType> withPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
+        super.addPropertyChangeListener(propertyName, listener);
+        return this;
+    }
+    public STable<TableType> withPropertyChangeListener(PropertyChangeListener listener) {
+        super.addPropertyChangeListener(listener);
+        return this;
+    }
+
     public STable<TableType> overlayWith(Component overlayComponent) {
         SOverlayPane.overlayWith(this, overlayComponent);
         return this;

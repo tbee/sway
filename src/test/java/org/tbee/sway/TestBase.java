@@ -11,7 +11,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 
-import javax.swing.JFrame;
 import java.awt.GraphicsEnvironment;
 import java.util.concurrent.Callable;
 import java.util.function.Supplier;
@@ -48,12 +47,11 @@ public class TestBase extends AssertJSwingTestCaseTemplate {
 
 
 
-    protected void construct(Callable<JFrame> callable) {
-        JFrame frame = GuiActionRunner.execute(() -> {
-            return callable.call();
-        });
+    protected SFrame construct(Callable<SFrame> callable) {
+        SFrame frame = GuiActionRunner.execute(() -> callable.call());
         frameFixture = new FrameFixture(robot(), frame);
         frameFixture.show();
+        return frame;
     }
 
     protected SButton focusMeComponent() {
@@ -69,9 +67,9 @@ public class TestBase extends AssertJSwingTestCaseTemplate {
 
 
     protected void waitFor(Supplier<Boolean> supplier) {
-        int retryCount = 10;
+        int retryCount = 100;
         while (!supplier.get() && retryCount-- >= 0) {
-            sleep(500);
+            sleep(100);
         }
         if (retryCount < 0) {
             throw new IllegalStateException("waitFor timed out");

@@ -1,17 +1,16 @@
 package org.tbee.sway;
 
 import javax.swing.JComponent;
-import javax.swing.JFrame;
 import java.util.Collection;
 
 public class TestUtil {
 
-    static public JFrame inSFrame(Collection<? extends JComponent> components) {
+    static public SFrame inSFrame(Collection<? extends JComponent> components) {
         var sPanel = SMigPanel.of(components);
         return inSFrame(sPanel);
     }
 
-    static public JFrame inSFrame(JComponent... components) {
+    static public SFrame inSFrame(JComponent... components) {
         var sPanel = SMigPanel.of(components);
         return inSFrame(sPanel);
     }

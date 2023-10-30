@@ -21,6 +21,7 @@ import java.awt.event.KeyEvent;
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
+import java.beans.PropertyChangeListener;
 import java.beans.PropertyDescriptor;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -304,7 +305,7 @@ public class STextField<T> extends javax.swing.JTextField {
         return handleException(e);
     }
     private boolean handleException(Throwable e) {
-        if (handlingExceptionCnt > 0) {
+        if (handlingExceptionCnt > 0 || !isShowing()) {
             return false;
         }
 
@@ -410,6 +411,15 @@ public class STextField<T> extends javax.swing.JTextField {
 
     public STextField<T> editable(boolean enabled) {
         setEditable(enabled);
+        return this;
+    }
+
+    public STextField<T> withPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
+        super.addPropertyChangeListener(propertyName, listener);
+        return this;
+    }
+    public STextField<T> withPropertyChangeListener(PropertyChangeListener listener) {
+        super.addPropertyChangeListener(listener);
         return this;
     }
 

@@ -2,8 +2,9 @@ package org.tbee.sway;
 
 import org.tbee.sway.binding.BindingEndpoint;
 
-import javax.swing.*;
+import javax.swing.Icon;
 import java.awt.event.ActionListener;
+import java.beans.PropertyChangeListener;
 
 public class SMenuItem extends javax.swing.JMenuItem {
 
@@ -166,4 +167,13 @@ public class SMenuItem extends javax.swing.JMenuItem {
         super.addActionListener(v);
         return this;
     }
+
+	public SMenuItem withPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
+		super.addPropertyChangeListener(propertyName, listener);
+		return this;
+	}
+	public SMenuItem withPropertyChangeListener(PropertyChangeListener listener) {
+		super.addPropertyChangeListener(listener);
+		return this;
+	}
 }

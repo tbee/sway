@@ -17,6 +17,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import java.awt.Color;
 import java.awt.Component;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -303,6 +304,15 @@ public class SList<T> extends SBorderPanel {
 
     public SList<T> visible(boolean value) {
         setVisible(value);
+        return this;
+    }
+
+    public SPanelExtendable<SBorderPanel> withPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
+        super.addPropertyChangeListener(propertyName, listener);
+        return this;
+    }
+    public SPanelExtendable<SBorderPanel> withPropertyChangeListener(PropertyChangeListener listener) {
+        super.addPropertyChangeListener(listener);
         return this;
     }
 

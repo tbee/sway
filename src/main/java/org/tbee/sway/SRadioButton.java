@@ -6,6 +6,7 @@ import javax.swing.JRadioButton;
 import java.awt.Component;
 import java.awt.Insets;
 import java.awt.event.ActionListener;
+import java.beans.PropertyChangeListener;
 
 public class SRadioButton extends JRadioButton {
     public SRadioButton() {
@@ -84,6 +85,15 @@ public class SRadioButton extends JRadioButton {
 
     public SRadioButton visible(boolean value) {
         setVisible(value);
+        return this;
+    }
+
+    public SRadioButton withPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
+        super.addPropertyChangeListener(propertyName, listener);
+        return this;
+    }
+    public SRadioButton withPropertyChangeListener(PropertyChangeListener listener) {
+        super.addPropertyChangeListener(listener);
         return this;
     }
 

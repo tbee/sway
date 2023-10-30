@@ -323,6 +323,15 @@ public class SButtonGroup<T> extends ButtonGroup {
 
     transient private PropertyChangeSupport propertyChangeSupport = null;
 
+    public SButtonGroup<T> withPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
+        addPropertyChangeListener(propertyName, listener);
+        return this;
+    }
+    public SButtonGroup<T> withPropertyChangeListener(PropertyChangeListener listener) {
+        addPropertyChangeListener(listener);
+        return this;
+    }
+
     // ========================================================
     // EXCEPTION HANDLER
 

@@ -1,9 +1,9 @@
 package org.tbee.sway;
 
-import java.awt.event.ActionListener;
-
 import javax.swing.Icon;
 import javax.swing.JRadioButtonMenuItem;
+import java.awt.event.ActionListener;
+import java.beans.PropertyChangeListener;
 
 public class SRadioButtonMenuItem extends JRadioButtonMenuItem {
 
@@ -64,4 +64,12 @@ public class SRadioButtonMenuItem extends JRadioButtonMenuItem {
         return this;
     }
 
+	public SRadioButtonMenuItem withPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
+		super.addPropertyChangeListener(propertyName, listener);
+		return this;
+	}
+	public SRadioButtonMenuItem withPropertyChangeListener(PropertyChangeListener listener) {
+		super.addPropertyChangeListener(listener);
+		return this;
+	}
 }

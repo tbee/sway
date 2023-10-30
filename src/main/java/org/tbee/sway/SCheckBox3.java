@@ -35,6 +35,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.beans.PropertyChangeListener;
 
 
 /**
@@ -347,6 +348,14 @@ public class SCheckBox3 extends JCheckBox {
 		return this;
 	}
 
+	public SCheckBox3 withPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
+		super.addPropertyChangeListener(propertyName, listener);
+		return this;
+	}
+	public SCheckBox3 withPropertyChangeListener(PropertyChangeListener listener) {
+		super.addPropertyChangeListener(listener);
+		return this;
+	}
 
 	public SCheckBox3 overlayWith(Component overlayComponent) {
 		SOverlayPane.overlayWith(this, overlayComponent);
