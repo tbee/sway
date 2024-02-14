@@ -6,6 +6,9 @@ import javax.swing.Icon;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeListener;
 
+/**
+ * @see SMenuBar
+ */
 public class SMenuItem extends javax.swing.JMenuItem {
 
     /**

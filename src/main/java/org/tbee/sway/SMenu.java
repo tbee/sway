@@ -7,6 +7,9 @@ import javax.swing.JMenu;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeListener;
 
+/**
+ * @see SMenuBar
+ */
 public class SMenu extends JMenu {
 
 	/**

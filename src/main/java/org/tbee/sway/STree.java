@@ -31,6 +31,36 @@ import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+/**
+ * A tree consists of tree nodes, each representing a value in some domain.
+ * The tree starts at the root node, and only needs a way to get the children of any node.
+ * The tree node takes care of visualizing the value it represents, for this a format is used.
+ *
+ * So if only one type of node is present in the tree, then a root, formatter and children-function is needed.
+ * And that is exactly all that is present in the code.
+ * <pre>{@code
+ * var sTree = STree.of(amsterdam)
+ *         .render(new CityFormat())
+ *         .childrenOf(City::getPartnerCities);
+ * </pre>
+ *
+ * But often a tree contains different type of values as nodes.
+ * In order to create such a tree, multiple formatters and children-functions are needed.
+ * STree of course uses the FormatRegistry if no explicit formatter is defined.
+ * <pre>{@code
+ * var sTree = STree.of(cities)
+ *         .childrenOf(City.class, City::getStreets)
+ *         .childrenOf(Street.class, Street::getBuildings);
+ * </pre>
+ *
+ * If the root of the tree is not a single node but a collection (like in the example above),
+ * then STree automatically creates a virtual root node and hides that.
+ * Visually this results in a multi-node root.
+ *
+ * STree automatically includes scrollbars.
+ * 
+ * @param <T>
+ */
 public class STree<T extends Object> extends SBorderPanel {
     static private org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(STree.class);
 
