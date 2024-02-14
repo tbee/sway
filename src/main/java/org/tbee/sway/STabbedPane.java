@@ -22,12 +22,11 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 /**
- * This TabbedPane supports lazy loading, this means that when adding a tab a callback is registered as well,
- * which is called when the tab becomes visible or new data is shown.
- * This is intended for a parent-child setup (but since the concept of parent already exists, we use value-child).
+ * STabbedPane supports lazy loading, this means that when adding a tab a callback is registered as well,
+ * which is called when the tab becomes visible.
  *
- * The value can either be set or bound, but is not displayed by this tabbed pane in any way.
- * It's only used to call the callbacks.
+ * STabbedPane can be bound, so when a tab needs loading, it gets this value to start from.
+ * For example: an STabbedPane bound to a city can load the details or crime numbers when the corresponding tab becomes visible.
  *
  * If the value changes or the visible tab changes, the visible tab's (synchronous) onActive callback is called,
  * or the (asynchronous) sequences of onLoad / onSuccess / onFailure callbacks are called.
@@ -36,20 +35,18 @@ import java.util.function.Function;
  *
  * Example
  * <pre>{@code
- * // This is the main data
- * STextField<String> valueSTextField = STextField.ofString().value("value");
- *
  * // The tabbed pane reacts to changes in the value by binding
- * STabbedPane<String> sTabbedPane = STabbedPane.<String>of()
- *     .bindTo(valueSTextField.value$())
- *     .addTab("sync", STextField.ofString(), (value, component) -> component.setValue(...))
- *     .addTab("async", STextField.ofInteger()
- *         , value -> value.loadResult...; // the value leads to some result being loaded (in a separate worker)
- *         , (result, component) -> component.setValue(result) // The result is then displayed
- *         , (throwable, component) -> ... // or something went wrong
+ * STabbedPane<City> sTabbedPane = STabbedPane.of()
+ *     .bindTo(data.city$())
+ *     .addTab("details", STextField.ofString()  // synchronous: only value-to-component function provided
+ *         , (city, sTextField) -> sTextField.setValue(city.name()))
+ *     .addTab("crime", new CrimeNumbersPanel() // asynchronous: value-to-value2 function, on-success value2-to-component function, and on-failure provided
+ *         , city -> crimeApi.fetchNumbersFor(city.code()) // In a worker thread derived data is fetched
+ *         , (crimeNumbers, crimeNumbersPanel) -> crimeNumbersPanel.setNumbers(crimeNumbers) // The derrived data is displayed
+ *         , (throwable, crimeNumbersPanel) -> ... // Or something went wrong
  *     );
- * }
  * </pre>
+ *
  * @param <T> the type of the value.
  */
 public class STabbedPane<T> extends JTabbedPane {

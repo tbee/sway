@@ -71,15 +71,17 @@ var sPanel = SFlowPanel.of(sButtonGroup.getButtons());
 var sButtonGroupCities = SButtonGroup.ofRadioButtons(amsterdam, berlin, rome);
 var sPanelCities = SFlowPanel.of(sButtonGroupCities.getButtons());
 
-// The tabbed pane supports loading-on-demand, synchronous and asynchronous, 
-// when the visible tab changes, or a new value is set.
-STabbedPane<String> sTabbedPane = STabbedPane.<String>of()
-    .bindTo(city.name$())
-    .addTab("sync", STextField.ofString(), (value, component) -> component.setValue(...))
-    .addTab("async", STextField.ofInteger()
-        , value -> value.loadResult...; // the value leads to some result being loaded (in a separate worker)
-        , (result, component) -> component.setValue(result) // The result is then displayed
-        , (throwable, component) -> ... // or something went wrong
+// STabbedPane supports loading-on-demand, synchronous and asynchronous, when the visible tab changes.
+// STabbedPane can be bound, so when a tab needs loading, it gets this value to start from.
+// For example: an STabbedPane bound to a city can load the details or crime numbers when the corresponding tab becomes visible.
+STabbedPane<City> sTabbedPane = STabbedPane.of()
+    .bindTo(data.city$())
+    .addTab("details", STextField.ofString()  // synchronous: only value-to-component function provided
+        , (city, sTextField) -> sTextField.setValue(city.name()))
+    .addTab("crime", new CrimeNumbersPanel() // asynchronous: value-to-value2 function, on-success value2-to-component function, and on-failure provided
+        , city -> crimeApi.fetchNumbersFor(city.code()) // In a worker thread derived data is fetched
+        , (crimeNumbers, crimeNumbersPanel) -> crimeNumbersPanel.setNumbers(crimeNumbers) // The derrived data is displayed
+        , (throwable, crimeNumbersPanel) -> ... // Or something went wrong
     );
 
 // Explicit panels for layouts, with corresponding methods.

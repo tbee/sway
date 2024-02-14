@@ -58,7 +58,7 @@ import java.util.function.Function;
  * Visually this results in a multi-node root.
  *
  * STree automatically includes scrollbars.
- * 
+ *
  * @param <T>
  */
 public class STree<T extends Object> extends SBorderPanel {

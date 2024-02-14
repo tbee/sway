@@ -42,7 +42,7 @@ public class STabbedPaneTest extends TestBase {
                             , value -> doSomeBackgroundStuff(value)
                             , (result, component) -> async1Textfield.setValue("async1 " + result)
                             , (throwable, component) -> showExceptionInDialog(throwable, masterSTextField))
-                    .addTab("subtab", STabbedPane.<String>of()
+                    .addTab("subtab", STabbedPane.<String>of() // nested tabbed pane
                             .name("subTabbedPane")
                             .withPropertyChangeListener(STabbedPane.LOADED_COMPONENT, evt -> tabLoadedCount++)
                             .bindTo(masterSTextField.value$()) // or use: (v, c) -> c.setValue(v)
