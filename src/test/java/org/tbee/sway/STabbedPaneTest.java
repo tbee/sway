@@ -22,7 +22,7 @@ public class STabbedPaneTest extends TestBase {
     private int tabLoadedCount = 0;
 
     @Test
-    public void selectionModeMultiple() throws Exception {
+    public void syncAndAsyncTabs() throws Exception {
 
         // GIVEN
         sFrame = construct(() -> {
