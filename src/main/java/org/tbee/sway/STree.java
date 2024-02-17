@@ -42,7 +42,7 @@ import java.util.function.Function;
  * var sTree = STree.of(amsterdam)
  *         .render(new CityFormat())
  *         .childrenOf(City::getPartnerCities);
- * </pre>
+ * }</pre>
  *
  * But often a tree contains different type of values as nodes.
  * In order to create such a tree, multiple formatters and children-functions are needed.
@@ -51,7 +51,7 @@ import java.util.function.Function;
  * var sTree = STree.of(cities)
  *         .childrenOf(City.class, City::getStreets)
  *         .childrenOf(Street.class, Street::getBuildings);
- * </pre>
+ * }</pre>
  *
  * If the root of the tree is not a single node but a collection (like in the example above),
  * then STree automatically creates a virtual root node and hides that.

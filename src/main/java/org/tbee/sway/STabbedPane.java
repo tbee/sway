@@ -45,7 +45,7 @@ import java.util.function.Function;
  *         , (crimeNumbers, crimeNumbersPanel) -> crimeNumbersPanel.setNumbers(crimeNumbers) // The derrived data is displayed
  *         , (throwable, crimeNumbersPanel) -> ... // Or something went wrong
  *     );
- * </pre>
+ * }</pre>
  *
  * @param <T> the type of the value.
  */

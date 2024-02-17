@@ -83,6 +83,11 @@ public class SFrame extends JFrame implements SOverlayPane.OverlayProvider {
         return this;
     }
 
+    public SFrame undecorated() {
+        setUndecorated(true);
+        return this;
+    }
+
     /**
      * Use this method like so:
      * <pre>{@code
