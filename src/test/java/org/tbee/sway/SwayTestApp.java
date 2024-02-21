@@ -15,7 +15,6 @@ import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
@@ -43,15 +42,15 @@ public class SwayTestApp {
         registerIcons();
 
         SwingUtilities.invokeAndWait(() -> {
-            JTabbedPane tabbedPane = new JTabbedPane();
-            tabbedPane.addTab("sTable", sTable());
-            tabbedPane.addTab("sList", sList());
-            tabbedPane.addTab("sTree", sTree());
-            tabbedPane.addTab("sComboBox", sComboBox());
-            tabbedPane.addTab("sTextField", sTextField());
-            tabbedPane.addTab("sTextArea", sTextArea());
-            tabbedPane.addTab("sCheckBox", sCheckBox());
-            tabbedPane.addTab("sTabbedPane", sTabbedPane());
+            STabbedPane<Void> tabbedPane = STabbedPane.<Void>of()
+                    .tab("sTable", sTable())
+                    .tab("sList", sList())
+                    .tab("sTree", sTree())
+                    .tab("sComboBox", sComboBox())
+                    .tab("sTextField", sTextField())
+                    .tab("sTextArea", sTextArea())
+                    .tab("sCheckBox", sCheckBox())
+                    .tab("sTabbedPane", sTabbedPane());
 
             SContextMenu.install();
 
@@ -61,7 +60,6 @@ public class SwayTestApp {
                     .maximize()
                     .menuBar(this::createFrameMenu)
                     .visible(true);
-
         });
     }
 
@@ -370,16 +368,16 @@ public class SwayTestApp {
 
         STabbedPane<String> sTabbedPane = STabbedPane.<String>of()
             .bindTo(masterSTextField.value$())
-            .addTab("tab1", SHPanel.of(sync1Textfield), (v, c) -> sync1Textfield.setValue("child1 " + v))
-            .addTab("tab2", SHPanel.of(sync2Textfield), (v, c) -> sync2Textfield.setValue("child2 " + v))
-            .addTab("tabAsync", SHPanel.of(asyncTextfield)
+            .tab("tab1", SHPanel.of(sync1Textfield), (v, c) -> sync1Textfield.setValue("child1 " + v))
+            .tab("tab2", SHPanel.of(sync2Textfield), (v, c) -> sync2Textfield.setValue("child2 " + v))
+            .tab("tabAsync", SHPanel.of(asyncTextfield)
                     , value -> doSomeBackgroundStuff(value)
                     , (result, component) -> asyncTextfield.setValue(result)
                     , (throwable, component) -> showExceptionInDialog(throwable, masterSTextField))
-            .addTab("subtab", STabbedPane.<String>of()
+            .pane("subtab", STabbedPane.<String>of()
                             .bindTo(masterSTextField.value$())
-                            .addTab("sync", SHPanel.of(subsyncTextfield), (v, c) -> subsyncTextfield.setValue("child1 " + v))
-                            .addTab("async", SHPanel.of(subasyncTextfield)
+                            .tab("sync", SHPanel.of(subsyncTextfield), (v, c) -> subsyncTextfield.setValue("child1 " + v))
+                            .tab("async", SHPanel.of(subasyncTextfield)
                                     , value -> doSomeBackgroundStuff(value)
                                     , (result, component) -> asyncTextfield.setValue(result))
             );

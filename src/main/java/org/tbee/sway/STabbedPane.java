@@ -149,36 +149,62 @@ public class STabbedPane<T> extends JTabbedPane {
     // ===========================================================================================================================
     // Tabs
 
-    public <C extends Component> STabbedPane<T> addTab(String title, Icon icon, Component component, String tip, BiConsumer<T, C> onActiveCallback) {
-        onActiveCallbacks.put(component, (BiConsumer<T, Component>) onActiveCallback);
-        super.addTab(title, component);
+    public STabbedPane<T> tab(String title, Icon icon, Component component, String tip) {
+        super.addTab(title, icon, component, tip);
         return this;
     }
-    public <R, C extends Component> STabbedPane<T> addTab(String title, Icon icon, Component component, String tip, Function<T, R> onLoadCallback, BiConsumer<R, C> onSuccessCallback, BiConsumer<Throwable, C> onFailureCallback) {
+
+    public STabbedPane<T> tab(String title, Icon icon, Component component) {
+        super.addTab(title, icon, component);
+        return this;
+    }
+
+    public STabbedPane<T> tab(String title, Component component) {
+        super.add(title, component);
+        return this;
+    }
+
+    /**
+     * Add sync-updated tab
+     */
+    public <C extends Component> STabbedPane<T> tab(String title, Icon icon, Component component, String tip, BiConsumer<T, C> onActiveCallback) {
+        onActiveCallbacks.put(component, (BiConsumer<T, Component>) onActiveCallback);
+        super.addTab(title, icon, component, tip);
+        return this;
+    }
+
+    /**
+     * Add async-updated tab
+     */
+    public <R, C extends Component> STabbedPane<T> tab(String title, Icon icon, Component component, String tip, Function<T, R> onLoadCallback, BiConsumer<R, C> onSuccessCallback, BiConsumer<Throwable, C> onFailureCallback) {
         onLoadCallbacks.put(component, (Function<T, Object>) onLoadCallback);
         onSuccessCallbacks.put(component, (BiConsumer<Object, Component>)onSuccessCallback);
         onFailureCallbacks.put(component, (BiConsumer<Throwable, Component>)onFailureCallback);
-        super.addTab(title, component);
+        super.addTab(title, icon, component, tip);
         return this;
     }
 
-    public <C extends Component> STabbedPane<T> addTab(String title, Icon icon, Component component, BiConsumer<T, C> onActiveCallback) {
-        return addTab(title, icon, component, null, onActiveCallback);
+    public <C extends Component> STabbedPane<T> tab(String title, Icon icon, Component component, BiConsumer<T, C> onActiveCallback) {
+        return tab(title, icon, component, null, onActiveCallback);
     }
-    public <R, C extends Component> STabbedPane<T> addTab(String title, Icon icon, Component component, Function<T, R> onLoadCallback, BiConsumer<R, C> onSuccessCallback, BiConsumer<Throwable, C> onFailureCallback) {
-        return addTab(title, icon, component, null, onLoadCallback, onSuccessCallback, onFailureCallback);
+    public <R, C extends Component> STabbedPane<T> tab(String title, Icon icon, Component component, Function<T, R> onLoadCallback, BiConsumer<R, C> onSuccessCallback, BiConsumer<Throwable, C> onFailureCallback) {
+        return tab(title, icon, component, null, onLoadCallback, onSuccessCallback, onFailureCallback);
     }
 
-    public <C extends Component> STabbedPane<T> addTab(String title, C component, BiConsumer<T, C> onActiveCallback) {
-        return addTab(title, null, component, null, onActiveCallback);
+    public <C extends Component> STabbedPane<T> tab(String title, C component, BiConsumer<T, C> onActiveCallback) {
+        return tab(title, null, component, null, onActiveCallback);
     }
-    public <R, C extends Component> STabbedPane<T> addTab(String title, C component, Function<T, R> onLoadCallback, BiConsumer<R, C> onSuccessCallback) {
-        return addTab(title, null, component, null, onLoadCallback, onSuccessCallback, null);
+    public <R, C extends Component> STabbedPane<T> tab(String title, C component, Function<T, R> onLoadCallback, BiConsumer<R, C> onSuccessCallback) {
+        return tab(title, null, component, null, onLoadCallback, onSuccessCallback, null);
     }
-    public <R, C extends Component> STabbedPane<T> addTab(String title, C component, Function<T, R> onLoadCallback, BiConsumer<R, C> onSuccessCallback, BiConsumer<Throwable, C> onFailureCallback) {
-        return addTab(title, null, component, null, onLoadCallback, onSuccessCallback, onFailureCallback);
+    public <R, C extends Component> STabbedPane<T> tab(String title, C component, Function<T, R> onLoadCallback, BiConsumer<R, C> onSuccessCallback, BiConsumer<Throwable, C> onFailureCallback) {
+        return tab(title, null, component, null, onLoadCallback, onSuccessCallback, onFailureCallback);
     }
-    public  STabbedPane<T> addTab(String title, STabbedPane<?> component) {
+
+    /**
+     * Add nested tabbedpane
+     */
+    public STabbedPane<T> pane(String title, STabbedPane<?> component) {
         super.addTab(title, component);
         return this;
     }

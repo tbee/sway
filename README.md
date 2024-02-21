@@ -76,9 +76,9 @@ var sPanelCities = SFlowPanel.of(sButtonGroupCities.getButtons());
 // For example: an STabbedPane bound to a city can load the details or crime numbers when the corresponding tab becomes visible.
 STabbedPane<City> sTabbedPane = STabbedPane.of()
     .bindTo(data.city$())
-    .addTab("details", STextField.ofString()  // synchronous: only value-to-component function provided
+    .tab("details", STextField.ofString()  // synchronous: only value-to-component function provided
         , (city, sTextField) -> sTextField.setValue(city.name()))
-    .addTab("crime", new CrimeNumbersPanel() // asynchronous: value-to-value2 function, on-success value2-to-component function, and on-failure provided
+    .tab("crime", new CrimeNumbersPanel() // asynchronous: value-to-value2 function, on-success value2-to-component function, and on-failure provided
         , city -> crimeApi.fetchNumbersFor(city.code()) // In a worker thread derived data is fetched
         , (crimeNumbers, crimeNumbersPanel) -> crimeNumbersPanel.setNumbers(crimeNumbers) // The derrived data is displayed
         , (throwable, crimeNumbersPanel) -> ... // Or something went wrong
