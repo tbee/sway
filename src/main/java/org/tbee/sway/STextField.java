@@ -8,6 +8,7 @@ import org.tbee.sway.format.FormatRegistry;
 import org.tbee.sway.format.JavaFormat;
 import org.tbee.sway.format.StringFormat;
 import org.tbee.sway.mixin.ComponentMixin;
+import org.tbee.sway.mixin.FontMixin;
 import org.tbee.sway.mixin.HAlignMixin;
 import org.tbee.sway.mixin.OverlayMixin;
 import org.tbee.sway.mixin.ToolTipMixin;
@@ -19,7 +20,6 @@ import org.tbee.util.ExceptionUtil;
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
-import java.awt.Font;
 import java.awt.event.KeyEvent;
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
@@ -111,6 +111,7 @@ public class STextField<T> extends javax.swing.JTextField implements
         HAlignMixin<STextField<T>>,
         OverlayMixin<STextField<T>>,
         ToolTipMixin<STextField<T>>,
+        FontMixin<STextField<T>>,
         ComponentMixin<STextField<T>> {
 
     final static private org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(STextField.class);
@@ -378,11 +379,6 @@ public class STextField<T> extends javax.swing.JTextField implements
 
     public STextField<T> columns(int value) {
         setColumns(value);
-        return this;
-    }
-
-    public STextField<T> font(Font value) {
-        setFont(value);
         return this;
     }
 

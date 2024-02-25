@@ -3,8 +3,10 @@ package org.tbee.sway;
 import org.tbee.sway.binding.BindingEndpoint;
 import org.tbee.sway.binding.ExceptionHandler;
 import org.tbee.sway.mixin.ComponentMixin;
+import org.tbee.sway.mixin.FontMixin;
 import org.tbee.sway.mixin.HAlignMixin;
 import org.tbee.sway.mixin.OverlayMixin;
+import org.tbee.sway.mixin.TextIconMixin;
 import org.tbee.sway.mixin.ToolTipMixin;
 import org.tbee.sway.mixin.VAlignMixin;
 import org.tbee.sway.support.HAlign;
@@ -13,7 +15,6 @@ import javax.swing.Icon;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 import java.awt.Color;
-import java.awt.Font;
 
 // TODO:
 
@@ -25,7 +26,9 @@ public class SLabel extends JLabel implements
         VAlignMixin<SLabel>,
         OverlayMixin<SLabel>,
         ComponentMixin<SLabel>,
-        ToolTipMixin<SLabel> {
+        TextIconMixin<SLabel>,
+        ToolTipMixin<SLabel>,
+        FontMixin<SLabel> {
 
     public SLabel() {
     }
@@ -114,21 +117,6 @@ public class SLabel extends JLabel implements
 
     static public SLabel of(Icon icon) {
         return of().icon(icon);
-    }
-
-    public SLabel text(String value) {
-        setText(value);
-        return this;
-    }
-
-    public SLabel icon(Icon value) {
-        setIcon(value);
-        return this;
-    }
-
-    public SLabel font(Font value) {
-        setFont(value);
-        return this;
     }
 
     public SLabel foreground(Color value) {
