@@ -1,9 +1,10 @@
 package org.tbee.sway;
 
-import org.tbee.sway.binding.BeanBinder;
 import org.tbee.sway.binding.BindingEndpoint;
 import org.tbee.sway.binding.ExceptionHandler;
+import org.tbee.sway.mixin.BindToMixin;
 import org.tbee.sway.mixin.ComponentMixin;
+import org.tbee.sway.mixin.ToolTipMixin;
 import org.tbee.util.ExceptionUtil;
 
 import javax.swing.Icon;
@@ -50,7 +51,9 @@ import java.util.function.Function;
  * @param <T> the type of the value.
  */
 public class STabbedPane<T> extends JTabbedPane implements
-        ComponentMixin<STabbedPane<T>> {
+        ComponentMixin<STabbedPane<T>>,
+        BindToMixin<STabbedPane<T>, T>,
+        ToolTipMixin<STabbedPane<T>> {
 
     public static final org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(STabbedPane.class);
     public static final String LOADED_COMPONENT = "loadedComponent";
@@ -71,6 +74,14 @@ public class STabbedPane<T> extends JTabbedPane implements
         addPropertyChangeListener(VALUE, evt -> {
             reload();
         });
+    }
+
+    // ===========================================================================================================================
+    // For Mixins
+
+    @Override
+    public BindingEndpoint<T> defaultBindingEndpoint() {
+        return value$();
     }
 
     // ===========================================================================================================================
@@ -327,34 +338,5 @@ public class STabbedPane<T> extends JTabbedPane implements
 
     static public <T> STabbedPane<T> of() {
         return new STabbedPane<T>();
-    }
-
-    public STabbedPane<T> toolTipText(String t) {
-        setToolTipText(t);
-        return this;
-    }
-
-    /**
-     * Binds the default property 'value'
-     */
-    public STabbedPane<T> bindTo(BindingEndpoint<T> bindingEndpoint) {
-        value$().bindTo(bindingEndpoint);
-        return this;
-    }
-
-    /**
-     * Binds to the default property 'value'.
-     * Binding in this way is not type safe!
-     */
-    public STabbedPane<T> bindTo(Object bean, String propertyName) {
-        return bindTo(BindingEndpoint.of(bean, propertyName));
-    }
-
-    /**
-     * Binds to the default property 'value'.
-     * Binding in this way is not type safe!
-     */
-    public STabbedPane<T> bindTo(BeanBinder<?> beanBinder, String propertyName) {
-        return bindTo(BindingEndpoint.of(beanBinder, propertyName));
     }
 }

@@ -7,6 +7,7 @@ import org.tbee.sway.format.Format;
 import org.tbee.sway.format.FormatRegistry;
 import org.tbee.sway.format.JavaFormat;
 import org.tbee.sway.format.StringFormat;
+import org.tbee.sway.mixin.BindToMixin;
 import org.tbee.sway.mixin.ComponentMixin;
 import org.tbee.sway.mixin.HAlignMixin;
 import org.tbee.sway.mixin.OverlayMixin;
@@ -110,6 +111,7 @@ public class STextField<T> extends javax.swing.JTextField implements
         HAlignMixin<STextField<T>>,
         OverlayMixin<STextField<T>>,
         ToolTipMixin<STextField<T>>,
+        BindToMixin<STextField<T>, T>,
         ComponentMixin<STextField<T>> {
 
     final static private org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(STextField.class);
@@ -145,6 +147,11 @@ public class STextField<T> extends javax.swing.JTextField implements
     @Override
     public void firePropertyChange(String propertyName, Object oldValue, Object newValue) {
         super.firePropertyChange(propertyName, oldValue, newValue);
+    }
+
+    @Override
+    public BindingEndpoint<T> defaultBindingEndpoint() {
+        return value$();
     }
 
     // ========================================================
@@ -383,29 +390,5 @@ public class STextField<T> extends javax.swing.JTextField implements
     public STextField<T> editable(boolean enabled) {
         setEditable(enabled);
         return this;
-    }
-
-    /**
-     * Binds the default property 'value'
-     */
-    public STextField<T> bindTo(BindingEndpoint<T> bindingEndpoint) {
-        value$().bindTo(bindingEndpoint);
-        return this;
-    }
-
-    /**
-     * Binds to the default property 'value'.
-     * Binding in this way is not type safe!
-     */
-    public STextField<T> bindTo(Object bean, String propertyName) {
-        return bindTo(BindingEndpoint.of(bean, propertyName));
-    }
-
-    /**
-     * Binds to the default property 'value'.
-     * Binding in this way is not type safe!
-     */
-    public STextField<T> bindTo(BeanBinder<?> beanBinder, String propertyName) {
-        return bindTo(BindingEndpoint.of(beanBinder, propertyName));
     }
 }

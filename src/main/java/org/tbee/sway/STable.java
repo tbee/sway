@@ -3,12 +3,12 @@ package org.tbee.sway;
 import com.google.common.base.Splitter;
 import net.coderazzi.filters.gui.AutoChoices;
 import net.coderazzi.filters.gui.TableFilterHeader;
-import org.tbee.sway.binding.BeanBinder;
 import org.tbee.sway.binding.BindingEndpoint;
 import org.tbee.sway.binding.ExceptionHandler;
 import org.tbee.sway.format.Format;
 import org.tbee.sway.format.FormatAsJavaTextFormat;
 import org.tbee.sway.format.FormatRegistry;
+import org.tbee.sway.mixin.BindToMixin;
 import org.tbee.sway.mixin.ComponentMixin;
 import org.tbee.sway.mixin.OverlayMixin;
 import org.tbee.sway.mixin.PropertyChangeListenerMixin;
@@ -198,7 +198,8 @@ import java.util.stream.Collectors;
 public class STable<TableType> extends JPanel implements
         PropertyChangeListenerMixin<STable<TableType>>,
         OverlayMixin<STable<TableType>>,
-        ComponentMixin<STable<TableType>> {
+        ComponentMixin<STable<TableType>>,
+        BindToMixin<STable<TableType>, List<TableType>> {
     static private org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(STable.class);
 
     private final STableCore<TableType> sTableCore;
@@ -229,6 +230,14 @@ public class STable<TableType> extends JPanel implements
 
     public STableCore<TableType> getSTableCore() {
         return sTableCore;
+    }
+
+    // ===========================================================================================================================
+    // For Mixins
+
+    @Override
+    public BindingEndpoint<List<TableType>> defaultBindingEndpoint() {
+        return selection$();
     }
 
     // ===========================================================================
@@ -1308,29 +1317,5 @@ public class STable<TableType> extends JPanel implements
     public void setName(String v) {
         super.setName(v);
         sTableCore.setName(v + ".sTableCore"); // For tests we need to address the actual table
-    }
-
-    /**
-     * Binds to the default property 'selection'
-     */
-    public STable<TableType> bindTo(BindingEndpoint<List<TableType>> bindingEndpoint) {
-        selection$().bindTo(bindingEndpoint);
-        return this;
-    }
-
-    /**
-     * Binds to the default property 'selection'.
-     * Binding in this way is not type safe!
-     */
-    public STable<TableType> bindTo(Object bean, String propertyName) {
-        return bindTo(BindingEndpoint.of(bean, propertyName));
-    }
-
-    /**
-     * Binds to the default property 'selection'.
-     * Binding in this way is not type safe!
-     */
-    public STable<TableType> bindTo(BeanBinder<?> beanBinder, String propertyName) {
-        return bindTo(BindingEndpoint.of(beanBinder, propertyName));
     }
 }

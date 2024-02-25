@@ -1,10 +1,10 @@
 package org.tbee.sway;
 
-import org.tbee.sway.binding.BeanBinder;
 import org.tbee.sway.binding.BindingEndpoint;
 import org.tbee.sway.binding.ExceptionHandler;
 import org.tbee.sway.format.Format;
 import org.tbee.sway.format.FormatRegistry;
+import org.tbee.sway.mixin.BindToMixin;
 import org.tbee.sway.mixin.PropertyChangeListenerMixin;
 import org.tbee.util.ExceptionUtil;
 
@@ -54,7 +54,10 @@ import java.util.function.Supplier;
  * }
  * </pre>
  */
-public class SButtonGroup<T> extends ButtonGroup implements PropertyChangeListenerMixin<SButtonGroup<T>> {
+public class SButtonGroup<T> extends ButtonGroup implements
+        PropertyChangeListenerMixin<SButtonGroup<T>>,
+        BindToMixin<SButtonGroup<T>, T> {
+
     static private org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(SButtonGroup.class);
 
     /**
@@ -63,6 +66,16 @@ public class SButtonGroup<T> extends ButtonGroup implements PropertyChangeListen
     public SButtonGroup() {
         super();
     }
+
+
+    // ===========================================================================================================================
+    // For Mixins
+
+    @Override
+    public BindingEndpoint<T> defaultBindingEndpoint() {
+        return value$();
+    }
+
 
     // ===================================================
     // BUTTONS
@@ -363,28 +376,4 @@ public class SButtonGroup<T> extends ButtonGroup implements PropertyChangeListen
 
     // ========================================================
     // FLUENT API
-
-    /**
-     * Binds the default property 'value'
-     */
-    public SButtonGroup<T> bindTo(BindingEndpoint<T> bindingEndpoint) {
-        value$().bindTo(bindingEndpoint);
-        return this;
-    }
-
-    /**
-     * Binds to the default property 'value'.
-     * Binding in this way is not type safe!
-     */
-    public SButtonGroup<T> bindTo(Object bean, String propertyName) {
-        return bindTo(BindingEndpoint.of(bean, propertyName));
-    }
-
-    /**
-     * Binds to the default property 'value'.
-     * Binding in this way is not type safe!
-     */
-    public SButtonGroup<T> bindTo(BeanBinder<?> beanBinder, String propertyName) {
-        return bindTo(BindingEndpoint.of(beanBinder, propertyName));
-    }
 }

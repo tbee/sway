@@ -12,16 +12,17 @@
 
 package org.tbee.sway;
 
-import org.tbee.sway.binding.BeanBinder;
 import org.tbee.sway.binding.BindingEndpoint;
 import org.tbee.sway.binding.ExceptionHandler;
+import org.tbee.sway.mixin.ActionMixin;
+import org.tbee.sway.mixin.BindToMixin;
 import org.tbee.sway.mixin.ComponentMixin;
 import org.tbee.sway.mixin.TextIconMixin;
+import org.tbee.sway.mixin.ToolTipMixin;
 import org.tbee.sway.support.IconRegistry;
 import org.tbee.util.ExceptionUtil;
 
 import javax.swing.AbstractAction;
-import javax.swing.Action;
 import javax.swing.ActionMap;
 import javax.swing.ButtonModel;
 import javax.swing.Icon;
@@ -32,7 +33,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.plaf.ActionMapUIResource;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -45,9 +45,11 @@ import java.awt.event.MouseListener;
  */
 public class SCheckBox3 extends JCheckBox implements
 		ComponentMixin<SCheckBox3>,
-		TextIconMixin<SCheckBox3> {
+		TextIconMixin<SCheckBox3>,
+		BindToMixin<SCheckBox3, Boolean>,
+		ActionMixin<SCheckBox3>,
+		ToolTipMixin<SCheckBox3> {
 	static private org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(SCheckBox3.class);
-
 
 	/**
 	 *
@@ -126,6 +128,15 @@ public class SCheckBox3 extends JCheckBox implements
 	 * No one may add mouse listeners, not even Swing!
 	 */
 	public void addMouseListener(MouseListener l) { }
+
+	// ===========================================================================================================================
+	// For Mixins
+
+	@Override
+	public BindingEndpoint<Boolean> defaultBindingEndpoint() {
+		return selected3$();
+	}
+
 
 	// ==================================================
 	// SELECTED3
@@ -304,48 +315,9 @@ public class SCheckBox3 extends JCheckBox implements
 		return of().text(text).icon(icon);
 	}
 
-	public SCheckBox3 toolTipText(String t) {
-		setToolTipText(t);
-		return this;
-	}
-
 	public SCheckBox3 margin(Insets m) {
 		setMargin(m);
 		return this;
-	}
-
-	public SCheckBox3 onAction(ActionListener l) {
-		addActionListener(l);
-		return this;
-	}
-
-	public SCheckBox3 action(Action v) {
-		setAction(v);
-		return this;
-	}
-
-	/**
-	 * Binds the default property 'selected3'
-	 */
-	public SCheckBox3 bindTo(BindingEndpoint<Boolean> bindingEndpoint) {
-		selected3$().bindTo(bindingEndpoint);
-		return this;
-	}
-
-	/**
-	 * Binds to the default property 'selected3'.
-	 * Binding in this way is not type safe!
-	 */
-	public SCheckBox3 bindTo(Object bean, String propertyName) {
-		return bindTo(BindingEndpoint.of(bean, propertyName));
-	}
-
-	/**
-	 * Binds to the default property 'selected3'.
-	 * Binding in this way is not type safe!
-	 */
-	public SCheckBox3 bindTo(BeanBinder<?> beanBinder, String propertyName) {
-		return bindTo(BindingEndpoint.of(beanBinder, propertyName));
 	}
 }
 

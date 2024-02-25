@@ -1,28 +1,31 @@
 package org.tbee.sway;
 
-import org.tbee.sway.binding.BeanBinder;
 import org.tbee.sway.binding.BindingEndpoint;
 import org.tbee.sway.binding.ExceptionHandler;
+import org.tbee.sway.mixin.ActionMixin;
+import org.tbee.sway.mixin.BindToMixin;
 import org.tbee.sway.mixin.ComponentMixin;
 import org.tbee.sway.mixin.TextIconMixin;
+import org.tbee.sway.mixin.ToolTipMixin;
 import org.tbee.sway.support.IconRegistry;
 import org.tbee.util.ExceptionUtil;
 
-import javax.swing.Action;
 import javax.swing.Icon;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import java.awt.Insets;
-import java.awt.event.ActionListener;
 
 /**
  * If the SELECTED, UNSELECTED icons are specified in the IconRegistry, then these will be drawn.
  */
 public class SCheckBox extends JCheckBox implements
         ComponentMixin<SCheckBox>,
-        TextIconMixin<SCheckBox> {
+        TextIconMixin<SCheckBox>,
+        ActionMixin<SCheckBox>,
+        ToolTipMixin<SCheckBox>,
+        BindToMixin<SCheckBox, Boolean> {
     static private org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(SCheckBox.class);
 
     public SCheckBox() {
@@ -45,6 +48,14 @@ public class SCheckBox extends JCheckBox implements
     }
 
     private boolean explicitIcon = false;
+
+    // ===========================================================================================================================
+    // For Mixins
+
+    @Override
+    public BindingEndpoint<Boolean> defaultBindingEndpoint() {
+        return selected$();
+    }
 
     // ==================================================
     // PROPERTIES
@@ -138,47 +149,8 @@ public class SCheckBox extends JCheckBox implements
         return of().text(text).icon(icon);
     }
 
-    public SCheckBox toolTipText(String t) {
-        setToolTipText(t);
-        return this;
-    }
-
     public SCheckBox margin(Insets m) {
         setMargin(m);
         return this;
-    }
-
-    public SCheckBox onAction(ActionListener l) {
-        addActionListener(l);
-        return this;
-    }
-
-    public SCheckBox action(Action v) {
-        setAction(v);
-        return this;
-    }
-
-    /**
-     * Binds the default property 'selected'
-     */
-    public SCheckBox bindTo(BindingEndpoint<Boolean> bindingEndpoint) {
-        selected$().bindTo(bindingEndpoint);
-        return this;
-    }
-
-    /**
-     * Binds to the default property 'selected'.
-     * Binding in this way is not type safe!
-     */
-    public SCheckBox bindTo(Object bean, String propertyName) {
-        return bindTo(BindingEndpoint.of(bean, propertyName));
-    }
-
-    /**
-     * Binds to the default property 'selected'.
-     * Binding in this way is not type safe!
-     */
-    public SCheckBox bindTo(BeanBinder<?> beanBinder, String propertyName) {
-        return bindTo(BindingEndpoint.of(beanBinder, propertyName));
     }
 }

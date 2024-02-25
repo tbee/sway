@@ -1,11 +1,11 @@
 package org.tbee.sway;
 
-import org.tbee.sway.binding.BeanBinder;
 import org.tbee.sway.binding.BindingEndpoint;
 import org.tbee.sway.binding.ExceptionHandler;
 import org.tbee.sway.format.Format;
 import org.tbee.sway.format.FormatRegistry;
 import org.tbee.sway.list.DefaultListCellRenderer;
+import org.tbee.sway.mixin.BindToMixin;
 import org.tbee.sway.mixin.ComponentMixin;
 import org.tbee.sway.support.SwayUtil;
 import org.tbee.util.ExceptionUtil;
@@ -23,13 +23,22 @@ import java.util.Vector;
 import java.util.function.Consumer;
 
 public class SComboBox<T> extends JComboBox<T> implements
-        ComponentMixin<SComboBox<T>> {
+        ComponentMixin<SComboBox<T>>,
+        BindToMixin<SComboBox<T>, T> {
 
     final static private org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(SComboBox.class);
 
     public SComboBox() {
         setRenderer(new DefaultListCellRenderer(() -> format, () -> alternateRowColor, () -> firstAlternateRowColor, () -> secondAlternateRowColor));
         addActionListener (e -> fireValueChanged());
+    }
+
+    // ===========================================================================================================================
+    // For Mixins
+
+    @Override
+    public BindingEndpoint<T> defaultBindingEndpoint() {
+        return value$();
     }
 
 
@@ -269,35 +278,4 @@ public class SComboBox<T> extends JComboBox<T> implements
 
     // ===========================================================================
     // FLUENT API
-
-    public SComboBox<T> name(String v) {
-        setName(v);
-        return this;
-    }
-
-    /**
-     * Binds to the default property 'value'
-     */
-    public SComboBox<T> bindTo(BindingEndpoint<T> bindingEndpoint) {
-        value$().bindTo(bindingEndpoint);
-        return this;
-    }
-
-    /**
-     * Binds to the default property 'value'.
-     * Binding in this way is not type safe!
-     */
-    public SComboBox<T> bindTo(Object bean, String propertyName) {
-        return bindTo(BindingEndpoint.of(bean, propertyName));
-    }
-
-    /**
-     * Binds to the default property 'value'.
-     * Binding in this way is not type safe!
-     */
-    public SComboBox<T> bindTo(BeanBinder<?> beanBinder, String propertyName) {
-        return bindTo(BindingEndpoint.of(beanBinder, propertyName));
-    }
-
-    // TBEERNOT Tests
 }

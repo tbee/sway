@@ -1,8 +1,8 @@
 package org.tbee.sway;
 
-import org.tbee.sway.binding.BeanBinder;
 import org.tbee.sway.binding.BindingEndpoint;
 import org.tbee.sway.binding.ExceptionHandler;
+import org.tbee.sway.mixin.BindToMixin;
 import org.tbee.sway.mixin.ComponentMixin;
 import org.tbee.sway.support.FocusInterpreter;
 import org.tbee.util.ExceptionUtil;
@@ -16,7 +16,8 @@ import javax.swing.SwingUtilities;
 import java.awt.BorderLayout;
 
 public class STextArea extends JPanel implements
-        ComponentMixin<STextArea> {
+        ComponentMixin<STextArea>,
+        BindToMixin<STextArea, String> {
 
     final static private org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(STextArea.class);
 
@@ -48,6 +49,14 @@ public class STextArea extends JPanel implements
 		};
 		focusInterpreter.addFocusListener(focusInterpreterListener);
 	}
+
+    // ===========================================================================================================================
+    // For Mixins
+
+    @Override
+    public BindingEndpoint<String> defaultBindingEndpoint() {
+        return text$();
+    }
 
     // ===========================================================================
     // PROPERTIES
@@ -130,29 +139,5 @@ public class STextArea extends JPanel implements
     public void setName(String v) {
         super.setName(v);
         jTextArea.setName(v + ".jTextArea"); // For tests we need to address the actual list
-    }
-
-    /**
-     * Binds the default property 'text'
-     */
-    public STextArea bindTo(BindingEndpoint<String> bindingEndpoint) {
-        text$().bindTo(bindingEndpoint);
-        return this;
-    }
-
-    /**
-     * Binds to the default property 'text'.
-     * Binding in this way is not type safe!
-     */
-    public STextArea bindTo(Object bean, String propertyName) {
-        return bindTo(BindingEndpoint.of(bean, propertyName));
-    }
-
-    /**
-     * Binds to the default property 'text'.
-     * Binding in this way is not type safe!
-     */
-    public STextArea bindTo(BeanBinder<?> beanBinder, String propertyName) {
-        return bindTo(BindingEndpoint.of(beanBinder, propertyName));
     }
 }

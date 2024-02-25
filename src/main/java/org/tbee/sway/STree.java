@@ -1,10 +1,10 @@
 package org.tbee.sway;
 
-import org.tbee.sway.binding.BeanBinder;
 import org.tbee.sway.binding.BindingEndpoint;
 import org.tbee.sway.binding.ExceptionHandler;
 import org.tbee.sway.format.Format;
 import org.tbee.sway.format.FormatRegistry;
+import org.tbee.sway.mixin.BindToMixin;
 import org.tbee.sway.mixin.ComponentMixin;
 import org.tbee.sway.support.BeanMonitor;
 import org.tbee.sway.tree.Node;
@@ -65,7 +65,8 @@ import java.util.function.Function;
  * @param <T>
  */
 public class STree<T extends Object> extends JPanel implements
-        ComponentMixin<STree<T>> {
+        ComponentMixin<STree<T>>,
+        BindToMixin<STree<T>, List<T>> {
     static private org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(STree.class);
 
     final private STreeCore<T> sTreeCore;
@@ -116,6 +117,14 @@ public class STree<T extends Object> extends JPanel implements
         return sTreeCore;
     }
 
+
+    // ===========================================================================================================================
+    // For Mixins
+
+    @Override
+    public BindingEndpoint<List<T>> defaultBindingEndpoint() {
+        return selection$();
+    }
 
     // =======================================================================
     // ROOT
@@ -581,29 +590,5 @@ public class STree<T extends Object> extends JPanel implements
 
     static public <T> STree<T> of(T root) {
         return new STree<T>().root(root);
-    }
-
-    /**
-     * Binds to the default property 'selection'
-     */
-    public STree<T> bindTo(BindingEndpoint<List<T>> bindingEndpoint) {
-        selection$().bindTo(bindingEndpoint);
-        return this;
-    }
-
-    /**
-     * Binds to the default property 'selection'.
-     * Binding in this way is not type safe!
-     */
-    public STree<T> bindTo(Object bean, String propertyName) {
-        return bindTo(BindingEndpoint.of(bean, propertyName));
-    }
-
-    /**
-     * Binds to the default property 'selection'.
-     * Binding in this way is not type safe!
-     */
-    public STree<T> bindTo(BeanBinder<?> beanBinder, String propertyName) {
-        return bindTo(BindingEndpoint.of(beanBinder, propertyName));
     }
 }

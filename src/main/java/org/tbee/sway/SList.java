@@ -1,12 +1,12 @@
 package org.tbee.sway;
 
-import org.tbee.sway.binding.BeanBinder;
 import org.tbee.sway.binding.BindingEndpoint;
 import org.tbee.sway.binding.ExceptionHandler;
 import org.tbee.sway.format.Format;
 import org.tbee.sway.format.FormatRegistry;
 import org.tbee.sway.list.DefaultListCellRenderer;
 import org.tbee.sway.list.SListCore;
+import org.tbee.sway.mixin.BindToMixin;
 import org.tbee.sway.mixin.ComponentMixin;
 import org.tbee.sway.support.SwayUtil;
 import org.tbee.util.ExceptionUtil;
@@ -25,7 +25,8 @@ import java.util.List;
 import java.util.function.Consumer;
 
 public class SList<T> extends JPanel implements
-        ComponentMixin<SList<T>> {
+        ComponentMixin<SList<T>>,
+        BindToMixin<SList<T>, List<T>> {
     static private org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(SList.class);
 
     final private SListCore<T> sListCore;
@@ -52,6 +53,14 @@ public class SList<T> extends JPanel implements
 
     public SListCore<T> getSListCore() {
         return sListCore;
+    }
+
+    // ===========================================================================================================================
+    // For Mixins
+
+    @Override
+    public BindingEndpoint<List<T>> defaultBindingEndpoint() {
+        return selection$();
     }
 
 
@@ -302,29 +311,5 @@ public class SList<T> extends JPanel implements
 
     static public <T> SList<T> of(List<T> data) {
     	return new SList<T>().data(data);
-    }
-
-    /**
-     * Binds to the default property 'selection'
-     */
-    public SList<T> bindTo(BindingEndpoint<List<T>> bindingEndpoint) {
-        selection$().bindTo(bindingEndpoint);
-        return this;
-    }
-
-    /**
-     * Binds to the default property 'selection'.
-     * Binding in this way is not type safe!
-     */
-    public SList<T> bindTo(Object bean, String propertyName) {
-        return bindTo(BindingEndpoint.of(bean, propertyName));
-    }
-
-    /**
-     * Binds to the default property 'selection'.
-     * Binding in this way is not type safe!
-     */
-    public SList<T> bindTo(BeanBinder<?> beanBinder, String propertyName) {
-        return bindTo(BindingEndpoint.of(beanBinder, propertyName));
     }
 }
