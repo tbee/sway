@@ -4,6 +4,7 @@ import org.tbee.sway.binding.BeanBinder;
 import org.tbee.sway.binding.BindingEndpoint;
 import org.tbee.sway.binding.ExceptionHandler;
 import org.tbee.sway.mixin.ComponentMixin;
+import org.tbee.sway.mixin.TextIconMixin;
 import org.tbee.sway.support.IconRegistry;
 import org.tbee.util.ExceptionUtil;
 
@@ -20,7 +21,8 @@ import java.awt.event.ActionListener;
  * If the SELECTED, UNSELECTED icons are specified in the IconRegistry, then these will be drawn.
  */
 public class SCheckBox extends JCheckBox implements
-        ComponentMixin<SCheckBox> {
+        ComponentMixin<SCheckBox>,
+        TextIconMixin<SCheckBox> {
     static private org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(SCheckBox.class);
 
     public SCheckBox() {
@@ -153,16 +155,6 @@ public class SCheckBox extends JCheckBox implements
 
     public SCheckBox action(Action v) {
         setAction(v);
-        return this;
-    }
-
-    public SCheckBox icon(Icon v) {
-        setIcon(v);
-        return this;
-    }
-
-    public SCheckBox text(String v) {
-        setText(v);
         return this;
     }
 

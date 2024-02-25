@@ -1,6 +1,7 @@
 package org.tbee.sway;
 
 import org.tbee.sway.mixin.ComponentMixin;
+import org.tbee.sway.mixin.TextIconMixin;
 
 import javax.swing.Action;
 import javax.swing.Icon;
@@ -9,7 +10,8 @@ import java.awt.Insets;
 import java.awt.event.ActionListener;
 
 public class SRadioButton extends JRadioButton implements
-        ComponentMixin<SRadioButton> {
+        ComponentMixin<SRadioButton>,
+        TextIconMixin<SRadioButton> {
 
     public SRadioButton() {
     }
@@ -62,16 +64,6 @@ public class SRadioButton extends JRadioButton implements
 
     public SRadioButton action(Action v) {
         super.setAction(v);
-        return this;
-    }
-
-    public SRadioButton icon(Icon v) {
-        super.setIcon(v);
-        return this;
-    }
-
-    public SRadioButton text(String v) {
-        super.setText(v);
         return this;
     }
 }
