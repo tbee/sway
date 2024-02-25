@@ -1,7 +1,7 @@
 package org.tbee.sway;
 
 import org.tbee.sway.binding.BindingEndpoint;
-import org.tbee.sway.mixin.PropertyChangeListenerMixin;
+import org.tbee.sway.mixin.ComponentMixin;
 
 import javax.swing.Icon;
 import javax.swing.JMenu;
@@ -10,7 +10,8 @@ import java.awt.event.ActionListener;
 /**
  * @see SMenuBar
  */
-public class SMenu extends JMenu implements PropertyChangeListenerMixin<SMenu> {
+public class SMenu extends JMenu implements
+		ComponentMixin<SMenu> {
 
 	/**
 	 * 
@@ -133,11 +134,6 @@ public class SMenu extends JMenu implements PropertyChangeListenerMixin<SMenu> {
 		return this;
 	}
 
-	public SMenu name(String v) {
-        setName(v);
-        return this;
-    }
-
     public SMenu text(String value) {
         setText(value);
         return this;
@@ -145,11 +141,6 @@ public class SMenu extends JMenu implements PropertyChangeListenerMixin<SMenu> {
 
     public SMenu icon(Icon value) {
         setIcon(value);
-        return this;
-    }
-
-    public SMenu enabled(boolean v) {
-        super.setEnabled(v);
         return this;
     }
 

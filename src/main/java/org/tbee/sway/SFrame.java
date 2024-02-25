@@ -1,7 +1,7 @@
 package org.tbee.sway;
 
+import org.tbee.sway.mixin.ComponentMixin;
 import org.tbee.sway.mixin.KeyListenerMixin;
-import org.tbee.sway.mixin.PropertyChangeListenerMixin;
 
 import javax.swing.JComponent;
 import javax.swing.JFrame;
@@ -11,8 +11,10 @@ import java.util.function.Consumer;
 // TBEERNOT: constructor with title plus of methods, dito SDialog
 // TBEERNOT Javadoc on how to use SFrame dito SDialog
 
-public class SFrame extends JFrame
-implements SOverlayPane.OverlayProvider, KeyListenerMixin<SFrame>, PropertyChangeListenerMixin<SFrame> {
+public class SFrame extends JFrame implements
+        SOverlayPane.OverlayProvider,
+        KeyListenerMixin<SFrame>,
+        ComponentMixin<SFrame> {
 
     public SFrame() {
         disposeOnClose();
@@ -49,16 +51,6 @@ implements SOverlayPane.OverlayProvider, KeyListenerMixin<SFrame>, PropertyChang
     }
     public SFrame doNothinhOnClose() {
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-        return this;
-    }
-
-    public SFrame name(String v) {
-        setName(v);
-        return this;
-    }
-
-    public SFrame visible(boolean v) {
-        setVisible(v);
         return this;
     }
 

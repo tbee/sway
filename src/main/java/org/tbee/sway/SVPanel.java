@@ -4,7 +4,7 @@ import net.miginfocom.layout.AC;
 import net.miginfocom.layout.CC;
 import net.miginfocom.layout.LC;
 import net.miginfocom.swing.MigLayout;
-import org.tbee.sway.mixin.PropertyChangeListenerMixin;
+import org.tbee.sway.mixin.ComponentMixin;
 
 import javax.swing.JComponent;
 import java.awt.Component;
@@ -13,8 +13,8 @@ import java.util.Collection;
 /**
  * Vertical layout panel
  */
-public class SVPanel extends SPanelExtendable<SVPanel>
-implements PropertyChangeListenerMixin<SVPanel> {
+public class SVPanel extends SPanelExtendable<SVPanel> implements
+        ComponentMixin<SVPanel> {
 
     // Need to declare these specifically, because the getters return String
     final private LC lc = new LC();

@@ -9,6 +9,7 @@ import org.tbee.sway.binding.ExceptionHandler;
 import org.tbee.sway.format.Format;
 import org.tbee.sway.format.FormatAsJavaTextFormat;
 import org.tbee.sway.format.FormatRegistry;
+import org.tbee.sway.mixin.ComponentMixin;
 import org.tbee.sway.mixin.OverlayMixin;
 import org.tbee.sway.mixin.PropertyChangeListenerMixin;
 import org.tbee.sway.support.BeanUtil;
@@ -194,8 +195,10 @@ import java.util.stream.Collectors;
  *
  * @param <TableType>
  */
-public class STable<TableType> extends JPanel
-implements PropertyChangeListenerMixin<STable<TableType>>, OverlayMixin<STable<TableType>> {
+public class STable<TableType> extends JPanel implements
+        PropertyChangeListenerMixin<STable<TableType>>,
+        OverlayMixin<STable<TableType>>,
+        ComponentMixin<STable<TableType>> {
     static private org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(STable.class);
 
     private final STableCore<TableType> sTableCore;
@@ -1305,15 +1308,6 @@ implements PropertyChangeListenerMixin<STable<TableType>>, OverlayMixin<STable<T
     public void setName(String v) {
         super.setName(v);
         sTableCore.setName(v + ".sTableCore"); // For tests we need to address the actual table
-    }
-    public STable<TableType> name(String v) {
-        setName(v);
-        return this;
-    }
-
-    public STable<TableType> visible(boolean value) {
-        setVisible(value);
-        return this;
     }
 
     /**

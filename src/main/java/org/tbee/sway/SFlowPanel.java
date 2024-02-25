@@ -1,15 +1,14 @@
 package org.tbee.sway;
 
-import org.tbee.sway.mixin.OverlayMixin;
-import org.tbee.sway.mixin.PropertyChangeListenerMixin;
+import org.tbee.sway.mixin.ComponentMixin;
 
 import javax.swing.JComponent;
 import java.awt.FlowLayout;
 import java.util.Arrays;
 import java.util.Collection;
 
-public class SFlowPanel extends SPanelExtendable<SFlowPanel>
-implements OverlayMixin<SFlowPanel>, PropertyChangeListenerMixin<SFlowPanel> {
+public class SFlowPanel extends SPanelExtendable<SFlowPanel> implements
+        ComponentMixin<SFlowPanel> {
 
     public SFlowPanel() {
         super();

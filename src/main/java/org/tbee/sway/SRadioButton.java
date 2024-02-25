@@ -1,7 +1,6 @@
 package org.tbee.sway;
 
-import org.tbee.sway.mixin.OverlayMixin;
-import org.tbee.sway.mixin.PropertyChangeListenerMixin;
+import org.tbee.sway.mixin.ComponentMixin;
 
 import javax.swing.Action;
 import javax.swing.Icon;
@@ -9,8 +8,9 @@ import javax.swing.JRadioButton;
 import java.awt.Insets;
 import java.awt.event.ActionListener;
 
-public class SRadioButton extends JRadioButton
-implements PropertyChangeListenerMixin<SRadioButton>, OverlayMixin<SRadioButton> {
+public class SRadioButton extends JRadioButton implements
+        ComponentMixin<SRadioButton> {
+
     public SRadioButton() {
     }
 
@@ -45,18 +45,8 @@ implements PropertyChangeListenerMixin<SRadioButton>, OverlayMixin<SRadioButton>
     // ==============================================
     // FLUENT API
 
-    public SRadioButton name(String v) {
-        setName(v);
-        return this;
-    }
-
     public SRadioButton toolTipText(String t) {
         super.setToolTipText(t);
-        return this;
-    }
-
-    public SRadioButton enabled(boolean v) {
-        super.setEnabled(v);
         return this;
     }
 
@@ -82,11 +72,6 @@ implements PropertyChangeListenerMixin<SRadioButton>, OverlayMixin<SRadioButton>
 
     public SRadioButton text(String v) {
         super.setText(v);
-        return this;
-    }
-
-    public SRadioButton visible(boolean value) {
-        setVisible(value);
         return this;
     }
 }

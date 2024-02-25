@@ -4,14 +4,14 @@ import net.miginfocom.layout.AC;
 import net.miginfocom.layout.CC;
 import net.miginfocom.layout.LC;
 import net.miginfocom.swing.MigLayout;
-import org.tbee.sway.mixin.PropertyChangeListenerMixin;
+import org.tbee.sway.mixin.ComponentMixin;
 
 import javax.swing.JComponent;
 import java.awt.Component;
 import java.util.Collection;
 
-public class SHPanel extends SPanelExtendable<SHPanel>
-implements PropertyChangeListenerMixin<SHPanel> {
+public class SHPanel extends SPanelExtendable<SHPanel> implements
+        ComponentMixin<SHPanel> {
 
     // Need to declare these specifically, because the getters return String
     final private LC lc = new LC();

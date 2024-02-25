@@ -15,8 +15,7 @@ package org.tbee.sway;
 import org.tbee.sway.binding.BeanBinder;
 import org.tbee.sway.binding.BindingEndpoint;
 import org.tbee.sway.binding.ExceptionHandler;
-import org.tbee.sway.mixin.OverlayMixin;
-import org.tbee.sway.mixin.PropertyChangeListenerMixin;
+import org.tbee.sway.mixin.ComponentMixin;
 import org.tbee.sway.support.IconRegistry;
 import org.tbee.util.ExceptionUtil;
 
@@ -43,8 +42,8 @@ import java.awt.event.MouseListener;
  * It draws its "null" states using the "armed" mode of JCheckBox.
  * If the SELECTED, UNSELECTED, UNDETERMINED icons are specified in the IconRegistry, then these will be drawn.
  */
-public class SCheckBox3 extends JCheckBox
-implements PropertyChangeListenerMixin<SCheckBox3>, OverlayMixin<SCheckBox3> {
+public class SCheckBox3 extends JCheckBox implements
+		ComponentMixin<SCheckBox3> {
 	static private org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(SCheckBox3.class);
 
 
@@ -303,19 +302,8 @@ implements PropertyChangeListenerMixin<SCheckBox3>, OverlayMixin<SCheckBox3> {
 		return of().text(text).icon(icon);
 	}
 
-
-	public SCheckBox3 name(String v) {
-		setName(v);
-		return this;
-	}
-
 	public SCheckBox3 toolTipText(String t) {
 		setToolTipText(t);
-		return this;
-	}
-
-	public SCheckBox3 enabled(boolean v) {
-		setEnabled(v);
 		return this;
 	}
 
@@ -341,11 +329,6 @@ implements PropertyChangeListenerMixin<SCheckBox3>, OverlayMixin<SCheckBox3> {
 
 	public SCheckBox3 text(String v) {
 		super.setText(v);
-		return this;
-	}
-
-	public SCheckBox3 visible(boolean value) {
-		setVisible(value);
 		return this;
 	}
 

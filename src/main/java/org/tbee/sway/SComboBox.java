@@ -6,8 +6,7 @@ import org.tbee.sway.binding.ExceptionHandler;
 import org.tbee.sway.format.Format;
 import org.tbee.sway.format.FormatRegistry;
 import org.tbee.sway.list.DefaultListCellRenderer;
-import org.tbee.sway.mixin.OverlayMixin;
-import org.tbee.sway.mixin.PropertyChangeListenerMixin;
+import org.tbee.sway.mixin.ComponentMixin;
 import org.tbee.sway.support.SwayUtil;
 import org.tbee.util.ExceptionUtil;
 
@@ -23,8 +22,8 @@ import java.util.List;
 import java.util.Vector;
 import java.util.function.Consumer;
 
-public class SComboBox<T> extends JComboBox<T>
-implements PropertyChangeListenerMixin<SComboBox<T>>, OverlayMixin<SComboBox<T>> {
+public class SComboBox<T> extends JComboBox<T> implements
+        ComponentMixin<SComboBox<T>> {
 
     final static private org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(SComboBox.class);
 
@@ -273,11 +272,6 @@ implements PropertyChangeListenerMixin<SComboBox<T>>, OverlayMixin<SComboBox<T>>
 
     public SComboBox<T> name(String v) {
         setName(v);
-        return this;
-    }
-
-    public SComboBox<T> visible(boolean v) {
-        setVisible(v);
         return this;
     }
 

@@ -2,9 +2,8 @@ package org.tbee.sway;
 
 import org.tbee.sway.binding.BindingEndpoint;
 import org.tbee.sway.binding.ExceptionHandler;
+import org.tbee.sway.mixin.ComponentMixin;
 import org.tbee.sway.mixin.HAlignMixin;
-import org.tbee.sway.mixin.OverlayMixin;
-import org.tbee.sway.mixin.PropertyChangeListenerMixin;
 import org.tbee.sway.mixin.VAlignMixin;
 import org.tbee.util.ExceptionUtil;
 
@@ -17,8 +16,10 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class SButton extends JButton
-implements HAlignMixin<SButton>, VAlignMixin<SButton>, PropertyChangeListenerMixin<SButton>, OverlayMixin<SButton> {
+public class SButton extends JButton implements
+        HAlignMixin<SButton>,
+        VAlignMixin<SButton>,
+        ComponentMixin<SButton> {
     final static private org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(SButton.class);
 
     public SButton() {
@@ -129,18 +130,8 @@ implements HAlignMixin<SButton>, VAlignMixin<SButton>, PropertyChangeListenerMix
         return of().text(text).icon(icon).onAction(actionListener);
     }
 
-    public SButton name(String v) {
-        setName(v);
-        return this;
-    }
-
     public SButton toolTipText(String t) {
         setToolTipText(t);
-        return this;
-    }
-
-    public SButton enabled(boolean v) {
-        setEnabled(v);
         return this;
     }
 
@@ -166,11 +157,6 @@ implements HAlignMixin<SButton>, VAlignMixin<SButton>, PropertyChangeListenerMix
 
     public SButton text(String v) {
         setText(v);
-        return this;
-    }
-
-    public SButton visible(boolean value) {
-        setVisible(value);
         return this;
     }
 }

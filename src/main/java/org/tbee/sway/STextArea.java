@@ -3,18 +3,20 @@ package org.tbee.sway;
 import org.tbee.sway.binding.BeanBinder;
 import org.tbee.sway.binding.BindingEndpoint;
 import org.tbee.sway.binding.ExceptionHandler;
-import org.tbee.sway.mixin.PropertyChangeListenerMixin;
+import org.tbee.sway.mixin.ComponentMixin;
 import org.tbee.sway.support.FocusInterpreter;
 import org.tbee.util.ExceptionUtil;
 
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
+import java.awt.BorderLayout;
 
-public class STextArea extends SBorderPanel
-implements PropertyChangeListenerMixin<STextArea> {
+public class STextArea extends JPanel implements
+        ComponentMixin<STextArea> {
 
     final static private org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(STextArea.class);
 
@@ -27,9 +29,11 @@ implements PropertyChangeListenerMixin<STextArea> {
 	}
 	
 	public STextArea(int rows, int cols) {
+        setLayout(new BorderLayout());
+
 		jTextArea = new JTextArea(rows, cols);
-		center(new JScrollPane(jTextArea));
-		
+		add(new JScrollPane(jTextArea), BorderLayout.CENTER);
+
 		// Detect focus lost
 		// the FocusInterpreterListener must be kept in an instance variable, otherwise it will be cleared by the WeakArrayList used in the FocusInterpreter
 		focusInterpreter = new FocusInterpreter(jTextArea);
@@ -126,16 +130,6 @@ implements PropertyChangeListenerMixin<STextArea> {
     public void setName(String v) {
         super.setName(v);
         jTextArea.setName(v + ".jTextArea"); // For tests we need to address the actual list
-    }
-
-    public STextArea name(String v) {
-        setName(v);
-        return this;
-    }
-
-    public STextArea visible(boolean value) {
-        setVisible(value);
-        return this;
     }
 
     /**

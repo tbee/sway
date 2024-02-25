@@ -1,12 +1,13 @@
 package org.tbee.sway;
 
-import org.tbee.sway.mixin.PropertyChangeListenerMixin;
+import org.tbee.sway.mixin.ComponentMixin;
 
 import javax.swing.Icon;
 import javax.swing.JRadioButtonMenuItem;
 import java.awt.event.ActionListener;
 
-public class SRadioButtonMenuItem extends JRadioButtonMenuItem implements PropertyChangeListenerMixin<SRadioButtonMenuItem> {
+public class SRadioButtonMenuItem extends JRadioButtonMenuItem implements
+		ComponentMixin<SRadioButtonMenuItem> {
 
 	/**
 	 * 
@@ -40,11 +41,6 @@ public class SRadioButtonMenuItem extends JRadioButtonMenuItem implements Proper
     // ===========================================================================================================================
     // FLUENT API
 
-    public SRadioButtonMenuItem name(String v) {
-        setName(v);
-        return this;
-    }
-
     public SRadioButtonMenuItem text(String value) {
         setText(value);
         return this;
@@ -52,11 +48,6 @@ public class SRadioButtonMenuItem extends JRadioButtonMenuItem implements Proper
 
     public SRadioButtonMenuItem icon(Icon value) {
         setIcon(value);
-        return this;
-    }
-
-    public SRadioButtonMenuItem enabled(boolean v) {
-        super.setEnabled(v);
         return this;
     }
 

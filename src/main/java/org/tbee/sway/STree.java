@@ -5,8 +5,7 @@ import org.tbee.sway.binding.BindingEndpoint;
 import org.tbee.sway.binding.ExceptionHandler;
 import org.tbee.sway.format.Format;
 import org.tbee.sway.format.FormatRegistry;
-import org.tbee.sway.mixin.OverlayMixin;
-import org.tbee.sway.mixin.PropertyChangeListenerMixin;
+import org.tbee.sway.mixin.ComponentMixin;
 import org.tbee.sway.support.BeanMonitor;
 import org.tbee.sway.tree.Node;
 import org.tbee.sway.tree.STreeCore;
@@ -15,12 +14,14 @@ import org.tbee.util.ExceptionUtil;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
 import javax.swing.SwingUtilities;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
+import java.awt.BorderLayout;
 import java.awt.Component;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
@@ -63,18 +64,18 @@ import java.util.function.Function;
  *
  * @param <T>
  */
-public class STree<T extends Object> extends SBorderPanel
-implements PropertyChangeListenerMixin<STree<T>>, OverlayMixin<STree<T>> {
+public class STree<T extends Object> extends JPanel implements
+        ComponentMixin<STree<T>> {
     static private org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(STree.class);
 
     final private STreeCore<T> sTreeCore;
     final private JScrollPane jScrollPane;
 
     public STree() {
-        super();
+        setLayout(new BorderLayout());
         sTreeCore = new STreeCore<>(this);
         jScrollPane = new JScrollPane(sTreeCore);
-        center(jScrollPane);
+        add(jScrollPane, BorderLayout.CENTER);
 
         sTreeCore.setCellRenderer(new DefaultTreeCellRenderer(){
             @Override
@@ -571,15 +572,6 @@ implements PropertyChangeListenerMixin<STree<T>>, OverlayMixin<STree<T>> {
     public void setName(String v) {
         super.setName(v);
         sTreeCore.setName(v + ".sTreeCore"); // For tests we need to address the actual list
-    }
-    public STree<T> name(String v) {
-        setName(v);
-        return this;
-    }
-
-    public STree<T> visible(boolean value) {
-        setVisible(value);
-        return this;
     }
 
     public STree<T> rootVisible(boolean value) {

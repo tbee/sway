@@ -19,11 +19,6 @@ abstract public class SPanelExtendable<T extends Component> extends JPanel {
     // =========================================================================
     // FLUENT API
 
-    public T name(String v) {
-        setName(v);
-        return (T)this;
-    }
-    
     /**
      * Short for creating an empty border
      * @param top

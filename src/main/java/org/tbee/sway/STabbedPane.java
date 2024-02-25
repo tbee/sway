@@ -3,8 +3,7 @@ package org.tbee.sway;
 import org.tbee.sway.binding.BeanBinder;
 import org.tbee.sway.binding.BindingEndpoint;
 import org.tbee.sway.binding.ExceptionHandler;
-import org.tbee.sway.mixin.OverlayMixin;
-import org.tbee.sway.mixin.PropertyChangeListenerMixin;
+import org.tbee.sway.mixin.ComponentMixin;
 import org.tbee.util.ExceptionUtil;
 
 import javax.swing.Icon;
@@ -50,8 +49,9 @@ import java.util.function.Function;
  *
  * @param <T> the type of the value.
  */
-public class STabbedPane<T> extends JTabbedPane
-implements PropertyChangeListenerMixin<STabbedPane<T>>, OverlayMixin<STabbedPane<T>> {
+public class STabbedPane<T> extends JTabbedPane implements
+        ComponentMixin<STabbedPane<T>> {
+
     public static final org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(STabbedPane.class);
     public static final String LOADED_COMPONENT = "loadedComponent";
 
@@ -329,23 +329,8 @@ implements PropertyChangeListenerMixin<STabbedPane<T>>, OverlayMixin<STabbedPane
         return new STabbedPane<T>();
     }
 
-    public STabbedPane<T> name(String v) {
-        setName(v);
-        return this;
-    }
-
     public STabbedPane<T> toolTipText(String t) {
         setToolTipText(t);
-        return this;
-    }
-
-    public STabbedPane<T> enabled(boolean v) {
-        setEnabled(v);
-        return this;
-    }
-
-    public STabbedPane<T> visible(boolean value) {
-        setVisible(value);
         return this;
     }
 

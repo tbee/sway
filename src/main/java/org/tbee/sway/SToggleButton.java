@@ -1,7 +1,6 @@
 package org.tbee.sway;
 
-import org.tbee.sway.mixin.OverlayMixin;
-import org.tbee.sway.mixin.PropertyChangeListenerMixin;
+import org.tbee.sway.mixin.ComponentMixin;
 
 import javax.swing.Action;
 import javax.swing.Icon;
@@ -14,8 +13,9 @@ import java.awt.event.ActionListener;
 /**
  *
  */
-public class SToggleButton extends JToggleButton
-implements PropertyChangeListenerMixin<SToggleButton>, OverlayMixin<SToggleButton> {
+public class SToggleButton extends JToggleButton implements
+        ComponentMixin<SToggleButton> {
+
     public SToggleButton() {
     }
 
@@ -51,11 +51,6 @@ implements PropertyChangeListenerMixin<SToggleButton>, OverlayMixin<SToggleButto
     // ===========================================================================================================================
     // FLUENT API
 
-    public SToggleButton name(String v) {
-        setName(v);
-        return this;
-    }
-
     public SToggleButton text(String value) {
         setText(value);
         return this;
@@ -73,11 +68,6 @@ implements PropertyChangeListenerMixin<SToggleButton>, OverlayMixin<SToggleButto
 
     public SToggleButton action(Action v) {
         super.setAction(v);
-        return this;
-    }
-
-    public SToggleButton visible(boolean value) {
-        setVisible(value);
         return this;
     }
 

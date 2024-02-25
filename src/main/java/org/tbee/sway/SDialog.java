@@ -1,6 +1,6 @@
 package org.tbee.sway;
 
-import org.tbee.sway.mixin.PropertyChangeListenerMixin;
+import org.tbee.sway.mixin.ComponentMixin;
 
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -13,7 +13,9 @@ import java.awt.Window;
 import java.util.ArrayList;
 import java.util.function.Consumer;
 
-public class SDialog extends JDialog implements SOverlayPane.OverlayProvider, PropertyChangeListenerMixin<SDialog> {
+public class SDialog extends JDialog implements
+		SOverlayPane.OverlayProvider,
+		ComponentMixin<SDialog> {
 	
 	/**
 	 * @param owner
@@ -93,16 +95,6 @@ public class SDialog extends JDialog implements SOverlayPane.OverlayProvider, Pr
 	// =======================================================================================================
 	// FLUENT API
 	
-    public SDialog name(String v) {
-        setName(v);
-        return this;
-    }
-
-	public SDialog visible(boolean v) {
-		setVisible(v);
-		return this;
-	}
-
 	public SDialog size(int width, int height) {
 		setSize(width, height);
 		return this;

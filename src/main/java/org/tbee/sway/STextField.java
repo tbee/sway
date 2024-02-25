@@ -7,6 +7,7 @@ import org.tbee.sway.format.Format;
 import org.tbee.sway.format.FormatRegistry;
 import org.tbee.sway.format.JavaFormat;
 import org.tbee.sway.format.StringFormat;
+import org.tbee.sway.mixin.ComponentMixin;
 import org.tbee.sway.mixin.HAlignMixin;
 import org.tbee.sway.mixin.OverlayMixin;
 import org.tbee.sway.support.FocusInterpreter;
@@ -105,8 +106,10 @@ import java.util.Locale;
  *
  * @param <T> the type of value the textfield holds.
  */
-public class STextField<T> extends javax.swing.JTextField
-implements HAlignMixin<STextField<T>>, OverlayMixin<STextField<T>> {
+public class STextField<T> extends javax.swing.JTextField implements
+        HAlignMixin<STextField<T>>,
+        OverlayMixin<STextField<T>>,
+        ComponentMixin<STextField<T>> {
     final static private org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(STextField.class);
 
     final private Format<T> format;
@@ -370,11 +373,6 @@ implements HAlignMixin<STextField<T>>, OverlayMixin<STextField<T>> {
     // ==============================================
     // FLUENT API
 
-    public STextField<T> name(String v) {
-        setName(v);
-        return this;
-    }
-
     public STextField<T> columns(int value) {
         setColumns(value);
         return this;
@@ -382,11 +380,6 @@ implements HAlignMixin<STextField<T>>, OverlayMixin<STextField<T>> {
 
     public STextField<T> font(Font value) {
         setFont(value);
-        return this;
-    }
-
-    public STextField<T> enabled(boolean enabled) {
-        setEnabled(enabled);
         return this;
     }
 

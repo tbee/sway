@@ -7,34 +7,35 @@ import org.tbee.sway.format.Format;
 import org.tbee.sway.format.FormatRegistry;
 import org.tbee.sway.list.DefaultListCellRenderer;
 import org.tbee.sway.list.SListCore;
-import org.tbee.sway.mixin.OverlayMixin;
-import org.tbee.sway.mixin.PropertyChangeListenerMixin;
+import org.tbee.sway.mixin.ComponentMixin;
 import org.tbee.sway.support.SwayUtil;
 import org.tbee.util.ExceptionUtil;
 
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
 
-public class SList<T> extends SBorderPanel
-implements PropertyChangeListenerMixin<SList<T>>, OverlayMixin<SList<T>> {
+public class SList<T> extends JPanel implements
+        ComponentMixin<SList<T>> {
     static private org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(SList.class);
 
     final private SListCore<T> sListCore;
     final private JScrollPane jScrollPane;
 
     public SList() {
-        super();
+        setLayout(new BorderLayout());
         sListCore = new SListCore<>(this);
         jScrollPane = new JScrollPane(sListCore);
-        center(jScrollPane);
+        add(jScrollPane, BorderLayout.CENTER);
         sListCore.setCellRenderer(new DefaultListCellRenderer(() -> format, () -> alternateRowColor, () -> firstAlternateRowColor, () -> secondAlternateRowColor));
 
         // Start listening for selection changes
@@ -297,15 +298,6 @@ implements PropertyChangeListenerMixin<SList<T>>, OverlayMixin<SList<T>> {
     public void setName(String v) {
         super.setName(v);
         sListCore.setName(v + ".sListCore"); // For tests we need to address the actual list
-    }
-    public SList<T> name(String v) {
-        setName(v);
-        return this;
-    }
-
-    public SList<T> visible(boolean value) {
-        setVisible(value);
-        return this;
     }
 
     static public <T> SList<T> of(List<T> data) {

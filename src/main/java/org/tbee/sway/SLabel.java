@@ -2,6 +2,7 @@ package org.tbee.sway;
 
 import org.tbee.sway.binding.BindingEndpoint;
 import org.tbee.sway.binding.ExceptionHandler;
+import org.tbee.sway.mixin.ComponentMixin;
 import org.tbee.sway.mixin.HAlignMixin;
 import org.tbee.sway.mixin.OverlayMixin;
 import org.tbee.sway.mixin.VAlignMixin;
@@ -18,8 +19,11 @@ import java.awt.Font;
 /**
  *
  */
-public class SLabel extends JLabel
-implements HAlignMixin<SLabel>, VAlignMixin<SLabel>, OverlayMixin<SLabel> {
+public class SLabel extends JLabel implements
+        HAlignMixin<SLabel>,
+        VAlignMixin<SLabel>,
+        OverlayMixin<SLabel>,
+        ComponentMixin<SLabel> {
 
     public SLabel() {
     }
@@ -110,11 +114,6 @@ implements HAlignMixin<SLabel>, VAlignMixin<SLabel>, OverlayMixin<SLabel> {
         return of().icon(icon);
     }
 
-    public SLabel name(String v) {
-        setName(v);
-        return this;
-    }
-
     public SLabel text(String value) {
         setText(value);
         return this;
@@ -127,11 +126,6 @@ implements HAlignMixin<SLabel>, VAlignMixin<SLabel>, OverlayMixin<SLabel> {
 
     public SLabel font(Font value) {
         setFont(value);
-        return this;
-    }
-
-    public SLabel visible(boolean value) {
-        setVisible(value);
         return this;
     }
 
