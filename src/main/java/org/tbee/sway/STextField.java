@@ -7,6 +7,7 @@ import org.tbee.sway.format.Format;
 import org.tbee.sway.format.FormatRegistry;
 import org.tbee.sway.format.JavaFormat;
 import org.tbee.sway.format.StringFormat;
+import org.tbee.sway.mixin.HAlignMixin;
 import org.tbee.sway.support.FocusInterpreter;
 import org.tbee.sway.support.HAlign;
 import org.tbee.util.ClassUtil;
@@ -105,7 +106,7 @@ import java.util.Locale;
  *
  * @param <T> the type of value the textfield holds.
  */
-public class STextField<T> extends javax.swing.JTextField {
+public class STextField<T> extends javax.swing.JTextField implements HAlignMixin<STextField<T>> {
     final static private org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(STextField.class);
 
     final private Format<T> format;
@@ -121,10 +122,7 @@ public class STextField<T> extends javax.swing.JTextField {
         this.format = format;
         setColumns(format.columns());
         setHAlign(format.horizontalAlignment());
-        construct();
-    }
 
-    private void construct() {
         // the FocusInterpreterListener must be kept in an instance variable, otherwise it will be cleared by the WeakArrayList used in the FocusInterpreter
         focusInterpreterListener = evt -> {
             if (evt.getState() == FocusInterpreter.State.LOSING_FOCUS) {
@@ -135,6 +133,14 @@ public class STextField<T> extends javax.swing.JTextField {
     }
     private FocusInterpreter.FocusInterpreterListener focusInterpreterListener = null;
     final private FocusInterpreter focusInterpreter = new FocusInterpreter(this);
+
+    // ===========================================================================================================================
+    // For Mixins
+
+    @Override
+    public void firePropertyChange(String propertyName, Object oldValue, Object newValue) {
+        super.firePropertyChange(propertyName, oldValue, newValue);
+    }
 
     // ========================================================
     // OF
@@ -288,6 +294,7 @@ public class STextField<T> extends javax.swing.JTextField {
     public void setExceptionHandler(ExceptionHandler v) {
         firePropertyChange(EXCEPTIONHANDLER, exceptionHandler, exceptionHandler = v);
     }
+
     public ExceptionHandler getExceptionHandler() {
         return exceptionHandler;
     }
@@ -359,27 +366,6 @@ public class STextField<T> extends javax.swing.JTextField {
 
     // ==============================================
     // JavaBean
-
-    /**
-     * Enum variant of HorizontalAlignment
-     * @param v
-     */
-    public void setHAlign(HAlign v) {
-        HAlign old = getHAlign();
-        setHorizontalAlignment(v.getSwingConstant());
-        firePropertyChange(HALIGN, old, v);
-    }
-    public HAlign getHAlign() {
-        return HAlign.of(getHorizontalAlignment());
-    }
-    public STextField<T> hAlign(HAlign v) {
-        setHAlign(v);
-        return this;
-    }
-    final static public String HALIGN = "hAlign";
-    public BindingEndpoint<HAlign> hAlign$() {
-        return BindingEndpoint.of(this, HALIGN, exceptionHandler);
-    }
 
     // ==============================================
     // FLUENT API

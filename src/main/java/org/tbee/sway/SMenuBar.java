@@ -1,5 +1,7 @@
 package org.tbee.sway;
 
+import org.tbee.sway.mixin.PropertyChangeListenerMixin;
+
 import javax.swing.JMenuBar;
 import java.beans.PropertyChangeListener;
 
@@ -38,7 +40,7 @@ import java.beans.PropertyChangeListener;
  *     }
  * }</pre>
  */
-public class SMenuBar extends JMenuBar {
+public class SMenuBar extends JMenuBar implements PropertyChangeListenerMixin<SMenuBar> {
 
     // ===========================================================================================================================
     // FLUENT API

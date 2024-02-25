@@ -9,6 +9,7 @@ import org.tbee.sway.binding.ExceptionHandler;
 import org.tbee.sway.format.Format;
 import org.tbee.sway.format.FormatAsJavaTextFormat;
 import org.tbee.sway.format.FormatRegistry;
+import org.tbee.sway.mixin.PropertyChangeListenerMixin;
 import org.tbee.sway.support.BeanUtil;
 import org.tbee.sway.support.SwayUtil;
 import org.tbee.sway.table.FormatCellRenderer;
@@ -193,7 +194,7 @@ import java.util.stream.Collectors;
  *
  * @param <TableType>
  */
-public class STable<TableType> extends JPanel {
+public class STable<TableType> extends JPanel implements PropertyChangeListenerMixin<STable<TableType>> {
     static private org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(STable.class);
 
     private final STableCore<TableType> sTableCore;

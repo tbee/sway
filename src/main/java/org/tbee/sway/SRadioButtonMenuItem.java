@@ -1,11 +1,13 @@
 package org.tbee.sway;
 
+import org.tbee.sway.mixin.PropertyChangeListenerMixin;
+
 import javax.swing.Icon;
 import javax.swing.JRadioButtonMenuItem;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeListener;
 
-public class SRadioButtonMenuItem extends JRadioButtonMenuItem {
+public class SRadioButtonMenuItem extends JRadioButtonMenuItem implements PropertyChangeListenerMixin<SRadioButtonMenuItem> {
 
 	/**
 	 * 

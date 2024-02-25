@@ -2,8 +2,9 @@ package org.tbee.sway;
 
 import org.tbee.sway.binding.BindingEndpoint;
 import org.tbee.sway.binding.ExceptionHandler;
-import org.tbee.sway.support.HAlign;
-import org.tbee.sway.support.VAlign;
+import org.tbee.sway.mixin.HAlignMixin;
+import org.tbee.sway.mixin.PropertyChangeListenerMixin;
+import org.tbee.sway.mixin.VAlignMixin;
 import org.tbee.util.ExceptionUtil;
 
 import javax.swing.Action;
@@ -17,7 +18,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeListener;
 
-public class SButton extends JButton {
+public class SButton extends JButton implements HAlignMixin<SButton>, VAlignMixin<SButton>, PropertyChangeListenerMixin<SButton> {
     final static private org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(SButton.class);
 
     public SButton() {
@@ -39,49 +40,12 @@ public class SButton extends JButton {
         super(text, icon);
     }
 
-    // ==============================================
-    // JavaBean
+    // ===========================================================================================================================
+    // For Mixins
 
-    /**
-     * Enum variant of HorizontalAlignment
-     * @param v
-     */
-    public void setHAlign(HAlign v) {
-        HAlign old = getHAlign();
-        setHorizontalAlignment(v.getSwingConstant());
-        firePropertyChange(HALIGN, old, v);
-    }
-    public HAlign getHAlign() {
-        return HAlign.of(getHorizontalAlignment());
-    }
-    public SButton hAlign(HAlign v) {
-        setHAlign(v);
-        return this;
-    }
-    final static public String HALIGN = "hAlign";
-    public BindingEndpoint<HAlign> hAlign$() {
-        return BindingEndpoint.of(this, HALIGN, exceptionHandler);
-    }
-
-    /**
-     * Enum variant of VerticalAlignment
-     * @param v
-     */
-    public void setVAlign(VAlign v) {
-        VAlign old = getVAlign();
-        setVerticalAlignment(v.getSwingConstant());
-        firePropertyChange(VALIGN, old, v);
-    }
-    public VAlign getVAlign() {
-        return VAlign.of(getHorizontalAlignment());
-    }
-    public SButton vAlign(VAlign v) {
-        setVAlign(v);
-        return this;
-    }
-    final static public String VALIGN = "vAlign";
-    public BindingEndpoint<VAlign> vAlign$() {
-        return BindingEndpoint.of(this, VALIGN, exceptionHandler);
+    @Override
+    public void firePropertyChange(String propertyName, Object oldValue, Object newValue) {
+        super.firePropertyChange(propertyName, oldValue, newValue);
     }
 
     // ==============================================
@@ -94,6 +58,7 @@ public class SButton extends JButton {
     public void setExceptionHandler(ExceptionHandler v) {
         firePropertyChange(EXCEPTIONHANDLER, exceptionHandler, exceptionHandler = v);
     }
+
     public ExceptionHandler getExceptionHandler() {
         return exceptionHandler;
     }

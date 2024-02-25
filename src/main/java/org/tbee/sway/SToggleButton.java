@@ -1,5 +1,7 @@
 package org.tbee.sway;
 
+import org.tbee.sway.mixin.PropertyChangeListenerMixin;
+
 import javax.swing.Action;
 import javax.swing.Icon;
 import javax.swing.JToggleButton;
@@ -13,7 +15,7 @@ import java.beans.PropertyChangeListener;
 /**
  *
  */
-public class SToggleButton extends JToggleButton {
+public class SToggleButton extends JToggleButton implements PropertyChangeListenerMixin<SToggleButton> {
     public SToggleButton() {
     }
 

@@ -1,5 +1,7 @@
 package org.tbee.sway;
 
+import org.tbee.sway.mixin.PropertyChangeListenerMixin;
+
 import javax.swing.JPanel;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -15,7 +17,7 @@ import java.util.function.Consumer;
  * This pane handles painting overlay components over other components in the glasspane of a SFrame of SDialog.
  * Overlay components can be added and removed as needed, using overlayWith() and removeOverlay().
  */
-public class SOverlayPane extends JPanel {
+public class SOverlayPane extends JPanel implements PropertyChangeListenerMixin<SOverlayPane> {
 
     final private Map<Component, ComponentListener> componentListeners = new WeakHashMap<>();
 

@@ -1,5 +1,7 @@
 package org.tbee.sway;
 
+import org.tbee.sway.mixin.PropertyChangeListenerMixin;
+
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
@@ -12,7 +14,7 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.function.Consumer;
 
-public class SDialog extends JDialog implements SOverlayPane.OverlayProvider {
+public class SDialog extends JDialog implements SOverlayPane.OverlayProvider, PropertyChangeListenerMixin<SDialog> {
 	
 	/**
 	 * @param owner

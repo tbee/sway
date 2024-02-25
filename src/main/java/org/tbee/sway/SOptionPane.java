@@ -1,12 +1,14 @@
 package org.tbee.sway;
 
+import org.tbee.sway.mixin.PropertyChangeListenerMixin;
 import org.tbee.sway.support.IconRegistry;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JOptionPane;
+import javax.swing.UIManager;
+import java.awt.Component;
 import java.util.Locale;
 
-public class SOptionPane extends JOptionPane {
+public class SOptionPane extends JOptionPane implements PropertyChangeListenerMixin<SOptionPane> {
 
 	static public void ofInfo(Component parent, String title, String text) {
 		SOptionPane.showMessageDialog(parent, text, title, JOptionPane.INFORMATION_MESSAGE);

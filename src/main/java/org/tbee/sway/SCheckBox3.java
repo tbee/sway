@@ -15,6 +15,7 @@ package org.tbee.sway;
 import org.tbee.sway.binding.BeanBinder;
 import org.tbee.sway.binding.BindingEndpoint;
 import org.tbee.sway.binding.ExceptionHandler;
+import org.tbee.sway.mixin.PropertyChangeListenerMixin;
 import org.tbee.sway.support.IconRegistry;
 import org.tbee.util.ExceptionUtil;
 
@@ -43,7 +44,7 @@ import java.beans.PropertyChangeListener;
  * It draws its "null" states using the "armed" mode of JCheckBox.
  * If the SELECTED, UNSELECTED, UNDETERMINED icons are specified in the IconRegistry, then these will be drawn.
  */
-public class SCheckBox3 extends JCheckBox {
+public class SCheckBox3 extends JCheckBox implements PropertyChangeListenerMixin<SCheckBox3> {
 	static private org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(SCheckBox3.class);
 
 

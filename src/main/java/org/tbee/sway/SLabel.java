@@ -1,8 +1,10 @@
 package org.tbee.sway;
 
 import org.tbee.sway.binding.BindingEndpoint;
+import org.tbee.sway.binding.ExceptionHandler;
+import org.tbee.sway.mixin.HAlignMixin;
+import org.tbee.sway.mixin.VAlignMixin;
 import org.tbee.sway.support.HAlign;
-import org.tbee.sway.support.VAlign;
 
 import javax.swing.Icon;
 import javax.swing.JLabel;
@@ -17,7 +19,7 @@ import java.beans.PropertyChangeListener;
 /**
  *
  */
-public class SLabel extends JLabel {
+public class SLabel extends JLabel implements HAlignMixin<SLabel>, VAlignMixin<SLabel> {
 
     public SLabel() {
     }
@@ -32,6 +34,20 @@ public class SLabel extends JLabel {
 
     public SLabel(Icon icon) {
         super(icon);
+    }
+
+
+    // ===========================================================================================================================
+    // For Mixins
+
+    @Override
+    public void firePropertyChange(String propertyName, Object oldValue, Object newValue) {
+        super.firePropertyChange(propertyName, oldValue, newValue);
+    }
+
+    @Override
+    public ExceptionHandler getExceptionHandler() {
+        return null;
     }
 
     // ===========================================================================================================================
@@ -74,48 +90,6 @@ public class SLabel extends JLabel {
     final static public String ICON = "icon";
     public BindingEndpoint<Icon> ioon$() {
         return BindingEndpoint.of(this, ICON);
-    }
-
-    /**
-     * Enum variant of HorizontalAlignment
-     * @param v
-     */
-    public void setHAlign(HAlign v) {
-        HAlign old = getHAlign();
-        setHorizontalAlignment(v.getSwingConstant());
-        firePropertyChange(HALIGN, old, v);
-    }
-    public HAlign getHAlign() {
-        return HAlign.of(getHorizontalAlignment());
-    }
-    public SLabel hAlign(HAlign v) {
-        setHAlign(v);
-        return this;
-    }
-    final static public String HALIGN = "hAlign";
-    public BindingEndpoint<HAlign> hAlign$() {
-        return BindingEndpoint.of(this, HALIGN);
-    }
-
-    /**
-     * Enum variant of VerticalAlignment
-     * @param v
-     */
-    public void setVAlign(VAlign v) {
-        VAlign old = getVAlign();
-        setVerticalAlignment(v.getSwingConstant());
-        firePropertyChange(VALIGN, old, v);
-    }
-    public VAlign getVAlign() {
-        return VAlign.of(getHorizontalAlignment());
-    }
-    public SLabel vAlign(VAlign v) {
-        setVAlign(v);
-        return this;
-    }
-    final static public String VALIGN = "vAlign";
-    public BindingEndpoint<VAlign> vAlign$() {
-        return BindingEndpoint.of(this, VALIGN);
     }
 
     // ===========================================================================================================================
@@ -163,6 +137,10 @@ public class SLabel extends JLabel {
 
     public SLabel foreground(Color value) {
         setForeground(value);
+        return this;
+    }
+    public SLabel background(Color value) {
+        setBackground(value);
         return this;
     }
 

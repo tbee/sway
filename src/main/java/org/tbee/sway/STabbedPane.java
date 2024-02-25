@@ -3,6 +3,7 @@ package org.tbee.sway;
 import org.tbee.sway.binding.BeanBinder;
 import org.tbee.sway.binding.BindingEndpoint;
 import org.tbee.sway.binding.ExceptionHandler;
+import org.tbee.sway.mixin.PropertyChangeListenerMixin;
 import org.tbee.util.ExceptionUtil;
 
 import javax.swing.Icon;
@@ -49,7 +50,7 @@ import java.util.function.Function;
  *
  * @param <T> the type of the value.
  */
-public class STabbedPane<T> extends JTabbedPane {
+public class STabbedPane<T> extends JTabbedPane implements PropertyChangeListenerMixin<STabbedPane> {
     public static final org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(STabbedPane.class);
     public static final String LOADED_COMPONENT = "loadedComponent";
 
