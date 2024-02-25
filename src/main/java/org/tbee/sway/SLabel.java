@@ -5,6 +5,7 @@ import org.tbee.sway.binding.ExceptionHandler;
 import org.tbee.sway.mixin.ComponentMixin;
 import org.tbee.sway.mixin.HAlignMixin;
 import org.tbee.sway.mixin.OverlayMixin;
+import org.tbee.sway.mixin.ToolTipMixin;
 import org.tbee.sway.mixin.VAlignMixin;
 import org.tbee.sway.support.HAlign;
 
@@ -23,7 +24,8 @@ public class SLabel extends JLabel implements
         HAlignMixin<SLabel>,
         VAlignMixin<SLabel>,
         OverlayMixin<SLabel>,
-        ComponentMixin<SLabel> {
+        ComponentMixin<SLabel>,
+        ToolTipMixin<SLabel> {
 
     public SLabel() {
     }
@@ -135,11 +137,6 @@ public class SLabel extends JLabel implements
     }
     public SLabel background(Color value) {
         setBackground(value);
-        return this;
-    }
-
-    public SLabel toolTipText(String text) {
-        setToolTipText(text);
         return this;
     }
 }

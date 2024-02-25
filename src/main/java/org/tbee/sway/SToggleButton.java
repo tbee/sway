@@ -3,6 +3,7 @@ package org.tbee.sway;
 import org.tbee.sway.mixin.ActionMixin;
 import org.tbee.sway.mixin.ComponentMixin;
 import org.tbee.sway.mixin.TextIconMixin;
+import org.tbee.sway.mixin.ToolTipMixin;
 
 import javax.swing.Action;
 import javax.swing.Icon;
@@ -17,7 +18,8 @@ import javax.swing.JToggleButton;
 public class SToggleButton extends JToggleButton implements
         ComponentMixin<SToggleButton>,
         TextIconMixin<SToggleButton>,
-        ActionMixin<SToggleButton> {
+        ActionMixin<SToggleButton>,
+        ToolTipMixin<SToggleButton> {
 
     public SToggleButton() {
     }
@@ -53,9 +55,4 @@ public class SToggleButton extends JToggleButton implements
 
     // ===========================================================================================================================
     // FLUENT API
-
-    public SToggleButton toolTipText(String text) {
-        setToolTipText(text);
-        return this;
-    }
 }

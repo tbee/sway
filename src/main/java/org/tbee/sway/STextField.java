@@ -10,6 +10,7 @@ import org.tbee.sway.format.StringFormat;
 import org.tbee.sway.mixin.ComponentMixin;
 import org.tbee.sway.mixin.HAlignMixin;
 import org.tbee.sway.mixin.OverlayMixin;
+import org.tbee.sway.mixin.ToolTipMixin;
 import org.tbee.sway.support.FocusInterpreter;
 import org.tbee.sway.support.HAlign;
 import org.tbee.util.ClassUtil;
@@ -109,7 +110,9 @@ import java.util.Locale;
 public class STextField<T> extends javax.swing.JTextField implements
         HAlignMixin<STextField<T>>,
         OverlayMixin<STextField<T>>,
+        ToolTipMixin<STextField<T>>,
         ComponentMixin<STextField<T>> {
+
     final static private org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(STextField.class);
 
     final private Format<T> format;
@@ -380,11 +383,6 @@ public class STextField<T> extends javax.swing.JTextField implements
 
     public STextField<T> font(Font value) {
         setFont(value);
-        return this;
-    }
-
-    public STextField<T> toolTipText(String text) {
-        setToolTipText(text);
         return this;
     }
 
