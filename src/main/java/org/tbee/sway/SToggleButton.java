@@ -1,11 +1,12 @@
 package org.tbee.sway;
 
+import org.tbee.sway.mixin.ActionMixin;
 import org.tbee.sway.mixin.ComponentMixin;
+import org.tbee.sway.mixin.TextIconMixin;
 
 import javax.swing.Action;
 import javax.swing.Icon;
 import javax.swing.JToggleButton;
-import java.awt.event.ActionListener;
 
 // TODO:
 // - binding (2/3? values)
@@ -14,7 +15,9 @@ import java.awt.event.ActionListener;
  *
  */
 public class SToggleButton extends JToggleButton implements
-        ComponentMixin<SToggleButton> {
+        ComponentMixin<SToggleButton>,
+        TextIconMixin<SToggleButton>,
+        ActionMixin<SToggleButton> {
 
     public SToggleButton() {
     }
@@ -50,26 +53,6 @@ public class SToggleButton extends JToggleButton implements
 
     // ===========================================================================================================================
     // FLUENT API
-
-    public SToggleButton text(String value) {
-        setText(value);
-        return this;
-    }
-
-    public SToggleButton icon(Icon value) {
-        setIcon(value);
-        return this;
-    }
-
-    public SToggleButton actionListener(ActionListener l) {
-        super.addActionListener(l);
-        return this;
-    }
-
-    public SToggleButton action(Action v) {
-        super.setAction(v);
-        return this;
-    }
 
     public SToggleButton toolTipText(String text) {
         setToolTipText(text);
