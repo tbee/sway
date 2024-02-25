@@ -95,8 +95,8 @@ public class SDialog extends JDialog implements
 	// =======================================================================================================
 	// FLUENT API
 	
-	public SDialog size(int width, int height) {
-		setSize(width, height);
+	public SDialog size(int w, int h) {
+		setSize(w, h);
 		return this;
 	}
 

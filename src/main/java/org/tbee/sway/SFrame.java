@@ -1,7 +1,6 @@
 package org.tbee.sway;
 
 import org.tbee.sway.mixin.ComponentMixin;
-import org.tbee.sway.mixin.KeyListenerMixin;
 
 import javax.swing.JComponent;
 import javax.swing.JFrame;
@@ -13,7 +12,6 @@ import java.util.function.Consumer;
 
 public class SFrame extends JFrame implements
         SOverlayPane.OverlayProvider,
-        KeyListenerMixin<SFrame>,
         ComponentMixin<SFrame> {
 
     public SFrame() {
@@ -54,8 +52,8 @@ public class SFrame extends JFrame implements
         return this;
     }
 
-    public SFrame size(int width, int height) {
-        setSize(width, height);
+    public SFrame size(int w, int h) {
+        setSize(w, h);
         return this;
     }
 

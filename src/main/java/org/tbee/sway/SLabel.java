@@ -3,7 +3,6 @@ package org.tbee.sway;
 import org.tbee.sway.binding.BindingEndpoint;
 import org.tbee.sway.binding.ExceptionHandler;
 import org.tbee.sway.mixin.ComponentMixin;
-import org.tbee.sway.mixin.FontMixin;
 import org.tbee.sway.mixin.HAlignMixin;
 import org.tbee.sway.mixin.OverlayMixin;
 import org.tbee.sway.mixin.TextIconMixin;
@@ -26,8 +25,7 @@ public class SLabel extends JLabel implements
         OverlayMixin<SLabel>,
         ComponentMixin<SLabel>,
         TextIconMixin<SLabel>,
-        ToolTipMixin<SLabel>,
-        FontMixin<SLabel> {
+        ToolTipMixin<SLabel> {
 
     public SLabel() {
     }
