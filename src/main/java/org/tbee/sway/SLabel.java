@@ -14,7 +14,6 @@ import org.tbee.sway.support.HAlign;
 import javax.swing.Icon;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
-import java.awt.Color;
 
 // TODO:
 
@@ -117,14 +116,5 @@ public class SLabel extends JLabel implements
 
     static public SLabel of(Icon icon) {
         return of().icon(icon);
-    }
-
-    public SLabel foreground(Color value) {
-        setForeground(value);
-        return this;
-    }
-    public SLabel background(Color value) {
-        setBackground(value);
-        return this;
     }
 }
