@@ -3,6 +3,7 @@ package org.tbee.sway;
 import org.tbee.sway.binding.BeanBinder;
 import org.tbee.sway.binding.BindingEndpoint;
 import org.tbee.sway.binding.ExceptionHandler;
+import org.tbee.sway.mixin.PropertyChangeListenerMixin;
 import org.tbee.sway.support.FocusInterpreter;
 import org.tbee.util.ExceptionUtil;
 
@@ -11,10 +12,9 @@ import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
-import java.awt.Component;
-import java.beans.PropertyChangeListener;
 
-public class STextArea extends SBorderPanel {
+public class STextArea extends SBorderPanel
+implements PropertyChangeListenerMixin<STextArea> {
 
     final static private org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(STextArea.class);
 
@@ -135,24 +135,6 @@ public class STextArea extends SBorderPanel {
 
     public STextArea visible(boolean value) {
         setVisible(value);
-        return this;
-    }
-
-    public STextArea withPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
-        super.addPropertyChangeListener(propertyName, listener);
-        return this;
-    }
-    public STextArea withPropertyChangeListener(PropertyChangeListener listener) {
-        super.addPropertyChangeListener(listener);
-        return this;
-    }
-
-    public STextArea overlayWith(Component overlayComponent) {
-        SOverlayPane.overlayWith(this, overlayComponent);
-        return this;
-    }
-    public STextArea removeOverlay(Component overlayComponent) {
-        SOverlayPane.removeOverlay(this, overlayComponent);
         return this;
     }
 

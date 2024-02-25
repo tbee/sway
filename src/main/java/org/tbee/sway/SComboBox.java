@@ -6,6 +6,7 @@ import org.tbee.sway.binding.ExceptionHandler;
 import org.tbee.sway.format.Format;
 import org.tbee.sway.format.FormatRegistry;
 import org.tbee.sway.list.DefaultListCellRenderer;
+import org.tbee.sway.mixin.OverlayMixin;
 import org.tbee.sway.mixin.PropertyChangeListenerMixin;
 import org.tbee.sway.support.SwayUtil;
 import org.tbee.util.ExceptionUtil;
@@ -16,15 +17,14 @@ import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import java.awt.Color;
-import java.awt.Component;
-import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Vector;
 import java.util.function.Consumer;
 
-public class SComboBox<T> extends JComboBox<T>implements PropertyChangeListenerMixin<SComboBox<T>> {
+public class SComboBox<T> extends JComboBox<T>
+implements PropertyChangeListenerMixin<SComboBox<T>>, OverlayMixin<SComboBox<T>> {
 
     final static private org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(SComboBox.class);
 
@@ -278,24 +278,6 @@ public class SComboBox<T> extends JComboBox<T>implements PropertyChangeListenerM
 
     public SComboBox<T> visible(boolean v) {
         setVisible(v);
-        return this;
-    }
-
-    public SComboBox<T> withPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
-        super.addPropertyChangeListener(propertyName, listener);
-        return this;
-    }
-    public SComboBox<T> withPropertyChangeListener(PropertyChangeListener listener) {
-        super.addPropertyChangeListener(listener);
-        return this;
-    }
-
-    public SComboBox<T> overlayWith(Component overlayComponent) {
-        SOverlayPane.overlayWith(this, overlayComponent);
-        return this;
-    }
-    public SComboBox<T> removeOverlay(Component overlayComponent) {
-        SOverlayPane.removeOverlay(this, overlayComponent);
         return this;
     }
 

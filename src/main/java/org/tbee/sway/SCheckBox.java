@@ -3,6 +3,7 @@ package org.tbee.sway;
 import org.tbee.sway.binding.BeanBinder;
 import org.tbee.sway.binding.BindingEndpoint;
 import org.tbee.sway.binding.ExceptionHandler;
+import org.tbee.sway.mixin.OverlayMixin;
 import org.tbee.sway.mixin.PropertyChangeListenerMixin;
 import org.tbee.sway.support.IconRegistry;
 import org.tbee.util.ExceptionUtil;
@@ -13,15 +14,14 @@ import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
-import java.awt.Component;
 import java.awt.Insets;
 import java.awt.event.ActionListener;
-import java.beans.PropertyChangeListener;
 
 /**
  * If the SELECTED, UNSELECTED icons are specified in the IconRegistry, then these will be drawn.
  */
-public class SCheckBox extends JCheckBox implements PropertyChangeListenerMixin<SCheckBox> {
+public class SCheckBox extends JCheckBox
+implements PropertyChangeListenerMixin<SCheckBox>, OverlayMixin<SCheckBox> {
     static private org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(SCheckBox.class);
 
     public SCheckBox() {
@@ -179,24 +179,6 @@ public class SCheckBox extends JCheckBox implements PropertyChangeListenerMixin<
 
     public SCheckBox visible(boolean value) {
         setVisible(value);
-        return this;
-    }
-
-    public SCheckBox withPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
-        super.addPropertyChangeListener(propertyName, listener);
-        return this;
-    }
-    public SCheckBox withPropertyChangeListener(PropertyChangeListener listener) {
-        super.addPropertyChangeListener(listener);
-        return this;
-    }
-
-    public SCheckBox overlayWith(Component overlayComponent) {
-        SOverlayPane.overlayWith(this, overlayComponent);
-        return this;
-    }
-    public SCheckBox removeOverlay(Component overlayComponent) {
-        SOverlayPane.removeOverlay(this, overlayComponent);
         return this;
     }
 

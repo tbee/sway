@@ -6,7 +6,6 @@ import org.tbee.sway.mixin.PropertyChangeListenerMixin;
 import javax.swing.Icon;
 import javax.swing.JMenu;
 import java.awt.event.ActionListener;
-import java.beans.PropertyChangeListener;
 
 /**
  * @see SMenuBar
@@ -158,13 +157,4 @@ public class SMenu extends JMenu implements PropertyChangeListenerMixin<SMenu> {
         super.addActionListener(v);
         return this;
     }
-
-	public SMenu withPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
-		super.addPropertyChangeListener(propertyName, listener);
-		return this;
-	}
-	public SMenu withPropertyChangeListener(PropertyChangeListener listener) {
-		super.addPropertyChangeListener(listener);
-		return this;
-	}
 }

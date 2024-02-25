@@ -8,6 +8,7 @@ import org.tbee.sway.format.FormatRegistry;
 import org.tbee.sway.format.JavaFormat;
 import org.tbee.sway.format.StringFormat;
 import org.tbee.sway.mixin.HAlignMixin;
+import org.tbee.sway.mixin.OverlayMixin;
 import org.tbee.sway.support.FocusInterpreter;
 import org.tbee.sway.support.HAlign;
 import org.tbee.util.ClassUtil;
@@ -16,13 +17,11 @@ import org.tbee.util.ExceptionUtil;
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
-import java.awt.Component;
 import java.awt.Font;
 import java.awt.event.KeyEvent;
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
-import java.beans.PropertyChangeListener;
 import java.beans.PropertyDescriptor;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -106,7 +105,8 @@ import java.util.Locale;
  *
  * @param <T> the type of value the textfield holds.
  */
-public class STextField<T> extends javax.swing.JTextField implements HAlignMixin<STextField<T>> {
+public class STextField<T> extends javax.swing.JTextField
+implements HAlignMixin<STextField<T>>, OverlayMixin<STextField<T>> {
     final static private org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(STextField.class);
 
     final private Format<T> format;
@@ -397,24 +397,6 @@ public class STextField<T> extends javax.swing.JTextField implements HAlignMixin
 
     public STextField<T> editable(boolean enabled) {
         setEditable(enabled);
-        return this;
-    }
-
-    public STextField<T> withPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
-        super.addPropertyChangeListener(propertyName, listener);
-        return this;
-    }
-    public STextField<T> withPropertyChangeListener(PropertyChangeListener listener) {
-        super.addPropertyChangeListener(listener);
-        return this;
-    }
-
-    public STextField<T> overlayWith(Component overlayComponent) {
-        SOverlayPane.overlayWith(this, overlayComponent);
-        return this;
-    }
-    public STextField<T> removeOverlay(Component overlayComponent) {
-        SOverlayPane.removeOverlay(this, overlayComponent);
         return this;
     }
 

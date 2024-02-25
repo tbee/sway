@@ -3,6 +3,7 @@ package org.tbee.sway;
 import org.tbee.sway.binding.BindingEndpoint;
 import org.tbee.sway.binding.ExceptionHandler;
 import org.tbee.sway.mixin.HAlignMixin;
+import org.tbee.sway.mixin.OverlayMixin;
 import org.tbee.sway.mixin.VAlignMixin;
 import org.tbee.sway.support.HAlign;
 
@@ -10,16 +11,15 @@ import javax.swing.Icon;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Font;
-import java.beans.PropertyChangeListener;
 
 // TODO:
 
 /**
  *
  */
-public class SLabel extends JLabel implements HAlignMixin<SLabel>, VAlignMixin<SLabel> {
+public class SLabel extends JLabel
+implements HAlignMixin<SLabel>, VAlignMixin<SLabel>, OverlayMixin<SLabel> {
 
     public SLabel() {
     }
@@ -146,24 +146,6 @@ public class SLabel extends JLabel implements HAlignMixin<SLabel>, VAlignMixin<S
 
     public SLabel toolTipText(String text) {
         setToolTipText(text);
-        return this;
-    }
-
-    public SLabel withPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
-        super.addPropertyChangeListener(propertyName, listener);
-        return this;
-    }
-    public SLabel withPropertyChangeListener(PropertyChangeListener listener) {
-        super.addPropertyChangeListener(listener);
-        return this;
-    }
-
-    public SLabel overlayWith(Component overlayComponent) {
-        SOverlayPane.overlayWith(this, overlayComponent);
-        return this;
-    }
-    public SLabel removeOverlay(Component overlayComponent) {
-        SOverlayPane.removeOverlay(this, overlayComponent);
         return this;
     }
 }

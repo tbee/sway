@@ -1,16 +1,16 @@
 package org.tbee.sway;
 
+import org.tbee.sway.mixin.OverlayMixin;
 import org.tbee.sway.mixin.PropertyChangeListenerMixin;
 
 import javax.swing.Action;
 import javax.swing.Icon;
 import javax.swing.JRadioButton;
-import java.awt.Component;
 import java.awt.Insets;
 import java.awt.event.ActionListener;
-import java.beans.PropertyChangeListener;
 
-public class SRadioButton extends JRadioButton implements PropertyChangeListenerMixin<SRadioButton> {
+public class SRadioButton extends JRadioButton
+implements PropertyChangeListenerMixin<SRadioButton>, OverlayMixin<SRadioButton> {
     public SRadioButton() {
     }
 
@@ -87,24 +87,6 @@ public class SRadioButton extends JRadioButton implements PropertyChangeListener
 
     public SRadioButton visible(boolean value) {
         setVisible(value);
-        return this;
-    }
-
-    public SRadioButton withPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
-        super.addPropertyChangeListener(propertyName, listener);
-        return this;
-    }
-    public SRadioButton withPropertyChangeListener(PropertyChangeListener listener) {
-        super.addPropertyChangeListener(listener);
-        return this;
-    }
-
-    public SRadioButton overlayWith(Component overlayComponent) {
-        SOverlayPane.overlayWith(this, overlayComponent);
-        return this;
-    }
-    public SRadioButton removeOverlay(Component overlayComponent) {
-        SOverlayPane.removeOverlay(this, overlayComponent);
         return this;
     }
 }

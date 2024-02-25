@@ -5,6 +5,8 @@ import org.tbee.sway.binding.BindingEndpoint;
 import org.tbee.sway.binding.ExceptionHandler;
 import org.tbee.sway.format.Format;
 import org.tbee.sway.format.FormatRegistry;
+import org.tbee.sway.mixin.OverlayMixin;
+import org.tbee.sway.mixin.PropertyChangeListenerMixin;
 import org.tbee.sway.support.BeanMonitor;
 import org.tbee.sway.tree.Node;
 import org.tbee.sway.tree.STreeCore;
@@ -61,7 +63,8 @@ import java.util.function.Function;
  *
  * @param <T>
  */
-public class STree<T extends Object> extends SBorderPanel {
+public class STree<T extends Object> extends SBorderPanel
+implements PropertyChangeListenerMixin<STree<T>>, OverlayMixin<STree<T>> {
     static private org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(STree.class);
 
     final private STreeCore<T> sTreeCore;
@@ -581,24 +584,6 @@ public class STree<T extends Object> extends SBorderPanel {
 
     public STree<T> rootVisible(boolean value) {
         sTreeCore.setRootVisible(value);
-        return this;
-    }
-
-    public STree<T> withPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
-        super.addPropertyChangeListener(propertyName, listener);
-        return this;
-    }
-    public STree<T> withPropertyChangeListener(PropertyChangeListener listener) {
-        super.addPropertyChangeListener(listener);
-        return this;
-    }
-
-    public STree<T> overlayWith(Component overlayComponent) {
-        SOverlayPane.overlayWith(this, overlayComponent);
-        return this;
-    }
-    public STree<T> removeOverlay(Component overlayComponent) {
-        SOverlayPane.removeOverlay(this, overlayComponent);
         return this;
     }
 

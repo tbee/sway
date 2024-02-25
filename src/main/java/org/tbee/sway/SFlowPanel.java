@@ -1,12 +1,15 @@
 package org.tbee.sway;
 
+import org.tbee.sway.mixin.OverlayMixin;
+import org.tbee.sway.mixin.PropertyChangeListenerMixin;
+
 import javax.swing.JComponent;
-import java.awt.Component;
 import java.awt.FlowLayout;
 import java.util.Arrays;
 import java.util.Collection;
 
-public class SFlowPanel extends SPanelExtendable<SFlowPanel> {
+public class SFlowPanel extends SPanelExtendable<SFlowPanel>
+implements OverlayMixin<SFlowPanel>, PropertyChangeListenerMixin<SFlowPanel> {
 
     public SFlowPanel() {
         super();
@@ -20,15 +23,6 @@ public class SFlowPanel extends SPanelExtendable<SFlowPanel> {
 
     public SFlowPanel add(Collection<? extends JComponent> components) {
         components.forEach(c -> super.add(c));
-        return this;
-    }
-
-    public SFlowPanel overlayWith(Component overlayComponent) {
-        SOverlayPane.overlayWith(this, overlayComponent);
-        return this;
-    }
-    public SFlowPanel removeOverlay(Component overlayComponent) {
-        SOverlayPane.removeOverlay(this, overlayComponent);
         return this;
     }
 

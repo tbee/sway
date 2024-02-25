@@ -10,7 +10,6 @@ import javax.swing.SwingUtilities;
 import java.awt.Component;
 import java.awt.Dialog;
 import java.awt.Window;
-import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.function.Consumer;
 
@@ -149,15 +148,6 @@ public class SDialog extends JDialog implements SOverlayPane.OverlayProvider, Pr
 		SMenuBar sMenuBar = SMenuBar.of(this);
 		sMenuBarConsumer.accept(sMenuBar);
 		setJMenuBar(sMenuBar);
-		return this;
-	}
-
-	public SDialog withPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
-		super.addPropertyChangeListener(propertyName, listener);
-		return this;
-	}
-	public SDialog withPropertyChangeListener(PropertyChangeListener listener) {
-		super.addPropertyChangeListener(listener);
 		return this;
 	}
 }

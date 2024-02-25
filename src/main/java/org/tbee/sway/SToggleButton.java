@@ -1,13 +1,12 @@
 package org.tbee.sway;
 
+import org.tbee.sway.mixin.OverlayMixin;
 import org.tbee.sway.mixin.PropertyChangeListenerMixin;
 
 import javax.swing.Action;
 import javax.swing.Icon;
 import javax.swing.JToggleButton;
-import java.awt.Component;
 import java.awt.event.ActionListener;
-import java.beans.PropertyChangeListener;
 
 // TODO:
 // - binding (2/3? values)
@@ -15,7 +14,8 @@ import java.beans.PropertyChangeListener;
 /**
  *
  */
-public class SToggleButton extends JToggleButton implements PropertyChangeListenerMixin<SToggleButton> {
+public class SToggleButton extends JToggleButton
+implements PropertyChangeListenerMixin<SToggleButton>, OverlayMixin<SToggleButton> {
     public SToggleButton() {
     }
 
@@ -83,24 +83,6 @@ public class SToggleButton extends JToggleButton implements PropertyChangeListen
 
     public SToggleButton toolTipText(String text) {
         setToolTipText(text);
-        return this;
-    }
-
-    public SToggleButton withPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
-        super.addPropertyChangeListener(propertyName, listener);
-        return this;
-    }
-    public SToggleButton withPropertyChangeListener(PropertyChangeListener listener) {
-        super.addPropertyChangeListener(listener);
-        return this;
-    }
-
-    public SToggleButton overlayWith(Component overlayComponent) {
-        SOverlayPane.overlayWith(this, overlayComponent);
-        return this;
-    }
-    public SToggleButton removeOverlay(Component overlayComponent) {
-        SOverlayPane.removeOverlay(this, overlayComponent);
         return this;
     }
 }

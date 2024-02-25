@@ -3,6 +3,7 @@ package org.tbee.sway;
 import org.tbee.sway.binding.BindingEndpoint;
 import org.tbee.sway.binding.ExceptionHandler;
 import org.tbee.sway.mixin.HAlignMixin;
+import org.tbee.sway.mixin.OverlayMixin;
 import org.tbee.sway.mixin.PropertyChangeListenerMixin;
 import org.tbee.sway.mixin.VAlignMixin;
 import org.tbee.util.ExceptionUtil;
@@ -12,13 +13,12 @@ import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
-import java.awt.Component;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.beans.PropertyChangeListener;
 
-public class SButton extends JButton implements HAlignMixin<SButton>, VAlignMixin<SButton>, PropertyChangeListenerMixin<SButton> {
+public class SButton extends JButton
+implements HAlignMixin<SButton>, VAlignMixin<SButton>, PropertyChangeListenerMixin<SButton>, OverlayMixin<SButton> {
     final static private org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(SButton.class);
 
     public SButton() {
@@ -171,24 +171,6 @@ public class SButton extends JButton implements HAlignMixin<SButton>, VAlignMixi
 
     public SButton visible(boolean value) {
         setVisible(value);
-        return this;
-    }
-
-    public SButton withPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
-        super.addPropertyChangeListener(propertyName, listener);
-        return this;
-    }
-    public SButton withPropertyChangeListener(PropertyChangeListener listener) {
-        super.addPropertyChangeListener(listener);
-        return this;
-    }
-
-    public SButton overlayWith(Component overlayComponent) {
-        SOverlayPane.overlayWith(this, overlayComponent);
-        return this;
-    }
-    public SButton removeOverlay(Component overlayComponent) {
-        SOverlayPane.removeOverlay(this, overlayComponent);
         return this;
     }
 }

@@ -7,12 +7,14 @@ import net.miginfocom.layout.CC;
 import net.miginfocom.layout.HideMode;
 import net.miginfocom.layout.LC;
 import net.miginfocom.swing.MigLayout;
+import org.tbee.sway.mixin.PropertyChangeListenerMixin;
 
 import javax.swing.JComponent;
 import java.awt.Component;
 import java.util.Collection;
 
-public class SMigPanel extends SPanelExtendable<SMigPanel> {
+public class SMigPanel extends SPanelExtendable<SMigPanel>
+implements PropertyChangeListenerMixin<SMigPanel> {
 
     // Need to declare these specifically, because the getters return String
     final private LC lc = new LC();

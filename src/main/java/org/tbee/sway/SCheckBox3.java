@@ -15,6 +15,7 @@ package org.tbee.sway;
 import org.tbee.sway.binding.BeanBinder;
 import org.tbee.sway.binding.BindingEndpoint;
 import org.tbee.sway.binding.ExceptionHandler;
+import org.tbee.sway.mixin.OverlayMixin;
 import org.tbee.sway.mixin.PropertyChangeListenerMixin;
 import org.tbee.sway.support.IconRegistry;
 import org.tbee.util.ExceptionUtil;
@@ -29,14 +30,12 @@ import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.plaf.ActionMapUIResource;
-import java.awt.Component;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.beans.PropertyChangeListener;
 
 
 /**
@@ -44,7 +43,8 @@ import java.beans.PropertyChangeListener;
  * It draws its "null" states using the "armed" mode of JCheckBox.
  * If the SELECTED, UNSELECTED, UNDETERMINED icons are specified in the IconRegistry, then these will be drawn.
  */
-public class SCheckBox3 extends JCheckBox implements PropertyChangeListenerMixin<SCheckBox3> {
+public class SCheckBox3 extends JCheckBox
+implements PropertyChangeListenerMixin<SCheckBox3>, OverlayMixin<SCheckBox3> {
 	static private org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(SCheckBox3.class);
 
 
@@ -346,24 +346,6 @@ public class SCheckBox3 extends JCheckBox implements PropertyChangeListenerMixin
 
 	public SCheckBox3 visible(boolean value) {
 		setVisible(value);
-		return this;
-	}
-
-	public SCheckBox3 withPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
-		super.addPropertyChangeListener(propertyName, listener);
-		return this;
-	}
-	public SCheckBox3 withPropertyChangeListener(PropertyChangeListener listener) {
-		super.addPropertyChangeListener(listener);
-		return this;
-	}
-
-	public SCheckBox3 overlayWith(Component overlayComponent) {
-		SOverlayPane.overlayWith(this, overlayComponent);
-		return this;
-	}
-	public SCheckBox3 removeOverlay(Component overlayComponent) {
-		SOverlayPane.removeOverlay(this, overlayComponent);
 		return this;
 	}
 

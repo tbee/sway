@@ -5,6 +5,7 @@ import org.tbee.sway.binding.BindingEndpoint;
 import org.tbee.sway.binding.ExceptionHandler;
 import org.tbee.sway.format.Format;
 import org.tbee.sway.format.FormatRegistry;
+import org.tbee.sway.mixin.PropertyChangeListenerMixin;
 import org.tbee.util.ExceptionUtil;
 
 import javax.swing.AbstractButton;
@@ -53,7 +54,7 @@ import java.util.function.Supplier;
  * }
  * </pre>
  */
-public class SButtonGroup<T> extends ButtonGroup {
+public class SButtonGroup<T> extends ButtonGroup implements PropertyChangeListenerMixin<SButtonGroup<T>> {
     static private org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(SButtonGroup.class);
 
     /**
@@ -322,15 +323,6 @@ public class SButtonGroup<T> extends ButtonGroup {
     }
 
     transient private PropertyChangeSupport propertyChangeSupport = null;
-
-    public SButtonGroup<T> withPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
-        addPropertyChangeListener(propertyName, listener);
-        return this;
-    }
-    public SButtonGroup<T> withPropertyChangeListener(PropertyChangeListener listener) {
-        addPropertyChangeListener(listener);
-        return this;
-    }
 
     // ========================================================
     // EXCEPTION HANDLER

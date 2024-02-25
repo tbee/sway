@@ -3,6 +3,7 @@ package org.tbee.sway;
 import org.tbee.sway.binding.BeanBinder;
 import org.tbee.sway.binding.BindingEndpoint;
 import org.tbee.sway.binding.ExceptionHandler;
+import org.tbee.sway.mixin.OverlayMixin;
 import org.tbee.sway.mixin.PropertyChangeListenerMixin;
 import org.tbee.util.ExceptionUtil;
 
@@ -12,7 +13,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
 import java.awt.Component;
-import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -50,7 +50,8 @@ import java.util.function.Function;
  *
  * @param <T> the type of the value.
  */
-public class STabbedPane<T> extends JTabbedPane implements PropertyChangeListenerMixin<STabbedPane> {
+public class STabbedPane<T> extends JTabbedPane
+implements PropertyChangeListenerMixin<STabbedPane<T>>, OverlayMixin<STabbedPane<T>> {
     public static final org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(STabbedPane.class);
     public static final String LOADED_COMPONENT = "loadedComponent";
 
@@ -345,24 +346,6 @@ public class STabbedPane<T> extends JTabbedPane implements PropertyChangeListene
 
     public STabbedPane<T> visible(boolean value) {
         setVisible(value);
-        return this;
-    }
-
-    public STabbedPane<T> overlayWith(Component overlayComponent) {
-        SOverlayPane.overlayWith(this, overlayComponent);
-        return this;
-    }
-    public STabbedPane<T> removeOverlay(Component overlayComponent) {
-        SOverlayPane.removeOverlay(this, overlayComponent);
-        return this;
-    }
-
-    public STabbedPane<T> withPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
-        super.addPropertyChangeListener(propertyName, listener);
-        return this;
-    }
-    public STabbedPane<T> withPropertyChangeListener(PropertyChangeListener listener) {
-        super.addPropertyChangeListener(listener);
         return this;
     }
 

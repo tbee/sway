@@ -9,6 +9,7 @@ import org.tbee.sway.binding.ExceptionHandler;
 import org.tbee.sway.format.Format;
 import org.tbee.sway.format.FormatAsJavaTextFormat;
 import org.tbee.sway.format.FormatRegistry;
+import org.tbee.sway.mixin.OverlayMixin;
 import org.tbee.sway.mixin.PropertyChangeListenerMixin;
 import org.tbee.sway.support.BeanUtil;
 import org.tbee.sway.support.SwayUtil;
@@ -28,7 +29,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.table.TableCellRenderer;
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
@@ -194,7 +194,8 @@ import java.util.stream.Collectors;
  *
  * @param <TableType>
  */
-public class STable<TableType> extends JPanel implements PropertyChangeListenerMixin<STable<TableType>> {
+public class STable<TableType> extends JPanel
+implements PropertyChangeListenerMixin<STable<TableType>>, OverlayMixin<STable<TableType>> {
     static private org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(STable.class);
 
     private final STableCore<TableType> sTableCore;
@@ -1312,24 +1313,6 @@ public class STable<TableType> extends JPanel implements PropertyChangeListenerM
 
     public STable<TableType> visible(boolean value) {
         setVisible(value);
-        return this;
-    }
-
-    public STable<TableType> withPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
-        super.addPropertyChangeListener(propertyName, listener);
-        return this;
-    }
-    public STable<TableType> withPropertyChangeListener(PropertyChangeListener listener) {
-        super.addPropertyChangeListener(listener);
-        return this;
-    }
-
-    public STable<TableType> overlayWith(Component overlayComponent) {
-        SOverlayPane.overlayWith(this, overlayComponent);
-        return this;
-    }
-    public STable<TableType> removeOverlay(Component overlayComponent) {
-        SOverlayPane.removeOverlay(this, overlayComponent);
         return this;
     }
 

@@ -7,6 +7,8 @@ import org.tbee.sway.format.Format;
 import org.tbee.sway.format.FormatRegistry;
 import org.tbee.sway.list.DefaultListCellRenderer;
 import org.tbee.sway.list.SListCore;
+import org.tbee.sway.mixin.OverlayMixin;
+import org.tbee.sway.mixin.PropertyChangeListenerMixin;
 import org.tbee.sway.support.SwayUtil;
 import org.tbee.util.ExceptionUtil;
 
@@ -16,14 +18,13 @@ import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import java.awt.Color;
-import java.awt.Component;
-import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
 
-public class SList<T> extends SBorderPanel {
+public class SList<T> extends SBorderPanel
+implements PropertyChangeListenerMixin<SList<T>>, OverlayMixin<SList<T>> {
     static private org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(SList.class);
 
     final private SListCore<T> sListCore;
@@ -304,24 +305,6 @@ public class SList<T> extends SBorderPanel {
 
     public SList<T> visible(boolean value) {
         setVisible(value);
-        return this;
-    }
-
-    public SPanelExtendable<SBorderPanel> withPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
-        super.addPropertyChangeListener(propertyName, listener);
-        return this;
-    }
-    public SPanelExtendable<SBorderPanel> withPropertyChangeListener(PropertyChangeListener listener) {
-        super.addPropertyChangeListener(listener);
-        return this;
-    }
-
-    public SList<T> overlayWith(Component overlayComponent) {
-        SOverlayPane.overlayWith(this, overlayComponent);
-        return this;
-    }
-    public SList<T> removeOverlay(Component overlayComponent) {
-        SOverlayPane.removeOverlay(this, overlayComponent);
         return this;
     }
 

@@ -1,6 +1,7 @@
 package org.tbee.sway;
 
 import org.jdesktop.swingx.StackLayout;
+import org.tbee.sway.mixin.PropertyChangeListenerMixin;
 
 import javax.swing.JComponent;
 import java.util.Collection;
@@ -8,7 +9,8 @@ import java.util.Collection;
 /**
  * Stacked components
  */
-public class SStackedPanel extends SPanelExtendable<SStackedPanel> {
+public class SStackedPanel extends SPanelExtendable<SStackedPanel>
+implements PropertyChangeListenerMixin<SStackedPanel> {
 
     public SStackedPanel() {
         setLayout(new StackLayout());

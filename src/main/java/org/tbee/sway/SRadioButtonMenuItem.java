@@ -5,7 +5,6 @@ import org.tbee.sway.mixin.PropertyChangeListenerMixin;
 import javax.swing.Icon;
 import javax.swing.JRadioButtonMenuItem;
 import java.awt.event.ActionListener;
-import java.beans.PropertyChangeListener;
 
 public class SRadioButtonMenuItem extends JRadioButtonMenuItem implements PropertyChangeListenerMixin<SRadioButtonMenuItem> {
 
@@ -65,13 +64,4 @@ public class SRadioButtonMenuItem extends JRadioButtonMenuItem implements Proper
         super.addActionListener(v);
         return this;
     }
-
-	public SRadioButtonMenuItem withPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
-		super.addPropertyChangeListener(propertyName, listener);
-		return this;
-	}
-	public SRadioButtonMenuItem withPropertyChangeListener(PropertyChangeListener listener) {
-		super.addPropertyChangeListener(listener);
-		return this;
-	}
 }

@@ -1,5 +1,9 @@
 package org.tbee.sway;
 
+import org.tbee.sway.mixin.PropertyChangeListenerMixin;
+
+import javax.swing.AbstractButton;
+import javax.swing.JComponent;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
@@ -8,11 +12,9 @@ import java.awt.LayoutManager;
 import java.util.Collection;
 import java.util.List;
 
-import javax.swing.AbstractButton;
-import javax.swing.JComponent;
-
 // TBEERNOT this class needs just a bit more work
-public class SButtonPanel extends SPanelExtendable<SButtonPanel> {
+public class SButtonPanel extends SPanelExtendable<SButtonPanel>
+implements PropertyChangeListenerMixin<SButtonPanel> {
 	
 	/**
 	 * 
