@@ -5,6 +5,7 @@ import org.tbee.sway.mixin.ActionMixin;
 import org.tbee.sway.mixin.ComponentMixin;
 import org.tbee.sway.mixin.ExceptionHandlerMixin;
 import org.tbee.sway.mixin.HAlignMixin;
+import org.tbee.sway.mixin.MarginMixin;
 import org.tbee.sway.mixin.TextIconMixin;
 import org.tbee.sway.mixin.ToolTipMixin;
 import org.tbee.sway.mixin.VAlignMixin;
@@ -15,7 +16,6 @@ import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
-import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -26,6 +26,7 @@ public class SButton extends JButton implements
         ToolTipMixin<SButton>,
         ActionMixin<SButton>,
         TextIconMixin<SButton>,
+        MarginMixin<SButton>,
         ComponentMixin<SButton> {
     final static private org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(SButton.class);
 
@@ -127,10 +128,5 @@ public class SButton extends JButton implements
 
     static public SButton of(String text, Icon icon, ActionListener actionListener) {
         return of().text(text).icon(icon).onAction(actionListener);
-    }
-
-    public SButton margin(Insets m) {
-        setMargin(m);
-        return this;
     }
 }

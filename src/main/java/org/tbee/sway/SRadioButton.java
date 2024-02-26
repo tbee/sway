@@ -2,16 +2,19 @@ package org.tbee.sway;
 
 import org.tbee.sway.mixin.ActionMixin;
 import org.tbee.sway.mixin.ComponentMixin;
+import org.tbee.sway.mixin.MarginMixin;
 import org.tbee.sway.mixin.TextIconMixin;
+import org.tbee.sway.mixin.ToolTipMixin;
 
 import javax.swing.Action;
 import javax.swing.Icon;
 import javax.swing.JRadioButton;
-import java.awt.Insets;
 
 public class SRadioButton extends JRadioButton implements
         ComponentMixin<SRadioButton>,
         TextIconMixin<SRadioButton>,
+        ToolTipMixin<SRadioButton>,
+        MarginMixin<SRadioButton>,
         ActionMixin<SRadioButton> {
 
     public SRadioButton() {
@@ -47,14 +50,4 @@ public class SRadioButton extends JRadioButton implements
 
     // ==============================================
     // FLUENT API
-
-    public SRadioButton toolTipText(String t) {
-        super.setToolTipText(t);
-        return this;
-    }
-
-    public SRadioButton margin(Insets m) {
-        super.setMargin(m);
-        return this;
-    }
 }

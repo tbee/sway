@@ -18,6 +18,7 @@ import org.tbee.sway.mixin.ActionMixin;
 import org.tbee.sway.mixin.BindToMixin;
 import org.tbee.sway.mixin.ComponentMixin;
 import org.tbee.sway.mixin.ExceptionHandlerMixin;
+import org.tbee.sway.mixin.MarginMixin;
 import org.tbee.sway.mixin.TextIconMixin;
 import org.tbee.sway.mixin.ToolTipMixin;
 import org.tbee.sway.support.IconRegistry;
@@ -49,6 +50,7 @@ public class SCheckBox3 extends JCheckBox implements
 		TextIconMixin<SCheckBox3>,
 		BindToMixin<SCheckBox3, Boolean>,
 		ActionMixin<SCheckBox3>,
+		MarginMixin<SCheckBox3>,
 		ExceptionHandlerMixin<SCheckBox3>,
 		ToolTipMixin<SCheckBox3> {
 	static private org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(SCheckBox3.class);
@@ -307,11 +309,6 @@ public class SCheckBox3 extends JCheckBox implements
 
 	static public SCheckBox3 of(String text, Icon icon) {
 		return of().text(text).icon(icon);
-	}
-
-	public SCheckBox3 margin(Insets m) {
-		setMargin(m);
-		return this;
 	}
 }
 
