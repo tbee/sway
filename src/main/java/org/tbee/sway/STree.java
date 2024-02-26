@@ -6,6 +6,7 @@ import org.tbee.sway.format.Format;
 import org.tbee.sway.format.FormatRegistry;
 import org.tbee.sway.mixin.BindToMixin;
 import org.tbee.sway.mixin.ComponentMixin;
+import org.tbee.sway.mixin.ExceptionHandlerMixin;
 import org.tbee.sway.support.BeanMonitor;
 import org.tbee.sway.tree.Node;
 import org.tbee.sway.tree.STreeCore;
@@ -66,6 +67,7 @@ import java.util.function.Function;
  */
 public class STree<T extends Object> extends JPanel implements
         ComponentMixin<STree<T>>,
+        ExceptionHandlerMixin<STree<T>>,
         BindToMixin<STree<T>, List<T>> {
     static private org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(STree.class);
 
@@ -547,15 +549,7 @@ public class STree<T extends Object> extends JPanel implements
     public ExceptionHandler getExceptionHandler() {
         return exceptionHandler;
     }
-    public STree<T> exceptionHandler(ExceptionHandler v) {
-        setExceptionHandler(v);
-        return this;
-    }
-    final static public String EXCEPTIONHANDLER = "exceptionHandler";
     ExceptionHandler exceptionHandler = this::handleException;
-    public BindingEndpoint<ExceptionHandler> exceptionHandler$() {
-        return BindingEndpoint.of(this, EXCEPTIONHANDLER, exceptionHandler);
-    }
 
     private boolean handleException(Throwable e, JComponent component, Object oldValue, Object newValue) {
         return handleException(e);

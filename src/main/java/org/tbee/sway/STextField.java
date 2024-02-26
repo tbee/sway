@@ -9,6 +9,7 @@ import org.tbee.sway.format.JavaFormat;
 import org.tbee.sway.format.StringFormat;
 import org.tbee.sway.mixin.BindToMixin;
 import org.tbee.sway.mixin.ComponentMixin;
+import org.tbee.sway.mixin.ExceptionHandlerMixin;
 import org.tbee.sway.mixin.HAlignMixin;
 import org.tbee.sway.mixin.OverlayMixin;
 import org.tbee.sway.mixin.ToolTipMixin;
@@ -112,6 +113,7 @@ public class STextField<T> extends javax.swing.JTextField implements
         OverlayMixin<STextField<T>>,
         ToolTipMixin<STextField<T>>,
         BindToMixin<STextField<T>, T>,
+        ExceptionHandlerMixin<STextField<T>>,
         ComponentMixin<STextField<T>> {
 
     final static private org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(STextField.class);
@@ -306,19 +308,10 @@ public class STextField<T> extends javax.swing.JTextField implements
     public void setExceptionHandler(ExceptionHandler v) {
         firePropertyChange(EXCEPTIONHANDLER, exceptionHandler, exceptionHandler = v);
     }
-
     public ExceptionHandler getExceptionHandler() {
         return exceptionHandler;
     }
-    public STextField<T> exceptionHandler(ExceptionHandler v) {
-        setExceptionHandler(v);
-        return this;
-    }
     ExceptionHandler exceptionHandler = this::handleException;
-    final static public String EXCEPTIONHANDLER = "exceptionHandler";
-    public BindingEndpoint<String> exceptionHandler$() {
-        return BindingEndpoint.of(this, EXCEPTIONHANDLER, exceptionHandler);
-    }
 
     private boolean handleException(Throwable e, JComponent component, Object oldValue, Object newValue) {
         return handleException(e);

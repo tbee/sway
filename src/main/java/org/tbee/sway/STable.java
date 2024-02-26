@@ -10,6 +10,7 @@ import org.tbee.sway.format.FormatAsJavaTextFormat;
 import org.tbee.sway.format.FormatRegistry;
 import org.tbee.sway.mixin.BindToMixin;
 import org.tbee.sway.mixin.ComponentMixin;
+import org.tbee.sway.mixin.ExceptionHandlerMixin;
 import org.tbee.sway.mixin.OverlayMixin;
 import org.tbee.sway.mixin.PropertyChangeListenerMixin;
 import org.tbee.sway.support.BeanUtil;
@@ -199,6 +200,7 @@ public class STable<TableType> extends JPanel implements
         PropertyChangeListenerMixin<STable<TableType>>,
         OverlayMixin<STable<TableType>>,
         ComponentMixin<STable<TableType>>,
+        ExceptionHandlerMixin<STable<TableType>>,
         BindToMixin<STable<TableType>, List<TableType>> {
     static private org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(STable.class);
 
@@ -1275,15 +1277,7 @@ public class STable<TableType> extends JPanel implements
     public ExceptionHandler getExceptionHandler() {
         return exceptionHandler;
     }
-    public STable<TableType> exceptionHandler(ExceptionHandler v) {
-        setExceptionHandler(v);
-        return this;
-    }
-    final static public String EXCEPTIONHANDLER = "exceptionHandler";
     ExceptionHandler exceptionHandler = this::handleException;
-    public BindingEndpoint<ExceptionHandler> exceptionHandler$() {
-        return BindingEndpoint.of(this, EXCEPTIONHANDLER, exceptionHandler);
-    }
 
     private boolean handleException(Throwable e, JComponent component, Object oldValue, Object newValue) {
         return handleException(e);

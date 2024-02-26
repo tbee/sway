@@ -6,7 +6,7 @@ import java.awt.event.ActionListener;
 public interface ActionMixin<T> {
 
     void addActionListener(ActionListener l);
-    default T actionListener(ActionListener l) {
+    default T onAction(ActionListener l) {
         addActionListener(l);
         return (T)this;
     }

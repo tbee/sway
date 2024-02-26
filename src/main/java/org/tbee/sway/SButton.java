@@ -1,9 +1,12 @@
 package org.tbee.sway;
 
-import org.tbee.sway.binding.BindingEndpoint;
 import org.tbee.sway.binding.ExceptionHandler;
+import org.tbee.sway.mixin.ActionMixin;
 import org.tbee.sway.mixin.ComponentMixin;
+import org.tbee.sway.mixin.ExceptionHandlerMixin;
 import org.tbee.sway.mixin.HAlignMixin;
+import org.tbee.sway.mixin.TextIconMixin;
+import org.tbee.sway.mixin.ToolTipMixin;
 import org.tbee.sway.mixin.VAlignMixin;
 import org.tbee.util.ExceptionUtil;
 
@@ -19,6 +22,10 @@ import java.awt.event.ActionListener;
 public class SButton extends JButton implements
         HAlignMixin<SButton>,
         VAlignMixin<SButton>,
+        ExceptionHandlerMixin<SButton>,
+        ToolTipMixin<SButton>,
+        ActionMixin<SButton>,
+        TextIconMixin<SButton>,
         ComponentMixin<SButton> {
     final static private org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(SButton.class);
 
@@ -63,15 +70,7 @@ public class SButton extends JButton implements
     public ExceptionHandler getExceptionHandler() {
         return exceptionHandler;
     }
-    public SButton exceptionHandler(ExceptionHandler v) {
-        setExceptionHandler(v);
-        return this;
-    }
     private ExceptionHandler exceptionHandler = this::handleException;
-    final static public String EXCEPTIONHANDLER = "exceptionHandler";
-    public BindingEndpoint<ExceptionHandler> exceptionHandler$() {
-        return BindingEndpoint.of(this, EXCEPTIONHANDLER, exceptionHandler);
-    }
 
     private boolean handleException(Throwable e, JComponent component, Object oldValue, Object newValue) {
     	
@@ -130,33 +129,8 @@ public class SButton extends JButton implements
         return of().text(text).icon(icon).onAction(actionListener);
     }
 
-    public SButton toolTipText(String t) {
-        setToolTipText(t);
-        return this;
-    }
-
     public SButton margin(Insets m) {
         setMargin(m);
-        return this;
-    }
-
-    public SButton onAction(ActionListener l) {
-        addActionListener(l);
-        return this;
-    }
-
-    public SButton action(Action v) {
-        setAction(v);
-        return this;
-    }
-
-    public SButton icon(Icon v) {
-        setIcon(v);
-        return this;
-    }
-
-    public SButton text(String v) {
-        setText(v);
         return this;
     }
 }

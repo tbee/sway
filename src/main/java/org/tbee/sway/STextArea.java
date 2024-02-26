@@ -4,6 +4,7 @@ import org.tbee.sway.binding.BindingEndpoint;
 import org.tbee.sway.binding.ExceptionHandler;
 import org.tbee.sway.mixin.BindToMixin;
 import org.tbee.sway.mixin.ComponentMixin;
+import org.tbee.sway.mixin.ExceptionHandlerMixin;
 import org.tbee.sway.support.FocusInterpreter;
 import org.tbee.util.ExceptionUtil;
 
@@ -17,6 +18,7 @@ import java.awt.BorderLayout;
 
 public class STextArea extends JPanel implements
         ComponentMixin<STextArea>,
+        ExceptionHandlerMixin<STextArea>,
         BindToMixin<STextArea, String> {
 
     final static private org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(STextArea.class);
@@ -97,15 +99,7 @@ public class STextArea extends JPanel implements
     public ExceptionHandler getExceptionHandler() {
         return exceptionHandler;
     }
-    public STextArea exceptionHandler(ExceptionHandler v) {
-        setExceptionHandler(v);
-        return this;
-    }
-    final static public String EXCEPTIONHANDLER = "exceptionHandler";
     ExceptionHandler exceptionHandler = this::handleException;
-    public BindingEndpoint<ExceptionHandler> exceptionHandler$() {
-        return BindingEndpoint.of(this, EXCEPTIONHANDLER, exceptionHandler);
-    }
 
     private boolean handleException(Throwable e, JComponent component, Object oldValue, Object newValue) {
         return handleException(e);

@@ -5,6 +5,7 @@ import org.tbee.sway.binding.ExceptionHandler;
 import org.tbee.sway.mixin.ActionMixin;
 import org.tbee.sway.mixin.BindToMixin;
 import org.tbee.sway.mixin.ComponentMixin;
+import org.tbee.sway.mixin.ExceptionHandlerMixin;
 import org.tbee.sway.mixin.TextIconMixin;
 import org.tbee.sway.mixin.ToolTipMixin;
 import org.tbee.sway.support.IconRegistry;
@@ -25,6 +26,7 @@ public class SCheckBox extends JCheckBox implements
         TextIconMixin<SCheckBox>,
         ActionMixin<SCheckBox>,
         ToolTipMixin<SCheckBox>,
+        ExceptionHandlerMixin<SCheckBox>,
         BindToMixin<SCheckBox, Boolean> {
     static private org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(SCheckBox.class);
 
@@ -103,15 +105,7 @@ public class SCheckBox extends JCheckBox implements
     public ExceptionHandler getExceptionHandler() {
         return exceptionHandler;
     }
-    public SCheckBox exceptionHandler(ExceptionHandler v) {
-        setExceptionHandler(v);
-        return this;
-    }
-    final static public String EXCEPTIONHANDLER = "exceptionHandler";
     ExceptionHandler exceptionHandler = this::handleException;
-    public BindingEndpoint<ExceptionHandler> exceptionHandler$() {
-        return BindingEndpoint.of(this, EXCEPTIONHANDLER, exceptionHandler);
-    }
 
     private boolean handleException(Throwable e, JComponent component, Object oldValue, Object newValue) {
         return handleException(e);

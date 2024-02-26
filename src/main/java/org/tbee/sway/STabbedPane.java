@@ -4,6 +4,7 @@ import org.tbee.sway.binding.BindingEndpoint;
 import org.tbee.sway.binding.ExceptionHandler;
 import org.tbee.sway.mixin.BindToMixin;
 import org.tbee.sway.mixin.ComponentMixin;
+import org.tbee.sway.mixin.ExceptionHandlerMixin;
 import org.tbee.sway.mixin.ToolTipMixin;
 import org.tbee.util.ExceptionUtil;
 
@@ -53,6 +54,7 @@ import java.util.function.Function;
 public class STabbedPane<T> extends JTabbedPane implements
         ComponentMixin<STabbedPane<T>>,
         BindToMixin<STabbedPane<T>, T>,
+        ExceptionHandlerMixin<STabbedPane<T>>,
         ToolTipMixin<STabbedPane<T>> {
 
     public static final org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(STabbedPane.class);
@@ -133,15 +135,7 @@ public class STabbedPane<T> extends JTabbedPane implements
     public ExceptionHandler getExceptionHandler() {
         return exceptionHandler;
     }
-    public STabbedPane<T> exceptionHandler(ExceptionHandler v) {
-        setExceptionHandler(v);
-        return this;
-    }
-    final static public String EXCEPTIONHANDLER = "exceptionHandler";
     ExceptionHandler exceptionHandler = this::handleException;
-    public BindingEndpoint<ExceptionHandler> exceptionHandler$() {
-        return BindingEndpoint.of(this, EXCEPTIONHANDLER, exceptionHandler);
-    }
 
     private boolean handleException(Throwable e, JComponent component, Object oldValue, Object newValue) {
         return handleException(e);
