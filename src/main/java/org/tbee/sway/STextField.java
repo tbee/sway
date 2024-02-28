@@ -15,12 +15,14 @@ import org.tbee.sway.mixin.OverlayMixin;
 import org.tbee.sway.mixin.ToolTipMixin;
 import org.tbee.sway.support.FocusInterpreter;
 import org.tbee.sway.support.HAlign;
+import org.tbee.sway.text.DocumentFilterSize;
 import org.tbee.util.ClassUtil;
 import org.tbee.util.ExceptionUtil;
 
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
+import javax.swing.text.AbstractDocument;
 import java.awt.event.KeyEvent;
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
@@ -371,6 +373,27 @@ public class STextField<T> extends javax.swing.JTextField implements
 
     // ==============================================
     // JavaBean
+
+    /**
+     * maxLength
+     */
+    public void setMaxLength(int value) {
+        maxLength = value;
+        if (documentFilterSize == null) {
+            documentFilterSize = new DocumentFilterSize(this, () -> maxLength);
+            ((AbstractDocument) getDocument()).setDocumentFilter(documentFilterSize);
+        }
+    }
+    private DocumentFilterSize documentFilterSize = null;
+
+    public int getMaxLength() { return maxLength; }
+    public STextField<T> maxLength(int value) {
+        setMaxLength(value);
+        return this;
+    }
+    volatile private int maxLength = -1;
+    final static public String MAXLENGTH_PROPERTY_ID = "maxLength";
+
 
     // ==============================================
     // FLUENT API

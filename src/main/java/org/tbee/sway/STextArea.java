@@ -6,6 +6,7 @@ import org.tbee.sway.mixin.BindToMixin;
 import org.tbee.sway.mixin.ComponentMixin;
 import org.tbee.sway.mixin.ExceptionHandlerMixin;
 import org.tbee.sway.support.FocusInterpreter;
+import org.tbee.sway.text.DocumentFilterSize;
 import org.tbee.util.ExceptionUtil;
 
 import javax.swing.JComponent;
@@ -14,6 +15,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
+import javax.swing.text.AbstractDocument;
 import java.awt.BorderLayout;
 
 public class STextArea extends JPanel implements
@@ -63,10 +65,9 @@ public class STextArea extends JPanel implements
     // ===========================================================================
     // PROPERTIES
 
-	/**
-	 * 
-	 * @param v
-	 */
+    /**
+     * Text
+     */
     public void setText(String v) {
     	String old = jTextArea.getText();
     	jTextArea.setText(v);
@@ -85,6 +86,39 @@ public class STextArea extends JPanel implements
         return BindingEndpoint.of(this, TEXT, exceptionHandler);
     }
 
+    /**
+     * editable
+     */
+    public void setEditable(boolean v) {
+        jTextArea.setEditable(v);
+    }
+    public boolean isEditable() {
+        return jTextArea.isEditable();
+    }
+    public STextArea editable(boolean enabled) {
+        setEditable(enabled);
+        return this;
+    }
+
+    /**
+     * maxLength
+     */
+    public void setMaxLength(int value) {
+        maxLength = value;
+        if (documentFilterSize == null) {
+            documentFilterSize = new DocumentFilterSize(this, () -> maxLength);
+            ((AbstractDocument) jTextArea.getDocument()).setDocumentFilter(documentFilterSize);
+        }
+    }
+    private DocumentFilterSize documentFilterSize = null;
+
+    public int getMaxLength() { return maxLength; }
+    public STextArea maxLength(int value) {
+        setMaxLength(value);
+        return this;
+    }
+    volatile private int maxLength = -1;
+    final static public String MAXLENGTH_PROPERTY_ID = "maxLength";
 
     // ========================================================
     // EXCEPTION HANDLER

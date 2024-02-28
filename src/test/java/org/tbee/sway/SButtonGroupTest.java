@@ -17,9 +17,9 @@ public class SButtonGroupTest extends TestBase {
         var ref = new AtomicReference<SButtonGroup<Integer>>();
         construct(() -> {
             var sButtonGroup = SButtonGroup.<Integer>of() //
-                    .add(1, new SToggleButton("1")) //
-                    .add(2, new SToggleButton("2")) //
-                    .add(3, new SToggleButton("3"));
+                    .add(1, SToggleButton.of("1")) //
+                    .add(2, SToggleButton.of("2")) //
+                    .add(3, SToggleButton.of("3"));
             sButtonGroup.getButtons().forEach(b -> b.setName("b" + b.getText())); // to make them findable
             ref.set(sButtonGroup);
             return TestUtil.inSFrame(sButtonGroup.getButtons());
@@ -58,9 +58,9 @@ public class SButtonGroupTest extends TestBase {
         var ref = new AtomicReference<SButtonGroup<Integer>>();
         construct(() -> {
             var sButtonGroup = new SButtonGroup<Integer>() //
-                    .add(1, new SToggleButton("1")) //
-                    .add(2, new SToggleButton("2")) //
-                    .add(3, new SToggleButton("3")) //
+                    .add(1, SToggleButton.of("1")) //
+                    .add(2, SToggleButton.of("2")) //
+                    .add(3, SToggleButton.of("3")) //
                     .bindTo(city.distance$());
             sButtonGroup.getButtons().forEach(b -> b.setName("b" + b.getText())); // to make them findable
             ref.set(sButtonGroup);

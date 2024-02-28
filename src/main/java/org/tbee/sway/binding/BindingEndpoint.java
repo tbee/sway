@@ -58,6 +58,9 @@ public class BindingEndpoint<PropertyClass> {
         return BindUtil.bind(this.bean, this.propertyName, bindingEndpoint.bean, bindingEndpoint.propertyName, exceptionHandler != null? exceptionHandler : bindingEndpoint.exceptionHandler, chain);
     }
 
+    public Binding bindTo(BeanBinder<?> beanBinder, String propertyName) {
+        return bindTo(BindingEndpoint.of(beanBinder, propertyName));
+    }
 
     // ==================================================
     // CHAIN

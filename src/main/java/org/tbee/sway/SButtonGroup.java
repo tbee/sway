@@ -167,6 +167,10 @@ public class SButtonGroup<T> extends ButtonGroup implements
         return this.enabled;
     }
     boolean enabled = true;
+    public SButtonGroup<T> enabled(boolean v) {
+        setEnabled(v);
+        return this;
+    }
 
     // ===============================
     // VALUE

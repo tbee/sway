@@ -7,6 +7,7 @@ import org.tbee.sway.mixin.BindToMixin;
 import org.tbee.sway.mixin.ComponentMixin;
 import org.tbee.sway.mixin.ExceptionHandlerMixin;
 import org.tbee.sway.mixin.MarginMixin;
+import org.tbee.sway.mixin.SelectedMixin;
 import org.tbee.sway.mixin.TextIconMixin;
 import org.tbee.sway.mixin.ToolTipMixin;
 import org.tbee.sway.support.IconRegistry;
@@ -27,6 +28,7 @@ public class SCheckBox extends JCheckBox implements
         ActionMixin<SCheckBox>,
         ToolTipMixin<SCheckBox>,
         MarginMixin<SCheckBox>,
+        SelectedMixin<SCheckBox>,
         ExceptionHandlerMixin<SCheckBox>,
         BindToMixin<SCheckBox, Boolean> {
     static private org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(SCheckBox.class);
@@ -69,22 +71,13 @@ public class SCheckBox extends JCheckBox implements
         firePropertyChange(SELECTED, selected, selected = isSelected());
         updateIcon();
     }
+    boolean selected = false;
 
     private void updateIcon() {
         if (explicitIcon) {
             return;
         }
         super.setIcon(IconRegistry.find(selected ? IconRegistry.SwayInternallyUsedIcon.CHECKBOX_SELECTED : IconRegistry.SwayInternallyUsedIcon.CHECKBOX_UNSELECTED));
-    }
-
-    final static public String SELECTED = "selected";
-    boolean selected = false;
-    public SCheckBox selected(boolean value) {
-        setSelected(value);
-        return this;
-    }
-    public BindingEndpoint<Boolean> selected$() {
-        return BindingEndpoint.of(this, SELECTED, exceptionHandler);
     }
 
     @Override
