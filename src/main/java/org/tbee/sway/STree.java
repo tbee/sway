@@ -10,11 +10,8 @@ import org.tbee.sway.mixin.ExceptionHandlerMixin;
 import org.tbee.sway.support.BeanMonitor;
 import org.tbee.sway.tree.Node;
 import org.tbee.sway.tree.STreeCore;
-import org.tbee.util.ExceptionUtil;
 
-import javax.swing.JComponent;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
@@ -549,23 +546,7 @@ public class STree<T extends Object> extends JPanel implements
     public ExceptionHandler getExceptionHandler() {
         return exceptionHandler;
     }
-    ExceptionHandler exceptionHandler = this::handleException;
-
-    private boolean handleException(Throwable e, JComponent component, Object oldValue, Object newValue) {
-        return handleException(e);
-    }
-    private boolean handleException(Throwable e) {
-
-        // Force focus back
-        SwingUtilities.invokeLater(() -> this.grabFocus());
-
-        // Display the error
-        if (LOGGER.isDebugEnabled()) LOGGER.debug(e.getMessage(), e);
-        JOptionPane.showMessageDialog(this, ExceptionUtil.determineMessage(e), "ERROR", JOptionPane.ERROR_MESSAGE);
-
-        // Mark exception as handled
-        return true;
-    }
+    private ExceptionHandler exceptionHandler = this::handleException;
 
 
     // ===========================================================================

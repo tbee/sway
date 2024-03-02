@@ -11,7 +11,7 @@ import org.tbee.util.ExceptionUtil;
 
 import javax.swing.AbstractButton;
 import javax.swing.ButtonGroup;
-import javax.swing.JComponent;
+import javax.swing.FocusManager;
 import javax.swing.JOptionPane;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeListener;
@@ -356,21 +356,17 @@ public class SButtonGroup<T> extends ButtonGroup implements
     public ExceptionHandler getExceptionHandler() {
         return exceptionHandler;
     }
-    ExceptionHandler exceptionHandler = this::handleException;
+    private ExceptionHandler exceptionHandler = this::handleException;
 
-    private boolean handleException(Throwable e, JComponent component, Object oldValue, Object newValue) {
-        return handleException(e);
-    }
-    private boolean handleException(Throwable e) {
+    public boolean handleException(Throwable e) {
 
         // Display the error
         if (LOGGER.isDebugEnabled()) LOGGER.debug(e.getMessage(), e);
-        JOptionPane.showMessageDialog(buttons.isEmpty() ? null : buttons.get(0), ExceptionUtil.determineMessage(e), "ERROR", JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(buttons.isEmpty() ? FocusManager.getCurrentManager().getActiveWindow() : buttons.get(0), ExceptionUtil.determineMessage(e), "ERROR", JOptionPane.ERROR_MESSAGE);
 
         // Mark exception as handled
         return true;
     }
-
 
     // ========================================================
     // FLUENT API

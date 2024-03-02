@@ -11,13 +11,9 @@ import org.tbee.sway.mixin.SelectedMixin;
 import org.tbee.sway.mixin.TextIconMixin;
 import org.tbee.sway.mixin.ToolTipMixin;
 import org.tbee.sway.support.IconRegistry;
-import org.tbee.util.ExceptionUtil;
 
 import javax.swing.Icon;
 import javax.swing.JCheckBox;
-import javax.swing.JComponent;
-import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
 
 /**
  * If the SELECTED, UNSELECTED icons are specified in the IconRegistry, then these will be drawn.
@@ -99,23 +95,7 @@ public class SCheckBox extends JCheckBox implements
     public ExceptionHandler getExceptionHandler() {
         return exceptionHandler;
     }
-    ExceptionHandler exceptionHandler = this::handleException;
-
-    private boolean handleException(Throwable e, JComponent component, Object oldValue, Object newValue) {
-        return handleException(e);
-    }
-    private boolean handleException(Throwable e) {
-
-        // Force focus back
-        SwingUtilities.invokeLater(() -> this.grabFocus());
-
-        // Display the error
-        if (LOGGER.isDebugEnabled()) LOGGER.debug(e.getMessage(), e);
-        JOptionPane.showMessageDialog(this, ExceptionUtil.determineMessage(e), "ERROR", JOptionPane.ERROR_MESSAGE);
-
-        // Mark exception as handled
-        return true;
-    }
+    private ExceptionHandler exceptionHandler = this::handleException;
 
 
     // ==============================================

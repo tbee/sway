@@ -19,7 +19,6 @@ import org.tbee.sway.text.DocumentFilterSize;
 import org.tbee.util.ClassUtil;
 import org.tbee.util.ExceptionUtil;
 
-import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.text.AbstractDocument;
@@ -313,12 +312,9 @@ public class STextField<T> extends javax.swing.JTextField implements
     public ExceptionHandler getExceptionHandler() {
         return exceptionHandler;
     }
-    ExceptionHandler exceptionHandler = this::handleException;
+    private ExceptionHandler exceptionHandler = this::handleException;
 
-    private boolean handleException(Throwable e, JComponent component, Object oldValue, Object newValue) {
-        return handleException(e);
-    }
-    private boolean handleException(Throwable e) {
+    public boolean handleException(Throwable e) {
         if (handlingExceptionCnt > 0 || !isShowing()) {
             return false;
         }

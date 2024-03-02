@@ -9,13 +9,10 @@ import org.tbee.sway.mixin.MarginMixin;
 import org.tbee.sway.mixin.TextIconMixin;
 import org.tbee.sway.mixin.ToolTipMixin;
 import org.tbee.sway.mixin.VAlignMixin;
-import org.tbee.util.ExceptionUtil;
 
 import javax.swing.Action;
 import javax.swing.Icon;
 import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JOptionPane;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -72,15 +69,6 @@ public class SButton extends JButton implements
         return exceptionHandler;
     }
     private ExceptionHandler exceptionHandler = this::handleException;
-
-    private boolean handleException(Throwable e, JComponent component, Object oldValue, Object newValue) {
-    	
-        if (LOGGER.isDebugEnabled()) LOGGER.debug(e.getMessage(), e);
-        JOptionPane.showMessageDialog(this, ExceptionUtil.determineMessage(e), "ERROR", JOptionPane.ERROR_MESSAGE);
-
-        // Mark exception as handled
-        return true;
-    }
 
     @Override
     protected void fireActionPerformed(ActionEvent event) {

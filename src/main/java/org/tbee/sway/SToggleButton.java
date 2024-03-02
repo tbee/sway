@@ -7,14 +7,10 @@ import org.tbee.sway.mixin.ExceptionHandlerMixin;
 import org.tbee.sway.mixin.SelectedMixin;
 import org.tbee.sway.mixin.TextIconMixin;
 import org.tbee.sway.mixin.ToolTipMixin;
-import org.tbee.util.ExceptionUtil;
 
 import javax.swing.Action;
 import javax.swing.Icon;
-import javax.swing.JComponent;
-import javax.swing.JOptionPane;
 import javax.swing.JToggleButton;
-import javax.swing.SwingUtilities;
 import java.awt.event.ActionListener;
 
 // TODO:
@@ -79,23 +75,7 @@ public class SToggleButton extends JToggleButton implements
     public ExceptionHandler getExceptionHandler() {
         return exceptionHandler;
     }
-    ExceptionHandler exceptionHandler = this::handleException;
-
-    private boolean handleException(Throwable e, JComponent component, Object oldValue, Object newValue) {
-        return handleException(e);
-    }
-    private boolean handleException(Throwable e) {
-
-        // Force focus back
-        SwingUtilities.invokeLater(() -> this.grabFocus());
-
-        // Display the error
-        if (LOGGER.isDebugEnabled()) LOGGER.debug(e.getMessage(), e);
-        JOptionPane.showMessageDialog(this, ExceptionUtil.determineMessage(e), "ERROR", JOptionPane.ERROR_MESSAGE);
-
-        // Mark exception as handled
-        return true;
-    }
+    private ExceptionHandler exceptionHandler = this::handleException;
 
     // ===========================================================================================================================
     // FLUENT API

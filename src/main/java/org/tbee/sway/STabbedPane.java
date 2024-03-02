@@ -6,11 +6,8 @@ import org.tbee.sway.mixin.BindToMixin;
 import org.tbee.sway.mixin.ComponentMixin;
 import org.tbee.sway.mixin.ExceptionHandlerMixin;
 import org.tbee.sway.mixin.ToolTipMixin;
-import org.tbee.util.ExceptionUtil;
 
 import javax.swing.Icon;
-import javax.swing.JComponent;
-import javax.swing.JOptionPane;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
 import java.awt.Component;
@@ -135,23 +132,8 @@ public class STabbedPane<T> extends JTabbedPane implements
     public ExceptionHandler getExceptionHandler() {
         return exceptionHandler;
     }
-    ExceptionHandler exceptionHandler = this::handleException;
+    private ExceptionHandler exceptionHandler = this::handleException;
 
-    private boolean handleException(Throwable e, JComponent component, Object oldValue, Object newValue) {
-        return handleException(e);
-    }
-    private boolean handleException(Throwable e) {
-
-        // Force focus back
-        SwingUtilities.invokeLater(() -> this.grabFocus());
-
-        // Display the error
-        if (LOGGER.isDebugEnabled()) LOGGER.debug(e.getMessage(), e);
-        JOptionPane.showMessageDialog(this, ExceptionUtil.determineMessage(e), "ERROR", JOptionPane.ERROR_MESSAGE);
-
-        // Mark exception as handled
-        return true;
-    }
 
     // ===========================================================================================================================
     // Tabs
