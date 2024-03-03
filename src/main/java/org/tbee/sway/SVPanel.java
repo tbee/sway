@@ -53,7 +53,7 @@ public class SVPanel extends SPanelExtendable<SVPanel> implements
         return this;
     }
 
-    static public enum Align {LEADING, LEFT, CENTER, RIGHT, TRAILING}
+    public enum Align {LEADING, LEFT, CENTER, RIGHT, TRAILING}
 
     public SVPanel align(Align v) {
         for (Component component : getComponents()) {
@@ -62,6 +62,7 @@ public class SVPanel extends SPanelExtendable<SVPanel> implements
         }
         return this;
     }
+
     public SVPanel fillWidth(boolean v) {
         for (Component component : getComponents()) {
             CC cc = (CC)migLayout.getComponentConstraints(component);

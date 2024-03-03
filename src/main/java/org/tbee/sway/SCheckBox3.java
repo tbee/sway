@@ -16,9 +16,8 @@ import org.tbee.sway.binding.BindingEndpoint;
 import org.tbee.sway.binding.ExceptionHandler;
 import org.tbee.sway.mixin.ActionMixin;
 import org.tbee.sway.mixin.BindToMixin;
-import org.tbee.sway.mixin.JComponentMixin;
 import org.tbee.sway.mixin.ExceptionHandlerDefaultMixin;
-import org.tbee.sway.mixin.MarginMixin;
+import org.tbee.sway.mixin.JComponentMixin;
 import org.tbee.sway.mixin.TextIconMixin;
 import org.tbee.sway.mixin.ToolTipMixin;
 import org.tbee.sway.support.IconRegistry;
@@ -47,7 +46,6 @@ public class SCheckBox3 extends JCheckBox implements
 		TextIconMixin<SCheckBox3>,
 		BindToMixin<SCheckBox3, Boolean>,
 		ActionMixin<SCheckBox3>,
-		MarginMixin<SCheckBox3>,
 		ExceptionHandlerDefaultMixin<SCheckBox3>,
 		ToolTipMixin<SCheckBox3> {
 	static private org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(SCheckBox3.class);

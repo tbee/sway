@@ -44,7 +44,7 @@ public class SHPanel extends SPanelExtendable<SHPanel> implements
         return panel;
     }
 
-    static public enum Align {TOP, CENTER, BOTTOM, BASELINE}
+    public enum Align {TOP, CENTER, BOTTOM, BASELINE}
 
     public SHPanel align(Align v) {
         for (Component component : getComponents()) {

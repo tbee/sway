@@ -2,7 +2,6 @@ package org.tbee.sway;
 
 import org.tbee.sway.mixin.ActionMixin;
 import org.tbee.sway.mixin.JComponentMixin;
-import org.tbee.sway.mixin.MarginMixin;
 import org.tbee.sway.mixin.TextIconMixin;
 import org.tbee.sway.mixin.ToolTipMixin;
 
@@ -14,7 +13,6 @@ public class SRadioButton extends JRadioButton implements
         JComponentMixin<SRadioButton>,
         TextIconMixin<SRadioButton>,
         ToolTipMixin<SRadioButton>,
-        MarginMixin<SRadioButton>,
         ActionMixin<SRadioButton> {
 
     public SRadioButton() {

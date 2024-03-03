@@ -2,10 +2,9 @@ package org.tbee.sway;
 
 import org.tbee.sway.binding.ExceptionHandler;
 import org.tbee.sway.mixin.ActionMixin;
-import org.tbee.sway.mixin.JComponentMixin;
 import org.tbee.sway.mixin.ExceptionHandlerDefaultMixin;
 import org.tbee.sway.mixin.HAlignMixin;
-import org.tbee.sway.mixin.MarginMixin;
+import org.tbee.sway.mixin.JComponentMixin;
 import org.tbee.sway.mixin.TextIconMixin;
 import org.tbee.sway.mixin.ToolTipMixin;
 import org.tbee.sway.mixin.VAlignMixin;
@@ -23,7 +22,6 @@ public class SButton extends JButton implements
         ToolTipMixin<SButton>,
         ActionMixin<SButton>,
         TextIconMixin<SButton>,
-        MarginMixin<SButton>,
         JComponentMixin<SButton> {
     final static private org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(SButton.class);
 

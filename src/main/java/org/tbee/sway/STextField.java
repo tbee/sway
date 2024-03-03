@@ -8,9 +8,10 @@ import org.tbee.sway.format.FormatRegistry;
 import org.tbee.sway.format.JavaFormat;
 import org.tbee.sway.format.StringFormat;
 import org.tbee.sway.mixin.BindToMixin;
-import org.tbee.sway.mixin.JComponentMixin;
+import org.tbee.sway.mixin.EditableMixin;
 import org.tbee.sway.mixin.ExceptionHandlerDefaultMixin;
 import org.tbee.sway.mixin.HAlignMixin;
+import org.tbee.sway.mixin.JComponentMixin;
 import org.tbee.sway.mixin.OverlayMixin;
 import org.tbee.sway.mixin.ToolTipMixin;
 import org.tbee.sway.support.FocusInterpreter;
@@ -114,6 +115,7 @@ public class STextField<T> extends javax.swing.JTextField implements
         OverlayMixin<STextField<T>>,
         ToolTipMixin<STextField<T>>,
         BindToMixin<STextField<T>, T>,
+        EditableMixin<STextField<T>>,
         ExceptionHandlerDefaultMixin<STextField<T>>,
         JComponentMixin<STextField<T>> {
 
@@ -396,11 +398,6 @@ public class STextField<T> extends javax.swing.JTextField implements
 
     public STextField<T> columns(int value) {
         setColumns(value);
-        return this;
-    }
-
-    public STextField<T> editable(boolean enabled) {
-        setEditable(enabled);
         return this;
     }
 }
