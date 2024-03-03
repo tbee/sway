@@ -9,8 +9,8 @@ import org.tbee.sway.format.Format;
 import org.tbee.sway.format.FormatAsJavaTextFormat;
 import org.tbee.sway.format.FormatRegistry;
 import org.tbee.sway.mixin.BindToMixin;
-import org.tbee.sway.mixin.ComponentMixin;
-import org.tbee.sway.mixin.ExceptionHandlerMixin;
+import org.tbee.sway.mixin.JComponentMixin;
+import org.tbee.sway.mixin.ExceptionHandlerDefaultMixin;
 import org.tbee.sway.mixin.OverlayMixin;
 import org.tbee.sway.mixin.PropertyChangeListenerMixin;
 import org.tbee.sway.support.BeanUtil;
@@ -197,8 +197,8 @@ import java.util.stream.Collectors;
 public class STable<TableType> extends JPanel implements
         PropertyChangeListenerMixin<STable<TableType>>,
         OverlayMixin<STable<TableType>>,
-        ComponentMixin<STable<TableType>>,
-        ExceptionHandlerMixin<STable<TableType>>,
+        JComponentMixin<STable<TableType>>,
+        ExceptionHandlerDefaultMixin<STable<TableType>>,
         BindToMixin<STable<TableType>, List<TableType>> {
     static private org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(STable.class);
 

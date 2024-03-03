@@ -7,8 +7,8 @@ import org.tbee.sway.format.FormatRegistry;
 import org.tbee.sway.list.DefaultListCellRenderer;
 import org.tbee.sway.list.SListCore;
 import org.tbee.sway.mixin.BindToMixin;
-import org.tbee.sway.mixin.ComponentMixin;
-import org.tbee.sway.mixin.ExceptionHandlerMixin;
+import org.tbee.sway.mixin.JComponentMixin;
+import org.tbee.sway.mixin.ExceptionHandlerDefaultMixin;
 import org.tbee.sway.support.SwayUtil;
 
 import javax.swing.JPanel;
@@ -22,8 +22,8 @@ import java.util.List;
 import java.util.function.Consumer;
 
 public class SList<T> extends JPanel implements
-        ComponentMixin<SList<T>>,
-        ExceptionHandlerMixin<SList<T>>,
+        JComponentMixin<SList<T>>,
+        ExceptionHandlerDefaultMixin<SList<T>>,
         BindToMixin<SList<T>, List<T>> {
     static private org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(SList.class);
 

@@ -1,6 +1,6 @@
 package org.tbee.sway;
 
-import org.tbee.sway.mixin.ComponentMixin;
+import org.tbee.sway.mixin.JComponentMixin;
 
 import javax.swing.JComponent;
 import java.awt.FlowLayout;
@@ -8,7 +8,7 @@ import java.util.Arrays;
 import java.util.Collection;
 
 public class SFlowPanel extends SPanelExtendable<SFlowPanel> implements
-        ComponentMixin<SFlowPanel> {
+        JComponentMixin<SFlowPanel> {
 
     public SFlowPanel() {
         super();

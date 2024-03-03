@@ -3,8 +3,8 @@ package org.tbee.sway;
 import org.tbee.sway.binding.BindingEndpoint;
 import org.tbee.sway.binding.ExceptionHandler;
 import org.tbee.sway.mixin.BindToMixin;
-import org.tbee.sway.mixin.ComponentMixin;
-import org.tbee.sway.mixin.ExceptionHandlerMixin;
+import org.tbee.sway.mixin.JComponentMixin;
+import org.tbee.sway.mixin.ExceptionHandlerDefaultMixin;
 import org.tbee.sway.mixin.ToolTipMixin;
 
 import javax.swing.Icon;
@@ -49,9 +49,9 @@ import java.util.function.Function;
  * @param <T> the type of the value.
  */
 public class STabbedPane<T> extends JTabbedPane implements
-        ComponentMixin<STabbedPane<T>>,
+        JComponentMixin<STabbedPane<T>>,
         BindToMixin<STabbedPane<T>, T>,
-        ExceptionHandlerMixin<STabbedPane<T>>,
+        ExceptionHandlerDefaultMixin<STabbedPane<T>>,
         ToolTipMixin<STabbedPane<T>> {
 
     public static final org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(STabbedPane.class);

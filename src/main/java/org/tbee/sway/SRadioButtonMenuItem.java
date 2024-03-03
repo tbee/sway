@@ -1,13 +1,13 @@
 package org.tbee.sway;
 
-import org.tbee.sway.mixin.ComponentMixin;
+import org.tbee.sway.mixin.JComponentMixin;
 
 import javax.swing.Icon;
 import javax.swing.JRadioButtonMenuItem;
 import java.awt.event.ActionListener;
 
 public class SRadioButtonMenuItem extends JRadioButtonMenuItem implements
-		ComponentMixin<SRadioButtonMenuItem> {
+        JComponentMixin<SRadioButtonMenuItem> {
 
 	/**
 	 * 

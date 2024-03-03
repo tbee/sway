@@ -1,7 +1,7 @@
 package org.tbee.sway;
 
 import org.tbee.sway.binding.BindingEndpoint;
-import org.tbee.sway.mixin.ComponentMixin;
+import org.tbee.sway.mixin.JComponentMixin;
 
 import javax.swing.Icon;
 import javax.swing.JMenu;
@@ -11,7 +11,7 @@ import java.awt.event.ActionListener;
  * @see SMenuBar
  */
 public class SMenu extends JMenu implements
-		ComponentMixin<SMenu> {
+        JComponentMixin<SMenu> {
 
 	/**
 	 * 

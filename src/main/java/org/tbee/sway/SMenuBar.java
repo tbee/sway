@@ -1,6 +1,6 @@
 package org.tbee.sway;
 
-import org.tbee.sway.mixin.ComponentMixin;
+import org.tbee.sway.mixin.JComponentMixin;
 
 import javax.swing.JMenuBar;
 
@@ -40,7 +40,7 @@ import javax.swing.JMenuBar;
  * }</pre>
  */
 public class SMenuBar extends JMenuBar implements
-        ComponentMixin<SMenuBar> {
+        JComponentMixin<SMenuBar> {
 
     // ===========================================================================================================================
     // FLUENT API

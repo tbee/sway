@@ -1,6 +1,6 @@
 package org.tbee.sway;
 
-import org.tbee.sway.mixin.ComponentMixin;
+import org.tbee.sway.mixin.JComponentMixin;
 
 import javax.swing.AbstractButton;
 import javax.swing.JComponent;
@@ -14,7 +14,7 @@ import java.util.List;
 
 // TBEERNOT this class needs just a bit more work
 public class SButtonPanel extends SPanelExtendable<SButtonPanel> implements
-		ComponentMixin<SButtonPanel> {
+        JComponentMixin<SButtonPanel> {
 	
 	/**
 	 * 

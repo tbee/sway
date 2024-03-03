@@ -4,8 +4,8 @@ import org.tbee.sway.binding.BindingEndpoint;
 import org.tbee.sway.binding.ExceptionHandler;
 import org.tbee.sway.mixin.ActionMixin;
 import org.tbee.sway.mixin.BindToMixin;
-import org.tbee.sway.mixin.ComponentMixin;
-import org.tbee.sway.mixin.ExceptionHandlerMixin;
+import org.tbee.sway.mixin.JComponentMixin;
+import org.tbee.sway.mixin.ExceptionHandlerDefaultMixin;
 import org.tbee.sway.mixin.MarginMixin;
 import org.tbee.sway.mixin.SelectedMixin;
 import org.tbee.sway.mixin.TextIconMixin;
@@ -19,13 +19,13 @@ import javax.swing.JCheckBox;
  * If the SELECTED, UNSELECTED icons are specified in the IconRegistry, then these will be drawn.
  */
 public class SCheckBox extends JCheckBox implements
-        ComponentMixin<SCheckBox>,
+        JComponentMixin<SCheckBox>,
         TextIconMixin<SCheckBox>,
         ActionMixin<SCheckBox>,
         ToolTipMixin<SCheckBox>,
         MarginMixin<SCheckBox>,
         SelectedMixin<SCheckBox>,
-        ExceptionHandlerMixin<SCheckBox>,
+        ExceptionHandlerDefaultMixin<SCheckBox>,
         BindToMixin<SCheckBox, Boolean> {
     static private org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(SCheckBox.class);
 

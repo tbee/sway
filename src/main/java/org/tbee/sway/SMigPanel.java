@@ -7,14 +7,14 @@ import net.miginfocom.layout.CC;
 import net.miginfocom.layout.HideMode;
 import net.miginfocom.layout.LC;
 import net.miginfocom.swing.MigLayout;
-import org.tbee.sway.mixin.ComponentMixin;
+import org.tbee.sway.mixin.JComponentMixin;
 
 import javax.swing.JComponent;
 import java.awt.Component;
 import java.util.Collection;
 
 public class SMigPanel extends SPanelExtendable<SMigPanel> implements
-        ComponentMixin<SMigPanel> {
+        JComponentMixin<SMigPanel> {
 
     // Need to declare these specifically, because the getters return String
     final private LC lc = new LC();

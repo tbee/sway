@@ -1,6 +1,6 @@
 package org.tbee.sway;
 
-import org.tbee.sway.mixin.ComponentMixin;
+import org.tbee.sway.mixin.JComponentMixin;
 
 import javax.swing.JComponent;
 import java.awt.BorderLayout;
@@ -9,7 +9,7 @@ import java.awt.BorderLayout;
  * JPanel with BorderLayout
  */
 public class SBorderPanel extends SPanelExtendable<SButtonPanel> implements
-        ComponentMixin<SBorderPanel> {
+        JComponentMixin<SBorderPanel> {
 
     public SBorderPanel() {
         super();

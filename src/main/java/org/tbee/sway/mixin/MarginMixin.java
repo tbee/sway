@@ -9,4 +9,8 @@ public interface MarginMixin<T> {
         setMargin(m);
         return (T)this;
     }
+    default T margin(int top, int left, int bottom, int right) {
+        setMargin(new Insets(top, left, bottom, right));
+        return (T)this;
+    }
 }

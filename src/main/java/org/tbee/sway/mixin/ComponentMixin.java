@@ -11,64 +11,55 @@ public interface ComponentMixin<T extends Component> extends
         OverlayMixin<T>,
         FontMixin<T> {
 
-    void setName(String name);
 
     default T name(String v) {
-        setName(v);
+        ((T)this).setName(v);
         return (T) this;
     }
 
-    void setEnabled(boolean b);
 
     default T enabled(boolean v) {
-        setEnabled(v);
+        ((T)this).setEnabled(v);
         return (T) this;
     }
 
-    void setVisible(boolean b);
 
     default T visible(boolean v) {
-        setVisible(v);
+        ((T)this).setVisible(v);
         return (T) this;
     }
 
-    void setForeground(Color c);
 
     default T foreground(Color c) {
-        setForeground(c);
+        ((T)this).setForeground(c);
         return (T) this;
     }
 
-    void setBackground(Color c);
 
     default T background(Color c) {
-        setBackground(c);
+        ((T)this).setBackground(c);
         return (T) this;
     }
 
-    void setLocation(int x, int y);
 
     default T location(int x, int y) {
-        setLocation(x, y);
+        ((T)this).setLocation(x, y);
         return (T) this;
     }
 
-    void setLocation(Point p);
     default T location(Point c) {
-        setLocation(c);
+        ((T)this).setLocation(c);
         return (T) this;
     }
 
-    void setSize(int w, int h);
 
     default T size(int w, int h) {
-        setSize(w, h);
+        ((T)this).setSize(w, h);
         return (T) this;
     }
 
-    void setSize(Dimension p);
     default T size(Dimension c) {
-        setSize(c);
+        ((T)this).setSize(c);
         return (T) this;
     }
 }

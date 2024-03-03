@@ -2,8 +2,8 @@ package org.tbee.sway;
 
 import org.tbee.sway.binding.ExceptionHandler;
 import org.tbee.sway.mixin.ActionMixin;
-import org.tbee.sway.mixin.ComponentMixin;
-import org.tbee.sway.mixin.ExceptionHandlerMixin;
+import org.tbee.sway.mixin.JComponentMixin;
+import org.tbee.sway.mixin.ExceptionHandlerDefaultMixin;
 import org.tbee.sway.mixin.HAlignMixin;
 import org.tbee.sway.mixin.MarginMixin;
 import org.tbee.sway.mixin.TextIconMixin;
@@ -19,12 +19,12 @@ import java.awt.event.ActionListener;
 public class SButton extends JButton implements
         HAlignMixin<SButton>,
         VAlignMixin<SButton>,
-        ExceptionHandlerMixin<SButton>,
+        ExceptionHandlerDefaultMixin<SButton>,
         ToolTipMixin<SButton>,
         ActionMixin<SButton>,
         TextIconMixin<SButton>,
         MarginMixin<SButton>,
-        ComponentMixin<SButton> {
+        JComponentMixin<SButton> {
     final static private org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(SButton.class);
 
     public SButton() {

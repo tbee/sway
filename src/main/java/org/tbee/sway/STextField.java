@@ -8,8 +8,8 @@ import org.tbee.sway.format.FormatRegistry;
 import org.tbee.sway.format.JavaFormat;
 import org.tbee.sway.format.StringFormat;
 import org.tbee.sway.mixin.BindToMixin;
-import org.tbee.sway.mixin.ComponentMixin;
-import org.tbee.sway.mixin.ExceptionHandlerMixin;
+import org.tbee.sway.mixin.JComponentMixin;
+import org.tbee.sway.mixin.ExceptionHandlerDefaultMixin;
 import org.tbee.sway.mixin.HAlignMixin;
 import org.tbee.sway.mixin.OverlayMixin;
 import org.tbee.sway.mixin.ToolTipMixin;
@@ -114,8 +114,8 @@ public class STextField<T> extends javax.swing.JTextField implements
         OverlayMixin<STextField<T>>,
         ToolTipMixin<STextField<T>>,
         BindToMixin<STextField<T>, T>,
-        ExceptionHandlerMixin<STextField<T>>,
-        ComponentMixin<STextField<T>> {
+        ExceptionHandlerDefaultMixin<STextField<T>>,
+        JComponentMixin<STextField<T>> {
 
     final static private org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(STextField.class);
 
