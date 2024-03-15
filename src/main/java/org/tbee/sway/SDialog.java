@@ -57,7 +57,11 @@ public class SDialog extends JDialog implements
 	static public SDialog ofCancel(Component parent, String title, JComponent content) {
 		return of(parent, title, content, CloseReason.CANCEL);
 	}
-	
+
+	static public SDialog ofOk(Component parent, String title, JComponent content) {
+		return of(parent, title, content, CloseReason.OK);
+	}
+
 	static public SDialog ofOkCancel(Component parent, String title, JComponent content) {
 		return of(parent, title, content, CloseReason.OK, CloseReason.CANCEL);
 	}
