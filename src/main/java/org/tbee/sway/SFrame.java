@@ -1,6 +1,7 @@
 package org.tbee.sway;
 
 import org.tbee.sway.mixin.ComponentMixin;
+import org.tbee.sway.mixin.WindowMixin;
 
 import javax.swing.JComponent;
 import javax.swing.JFrame;
@@ -12,6 +13,7 @@ import java.util.function.Consumer;
 
 public class SFrame extends JFrame implements
         SOverlayPane.OverlayProvider,
+        WindowMixin<SFrame>,
         ComponentMixin<SFrame> {
 
     public SFrame() {

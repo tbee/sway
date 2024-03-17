@@ -1,6 +1,7 @@
 package org.tbee.sway;
 
 import org.tbee.sway.mixin.ComponentMixin;
+import org.tbee.sway.mixin.WindowMixin;
 
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -15,6 +16,7 @@ import java.util.function.Consumer;
 
 public class SDialog extends JDialog implements
 		SOverlayPane.OverlayProvider,
+		WindowMixin<SDialog>,
 		ComponentMixin<SDialog> {
 	
 	/**
