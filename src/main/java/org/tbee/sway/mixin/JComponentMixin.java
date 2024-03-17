@@ -37,4 +37,9 @@ public interface JComponentMixin<T extends JComponent> extends
         ((T)this).setDoubleBuffered(v);
         return (T)this;
     }
+
+    default T opaque(boolean v) {
+        ((T)this).setOpaque(v);
+        return (T)this;
+    }
 }
