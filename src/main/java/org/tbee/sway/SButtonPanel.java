@@ -55,40 +55,30 @@ public class SButtonPanel extends SPanelExtendable<SButtonPanel> implements
 			 * Actually layout the components
 			 */
 			public void layoutContainer(Container container) {
-				// get inserts and childeren
-				Insets lInsets = container.getInsets();
-				Component[] lChildren = container.getComponents();
-
-				// calculate some aggrigations
-				int lMaxWidth = 0;
-				int lMaxHeight = 0;
-				int lVisibleCount = 0;
-				for (int i = 0, c = lChildren.length; i < c; i++) {
-					// only visible components are taken into account
-					if (lChildren[i].isVisible()) {
-						lVisibleCount++;
-
-						// we want to know the maximum preferred width and height
-						Dimension lComponentPreferredSize = lChildren[i].getPreferredSize();
-						lMaxWidth = Math.max(lMaxWidth, lComponentPreferredSize.width);
-						lMaxHeight = Math.max(lMaxHeight, lComponentPreferredSize.height);
-					}
-				}
+				ButtonsInfo buttons = buttonsInfo(container);
 
 				// if horizontal buttonbars are trailing aligned, we need the total height of all buttons to determine the starting point (totalwidth - usedwidth)
 				// otherwise 0 is the starting point
-				int lUsedWidth = getAlignment() == Alignment.LEADING ? container.getWidth() - container.getInsets().left : lMaxWidth * lVisibleCount + gap * (lVisibleCount - 1);
+				Insets insets = container.getInsets();
+				int usedWidth = getAlignment() == Alignment.LEADING
+							  ? container.getWidth() - insets.left
+							  : (buttons.maxPreferredWidth * buttons.numberVisible) + (gap * (buttons.numberVisible - 1));
 				// vertical buttonbars are top aligned, so we can just step down
 				//int lUsedHeight = maxHeight * visibleCount + iGap * (visibleCount - 1);
 
 				// set all childeren's location and size
-				for (int i = 0, c = lChildren.length; i < c; i++) {
+				Component[] children = container.getComponents();
+				for (int i = 0, c = children.length; i < c; i++) {
 					// only visible
-					if (lChildren[i].isVisible()) {
+					if (children[i].isVisible()) {
 						// horizontal means: distance from right side, so totalwidth - usedWidth - right margin = left boundary, from there step to the left
-						if (getOrientation() == Orientation.HORIZONTAL) lChildren[i].setBounds( (container.getWidth() - lUsedWidth - lInsets.right) + ( i * (lMaxWidth + gap) ), lInsets.top, lMaxWidth, lMaxHeight);
+						if (getOrientation() == Orientation.HORIZONTAL) {
+							children[i].setBounds( (container.getWidth() - usedWidth - insets.right) + ( i * (buttons.maxPreferredWidth + gap) ), insets.top, buttons.maxPreferredWidth, buttons.maxPreferredHeight);
+						}
 						// vertical means: distance from top side, so top margin and then step down
-						else lChildren[i].setBounds(lInsets.left, (lInsets.top) + (i * (lMaxHeight + gap) ), lMaxWidth, lMaxHeight);
+						else {
+							children[i].setBounds(insets.left, (insets.top) + (i * (buttons.maxPreferredHeight + gap) ), buttons.maxPreferredWidth, buttons.maxPreferredHeight);
+						}
 					}
 				}
 			}
@@ -104,37 +94,40 @@ public class SButtonPanel extends SPanelExtendable<SButtonPanel> implements
 			 * Preferred size is sum of all buttons and gaps
 			 */
 			public Dimension preferredLayoutSize(Container container) {
-				// get insets and childeren
-				Insets lInsets = container.getInsets();
-				Component[] lChildren = container.getComponents();
+				ButtonsInfo buttons = buttonsInfo(container);
 
-				// calculate some aggrigations
-				int lMaxWidth = 0;
-				int lMaxHeight = 0;
-				int lVisibleCount = 0;
-				for (int i = 0, c = lChildren.length; i < c; i++) {
-					// only for visible components
-					if (lChildren[i].isVisible()) {
-						lVisibleCount++;
-
-						// we want to know the maximum preferred width and height
-						Dimension componentPreferredSize = lChildren[i].getPreferredSize();
-						lMaxWidth = Math.max(lMaxWidth, componentPreferredSize.width);
-						lMaxHeight = Math.max(lMaxHeight, componentPreferredSize.height);
-					}
-				}
-
-				// total max width or height is number of button and the intermitting gaps (being number of buttons - 1)
-				int lUsedWidth = (lMaxWidth * lVisibleCount) + (gap * (lVisibleCount - 1));
-				int lUsedHeight = (lMaxHeight * lVisibleCount) + (gap * (lVisibleCount - 1));
+				// total max width or height is number of buttons and the gaps (being number of buttons - 1)
+				int ourPreferredWidth = (buttons.maxPreferredWidth * buttons.numberVisible) + (gap * (buttons.numberVisible - 1));
+				int ourPreferredHeight = (buttons.maxPreferredHeight * buttons.numberVisible) + (gap * (buttons.numberVisible - 1));
 
 				// determine the size
-				Dimension lDimension = getOrientation() == Orientation.HORIZONTAL
-				                     ? new Dimension(lInsets.left + lUsedWidth + lInsets.right, lInsets.top + lMaxHeight + lInsets.bottom)
-				                     : new Dimension(lInsets.left + lMaxWidth + lInsets.right, lInsets.top + lUsedHeight + lInsets.bottom);
-				                     ;
-				return lDimension;
+				Insets insets = container.getInsets();
+				return getOrientation() == Orientation.HORIZONTAL
+				     ? new Dimension(insets.left + ourPreferredWidth + insets.right, insets.top + buttons.maxPreferredHeight + insets.bottom)
+				     : new Dimension(insets.left + buttons.maxPreferredWidth + insets.right, insets.top + ourPreferredHeight + insets.bottom);
 			}
+
+			private ButtonsInfo buttonsInfo(Container container) {
+				Component[] children = container.getComponents();
+
+				// calculate some aggregations
+				int maxButtonPreferredWidth = 0;
+				int maxButtonPreferredHeight = 0;
+				int numberOfVisibleButtons = 0;
+				for (int i = 0, c = children.length; i < c; i++) {
+					// only for visible components
+					if (children[i].isVisible()) {
+						numberOfVisibleButtons++;
+
+						// we want to know the maximum preferred width and height
+						Dimension componentPreferredSize = children[i].getPreferredSize();
+						maxButtonPreferredWidth = Math.max(maxButtonPreferredWidth, componentPreferredSize.width);
+						maxButtonPreferredHeight = Math.max(maxButtonPreferredHeight, componentPreferredSize.height);
+					}
+				}
+				return new ButtonsInfo(maxButtonPreferredWidth, maxButtonPreferredHeight, numberOfVisibleButtons);
+			}
+			record ButtonsInfo(int maxPreferredWidth, int maxPreferredHeight, int numberVisible) {}
 
 			/**
 			 *

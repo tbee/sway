@@ -64,29 +64,47 @@ public class SMigPanel extends SPanelExtendable<SMigPanel> implements
 
     /**
      * Add both a label and field side by side
+     * The additional fields will be placed into the same cell as the field, by using split on the CC of the field.
+     * Additional fields can for example be a qualifier SLabel, e.g. "length: [field] meter"
      * @param labelComponent
      * @param fieldComponent
+     * @param additionalFieldComponents
      * @return CC of field component
      */
-    public CC addLabelAndField(JComponent labelComponent, JComponent fieldComponent) {
+    public CC addLabelAndField(JComponent labelComponent, JComponent fieldComponent, JComponent... additionalFieldComponents) {
     	CC labelCC = addLabel(labelComponent);
         // Automatically switch label to alignY top if the field is larger than roughly 1 line
-        if (fieldComponent.getPreferredSize().height > (1.1 * STextField.ofString().value("X").getPreferredSize().height)) { // if (fieldComponent instanceof STextArea)        
+        if (fieldComponent.getPreferredSize().height > (1.1 * STextField.ofString().value("X").getPreferredSize().height)) { // if (fieldComponent instanceof STextArea)
         	labelCC.alignY(AlignY.TOP);
         }
-        return addField(fieldComponent);
+        CC fieldCC = addField(fieldComponent);
+        if (additionalFieldComponents.length > 0) {
+            fieldCC.split(additionalFieldComponents.length + 1);
+            for (int i = 0; i < additionalFieldComponents.length; i++) {
+                addField(additionalFieldComponents[i]);
+            }
+        }
+        return fieldCC;
     }
 
     /**
      * Add both a label and field side by side
+     * The additional fields will be placed into the same cell as the field, by using split on the CC of the field.
+     * Additional fields can for example be a qualifier SLabel, e.g. "length: [field] meter"
      * @param label
      * @param fieldComponent
+     * @param additionalFieldComponents
      * @return CC of field component
      */
-    public CC addLabelAndField(String label, JComponent fieldComponent) {
-    	return addLabelAndField(new SLabel(label), fieldComponent);
+    public CC addLabelAndField(String label, JComponent fieldComponent, JComponent... additionalFieldComponents) {
+    	return addLabelAndField(new SLabel(label), fieldComponent, additionalFieldComponents);
     }
 
+    /**
+     * Just changing the CC values does not effectuate them, setCCFor needs to be called.
+     * @param component
+     * @return
+     */
     public CC getCCFor(Component component) {
         CC cc = (CC)migLayout.getComponentConstraints(component);
         if (cc == null) {
