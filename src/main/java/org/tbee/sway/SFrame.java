@@ -49,7 +49,7 @@ public class SFrame extends JFrame implements
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         return this;
     }
-    public SFrame doNothinhOnClose() {
+    public SFrame doNothingOnClose() {
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         return this;
     }
