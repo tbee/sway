@@ -10,6 +10,7 @@ import net.miginfocom.swing.MigLayout;
 import org.tbee.sway.mixin.JComponentMixin;
 
 import javax.swing.JComponent;
+import javax.swing.JScrollPane;
 import java.awt.Component;
 import java.util.Collection;
 
@@ -46,6 +47,23 @@ public class SMigPanel extends SPanelExtendable<SMigPanel> implements
         return this;
     }
 
+    /**
+     * Add a component using the default label layout (align baseline right).
+     * If you do not like it, just add a SLabel normally, with your own CC.
+     *
+     * @param text
+     * @return
+     */
+    public CC addLabel(String text) {
+        return addLabel(SLabel.of(text));
+    }
+
+    /**
+     * Add a component using the default label layout (align baseline right).
+     * If you do not like it, just add the component normally, with your own CC.
+     * @param component
+     * @return
+     */
     public CC addLabel(JComponent component) {
         CC cc = new CC() //
                 .alignX(AlignX.TRAILING) //
@@ -54,6 +72,12 @@ public class SMigPanel extends SPanelExtendable<SMigPanel> implements
         return cc;
     }
 
+    /**
+     * Add a component using the default field layout (align top left).
+     * If you do not like it, just add the component normally, with your own CC.
+     * @param component
+     * @return
+     */
     public CC addField(JComponent component) {
         CC cc = new CC() //
                 .alignX(AlignX.LEADING) //
@@ -63,7 +87,7 @@ public class SMigPanel extends SPanelExtendable<SMigPanel> implements
     }
 
     /**
-     * Add both a label and field side by side
+     * Add both a label and field side by side, using the default layouts.
      * The additional fields will be placed into the same cell as the field, by using split on the CC of the field.
      * Additional fields can for example be a qualifier SLabel, e.g. "length: [field] meter"
      * @param labelComponent
@@ -74,7 +98,7 @@ public class SMigPanel extends SPanelExtendable<SMigPanel> implements
     public CC addLabelAndField(JComponent labelComponent, JComponent fieldComponent, JComponent... additionalFieldComponents) {
     	CC labelCC = addLabel(labelComponent);
         // Automatically switch label to alignY top if the field is larger than roughly 1 line
-        if (fieldComponent.getPreferredSize().height > (1.1 * STextField.ofString().value("X").getPreferredSize().height)) { // if (fieldComponent instanceof STextArea)
+        if (fieldComponent instanceof JScrollPane || fieldComponent.getPreferredSize().height > (1.1 * STextField.ofString().value("X").getPreferredSize().height)) { // if (fieldComponent instanceof STextArea)
         	labelCC.alignY(AlignY.TOP);
         }
         CC fieldCC = addField(fieldComponent);
@@ -88,7 +112,7 @@ public class SMigPanel extends SPanelExtendable<SMigPanel> implements
     }
 
     /**
-     * Add both a label and field side by side
+     * Add both a label and field side by side, using the default layouts.
      * The additional fields will be placed into the same cell as the field, by using split on the CC of the field.
      * Additional fields can for example be a qualifier SLabel, e.g. "length: [field] meter"
      * @param label
