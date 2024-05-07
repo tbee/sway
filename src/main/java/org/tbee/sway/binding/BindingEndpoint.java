@@ -1,7 +1,10 @@
 package org.tbee.sway.binding;
 
+import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 public class BindingEndpoint<PropertyClass> {
     private final Object bean;
@@ -61,6 +64,32 @@ public class BindingEndpoint<PropertyClass> {
     public Binding bindTo(BeanBinder<?> beanBinder, String propertyName) {
         return bindTo(BindingEndpoint.of(beanBinder, propertyName));
     }
+
+    // ==================================================
+    // change
+
+    /**
+     * Listen for changes and get informed with the old and new value
+     * @param biconsumer
+     * @return
+     * @param <T>
+     */
+    public <T> BindingEndpoint<PropertyClass> onChange(BiConsumer<T, T> biconsumer) {
+        BindUtil.onChange(this.bean, this.propertyName, biconsumer);
+        return this;
+    }
+
+    /**
+     * Listen for changes and get informed with the new value
+     * @param consumer
+     * @return
+     * @param <T>
+     */
+    public <T> BindingEndpoint<PropertyClass> onChange(Consumer<T> consumer) {
+        BindUtil.onChange(this.bean, this.propertyName, consumer);
+        return this;
+    }
+
 
     // ==================================================
     // CHAIN

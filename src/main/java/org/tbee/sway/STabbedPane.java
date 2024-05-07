@@ -1,5 +1,6 @@
 package org.tbee.sway;
 
+import org.checkerframework.checker.units.qual.K;
 import org.tbee.sway.binding.BindingEndpoint;
 import org.tbee.sway.binding.ExceptionHandler;
 import org.tbee.sway.mixin.BindToMixin;
@@ -18,6 +19,7 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ForkJoinPool;
 import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 /**
@@ -37,9 +39,9 @@ import java.util.function.Function;
  * // The tabbed pane reacts to changes in the value by binding
  * STabbedPane<City> sTabbedPane = STabbedPane.of()
  *     .bindTo(data.city$())
- *     .addTab("details", STextField.ofString()  // synchronous: only value-to-component function provided
+ *     .tab("details", STextField.ofString()  // synchronous: only value-to-component function provided
  *         , (city, sTextField) -> sTextField.setValue(city.name()))
- *     .addTab("crime", new CrimeNumbersPanel() // asynchronous: value-to-value2 function, on-success value2-to-component function, and on-failure provided
+ *     .tab("crime", new CrimeNumbersPanel() // asynchronous: value-to-value2 function, on-success value2-to-component function, and on-failure provided
  *         , city -> crimeApi.fetchNumbersFor(city.code()) // In a worker thread derived data is fetched
  *         , (crimeNumbers, crimeNumbersPanel) -> crimeNumbersPanel.setNumbers(crimeNumbers) // The derrived data is displayed
  *         , (throwable, crimeNumbersPanel) -> ... // Or something went wrong
@@ -69,12 +71,6 @@ public class STabbedPane<T> extends JTabbedPane implements
 
     private ExecutorService executorService = ForkJoinPool.commonPool();
 
-    public STabbedPane() {
-        addPropertyChangeListener(VALUE, evt -> {
-            reload();
-        });
-    }
-
     // ===========================================================================================================================
     // For Mixins
 
@@ -89,6 +85,7 @@ public class STabbedPane<T> extends JTabbedPane implements
     /** Value */
     public void setValue(T v) {
         firePropertyChange(VALUE, this.value, this.value = v);
+        reload();
     }
     public T getValue() {
         return this.value;
@@ -173,6 +170,17 @@ public class STabbedPane<T> extends JTabbedPane implements
         return this;
     }
 
+    /**
+     * Add async-updated tab
+     */
+    public <R, C extends Component> STabbedPane<T> tab(String title, Icon icon, Component component, String tip, Function<T, R> onLoadCallback, BiConsumer<R, C> onSuccessCallback) {
+        onLoadCallbacks.put(component, (Function<T, Object>) onLoadCallback);
+        onSuccessCallbacks.put(component, (BiConsumer<Object, Component>)onSuccessCallback);
+        onFailureCallbacks.put(component, (t, c) -> handleException(t));
+        super.addTab(title, icon, component, tip);
+        return this;
+    }
+
     public <C extends Component> STabbedPane<T> tab(String title, Icon icon, Component component, BiConsumer<T, C> onActiveCallback) {
         return tab(title, icon, component, null, onActiveCallback);
     }
@@ -251,11 +259,16 @@ public class STabbedPane<T> extends JTabbedPane implements
         BiConsumer<Object, Component> onSuccessCallback = onSuccessCallbacks.get(component);
         BiConsumer<Throwable, Component> onFailureCallback = onFailureCallbacks.get(component);
         if (onLoadCallback != null) {
-            showOverlay(component);
+            boolean isBeingShownOnTheScreen = isShowing();
+            if (isBeingShownOnTheScreen) {
+                showOverlay(component);
+            }
             executorService.submit(() -> {
                 try {
                     final Object result = onLoadCallback.apply(value);
-                    hideOverlay(component);
+                    if (isBeingShownOnTheScreen) {
+                        hideOverlay(component);
+                    }
                     invokeLater(onSuccessCallback, result, component);
                 } catch (Throwable e) {
                     if (!invokeLater(onFailureCallback, e, component)) {
