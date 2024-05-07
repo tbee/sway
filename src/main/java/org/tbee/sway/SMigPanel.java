@@ -165,42 +165,41 @@ public class SMigPanel extends SPanelExtendable<SMigPanel> implements
     }
 
     public SMigPanel fill() {
-        lc.fill();
-        migLayout.setLayoutConstraints(lc); // reapply
-        return this;
+        return reapply(lc.fill());
+    }
+
+    public SMigPanel fillX() {
+        return reapply(lc.fillX());
+    }
+
+    public SMigPanel fillY() {
+        return reapply(lc.fillY());
     }
 
     public SMigPanel noMargins() {
-        lc.insets("0", "0", "0", "0");
-        migLayout.setLayoutConstraints(lc); // reapply
-        return this;
+        return reapply(lc.insets("0", "0", "0", "0"));
     }
 
     public SMigPanel noGaps() {
-        lc.gridGap("0", "0");
-        migLayout.setLayoutConstraints(lc); // reapply
-        return this;
+        return reapply(lc.gridGap("0", "0"));
     }
     
     public SMigPanel alignX(String v) {
-        lc.alignX(v);
-        migLayout.setLayoutConstraints(lc); // reapply
-        return this;
+        return reapply(lc.alignX(v));
     }
 
     public SMigPanel alignX(AlignX v) {
-        lc.alignX(v);
-        migLayout.setLayoutConstraints(lc); // reapply
-        return this;
+        return reapply(lc.alignX(v));
     }
 
     public SMigPanel alignY(String v) {
-        lc.alignY(v);
-        migLayout.setLayoutConstraints(lc); // reapply
-        return this;
+        return reapply(lc.alignY(v));
     }
     public SMigPanel alignY(AlignY v) {
-        lc.alignY(v);
+        return reapply(lc.alignY(v));
+    }
+
+    private SMigPanel reapply(LC lc) {
         migLayout.setLayoutConstraints(lc); // reapply
         return this;
     }
