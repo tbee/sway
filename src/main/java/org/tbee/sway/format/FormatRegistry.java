@@ -1,11 +1,15 @@
 package org.tbee.sway.format;
 
+import org.checkerframework.checker.units.qual.C;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZonedDateTime;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -47,6 +51,8 @@ public class FormatRegistry {
         if (clazz.equals(LocalDateTime.class)) return new LocalDateTimeFormat();
         if (clazz.equals(OffsetDateTime.class)) return new OffsetDateTimeFormat();
         if (clazz.equals(ZonedDateTime.class)) return new ZonedDateTimeFormat();
+        if (clazz.equals(Calendar.class)) return new CalendarFormat();
+        if (clazz.equals(Date.class)) return new DateFormat();
 //        if (clazz.equals(Integer.class)) return new JavaFormat<Integer>(NumberFormat.getIntegerInstance(), ("" + Integer.MIN_VALUE).length(), SwingConstants.TRAILING);
         return null;
     }
