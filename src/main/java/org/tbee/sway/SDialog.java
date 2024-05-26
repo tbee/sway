@@ -13,12 +13,16 @@ import java.awt.Dialog;
 import java.awt.Window;
 import java.util.ArrayList;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 public class SDialog extends JDialog implements
 		SOverlayPane.OverlayProvider,
 		WindowMixin<SDialog>,
 		ComponentMixin<SDialog> {
-	
+
+	private Supplier<Boolean> onCancelCallback = () -> true;
+	private Supplier<Boolean> onOkCallback = () -> true;
+
 	/**
 	 * @param owner
 	 * @param title
@@ -39,9 +43,17 @@ public class SDialog extends JDialog implements
 	 */
 	private enum CloseReason {CANCEL, OK}
 	private CloseReason closeReason;
-	private SDialog closeReason(CloseReason v) {
+	private Boolean closeReason(CloseReason v) {
+		var closeOk = switch (v) {
+			case OK -> onOkCallback.get();
+			case CANCEL -> onCancelCallback.get();
+		};
+		if (!closeOk) {
+			return false;
+		}
+
 		this.closeReason = v;
-		return this;
+		return true;
 	}
 	public boolean closeReasonIsUnknown() {
 		return closeReason == null;
@@ -53,9 +65,47 @@ public class SDialog extends JDialog implements
 		return closeReason != null && closeReason == CloseReason.OK;
 	}
 
+	public SDialog onCancel(Supplier<Boolean> callback) {
+		if (callback == null) {
+			throw new IllegalArgumentException("Callback cannot be null");
+		}
+		onCancelCallback = callback;
+		return this;
+	}
+	public SDialog onCancel(Runnable callback) {
+		if (callback == null) {
+			throw new IllegalArgumentException("Callback cannot be null");
+		}
+		return onCancel(() -> {
+			callback.run();
+			return true;
+		});
+	}
+
+	public SDialog onOk(Supplier<Boolean> callback) {
+		if (callback == null) {
+			throw new IllegalArgumentException("Callback cannot be null");
+		}
+		onOkCallback = callback;
+		return this;
+	}
+	public SDialog onOk(Runnable callback) {
+		if (callback == null) {
+			throw new IllegalArgumentException("Callback cannot be null");
+		}
+		return onOk(() -> {
+			callback.run();
+			return true;
+		});
+	}
+
 	// =======================================================================================================
 	// CONVENIENCE
-	
+
+	static public SDialog of(Component parent, String title, JComponent content) {
+		return of(parent, title, content, new CloseReason[]{});
+	}
+
 	static public SDialog ofCancel(Component parent, String title, JComponent content) {
 		return of(parent, title, content, CloseReason.CANCEL);
 	}
@@ -71,7 +121,8 @@ public class SDialog extends JDialog implements
 	static private SDialog of(Component parent, String title, JComponent content, CloseReason... closeReasons) {
 		
 		// Create dialog
-		var dialog = new SDialog(parent == null ? null : SwingUtilities.windowForComponent(parent), title, Dialog.ModalityType.DOCUMENT_MODAL);
+		Window window = (parent instanceof Window parentWindow ? parentWindow : SwingUtilities.windowForComponent(parent));
+		var dialog = new SDialog(parent == null ? null : window, title, Dialog.ModalityType.DOCUMENT_MODAL);
 		
 		// Create buttons
 		var buttons = new ArrayList<SButton>();
@@ -80,7 +131,11 @@ public class SDialog extends JDialog implements
 				case OK -> SOptionPane.okButton();
 				case CANCEL -> SOptionPane.cancelButton();
 			};
-			button.onAction(e -> dialog.closeReason(closeReason).visible(false)) // hide dialog upon click
+			button.onAction(e -> {
+					if (dialog.closeReason(closeReason)) {
+						dialog.visible(false);
+					}
+				}) // hide dialog upon click
 				.registerKeyboardAction(e -> button.doClick() //
 					, KeyStroke.getKeyStroke(button.getText().toUpperCase().charAt(0), 0) //
 					, JButton.WHEN_IN_FOCUSED_WINDOW //
