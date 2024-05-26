@@ -17,7 +17,7 @@ public interface ExceptionHandlerDefaultMixin<T extends JComponent> extends Exce
         // Display the error
         Logger logger = LoggerFactory.getLogger(this.getClass());
         if (logger.isDebugEnabled()) logger.debug(e.getMessage(), e);
-        JOptionPane.showMessageDialog(((T)this), e.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(((T)this), e.getMessage() != null ? e.getMessage() : e.getClass().getSimpleName(), "ERROR", JOptionPane.ERROR_MESSAGE);
 
         // Mark exception as handled
         return true;
