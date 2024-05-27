@@ -13,6 +13,7 @@ import org.tbee.sway.mixin.ExceptionHandlerDefaultMixin;
 import org.tbee.sway.mixin.HAlignMixin;
 import org.tbee.sway.mixin.JComponentMixin;
 import org.tbee.sway.mixin.OverlayMixin;
+import org.tbee.sway.mixin.TextIconMixin;
 import org.tbee.sway.mixin.ToolTipMixin;
 import org.tbee.sway.support.FocusInterpreter;
 import org.tbee.sway.support.HAlign;
@@ -20,10 +21,18 @@ import org.tbee.sway.text.DocumentFilterSize;
 import org.tbee.util.ClassUtil;
 import org.tbee.util.ExceptionUtil;
 
+import javax.swing.BorderFactory;
+import javax.swing.Icon;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
+import javax.swing.border.Border;
 import javax.swing.text.AbstractDocument;
+import java.awt.Color;
+import java.awt.Cursor;
+import java.awt.Graphics;
+import java.awt.Insets;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
@@ -38,6 +47,7 @@ import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.Currency;
 import java.util.Locale;
+import java.util.function.Consumer;
 
 // TODO
 // - popup
@@ -117,11 +127,21 @@ public class STextField<T> extends javax.swing.JTextField implements
         BindToMixin<STextField<T>, T>,
         EditableMixin<STextField<T>>,
         ExceptionHandlerDefaultMixin<STextField<T>>,
+        TextIconMixin<STextField<T>>,
         JComponentMixin<STextField<T>> {
 
     final static private org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(STextField.class);
+    final static private int ICON_SPACING = 0;
+    public static final Insets ZERO_INSETS = new Insets(0, 0, 0, 0);
+    public static final Color TRANSPARENT_COLOR = new Color(1.0f, 0.0f, 0.0f, 0.0f);
+    public static final Cursor TEXT_CURSOR = new Cursor(Cursor.TEXT_CURSOR);
+    public static final Cursor ICON_CURSOR = new Cursor(Cursor.HAND_CURSOR);
 
     final private Format<T> format;
+
+    private Border border;
+    private Icon icon;
+    private Consumer<MouseEvent> onIconClick = (evt) -> {};
 
     /**
      *
@@ -134,6 +154,7 @@ public class STextField<T> extends javax.swing.JTextField implements
         this.format = format;
         setColumns(format.columns());
         setHAlign(format.horizontalAlignment());
+        setIcon(null);
 
         // the FocusInterpreterListener must be kept in an instance variable, otherwise it will be cleared by the WeakArrayList used in the FocusInterpreter
         focusInterpreterListener = evt -> {
@@ -157,6 +178,69 @@ public class STextField<T> extends javax.swing.JTextField implements
     @Override
     public BindingEndpoint<T> defaultBindingEndpoint() {
         return value$();
+    }
+
+
+    // ========================================================
+    // Icon
+    // https://stackoverflow.com/questions/6089410/decorating-a-jtextfield-with-an-image-and-hint
+
+    @Override
+    public void setBorder(Border border) {
+        this.border = border;
+        Border borderForIcon = BorderFactory.createMatteBorder(0, 0, 0, (icon == null ? 0 : icon.getIconWidth() + ICON_SPACING), TRANSPARENT_COLOR);
+        super.setBorder(BorderFactory.createCompoundBorder(border, borderForIcon));
+    }
+
+    @Override
+    protected void paintComponent(Graphics graphics) {
+        super.paintComponent(graphics);
+
+        if (icon != null) {
+            Insets iconInsets = border == null ? ZERO_INSETS : border.getBorderInsets(this);
+            icon.paintIcon(this, graphics, this.getWidth() - icon.getIconWidth() - iconInsets.right, iconInsets.top);
+        }
+    }
+
+    public void setIcon(Icon icon) {
+        this.icon = icon;
+        setBorder(border);
+    }
+    public STextField<T> onIconClick(Consumer<MouseEvent> onIconClick) {
+        this.onIconClick = onIconClick;
+        return this;
+    }
+
+    @Override
+    protected void processMouseEvent(MouseEvent e) {
+        switch(e.getID()) {
+            case MouseEvent.MOUSE_CLICKED:
+                if (getCursor() == ICON_CURSOR) { // this means the mouse is over the icon
+                    onIconClick.accept(e);
+                }
+                break;
+        }
+        super.processMouseEvent(e);
+    }
+
+    private boolean mouseIsOverIcon(int x) {
+        if (icon == null) {
+            return false;
+        }
+        Insets iconInsets = border == null ? ZERO_INSETS : border.getBorderInsets(this);
+        return x >= this.getWidth() - icon.getIconWidth() - iconInsets.right;
+    }
+
+    @Override
+    protected void processMouseMotionEvent(MouseEvent e) {
+        switch(e.getID()) {
+            case MouseEvent.MOUSE_MOVED:
+                if (icon != null) {
+                    this.setCursor(mouseIsOverIcon(e.getX()) ? ICON_CURSOR : TEXT_CURSOR);
+                }
+                break;
+        }
+        super.processMouseMotionEvent(e);
     }
 
     // ========================================================

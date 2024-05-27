@@ -16,15 +16,16 @@ public class IconRegistry {
     	BUTTON_CANCEL("cancel@button", 16), //
     	BUTTON_YES("yes@button", 16), //
     	BUTTON_NO("no@button", 16), //
-    	MENU_COPY("copy@menu", 16), //
-    	MENU_CUT("cut@menu", 16), //
-    	MENU_PASTE("paste@menu", 16), //
-    	MENU_FILTER("filter@menu", 16), //
-    	MENU_SELECTION("selection@menu", 16), //
     	CHECKBOX_SELECTED("selected@checkbox", 24), //
     	CHECKBOX_UNSELECTED("unselected@checkbox", 24), //
     	CHECKBOX_UNDETERMINED("undetermined@checkbox", 24),
+        MENU_COPY("copy@menu", 16), //
+        MENU_CUT("cut@menu", 16), //
+        MENU_PASTE("paste@menu", 16), //
+        MENU_FILTER("filter@menu", 16), //
+        MENU_SELECTION("selection@menu", 16), //
         OVERLAY_LOADING("loading@overlay", 48),
+        TEXTFIELD_POPUP("popup@textfield", 14),
         ; //
 
         final String id;

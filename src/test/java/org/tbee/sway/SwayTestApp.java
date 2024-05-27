@@ -3,6 +3,7 @@ package org.tbee.sway;
 import org.kordamp.ikonli.Ikon;
 import org.kordamp.ikonli.materialdesign2.MaterialDesignC;
 import org.kordamp.ikonli.materialdesign2.MaterialDesignF;
+import org.kordamp.ikonli.materialdesign2.MaterialDesignM;
 import org.kordamp.ikonli.materialdesign2.MaterialDesignR;
 import org.kordamp.ikonli.materialdesign2.MaterialDesignS;
 import org.kordamp.ikonli.swing.FontIcon;
@@ -90,6 +91,7 @@ public class SwayTestApp {
         IconRegistry.register(IconRegistry.SwayInternallyUsedIcon.MENU_FILTER, createIcon(MaterialDesignF.FILTER, IconRegistry.SwayInternallyUsedIcon.MENU_FILTER.typicalSize()));
         IconRegistry.register(IconRegistry.SwayInternallyUsedIcon.MENU_SELECTION, createIcon(MaterialDesignS.SELECTION, IconRegistry.SwayInternallyUsedIcon.MENU_SELECTION.typicalSize()));
         IconRegistry.register(IconRegistry.SwayInternallyUsedIcon.OVERLAY_LOADING, createIcon(MaterialDesignR.REFRESH, IconRegistry.SwayInternallyUsedIcon.OVERLAY_LOADING.typicalSize()));
+        IconRegistry.register(IconRegistry.SwayInternallyUsedIcon.TEXTFIELD_POPUP, createIcon(MaterialDesignM.MENU, IconRegistry.SwayInternallyUsedIcon.TEXTFIELD_POPUP.typicalSize()));
 
 //        IconRegistry.register(IconRegistry.SwayInternallyUsedIcon.CHECKBOX_SELECTED, createIcon(MaterialDesignS.SELECT, IconRegistry.SwayInternallyUsedIcon.CHECKBOX_SELECTED.typicalSize()));
 //        IconRegistry.register(IconRegistry.SwayInternallyUsedIcon.CHECKBOX_UNSELECTED, createIcon(MaterialDesignS.SELECT_INVERSE, IconRegistry.SwayInternallyUsedIcon.CHECKBOX_UNSELECTED.typicalSize()));
@@ -175,6 +177,13 @@ public class SwayTestApp {
 
         JButton jButton = SButton.of("set name", e -> bean.setName("name" + System.currentTimeMillis()));
         migPanel.addField(jButton).skip(1);
+
+        migPanel.addLabelAndField("Icon", STextField.ofLong().value(123l)
+                .icon(IconRegistry.find(IconRegistry.SwayInternallyUsedIcon.TEXTFIELD_POPUP))
+                .onIconClick(evt -> SOptionPane.ofInfo(migPanel, "Icon clicked", "Icon clicked"))
+        );
+        migPanel.wrap();
+
 
         return SVPanel.of(SLabel.of("STextField"), migPanel).margin(0);
     }
