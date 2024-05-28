@@ -25,7 +25,7 @@ public class IconRegistry {
         MENU_FILTER("filter@menu", 16), //
         MENU_SELECTION("selection@menu", 16), //
         OVERLAY_LOADING("loading@overlay", 48),
-        TEXTFIELD_POPUP("popup@textfield", 14),
+        TEXTFIELD_POPUP("popup@textfield", 16),
         ; //
 
         final String id;

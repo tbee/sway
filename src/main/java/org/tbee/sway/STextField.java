@@ -50,6 +50,8 @@ import java.util.Locale;
 import java.util.function.Consumer;
 
 // TODO
+// - iconClicked on F2
+// - iconCLick via listeners instead of override?
 // - popup
 // - enforce maximum length
 // - color the contents based on the content, e.g. < 0 is red > 0 is black for a IntegerFormat
@@ -202,10 +204,15 @@ public class STextField<T> extends javax.swing.JTextField implements
         }
     }
 
+    public Icon getIcon() {
+        return this.icon;
+    }
     public void setIcon(Icon icon) {
-        this.icon = icon;
+        firePropertyChange(ICON, this.icon, this.icon = icon);
         setBorder(border);
     }
+    static public final String ICON = "icon";
+
     public STextField<T> onIconClick(Consumer<MouseEvent> onIconClick) {
         this.onIconClick = onIconClick;
         return this;
@@ -213,17 +220,17 @@ public class STextField<T> extends javax.swing.JTextField implements
 
     @Override
     protected void processMouseEvent(MouseEvent e) {
-        switch(e.getID()) {
-            case MouseEvent.MOUSE_CLICKED:
+        switch (e.getID()) {
+            case MouseEvent.MOUSE_CLICKED -> {
                 if (getCursor() == ICON_CURSOR) { // this means the mouse is over the icon
                     onIconClick.accept(e);
                 }
-                break;
+            }
         }
         super.processMouseEvent(e);
     }
 
-    private boolean mouseIsOverIcon(int x) {
+    protected boolean mouseIsOverIcon(int x) {
         if (icon == null) {
             return false;
         }
@@ -233,12 +240,12 @@ public class STextField<T> extends javax.swing.JTextField implements
 
     @Override
     protected void processMouseMotionEvent(MouseEvent e) {
-        switch(e.getID()) {
-            case MouseEvent.MOUSE_MOVED:
+        switch (e.getID()) {
+            case MouseEvent.MOUSE_MOVED -> {
                 if (icon != null) {
                     this.setCursor(mouseIsOverIcon(e.getX()) ? ICON_CURSOR : TEXT_CURSOR);
                 }
-                break;
+            }
         }
         super.processMouseMotionEvent(e);
     }

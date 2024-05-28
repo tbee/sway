@@ -177,11 +177,15 @@ public class SwayTestApp {
 
         JButton jButton = SButton.of("set name", e -> bean.setName("name" + System.currentTimeMillis()));
         migPanel.addField(jButton).skip(1);
+        migPanel.wrap();
 
         migPanel.addLabelAndField("Icon", STextField.ofLong().value(123l)
-                .icon(IconRegistry.find(IconRegistry.SwayInternallyUsedIcon.TEXTFIELD_POPUP))
+                .icon(IconRegistry.find(IconRegistry.SwayInternallyUsedIcon.MENU_COPY))
                 .onIconClick(evt -> SOptionPane.ofInfo(migPanel, "Icon clicked", "Icon clicked"))
         );
+        migPanel.wrap();
+
+        migPanel.addLabelAndField("File", SFileTextField.of());
         migPanel.wrap();
 
 
