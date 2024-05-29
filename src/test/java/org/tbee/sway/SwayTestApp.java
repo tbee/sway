@@ -280,7 +280,7 @@ public class SwayTestApp {
         return SVPanel.of(SLabel.of("SComboBox"), sComboBox, sTextFieldDisplay, sTextField).fillWidth(true).margin(0);
     }
 
-    static SVPanel sTable() {
+    static SSplitPanel sTable() {
 
         City amsterdam = City.of("Amsterdam", 150);
         City berlin = City.of("Berlin", 560);
@@ -347,7 +347,11 @@ public class SwayTestApp {
                 .selectionMode(STree.SelectionMode.MULTIPLE);
         sTree.selection$().bindTo(sTable.selection$());
 
-        return SVPanel.of(SLabel.of("STable"), sTable, SLabel.of("Bound selection"), sList, sTree).fillWidth(true).margin(0);
+        return SSplitPanel.of(SVPanel.of(SLabel.of("STable"), sTable).fillWidth(true).margin(0),
+                              SVPanel.of(SLabel.of("Bound selection"), sList, sTree).fillWidth(true).margin(0))
+                .nameForPreferences("mySplitpane");
+
+//        return SVPanel.of(SLabel.of("STable"), sTable, SLabel.of("Bound selection"), sList, sTree).fillWidth(true).margin(0);
     }
 
     static JPanel sCheckBox() {
