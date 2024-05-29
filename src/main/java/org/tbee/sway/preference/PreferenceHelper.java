@@ -29,7 +29,7 @@ public class PreferenceHelper {
         ignoreChangesToPreferences(() -> {
             Preferences preferences = Preferences.userNodeForPackage(object.getClass());
             String value = supplier.get();
-            System.out.println("!!! rememberPreference " + id + " = " + value);
+            //System.out.println("!!! rememberPreference " + id + " = " + value);
             preferences.put(key(id), value);
         });
     }
@@ -42,7 +42,7 @@ public class PreferenceHelper {
             Preferences preferences = Preferences.userNodeForPackage(object.getClass());
             String value = preferences.get(key(id), null);
             if (value != null) {
-                System.out.println("!!! restorePreference " + id + " = " + value);
+                //System.out.println("!!! restorePreference " + id + " = " + value);
                 consumer.accept(value);
             }
         });

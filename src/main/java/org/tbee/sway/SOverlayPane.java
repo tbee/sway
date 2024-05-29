@@ -61,12 +61,21 @@ public class SOverlayPane extends JPanel implements
     }
 
     /**
+     * Determines if a component is part of a hierarchy with a OverlayProvider (e.g. SFrame or SDialog) at the top.
+     * @param component
+     */
+    static public boolean isOverlayable(Component component) {
+        OverlayProvider overlayProvider = findOverlayProvider(component);
+        return (overlayProvider != null);
+    }
+
+    /**
      * Overlays that are added later (in call sequence) are drawn on top of earlier overlays.
      * @param component
      * @param overlayComponent
      */
     static public void overlayWith(Component component, Component overlayComponent) {
-        findOverlayProviderAndCall(component, overlayComponent, overlayProvider -> overlayWith(component, overlayComponent, overlayProvider));
+        findOverlayProviderAndCall(component, overlayProvider -> overlayWith(component, overlayComponent, overlayProvider));
     }
 
     static void overlayWith(Component component, Component overlayComponent, OverlayProvider overlayProvider) {
@@ -113,7 +122,7 @@ public class SOverlayPane extends JPanel implements
     }
 
     static public void removeOverlay(Component component, Component overlayComponent) {
-        findOverlayProviderAndCall(component, overlayComponent, overlayProvider -> removeOverlay(component, overlayComponent, overlayProvider));
+        findOverlayProviderAndCall(component, overlayProvider -> removeOverlay(component, overlayComponent, overlayProvider));
     }
 
     static void removeOverlay(Component component, Component overlayComponent, OverlayProvider overlayProvider) {
@@ -135,16 +144,23 @@ public class SOverlayPane extends JPanel implements
         }
     }
 
-    static void findOverlayProviderAndCall(Component component, Component overlayComponent, Consumer<OverlayProvider> call) {
+    static OverlayProvider findOverlayProvider(Component component) {
         Component overlayProviderCandidate = component;
         while (overlayProviderCandidate != null) {
             if (overlayProviderCandidate instanceof OverlayProvider overlayProvider) {
-                call.accept(overlayProvider);
-                return;
+                return overlayProvider;
             }
             overlayProviderCandidate = overlayProviderCandidate.getParent();
         }
-        throw new IllegalStateException("To-be-overlaid component is not part of a hierarchy with an overlay provider (e.g. SFrame or SDialog) at the top");
+        return null;
+    }
+
+    static void findOverlayProviderAndCall(Component component, Consumer<OverlayProvider> call) {
+        OverlayProvider overlayProvider = findOverlayProvider(component);
+        if (overlayProvider == null) {
+            throw new IllegalStateException("To-be-overlaid component is not part of a hierarchy with an overlay provider (e.g. SFrame or SDialog) at the top");
+        }
+        call.accept(overlayProvider);
     }
 
     static void overlay(final Component originalComponent, final Component overlayComponent, OverlayProvider overlayProvider) {

@@ -26,6 +26,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Currency;
 import java.util.List;
@@ -216,7 +217,21 @@ public class SwayTestApp {
                 .render(new CityFormat(cities))
                 .onSelectionChanged(cs -> System.out.println("List selection: " + cs));
 
-        return SVPanel.of(SLabel.of("SList"), sList).fillWidth(true).margin(0);
+        var sListDelayed = SList.<City>of() //
+                .render(new CityFormat(cities));
+
+        var cities2 = new ArrayList<City>();
+        var sListDelayed2 = SList.<City>of(cities2) //
+                .render(new CityFormat(cities));
+
+        SButton delayedPopulateButton = SButton.of("Populate").onAction(evt -> {
+            sListDelayed.data(cities);
+
+            cities2.addAll(cities);
+            sListDelayed2.refresh();
+        });
+
+        return SVPanel.of(SLabel.of("SList"), sList, sListDelayed, sListDelayed2, delayedPopulateButton).fillWidth(true).margin(0);
     }
 
     static SVPanel sTree() {

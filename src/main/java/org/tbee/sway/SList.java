@@ -83,9 +83,13 @@ public class SList<T> extends JPanel implements
     }
     public SList<T> data(List<T> v) {
         setData(v);
+        refresh();
         return this;
     }
 
+    public void refresh() {
+        sListCore.getListModel().contentsChanged();
+    }
 
     // ===========================================================================
     // RENDERING
@@ -278,6 +282,10 @@ public class SList<T> extends JPanel implements
     public void setName(String v) {
         super.setName(v);
         sListCore.setName(v + ".sListCore"); // For tests we need to address the actual list
+    }
+
+    static public <T> SList<T> of() {
+        return new SList<T>();
     }
 
     static public <T> SList<T> of(List<T> data) {

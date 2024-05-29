@@ -20,4 +20,7 @@ public class ListModel<T> extends javax.swing.AbstractListModel<T> {
         return sList.getData().get(index);
     }
 
+    public void contentsChanged() {
+        fireContentsChanged(this, 0, getSize());
+    }
 }
