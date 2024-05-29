@@ -169,6 +169,10 @@ public class STextField<T> extends javax.swing.JTextField implements
     private FocusInterpreter.FocusInterpreterListener focusInterpreterListener = null;
     final private FocusInterpreter focusInterpreter = new FocusInterpreter(this);
 
+    public Format<T> getFormat() {
+        return format;
+    }
+
     // ===========================================================================================================================
     // For Mixins
 
@@ -185,13 +189,33 @@ public class STextField<T> extends javax.swing.JTextField implements
 
     // ========================================================
     // Icon
-    // https://stackoverflow.com/questions/6089410/decorating-a-jtextfield-with-an-image-and-hint
+
+    public Icon getIcon() {
+        return this.icon;
+    }
+    public void setIcon(Icon icon) {
+        firePropertyChange(ICON, this.icon, this.icon = icon);
+        setBorder(border);
+    }
+    static public final String ICON = "icon";
+    public BindingEndpoint<Icon> ioon$() {
+        return BindingEndpoint.of(this, ICON);
+    }
+
+    public STextField<T> onIconClick(Consumer<MouseEvent> onIconClick) {
+        this.onIconClick = onIconClick;
+        return this;
+    }
 
     @Override
     public void setBorder(Border border) {
         this.border = border;
         Border borderForIcon = BorderFactory.createMatteBorder(0, 0, 0, (icon == null ? 0 : icon.getIconWidth() + ICON_SPACING), TRANSPARENT_COLOR);
         super.setBorder(BorderFactory.createCompoundBorder(border, borderForIcon));
+    }
+    @Override
+    public Border getBorder() {
+        return this.border;
     }
 
     @Override
@@ -202,20 +226,6 @@ public class STextField<T> extends javax.swing.JTextField implements
             Insets iconInsets = border == null ? ZERO_INSETS : border.getBorderInsets(this);
             icon.paintIcon(this, graphics, this.getWidth() - icon.getIconWidth() - iconInsets.right, iconInsets.top);
         }
-    }
-
-    public Icon getIcon() {
-        return this.icon;
-    }
-    public void setIcon(Icon icon) {
-        firePropertyChange(ICON, this.icon, this.icon = icon);
-        setBorder(border);
-    }
-    static public final String ICON = "icon";
-
-    public STextField<T> onIconClick(Consumer<MouseEvent> onIconClick) {
-        this.onIconClick = onIconClick;
-        return this;
     }
 
     @Override
@@ -230,14 +240,6 @@ public class STextField<T> extends javax.swing.JTextField implements
         super.processMouseEvent(e);
     }
 
-    protected boolean mouseIsOverIcon(int x) {
-        if (icon == null) {
-            return false;
-        }
-        Insets iconInsets = border == null ? ZERO_INSETS : border.getBorderInsets(this);
-        return x >= this.getWidth() - icon.getIconWidth() - iconInsets.right;
-    }
-
     @Override
     protected void processMouseMotionEvent(MouseEvent e) {
         switch (e.getID()) {
@@ -248,6 +250,14 @@ public class STextField<T> extends javax.swing.JTextField implements
             }
         }
         super.processMouseMotionEvent(e);
+    }
+
+    protected boolean mouseIsOverIcon(int x) {
+        if (icon == null) {
+            return false;
+        }
+        Insets iconInsets = border == null ? ZERO_INSETS : border.getBorderInsets(this);
+        return x >= this.getWidth() - icon.getIconWidth() - iconInsets.right;
     }
 
     // ========================================================
@@ -481,7 +491,7 @@ public class STextField<T> extends javax.swing.JTextField implements
         return this;
     }
     volatile private int maxLength = -1;
-    final static public String MAXLENGTH_PROPERTY_ID = "maxLength";
+    final static public String MAXLENGTH = "maxLength";
 
 
     // ==============================================

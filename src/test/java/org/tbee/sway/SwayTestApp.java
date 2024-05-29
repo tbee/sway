@@ -188,6 +188,8 @@ public class SwayTestApp {
         migPanel.addLabelAndField("File", SFileTextField.of());
         migPanel.wrap();
 
+        migPanel.addLabelAndField("File mustExist", SFileTextField.of().mustExist(true));
+        migPanel.wrap();
 
         return SVPanel.of(SLabel.of("STextField"), migPanel).margin(0);
     }
