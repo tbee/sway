@@ -6,6 +6,7 @@ import org.tbee.sway.mixin.BindToMixin;
 import org.tbee.sway.mixin.EditableMixin;
 import org.tbee.sway.mixin.ExceptionHandlerDefaultMixin;
 import org.tbee.sway.mixin.JComponentMixin;
+import org.tbee.sway.mixin.TextMixin;
 import org.tbee.sway.support.FocusInterpreter;
 import org.tbee.sway.text.DocumentFilterSize;
 
@@ -19,6 +20,7 @@ public class STextArea extends JPanel implements
         JComponentMixin<STextArea>,
         ExceptionHandlerDefaultMixin<STextArea>,
         EditableMixin<STextArea>,
+        TextMixin<STextArea>,
         BindToMixin<STextArea, String> {
 
     final static private org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(STextArea.class);
@@ -75,14 +77,6 @@ public class STextArea extends JPanel implements
     	return jTextArea.getText();
     }
 	private String text = "";
-    final static public String TEXT = "text";
-    public STextArea text(String v) {
-    	setText(v);
-    	return this;
-    }
-    public BindingEndpoint<String> text$() {
-        return BindingEndpoint.of(this, TEXT, exceptionHandler);
-    }
 
     /**
      * editable

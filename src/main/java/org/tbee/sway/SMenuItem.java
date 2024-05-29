@@ -2,6 +2,7 @@ package org.tbee.sway;
 
 import org.tbee.sway.binding.BindingEndpoint;
 import org.tbee.sway.mixin.JComponentMixin;
+import org.tbee.sway.mixin.TextIconMixin;
 
 import javax.swing.Icon;
 import java.awt.event.ActionListener;
@@ -10,6 +11,7 @@ import java.awt.event.ActionListener;
  * @see SMenuBar
  */
 public class SMenuItem extends javax.swing.JMenuItem implements
+		TextIconMixin<SMenuItem>,
         JComponentMixin<SMenuItem> {
 
     /**
@@ -52,10 +54,6 @@ public class SMenuItem extends javax.swing.JMenuItem implements
 		super.setVisible(v);
 		firePropertyChange(VISIBLE, old, v);
 	}
-	final static public String VISIBLE = "visible";
-	public BindingEndpoint<Boolean> visible$() {
-		return BindingEndpoint.of(this, VISIBLE);
-	}
 
 	/**
 	 * Add PCE event
@@ -64,10 +62,6 @@ public class SMenuItem extends javax.swing.JMenuItem implements
 		boolean old = super.isEnabled();
 		super.setEnabled(v);
 		firePropertyChange(ENABLED, old, v);
-	}
-	final static public String ENABLED = "enabled";
-	public BindingEndpoint<Boolean> enabled$() {
-		return BindingEndpoint.of(this, ENABLED);
 	}
 
 	/**
@@ -78,10 +72,6 @@ public class SMenuItem extends javax.swing.JMenuItem implements
 		super.setText(v);
 		firePropertyChange(TEXT, old, v);
 	}
-	final static public String TEXT = "text";
-	public BindingEndpoint<String> text$() {
-		return BindingEndpoint.of(this, TEXT);
-	}
 
 	/**
 	 * Add PCE event
@@ -89,11 +79,7 @@ public class SMenuItem extends javax.swing.JMenuItem implements
 	public void setIcon(Icon v) {
 		Icon old = super.getIcon();
 		super.setIcon(v);
-		firePropertyChange(TEXT, old, v);
-	}
-	final static public String ICON = "icon";
-	public BindingEndpoint<Icon> ioon$() {
-		return BindingEndpoint.of(this, ICON);
+		firePropertyChange(ICON, old, v);
 	}
 
 	// ===========================================================================================================================

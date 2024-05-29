@@ -7,7 +7,7 @@ import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
-public interface ExceptionHandlerDefaultMixin<T extends JComponent> extends ExceptionHandlerMixin {
+public interface ExceptionHandlerDefaultMixin<T extends JComponent> extends ExceptionHandlerMixin<T> {
 
     default boolean handleException(Throwable e) {
 

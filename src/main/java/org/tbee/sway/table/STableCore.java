@@ -24,6 +24,7 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableRowSorter;
 
 import org.tbee.sway.STable;
+import org.tbee.sway.preference.PreferenceHelper;
 import org.tbee.sway.support.FocusInterpreter;
 
 /**
@@ -278,6 +279,7 @@ public class STableCore<TableType> extends javax.swing.JTable {
 	// ===========================================================================
 	// Preferences
 
+	// TODO: use PreferenceHelper
     private String getNameForPreferences() {
     	return this.sTable.getPreferencesId();
     }

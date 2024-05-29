@@ -1,8 +1,7 @@
 package org.tbee.sway;
 
-import org.tbee.sway.binding.BindingEndpoint;
 import org.tbee.sway.mixin.JComponentMixin;
-import org.tbee.sway.mixin.PreferenceMixin;
+import org.tbee.sway.mixin.PreferencesMixin;
 import org.tbee.sway.preference.PreferenceHelper;
 
 import javax.swing.JSplitPane;
@@ -16,7 +15,7 @@ import java.awt.Graphics;
  * SSplitPane.of(components...).vertical()
  */
 public class SSplitPanel extends JSplitPane implements
-        PreferenceMixin<SSplitPanel>,
+        PreferencesMixin<SSplitPanel>,
         JComponentMixin<SSplitPanel> {
 
     private final PreferenceHelper preferenceHelper = new PreferenceHelper(this, () -> getNameForPreferences());
@@ -42,11 +41,11 @@ public class SSplitPanel extends JSplitPane implements
     // REMEMBER
 
     @Override
-    public void setNameForPreferences(String v) {
+    public void setPreferencesId(String v) {
         if (v == null) {
-            throw new NullPointerException(NAMEFORPREFERENCES + " cannot be null");
+            throw new NullPointerException(PREFERENCESID + " cannot be null");
         }
-        firePropertyChange(NAMEFORPREFERENCES, this.nameForPreferences, this.nameForPreferences = v);
+        firePropertyChange(PREFERENCESID, this.nameForPreferences, this.nameForPreferences = v);
     }
     public String getNameForPreferences() {
         return nameForPreferences;

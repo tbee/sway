@@ -7,6 +7,7 @@ import org.tbee.sway.mixin.BindToMixin;
 import org.tbee.sway.mixin.JComponentMixin;
 import org.tbee.sway.mixin.ExceptionHandlerDefaultMixin;
 import org.tbee.sway.mixin.ToolTipMixin;
+import org.tbee.sway.mixin.ValueMixin;
 
 import javax.swing.Icon;
 import javax.swing.JTabbedPane;
@@ -54,6 +55,7 @@ public class STabbedPane<T> extends JTabbedPane implements
         JComponentMixin<STabbedPane<T>>,
         BindToMixin<STabbedPane<T>, T>,
         ExceptionHandlerDefaultMixin<STabbedPane<T>>,
+        ValueMixin<STabbedPane<T>, T>,
         ToolTipMixin<STabbedPane<T>> {
 
     public static final org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(STabbedPane.class);
@@ -90,14 +92,6 @@ public class STabbedPane<T> extends JTabbedPane implements
     public T getValue() {
         return this.value;
     }
-    public STabbedPane<T> value(T value) {
-        setValue(value);
-        return this;
-    }
-    public BindingEndpoint<T> value$() {
-        return BindingEndpoint.of(this, VALUE, exceptionHandler);
-    }
-    final static public String VALUE = "value";
 
     /** ExecutorService: use to run async tasks */
     public void setExecutorService(ExecutorService v) {

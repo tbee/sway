@@ -349,7 +349,7 @@ public class SwayTestApp {
 
         return SSplitPanel.of(SVPanel.of(SLabel.of("STable"), sTable).fillWidth(true).margin(0),
                               SVPanel.of(SLabel.of("Bound selection"), sList, sTree).fillWidth(true).margin(0))
-                .nameForPreferences("mySplitpane");
+                .preferencesId("mySplitpane");
 
 //        return SVPanel.of(SLabel.of("STable"), sTable, SLabel.of("Bound selection"), sList, sTree).fillWidth(true).margin(0);
     }

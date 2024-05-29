@@ -197,10 +197,6 @@ public class STextField<T> extends javax.swing.JTextField implements
         firePropertyChange(ICON, this.icon, this.icon = icon);
         setBorder(border);
     }
-    static public final String ICON = "icon";
-    public BindingEndpoint<Icon> ioon$() {
-        return BindingEndpoint.of(this, ICON);
-    }
 
     public STextField<T> onIconClick(Consumer<MouseEvent> onIconClick) {
         this.onIconClick = onIconClick;

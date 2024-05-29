@@ -7,6 +7,7 @@ import org.tbee.sway.format.FormatRegistry;
 import org.tbee.sway.mixin.BindToMixin;
 import org.tbee.sway.mixin.JComponentMixin;
 import org.tbee.sway.mixin.ExceptionHandlerDefaultMixin;
+import org.tbee.sway.mixin.SelectionMixin;
 import org.tbee.sway.support.BeanMonitor;
 import org.tbee.sway.tree.Node;
 import org.tbee.sway.tree.STreeCore;
@@ -65,6 +66,7 @@ import java.util.function.Function;
 public class STree<T extends Object> extends JPanel implements
         JComponentMixin<STree<T>>,
         ExceptionHandlerDefaultMixin<STree<T>>,
+        SelectionMixin<STree<T>, T>,
         BindToMixin<STree<T>, List<T>> {
     static private org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(STree.class);
 
@@ -467,11 +469,6 @@ public class STree<T extends Object> extends JPanel implements
      */
     public void clearSelection() {
         sTreeCore.clearSelection();
-    }
-
-    final static public String SELECTION = "selection";
-    public BindingEndpoint<List<T>> selection$() {
-        return BindingEndpoint.of(this, SELECTION, exceptionHandler);
     }
 
     /**

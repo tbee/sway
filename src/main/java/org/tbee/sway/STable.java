@@ -12,7 +12,9 @@ import org.tbee.sway.mixin.BindToMixin;
 import org.tbee.sway.mixin.JComponentMixin;
 import org.tbee.sway.mixin.ExceptionHandlerDefaultMixin;
 import org.tbee.sway.mixin.OverlayMixin;
+import org.tbee.sway.mixin.PreferencesMixin;
 import org.tbee.sway.mixin.PropertyChangeListenerMixin;
+import org.tbee.sway.mixin.SelectionMixin;
 import org.tbee.sway.support.BeanUtil;
 import org.tbee.sway.support.SwayUtil;
 import org.tbee.sway.table.FormatCellRenderer;
@@ -199,6 +201,8 @@ public class STable<TableType> extends JPanel implements
         OverlayMixin<STable<TableType>>,
         JComponentMixin<STable<TableType>>,
         ExceptionHandlerDefaultMixin<STable<TableType>>,
+        SelectionMixin<STable<TableType>, TableType>,
+        PreferencesMixin<STable<TableType>>,
         BindToMixin<STable<TableType>, List<TableType>> {
     static private org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(STable.class);
 
@@ -512,10 +516,6 @@ public class STable<TableType> extends JPanel implements
      */
     public void clearSelection() {
          sTableCore.clearSelection();
-    }
-    final static public String SELECTION = "selection";
-    public BindingEndpoint<List<TableType>> selection$() {
-        return BindingEndpoint.of(this, SELECTION, exceptionHandler);
     }
 
     /**
@@ -1238,14 +1238,6 @@ public class STable<TableType> extends JPanel implements
 		return preferencesId; 
 	}
 	private String preferencesId = null;
-    final static public String PREFERENCESID = "preferencesId";
-	public STable<TableType> preferencesId(String value) { 
-		setPreferencesId(value); 
-		return this; 
-	}
-    public BindingEndpoint<String> preferencesId$() {
-        return BindingEndpoint.of(this, PREFERENCESID, exceptionHandler);
-    }
 
     /**
      * save all preferences

@@ -6,8 +6,10 @@ import org.tbee.sway.format.Format;
 import org.tbee.sway.format.FormatRegistry;
 import org.tbee.sway.list.DefaultListCellRenderer;
 import org.tbee.sway.mixin.BindToMixin;
+import org.tbee.sway.mixin.ExceptionHandlerMixin;
 import org.tbee.sway.mixin.JComponentMixin;
 import org.tbee.sway.mixin.ExceptionHandlerDefaultMixin;
+import org.tbee.sway.mixin.ValueMixin;
 import org.tbee.sway.support.SwayUtil;
 
 import javax.swing.DefaultComboBoxModel;
@@ -22,6 +24,7 @@ import java.util.function.Consumer;
 public class SComboBox<T> extends JComboBox<T> implements
         JComponentMixin<SComboBox<T>>,
         ExceptionHandlerDefaultMixin<SComboBox<T>>,
+        ValueMixin<SComboBox<T>, T>,
         BindToMixin<SComboBox<T>, T> {
 
     final static private org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(SComboBox.class);
@@ -167,15 +170,6 @@ public class SComboBox<T> extends JComboBox<T> implements
         Object oldValue = getSelectedItem();
         super.setSelectedItem(object);
         firePropertyChange(VALUE, oldValue, object);
-    }
-    static final public String VALUE = "value";
-
-    public SComboBox<T> value(T v) {
-        setValue(v);
-        return this;
-    }
-    public BindingEndpoint<T> value$() {
-        return BindingEndpoint.of(this, VALUE, exceptionHandler);
     }
 
     /**

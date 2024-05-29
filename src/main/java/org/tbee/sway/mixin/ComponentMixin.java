@@ -1,5 +1,7 @@
 package org.tbee.sway.mixin;
 
+import org.tbee.sway.binding.BindingEndpoint;
+
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -22,11 +24,19 @@ public interface ComponentMixin<T extends Component> extends
         ((T)this).setEnabled(v);
         return (T) this;
     }
+    String ENABLED = "enabled";
+    default BindingEndpoint<Boolean> enabled$() {
+        return BindingEndpoint.of(this, ENABLED);
+    }
 
 
     default T visible(boolean v) {
         ((T)this).setVisible(v);
         return (T) this;
+    }
+    String VISIBLE = "visible";
+    default BindingEndpoint<Boolean> visible$() {
+        return BindingEndpoint.of(this, VISIBLE);
     }
 
 

@@ -67,10 +67,6 @@ public class SLabel extends JLabel implements
         super.setVisible(v);
         firePropertyChange(VISIBLE, old, v);
     }
-    final static public String VISIBLE = "visible";
-    public BindingEndpoint<Boolean> visible$() {
-        return BindingEndpoint.of(this, VISIBLE);
-    }
 
     /**
      * Add PCE event
@@ -80,10 +76,6 @@ public class SLabel extends JLabel implements
         super.setText(v);
         firePropertyChange(TEXT, old, v);
     }
-    final static public String TEXT = "text";
-    public BindingEndpoint<String> text$() {
-        return BindingEndpoint.of(this, TEXT);
-    }
 
     /**
      * Add PCE event
@@ -91,11 +83,7 @@ public class SLabel extends JLabel implements
     public void setIcon(Icon v) {
         Icon old = super.getIcon();
         super.setIcon(v);
-        firePropertyChange(TEXT, old, v);
-    }
-    final static public String ICON = "icon";
-    public BindingEndpoint<Icon> ioon$() {
-        return BindingEndpoint.of(this, ICON);
+        firePropertyChange(ICON, old, v);
     }
 
     // ===========================================================================================================================

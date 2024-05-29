@@ -7,6 +7,7 @@ import org.tbee.sway.format.FormatRegistry;
 import org.tbee.sway.mixin.BindToMixin;
 import org.tbee.sway.mixin.ExceptionHandlerMixin;
 import org.tbee.sway.mixin.PropertyChangeListenerMixin;
+import org.tbee.sway.mixin.ValueMixin;
 import org.tbee.util.ExceptionUtil;
 
 import javax.swing.AbstractButton;
@@ -58,6 +59,7 @@ import java.util.function.Supplier;
 public class SButtonGroup<T> extends ButtonGroup implements
         PropertyChangeListenerMixin<SButtonGroup<T>>,
         ExceptionHandlerMixin<SButtonGroup<T>>,
+        ValueMixin<SButtonGroup<T>, T>,
         BindToMixin<SButtonGroup<T>, T> {
 
     static private org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(SButtonGroup.class);
@@ -176,6 +178,7 @@ public class SButtonGroup<T> extends ButtonGroup implements
     // VALUE
 
     /** get the value of the selected button */
+    @Override
     public void setValue(T value) {
         setSelected(valueToButton.get(value).getModel(), true);
         fireValueChangedIfRequired();
@@ -183,15 +186,6 @@ public class SButtonGroup<T> extends ButtonGroup implements
     public T getValue() {
         return buttonToValue.get(getSelectedButton());
     }
-    final static public String VALUE = "value";
-    public SButtonGroup<T> value(T v) {
-        setValue(v);
-        return this;
-    }
-    public BindingEndpoint<T> value$() {
-        return BindingEndpoint.of(this, VALUE, exceptionHandler);
-    }
-
 
     private final ActionListener actionListener = e -> fireValueChangedIfRequired();
 

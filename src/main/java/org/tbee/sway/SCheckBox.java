@@ -76,7 +76,9 @@ public class SCheckBox extends JCheckBox implements
 
     @Override
     public void setIcon(Icon v) {
+        Icon old = super.getIcon();
         super.setIcon(v);
+        firePropertyChange(ICON, old, v);
         explicitIcon = true;
     }
 

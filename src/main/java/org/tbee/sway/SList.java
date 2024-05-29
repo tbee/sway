@@ -9,6 +9,7 @@ import org.tbee.sway.list.SListCore;
 import org.tbee.sway.mixin.BindToMixin;
 import org.tbee.sway.mixin.JComponentMixin;
 import org.tbee.sway.mixin.ExceptionHandlerDefaultMixin;
+import org.tbee.sway.mixin.SelectionMixin;
 import org.tbee.sway.support.SwayUtil;
 
 import javax.swing.JPanel;
@@ -24,6 +25,7 @@ import java.util.function.Consumer;
 public class SList<T> extends JPanel implements
         JComponentMixin<SList<T>>,
         ExceptionHandlerDefaultMixin<SList<T>>,
+        SelectionMixin<SList<T>, T>,
         BindToMixin<SList<T>, List<T>> {
     static private org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(SList.class);
 
@@ -224,11 +226,6 @@ public class SList<T> extends JPanel implements
      */
     public void clearSelection() {
         sListCore.clearSelection();
-    }
-
-    final static public String SELECTION = "selection";
-    public BindingEndpoint<List<T>> selection$() {
-        return BindingEndpoint.of(this, SELECTION, exceptionHandler);
     }
 
     /**
