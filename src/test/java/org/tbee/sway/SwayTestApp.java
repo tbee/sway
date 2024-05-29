@@ -31,6 +31,9 @@ import java.util.Currency;
 import java.util.List;
 import java.util.Locale;
 
+import static org.tbee.sway.format.FileFormat.AllowedType.DIR;
+import static org.tbee.sway.format.FileFormat.AllowedType.FILE;
+
 public class SwayTestApp {
 
     static public void main(String[] args) throws Exception {
@@ -189,6 +192,12 @@ public class SwayTestApp {
         migPanel.wrap();
 
         migPanel.addLabelAndField("File mustExist", SFileTextField.of().mustExist(true));
+        migPanel.wrap();
+
+        migPanel.addLabelAndField("File fileOnly", SFileTextField.of().allowedType(FILE));
+        migPanel.wrap();
+
+        migPanel.addLabelAndField("File dirOnly", SFileTextField.of().allowedType(DIR));
         migPanel.wrap();
 
         return SVPanel.of(SLabel.of("STextField"), migPanel).margin(0);

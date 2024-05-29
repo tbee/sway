@@ -6,6 +6,11 @@ public class FileFormat implements Format<File> {
 
     private boolean mustExist = false;
 
+    public enum AllowedType {
+        FILE, DIR, ALL;
+    }
+    private AllowedType allowedType = AllowedType.ALL;
+
     @Override
     public String toString(File value) {
         return value == null ? "" : value.getAbsolutePath();
@@ -17,7 +22,13 @@ public class FileFormat implements Format<File> {
 
         if (file != null) {
             if (mustExist && !file.exists()) {
-                throw new FormatException("File does not exist: " + file);
+                throw new FormatException("Does not exist: " + file);
+            }
+            if (allowedType == AllowedType.FILE && file.exists() && !file.isFile()) {
+                throw new FormatException("Not a file: " + file);
+            }
+            if (allowedType == AllowedType.DIR && file.exists() && !file.isDirectory()) {
+                throw new FormatException("Not a directory: " + file);
             }
         }
 
@@ -36,6 +47,17 @@ public class FileFormat implements Format<File> {
     }
     public FileFormat mustExist(boolean v) {
         setMustExist(v);
+        return this;
+    }
+
+    public AllowedType getAllowedType() {
+        return allowedType;
+    }
+    public void setAllowedType(AllowedType v) {
+        this.allowedType = v;
+    }
+    public FileFormat allowedType(AllowedType v) {
+        setAllowedType(v);
         return this;
     }
 }

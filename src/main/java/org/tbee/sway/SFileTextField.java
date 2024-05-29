@@ -2,6 +2,7 @@ package org.tbee.sway;
 
 import org.tbee.sway.binding.BindingEndpoint;
 import org.tbee.sway.format.FileFormat;
+import org.tbee.sway.format.FileFormat.AllowedType;
 import org.tbee.sway.support.IconRegistry;
 
 import javax.swing.JFileChooser;
@@ -20,10 +21,18 @@ public class SFileTextField extends STextField<File> {
     }
 
     private void showFileChooser() {
-        JFileChooser fc = new JFileChooser();
-        int returnVal = fc.showDialog(this, "Select");
+        JFileChooser jFileChooser = new JFileChooser();
+        jFileChooser.setFileSelectionMode(
+            switch(getAllowedType()) {
+                case ALL -> JFileChooser.FILES_AND_DIRECTORIES;
+                case FILE -> JFileChooser.FILES_ONLY;
+                case DIR -> JFileChooser.DIRECTORIES_ONLY;
+            }
+        );
+
+        int returnVal = jFileChooser.showDialog(this, "Select");
         if (returnVal == JFileChooser.APPROVE_OPTION) {
-            File file = fc.getSelectedFile();
+            File file = jFileChooser.getSelectedFile();
             setValue(file);
         }
     }
@@ -48,6 +57,23 @@ public class SFileTextField extends STextField<File> {
         return BindingEndpoint.of(this, MUSTEXIST);
     }
 
+
+    public AllowedType getAllowedType() {
+        return fileFormat.getAllowedType();
+    }
+    public void setAllowedType(AllowedType v) {
+        AllowedType before = fileFormat.getAllowedType();
+        fileFormat.setAllowedType(v);
+        firePropertyChange(ALLOWEDTYPE, before, v);
+    }
+    public SFileTextField allowedType(AllowedType v) {
+        setAllowedType(v);
+        return this;
+    }
+    final static public String ALLOWEDTYPE = "allowedType";
+    public BindingEndpoint<AllowedType> allowedType() {
+        return BindingEndpoint.of(this, ALLOWEDTYPE);
+    }
 
     // ==============================================
     // OF
