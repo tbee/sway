@@ -8,7 +8,7 @@ import javax.swing.JFileChooser;
 import java.io.File;
 
 /**
- * SFileTextField is nothing more than a preconfigured STextField<File>
+ * SFileTextField is nothing more than a preconfigured STextField
  */
 public class SFileTextField extends STextField<File> {
 
