@@ -24,9 +24,9 @@ import java.util.Currency;
 import java.util.List;
 import java.util.Locale;
 
-import static org.tbee.sway.SIconRegistry.createIcon;
 import static org.tbee.sway.format.FileFormat.AllowedType.DIR;
 import static org.tbee.sway.format.FileFormat.AllowedType.FILE;
+import static org.tbee.sway.support.IkonliUtil.createIcon;
 
 public class SwayTestApp {
 
@@ -36,8 +36,7 @@ public class SwayTestApp {
 
     private void run() throws InterruptedException, InvocationTargetException {
         SLookAndFeel.installDefault();
-
-        registerIcons();
+        SIconRegistry.registerDefaultIcons();
 
         SwingUtilities.invokeAndWait(() -> {
             STabbedPane<Void> tabbedPane = STabbedPane.<Void>of()
@@ -78,15 +77,6 @@ public class SwayTestApp {
     }
     static void menuEvent(ActionEvent e) {
         SOptionPane.ofInfo((Component) e.getSource(), "Menu event", e.getActionCommand());
-    }
-
-    private void registerIcons() {
-        // https://kordamp.org/ikonli/cheat-sheet-material2.html
-        SIconRegistry.registerDefaultIcons();
-
-//        IconRegistry.register(IconRegistry.SwayInternallyUsedIcon.CHECKBOX_SELECTED, createIcon(MaterialDesignS.SELECT, IconRegistry.SwayInternallyUsedIcon.CHECKBOX_SELECTED.typicalSize()));
-//        IconRegistry.register(IconRegistry.SwayInternallyUsedIcon.CHECKBOX_UNSELECTED, createIcon(MaterialDesignS.SELECT_INVERSE, IconRegistry.SwayInternallyUsedIcon.CHECKBOX_UNSELECTED.typicalSize()));
-//        IconRegistry.register(IconRegistry.SwayInternallyUsedIcon.CHECKBOX_UNDETERMINED, createIcon(MaterialDesignS.SELECT_OFF, IconRegistry.SwayInternallyUsedIcon.CHECKBOX_UNDETERMINED.typicalSize()));
     }
 
     static JPanel sTextField() {

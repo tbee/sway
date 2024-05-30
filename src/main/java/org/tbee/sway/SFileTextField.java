@@ -7,6 +7,9 @@ import org.tbee.sway.format.FileFormat.AllowedType;
 import javax.swing.JFileChooser;
 import java.io.File;
 
+/**
+ * SFileTextField is nothing more than a preconfigured STextField<File>
+ */
 public class SFileTextField extends STextField<File> {
 
     private final FileFormat fileFormat;

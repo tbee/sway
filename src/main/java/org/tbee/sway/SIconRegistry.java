@@ -1,16 +1,16 @@
 package org.tbee.sway;
 
-import org.kordamp.ikonli.Ikon;
 import org.kordamp.ikonli.materialdesign2.MaterialDesignC;
 import org.kordamp.ikonli.materialdesign2.MaterialDesignF;
 import org.kordamp.ikonli.materialdesign2.MaterialDesignM;
 import org.kordamp.ikonli.materialdesign2.MaterialDesignR;
 import org.kordamp.ikonli.materialdesign2.MaterialDesignS;
-import org.kordamp.ikonli.swing.FontIcon;
 
 import javax.swing.Icon;
 import java.util.HashMap;
 import java.util.Map;
+
+import static org.tbee.sway.support.IkonliUtil.createIcon;
 
 /**
  * This is where the components in Sway come looking for their icons.
@@ -18,6 +18,13 @@ import java.util.Map;
  */
 public class SIconRegistry {
     static private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(SIconRegistry.class);
+
+    final static Map<String, Icon> icons = new HashMap<>();
+
+    static {
+        // Register default icons for those that are required visually
+        SIconRegistry.register(SIconRegistry.SwayInternallyUsedIcon.TEXTFIELD_POPUP, createIcon(MaterialDesignM.MENU, SIconRegistry.SwayInternallyUsedIcon.TEXTFIELD_POPUP.typicalSize()));
+    }
 
     public enum SwayInternallyUsedIcon { //
     	BUTTON_OK("ok@button", 16), //
@@ -52,8 +59,6 @@ public class SIconRegistry {
         }
 	}
 
-    final static Map<String, Icon> icons = new HashMap<>();
-
     synchronized static public void register(SwayInternallyUsedIcon swayIcon, Icon icon) {
         register(swayIcon.id(), icon);
     }
@@ -86,16 +91,15 @@ public class SIconRegistry {
         SIconRegistry.register(SIconRegistry.SwayInternallyUsedIcon.OVERLAY_LOADING, createIcon(MaterialDesignR.REFRESH, SIconRegistry.SwayInternallyUsedIcon.OVERLAY_LOADING.typicalSize()));
         SIconRegistry.register(SIconRegistry.SwayInternallyUsedIcon.TEXTFIELD_POPUP, createIcon(MaterialDesignM.MENU, SIconRegistry.SwayInternallyUsedIcon.TEXTFIELD_POPUP.typicalSize()));
 
-        // Improve rendering of the three state checkboxes
+        registerCheckboxIcons();
+    }
+
+    /**
+     * SCheckBox3 usually has poor rendering of all three states, register icons to make fix that.
+     */
+    static public void registerCheckboxIcons() {
         SIconRegistry.register(SIconRegistry.SwayInternallyUsedIcon.CHECKBOX_SELECTED, createIcon(MaterialDesignC.CHECKBOX_MARKED, SIconRegistry.SwayInternallyUsedIcon.CHECKBOX_SELECTED.typicalSize()));
         SIconRegistry.register(SIconRegistry.SwayInternallyUsedIcon.CHECKBOX_UNSELECTED, createIcon(MaterialDesignC.CHECKBOX_BLANK_OUTLINE, SIconRegistry.SwayInternallyUsedIcon.CHECKBOX_UNSELECTED.typicalSize()));
         SIconRegistry.register(SIconRegistry.SwayInternallyUsedIcon.CHECKBOX_UNDETERMINED, createIcon(MaterialDesignC.CHECKBOX_BLANK_OFF_OUTLINE, SIconRegistry.SwayInternallyUsedIcon.CHECKBOX_UNDETERMINED.typicalSize()));
-    }
-
-    static public Icon createIcon(Ikon ikon, int size) {
-        FontIcon fontIcon = new FontIcon();
-        fontIcon.setIkon(ikon);
-        fontIcon.setIconSize(size);
-        return fontIcon;
     }
 }
