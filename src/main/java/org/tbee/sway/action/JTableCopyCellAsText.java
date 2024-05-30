@@ -1,5 +1,10 @@
 package org.tbee.sway.action;
 
+import org.tbee.sway.SIconRegistry;
+
+import javax.swing.Icon;
+import javax.swing.JTable;
+import javax.swing.SwingUtilities;
 import java.awt.Component;
 import java.awt.Point;
 import java.awt.Toolkit;
@@ -7,12 +12,6 @@ import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.MouseEvent;
 import java.util.Map;
-
-import javax.swing.Icon;
-import javax.swing.JTable;
-import javax.swing.SwingUtilities;
-
-import org.tbee.sway.support.IconRegistry;
 
 public class JTableCopyCellAsText implements Action {
 
@@ -23,7 +22,7 @@ public class JTableCopyCellAsText implements Action {
 
     @Override
     public Icon icon() {
-        return IconRegistry.find(IconRegistry.SwayInternallyUsedIcon.MENU_COPY);
+        return SIconRegistry.find(SIconRegistry.SwayInternallyUsedIcon.MENU_COPY);
     }
 
     @Override

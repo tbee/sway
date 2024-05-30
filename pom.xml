@@ -102,6 +102,19 @@
             <version>2.0.9</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.kordamp.ikonli</groupId>
+            <artifactId>ikonli-swing</artifactId>
+            <version>12.3.1</version>
+        </dependency>
+        <!-- https://kordamp.org/ikonli/cheat-sheet-materialdesign2.html -->
+        <dependency>
+            <groupId>org.kordamp.ikonli</groupId>
+            <artifactId>ikonli-materialdesign2-pack</artifactId>
+            <version>12.3.1</version>
+        </dependency>
+
+
         <!-- TBEERNOT right now this is only needed for the splitter in STablePasteSelection - can that be removed? -->
         <dependency>
             <groupId>com.google.guava</groupId>
@@ -124,18 +137,6 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
             <version>2.0.6</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.kordamp.ikonli</groupId>
-            <artifactId>ikonli-swing</artifactId>
-            <version>12.3.1</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.kordamp.ikonli</groupId>
-            <artifactId>ikonli-materialdesign2-pack</artifactId>
-            <version>12.3.1</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

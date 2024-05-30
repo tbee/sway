@@ -20,7 +20,6 @@ import org.tbee.sway.mixin.ExceptionHandlerDefaultMixin;
 import org.tbee.sway.mixin.JComponentMixin;
 import org.tbee.sway.mixin.TextIconMixin;
 import org.tbee.sway.mixin.ToolTipMixin;
-import org.tbee.sway.support.IconRegistry;
 
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
@@ -193,13 +192,13 @@ public class SCheckBox3 extends JCheckBox implements
 		}
 		Boolean v = getSelected3();
 		if (v == null) {
-			super.setIcon(IconRegistry.find(IconRegistry.SwayInternallyUsedIcon.CHECKBOX_UNDETERMINED));
+			super.setIcon(SIconRegistry.find(SIconRegistry.SwayInternallyUsedIcon.CHECKBOX_UNDETERMINED));
 		}
 		else if (v) {
-			super.setIcon(IconRegistry.find(IconRegistry.SwayInternallyUsedIcon.CHECKBOX_SELECTED));
+			super.setIcon(SIconRegistry.find(SIconRegistry.SwayInternallyUsedIcon.CHECKBOX_SELECTED));
 		}
 		else {
-			super.setIcon(IconRegistry.find(IconRegistry.SwayInternallyUsedIcon.CHECKBOX_UNSELECTED));
+			super.setIcon(SIconRegistry.find(SIconRegistry.SwayInternallyUsedIcon.CHECKBOX_UNSELECTED));
 		}
 	}
 

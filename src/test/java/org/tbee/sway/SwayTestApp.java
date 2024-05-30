@@ -1,18 +1,10 @@
 package org.tbee.sway;
 
-import org.kordamp.ikonli.Ikon;
 import org.kordamp.ikonli.materialdesign2.MaterialDesignC;
-import org.kordamp.ikonli.materialdesign2.MaterialDesignF;
-import org.kordamp.ikonli.materialdesign2.MaterialDesignM;
-import org.kordamp.ikonli.materialdesign2.MaterialDesignR;
-import org.kordamp.ikonli.materialdesign2.MaterialDesignS;
-import org.kordamp.ikonli.swing.FontIcon;
 import org.tbee.sway.binding.BeanBinder;
 import org.tbee.sway.format.Format;
-import org.tbee.sway.support.IconRegistry;
 import org.tbee.util.ExceptionUtil;
 
-import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -32,6 +24,7 @@ import java.util.Currency;
 import java.util.List;
 import java.util.Locale;
 
+import static org.tbee.sway.SIconRegistry.createIcon;
 import static org.tbee.sway.format.FileFormat.AllowedType.DIR;
 import static org.tbee.sway.format.FileFormat.AllowedType.FILE;
 
@@ -89,23 +82,11 @@ public class SwayTestApp {
 
     private void registerIcons() {
         // https://kordamp.org/ikonli/cheat-sheet-material2.html
-        IconRegistry.register(IconRegistry.SwayInternallyUsedIcon.MENU_COPY, createIcon(MaterialDesignC.CONTENT_COPY, IconRegistry.SwayInternallyUsedIcon.MENU_COPY.typicalSize()));
-        IconRegistry.register(IconRegistry.SwayInternallyUsedIcon.MENU_CUT, createIcon(MaterialDesignC.CONTENT_CUT, IconRegistry.SwayInternallyUsedIcon.MENU_CUT.typicalSize()));
-        IconRegistry.register(IconRegistry.SwayInternallyUsedIcon.MENU_PASTE, createIcon(MaterialDesignC.CONTENT_PASTE, IconRegistry.SwayInternallyUsedIcon.MENU_PASTE.typicalSize()));
-        IconRegistry.register(IconRegistry.SwayInternallyUsedIcon.MENU_FILTER, createIcon(MaterialDesignF.FILTER, IconRegistry.SwayInternallyUsedIcon.MENU_FILTER.typicalSize()));
-        IconRegistry.register(IconRegistry.SwayInternallyUsedIcon.MENU_SELECTION, createIcon(MaterialDesignS.SELECTION, IconRegistry.SwayInternallyUsedIcon.MENU_SELECTION.typicalSize()));
-        IconRegistry.register(IconRegistry.SwayInternallyUsedIcon.OVERLAY_LOADING, createIcon(MaterialDesignR.REFRESH, IconRegistry.SwayInternallyUsedIcon.OVERLAY_LOADING.typicalSize()));
-        IconRegistry.register(IconRegistry.SwayInternallyUsedIcon.TEXTFIELD_POPUP, createIcon(MaterialDesignM.MENU, IconRegistry.SwayInternallyUsedIcon.TEXTFIELD_POPUP.typicalSize()));
+        SIconRegistry.registerDefaultIcons();
 
 //        IconRegistry.register(IconRegistry.SwayInternallyUsedIcon.CHECKBOX_SELECTED, createIcon(MaterialDesignS.SELECT, IconRegistry.SwayInternallyUsedIcon.CHECKBOX_SELECTED.typicalSize()));
 //        IconRegistry.register(IconRegistry.SwayInternallyUsedIcon.CHECKBOX_UNSELECTED, createIcon(MaterialDesignS.SELECT_INVERSE, IconRegistry.SwayInternallyUsedIcon.CHECKBOX_UNSELECTED.typicalSize()));
 //        IconRegistry.register(IconRegistry.SwayInternallyUsedIcon.CHECKBOX_UNDETERMINED, createIcon(MaterialDesignS.SELECT_OFF, IconRegistry.SwayInternallyUsedIcon.CHECKBOX_UNDETERMINED.typicalSize()));
-    }
-    private Icon createIcon(Ikon ikon, int size) {
-        FontIcon fontIcon = new FontIcon();
-        fontIcon.setIkon(ikon);
-        fontIcon.setIconSize(size);
-        return fontIcon;
     }
 
     static JPanel sTextField() {
@@ -184,7 +165,7 @@ public class SwayTestApp {
         migPanel.wrap();
 
         migPanel.addLabelAndField("Icon", STextField.ofLong().value(123l)
-                .icon(IconRegistry.find(IconRegistry.SwayInternallyUsedIcon.MENU_COPY))
+                .icon(SIconRegistry.find(SIconRegistry.SwayInternallyUsedIcon.MENU_COPY))
                 .onIconClick(evt -> SOptionPane.ofInfo(migPanel, "Icon clicked", "Icon clicked"))
         );
         migPanel.wrap();

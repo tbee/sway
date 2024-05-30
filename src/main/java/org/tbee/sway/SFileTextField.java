@@ -3,7 +3,6 @@ package org.tbee.sway;
 import org.tbee.sway.binding.BindingEndpoint;
 import org.tbee.sway.format.FileFormat;
 import org.tbee.sway.format.FileFormat.AllowedType;
-import org.tbee.sway.support.IconRegistry;
 
 import javax.swing.JFileChooser;
 import java.io.File;
@@ -16,7 +15,7 @@ public class SFileTextField extends STextField<File> {
         super(new FileFormat());
         fileFormat = (FileFormat) super.getFormat();
 
-        icon(IconRegistry.find(IconRegistry.SwayInternallyUsedIcon.TEXTFIELD_POPUP));
+        icon(SIconRegistry.find(SIconRegistry.SwayInternallyUsedIcon.TEXTFIELD_POPUP));
         onIconClick(evt -> showFileChooser());
     }
 

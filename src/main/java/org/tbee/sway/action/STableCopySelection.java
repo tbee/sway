@@ -1,12 +1,11 @@
 package org.tbee.sway.action;
 
-import java.awt.Component;
-import java.util.Map;
+import org.tbee.sway.SIconRegistry;
+import org.tbee.sway.table.STableCore;
 
 import javax.swing.Icon;
-
-import org.tbee.sway.support.IconRegistry;
-import org.tbee.sway.table.STableCore;
+import java.awt.Component;
+import java.util.Map;
 
 public class STableCopySelection implements Action {
     static private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(STableCopySelection.class);
@@ -18,7 +17,7 @@ public class STableCopySelection implements Action {
 
     @Override
     public Icon icon() {
-        return IconRegistry.find(IconRegistry.SwayInternallyUsedIcon.MENU_COPY);
+        return SIconRegistry.find(SIconRegistry.SwayInternallyUsedIcon.MENU_COPY);
     }
 
     @Override

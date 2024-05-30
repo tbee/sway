@@ -1,18 +1,17 @@
 package org.tbee.sway.action;
 
+import org.tbee.sway.SIconRegistry;
+import org.tbee.sway.transferable.ImageSelection;
+
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
 import java.awt.Component;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.image.BufferedImage;
 import java.util.Map;
-
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
-import javax.swing.JLabel;
-
-import org.tbee.sway.support.IconRegistry;
-import org.tbee.sway.transferable.ImageSelection;
 
 public class JLabelCopyIcon implements Action {
 
@@ -23,7 +22,7 @@ public class JLabelCopyIcon implements Action {
 
     @Override
     public Icon icon() {
-        return IconRegistry.find(IconRegistry.SwayInternallyUsedIcon.MENU_COPY);
+        return SIconRegistry.find(SIconRegistry.SwayInternallyUsedIcon.MENU_COPY);
     }
 
     @Override

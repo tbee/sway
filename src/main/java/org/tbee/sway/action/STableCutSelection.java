@@ -1,12 +1,11 @@
 package org.tbee.sway.action;
 
-import java.awt.Component;
-import java.util.Map;
+import org.tbee.sway.SIconRegistry;
+import org.tbee.sway.table.STableCore;
 
 import javax.swing.Icon;
-
-import org.tbee.sway.support.IconRegistry;
-import org.tbee.sway.table.STableCore;
+import java.awt.Component;
+import java.util.Map;
 
 public class STableCutSelection implements Action {
     static private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(STableCutSelection.class);
@@ -18,7 +17,7 @@ public class STableCutSelection implements Action {
 
     @Override
     public Icon icon() {
-        return IconRegistry.find(IconRegistry.SwayInternallyUsedIcon.MENU_CUT);
+        return SIconRegistry.find(SIconRegistry.SwayInternallyUsedIcon.MENU_CUT);
     }
 
     @Override

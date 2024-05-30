@@ -1,12 +1,11 @@
 package org.tbee.sway.action;
 
-import java.awt.Component;
-import java.util.Map;
+import org.tbee.sway.SIconRegistry;
 
 import javax.swing.Icon;
 import javax.swing.text.JTextComponent;
-
-import org.tbee.sway.support.IconRegistry;
+import java.awt.Component;
+import java.util.Map;
 
 public class JTextComponentCut implements Action {
 
@@ -17,7 +16,7 @@ public class JTextComponentCut implements Action {
 
     @Override
     public Icon icon() {
-        return IconRegistry.find(IconRegistry.SwayInternallyUsedIcon.MENU_CUT);
+        return SIconRegistry.find(SIconRegistry.SwayInternallyUsedIcon.MENU_CUT);
     }
 
     @Override

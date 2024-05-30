@@ -1,13 +1,12 @@
 package org.tbee.sway.action;
 
-import java.awt.Component;
-import java.util.Map;
+import org.tbee.sway.STable;
+import org.tbee.sway.SIconRegistry;
+import org.tbee.sway.table.STableCore;
 
 import javax.swing.Icon;
-
-import org.tbee.sway.STable;
-import org.tbee.sway.support.IconRegistry;
-import org.tbee.sway.table.STableCore;
+import java.awt.Component;
+import java.util.Map;
 
 public class STableClearSelection implements Action {
 
@@ -18,7 +17,7 @@ public class STableClearSelection implements Action {
 
     @Override
     public Icon icon() {
-        return IconRegistry.find(IconRegistry.SwayInternallyUsedIcon.MENU_SELECTION);
+        return SIconRegistry.find(SIconRegistry.SwayInternallyUsedIcon.MENU_SELECTION);
     }
 
     @Override

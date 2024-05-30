@@ -9,7 +9,6 @@ import org.tbee.sway.mixin.JComponentMixin;
 import org.tbee.sway.mixin.SelectedMixin;
 import org.tbee.sway.mixin.TextIconMixin;
 import org.tbee.sway.mixin.ToolTipMixin;
-import org.tbee.sway.support.IconRegistry;
 
 import javax.swing.Icon;
 import javax.swing.JCheckBox;
@@ -71,7 +70,7 @@ public class SCheckBox extends JCheckBox implements
         if (explicitIcon) {
             return;
         }
-        super.setIcon(IconRegistry.find(selected ? IconRegistry.SwayInternallyUsedIcon.CHECKBOX_SELECTED : IconRegistry.SwayInternallyUsedIcon.CHECKBOX_UNSELECTED));
+        super.setIcon(SIconRegistry.find(selected ? SIconRegistry.SwayInternallyUsedIcon.CHECKBOX_SELECTED : SIconRegistry.SwayInternallyUsedIcon.CHECKBOX_UNSELECTED));
     }
 
     @Override

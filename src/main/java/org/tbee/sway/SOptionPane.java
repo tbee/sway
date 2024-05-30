@@ -1,7 +1,6 @@
 package org.tbee.sway;
 
 import org.tbee.sway.mixin.PropertyChangeListenerMixin;
-import org.tbee.sway.support.IconRegistry;
 
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
@@ -23,18 +22,18 @@ public class SOptionPane extends JOptionPane implements PropertyChangeListenerMi
 	}
 
 	static SButton okButton() {
-		return SButton.of(UIManager.getString("OptionPane.okButtonText", Locale.getDefault()), IconRegistry.find(IconRegistry.SwayInternallyUsedIcon.BUTTON_OK));
+		return SButton.of(UIManager.getString("OptionPane.okButtonText", Locale.getDefault()), SIconRegistry.find(SIconRegistry.SwayInternallyUsedIcon.BUTTON_OK));
 	}
 
 	static SButton cancelButton() {
-		return SButton.of(UIManager.getString("OptionPane.cancelButtonText", Locale.getDefault()), IconRegistry.find(IconRegistry.SwayInternallyUsedIcon.BUTTON_CANCEL));
+		return SButton.of(UIManager.getString("OptionPane.cancelButtonText", Locale.getDefault()), SIconRegistry.find(SIconRegistry.SwayInternallyUsedIcon.BUTTON_CANCEL));
 	}
 
 	static SButton yesButton() {
-		return SButton.of(UIManager.getString("OptionPane.yesButtonText", Locale.getDefault()), IconRegistry.find(IconRegistry.SwayInternallyUsedIcon.BUTTON_YES));
+		return SButton.of(UIManager.getString("OptionPane.yesButtonText", Locale.getDefault()), SIconRegistry.find(SIconRegistry.SwayInternallyUsedIcon.BUTTON_YES));
 	}
 
 	static SButton noButton() {
-		return SButton.of(UIManager.getString("OptionPane.noButtonText", Locale.getDefault()), IconRegistry.find(IconRegistry.SwayInternallyUsedIcon.BUTTON_NO));
+		return SButton.of(UIManager.getString("OptionPane.noButtonText", Locale.getDefault()), SIconRegistry.find(SIconRegistry.SwayInternallyUsedIcon.BUTTON_NO));
 	}
 }
