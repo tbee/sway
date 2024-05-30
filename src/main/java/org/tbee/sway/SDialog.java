@@ -6,6 +6,7 @@ import org.tbee.sway.mixin.WindowMixin;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
+import javax.swing.JRootPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import java.awt.Component;
@@ -123,7 +124,7 @@ public class SDialog extends JDialog implements
 		// Create dialog
 		Window window = (parent instanceof Window parentWindow ? parentWindow : SwingUtilities.windowForComponent(parent));
 		var dialog = new SDialog(parent == null ? null : window, title, Dialog.ModalityType.DOCUMENT_MODAL);
-		
+
 		// Create buttons
 		var buttons = new ArrayList<SButton>();
 		for (CloseReason closeReason : closeReasons) {
@@ -173,6 +174,11 @@ public class SDialog extends JDialog implements
 	
 	public SDialog showAndWait() {
 		setVisible(true);
+		return this;
+	}
+
+	public SDialog noWindowDecoration() {
+		getRootPane().setWindowDecorationStyle(JRootPane.NONE);
 		return this;
 	}
 
