@@ -24,6 +24,9 @@ public class SFileTextField extends STextField<File> {
 
     private void showFileChooser() {
         JFileChooser jFileChooser = new JFileChooser();
+        if (getValue() != null ) {
+            jFileChooser.setSelectedFile(getValue());
+        }
         jFileChooser.setFileSelectionMode(
             switch(getAllowedType()) {
                 case ALL -> JFileChooser.FILES_AND_DIRECTORIES;
