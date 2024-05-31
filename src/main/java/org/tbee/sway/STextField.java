@@ -133,7 +133,7 @@ public class STextField<T> extends javax.swing.JTextField implements
         JComponentMixin<STextField<T>> {
 
     final static private org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(STextField.class);
-    final static private int ICON_SPACING = 0;
+    final static private int ICON_SPACING = 2;
     public static final Insets ZERO_INSETS = new Insets(0, 0, 0, 0);
     public static final Color TRANSPARENT_COLOR = new Color(1.0f, 0.0f, 0.0f, 0.0f);
     public static final Cursor TEXT_CURSOR = new Cursor(Cursor.TEXT_CURSOR);
@@ -143,7 +143,9 @@ public class STextField<T> extends javax.swing.JTextField implements
 
     private Border border;
     private Icon icon;
-    private Consumer<MouseEvent> onIconClick = (evt) -> {};
+    private Icon backIcon;
+    private Consumer<MouseEvent> onIconClick = null;
+    private Consumer<MouseEvent> onBackIconClick = null;
 
     /**
      *
@@ -157,10 +159,11 @@ public class STextField<T> extends javax.swing.JTextField implements
         setColumns(format.columns());
         setHAlign(format.horizontalAlignment());
         setIcon(null);
+        setBackIcon(null);
 
         if (format.editor() != null) {
-            setIcon(SIconRegistry.find(SIconRegistry.SwayInternallyUsedIcon.TEXTFIELD_POPUP));
-            onIconClick(evt -> format.editor().open(this, getValue(), this::setValue));
+            setBackIcon(SIconRegistry.find(SIconRegistry.SwayInternallyUsedIcon.TEXTFIELD_POPUP));
+            onBackIconClick(evt -> format.editor().open(this, getValue(), this::setValue));
         }
 
         // the FocusInterpreterListener must be kept in an instance variable, otherwise it will be cleared by the WeakArrayList used in the FocusInterpreter
@@ -193,7 +196,7 @@ public class STextField<T> extends javax.swing.JTextField implements
 
 
     // ========================================================
-    // Icon
+    // Icon and BackIcon
 
     public Icon getIcon() {
         return this.icon;
@@ -202,16 +205,39 @@ public class STextField<T> extends javax.swing.JTextField implements
         firePropertyChange(ICON, this.icon, this.icon = icon);
         setBorder(border);
     }
-
     public STextField<T> onIconClick(Consumer<MouseEvent> onIconClick) {
         this.onIconClick = onIconClick;
+        return this;
+    }
+
+    public Icon getBackIcon() {
+        return this.backIcon;
+    }
+    public void setBackIcon(Icon icon) {
+        firePropertyChange(BACKICON, this.backIcon, this.backIcon = icon);
+        setBorder(border);
+    }
+    public STextField<T> backIcon(Icon v) {
+        setBackIcon(v);
+        return this;
+    }
+    String BACKICON = "backIcon";
+    public BindingEndpoint<String> backIcon$() {
+        return BindingEndpoint.of(this, BACKICON);
+    }
+    public STextField<T> onBackIconClick(Consumer<MouseEvent> onIconClick) {
+        this.onBackIconClick = onIconClick;
         return this;
     }
 
     @Override
     public void setBorder(Border border) {
         this.border = border;
-        Border borderForIcon = BorderFactory.createMatteBorder(0, 0, 0, (icon == null ? 0 : icon.getIconWidth() + ICON_SPACING), TRANSPARENT_COLOR);
+        Border borderForIcon = BorderFactory.createMatteBorder(0
+                , (icon == null ? 0 : icon.getIconWidth() + ICON_SPACING)
+                , 0
+                , (backIcon == null ? 0 : backIcon.getIconWidth() + ICON_SPACING)
+                , TRANSPARENT_COLOR);
         super.setBorder(BorderFactory.createCompoundBorder(border, borderForIcon));
     }
     @Override
@@ -225,7 +251,11 @@ public class STextField<T> extends javax.swing.JTextField implements
 
         if (icon != null) {
             Insets iconInsets = border == null ? ZERO_INSETS : border.getBorderInsets(this);
-            icon.paintIcon(this, graphics, this.getWidth() - icon.getIconWidth() - iconInsets.right, iconInsets.top);
+            icon.paintIcon(this, graphics, iconInsets.left - ICON_SPACING, iconInsets.top);
+        }
+        if (backIcon != null) {
+            Insets iconInsets = border == null ? ZERO_INSETS : border.getBorderInsets(this);
+            backIcon.paintIcon(this, graphics, this.getWidth() - backIcon.getIconWidth() - iconInsets.right, iconInsets.top);
         }
     }
 
@@ -233,8 +263,11 @@ public class STextField<T> extends javax.swing.JTextField implements
     protected void processMouseEvent(MouseEvent e) {
         switch (e.getID()) {
             case MouseEvent.MOUSE_CLICKED -> {
-                if (getCursor() == ICON_CURSOR) { // this means the mouse is over the icon
+                if (onIconClick != null && mouseIsOverIcon(e.getX())) {
                     onIconClick.accept(e);
+                }
+                if (onBackIconClick != null && mouseIsOverBackIcon(e.getX())) {
+                    onBackIconClick.accept(e);
                 }
             }
         }
@@ -245,8 +278,10 @@ public class STextField<T> extends javax.swing.JTextField implements
     protected void processMouseMotionEvent(MouseEvent e) {
         switch (e.getID()) {
             case MouseEvent.MOUSE_MOVED -> {
-                if (icon != null) {
-                    this.setCursor(mouseIsOverIcon(e.getX()) ? ICON_CURSOR : TEXT_CURSOR);
+                if (icon != null || backIcon != null) {
+                    this.setCursor( (mouseIsOverIcon(e.getX()) && onIconClick != null)
+                                 || (mouseIsOverBackIcon(e.getX()) && onBackIconClick != null)
+                                  ? ICON_CURSOR : TEXT_CURSOR);
                 }
             }
         }
@@ -257,8 +292,15 @@ public class STextField<T> extends javax.swing.JTextField implements
         if (icon == null) {
             return false;
         }
+        return x <= icon.getIconWidth();
+    }
+
+    protected boolean mouseIsOverBackIcon(int x) {
+        if (backIcon == null) {
+            return false;
+        }
         Insets iconInsets = border == null ? ZERO_INSETS : border.getBorderInsets(this);
-        return x >= this.getWidth() - icon.getIconWidth() - iconInsets.right;
+        return x >= this.getWidth() - backIcon.getIconWidth() - iconInsets.right;
     }
 
     // ========================================================

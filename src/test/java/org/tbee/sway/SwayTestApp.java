@@ -157,7 +157,14 @@ public class SwayTestApp {
         migPanel.wrap();
 
         migPanel.addLabelAndField("Icon", STextField.ofLong().value(123l)
-                .icon(SIconRegistry.find(SIconRegistry.SwayInternallyUsedIcon.MENU_COPY))
+                .icon(SIconRegistry.find(SIconRegistry.SwayInternallyUsedIcon.MENU_PASTE))
+                .backIcon(SIconRegistry.find(SIconRegistry.SwayInternallyUsedIcon.MENU_COPY))
+                .onBackIconClick(evt -> SOptionPane.ofInfo(migPanel, "BackIcon clicked", "BackIcon clicked"))
+        );
+        migPanel.wrap();
+        migPanel.addLabelAndField("Icon", STextField.ofString().value("blabla")
+                .icon(SIconRegistry.find(SIconRegistry.SwayInternallyUsedIcon.MENU_PASTE))
+                .backIcon(SIconRegistry.find(SIconRegistry.SwayInternallyUsedIcon.MENU_COPY))
                 .onIconClick(evt -> SOptionPane.ofInfo(migPanel, "Icon clicked", "Icon clicked"))
         );
         migPanel.wrap();

@@ -305,5 +305,5 @@ Just include a dependency in your project. For the latest version see [Maven cen
 * STable's navigation bar is based on CoMedia's implementation (project is no longer available online).
 * Mikael Grev's excellent MigLayout is used for several layouts (https://www.miglayout.com/).
 * FlatLAF is a modern high quality Look and Feel (https://www.formdev.com/flatlaf/).
-* Ikonli (https://kordamp.org/ikonli/) to use the standard available Material Design 2 iconset (https://kordamp.org/ikonli/cheat-sheet-materialdesign2.html)
+* Ikonli (https://kordamp.org/ikonli/) to use the standard included Material Design 2 icon set (https://kordamp.org/ikonli/cheat-sheet-materialdesign2.html)
 
