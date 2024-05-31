@@ -1,5 +1,6 @@
 package org.tbee.sway.format;
 
+import javax.swing.JFileChooser;
 import java.io.File;
 
 public class FileFormat implements Format<File> {
@@ -35,6 +36,9 @@ public class FileFormat implements Format<File> {
         return file;
     }
 
+    static public FileFormat of() {
+        return new FileFormat();
+    }
 
     // ==============================================
     // FLUENT API
@@ -59,5 +63,30 @@ public class FileFormat implements Format<File> {
     public FileFormat allowedType(AllowedType v) {
         setAllowedType(v);
         return this;
+    }
+
+
+    // ==============================================
+    // EDITOR
+
+    public Editor<File> editor() {
+        return (owner, value, callback) -> {
+
+            JFileChooser jFileChooser = new JFileChooser();
+            if (value != null) {
+                jFileChooser.setSelectedFile(value);
+            }
+            jFileChooser.setFileSelectionMode(
+                switch(getAllowedType()) {
+                    case ALL -> JFileChooser.FILES_AND_DIRECTORIES;
+                    case FILE -> JFileChooser.FILES_ONLY;
+                    case DIR -> JFileChooser.DIRECTORIES_ONLY;
+                }
+            );
+
+            if (jFileChooser.showOpenDialog(owner) == JFileChooser.APPROVE_OPTION) {
+                callback.accept(jFileChooser.getSelectedFile());
+            }
+        };
     }
 }

@@ -2,6 +2,7 @@ package org.tbee.sway;
 
 import org.kordamp.ikonli.materialdesign2.MaterialDesignC;
 import org.tbee.sway.binding.BeanBinder;
+import org.tbee.sway.format.FileFormat;
 import org.tbee.sway.format.Format;
 import org.tbee.util.ExceptionUtil;
 
@@ -11,6 +12,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
+import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -160,16 +162,16 @@ public class SwayTestApp {
         );
         migPanel.wrap();
 
-        migPanel.addLabelAndField("File", SFileTextField.of());
+        migPanel.addLabelAndField("File", STextField.of(File.class));
         migPanel.wrap();
 
-        migPanel.addLabelAndField("File mustExist", SFileTextField.of().mustExist(true));
+        migPanel.addLabelAndField("File mustExist", STextField.of(FileFormat.of().mustExist(true)));
         migPanel.wrap();
 
-        migPanel.addLabelAndField("File fileOnly", SFileTextField.of().allowedType(FILE));
+        migPanel.addLabelAndField("File fileOnly", STextField.of(FileFormat.of().allowedType(FILE)));
         migPanel.wrap();
 
-        migPanel.addLabelAndField("File dirOnly", SFileTextField.of().allowedType(DIR));
+        migPanel.addLabelAndField("File dirOnly", STextField.of(FileFormat.of().allowedType(DIR)));
         migPanel.wrap();
 
         return SVPanel.of(SLabel.of("STextField"), migPanel).margin(0);

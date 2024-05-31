@@ -1,5 +1,6 @@
 package org.tbee.sway.format;
 
+import java.io.File;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.URI;
@@ -55,6 +56,7 @@ public class FormatRegistry {
         if (clazz.equals(Date.class)) return new DateFormat();
         if (clazz.equals(URL.class)) return new URLFormat();
         if (clazz.equals(URI.class)) return new URIFormat();
+        if (clazz.equals(File.class)) return new FileFormat();
 //        if (clazz.equals(Integer.class)) return new JavaFormat<Integer>(NumberFormat.getIntegerInstance(), ("" + Integer.MIN_VALUE).length(), SwingConstants.TRAILING);
         return null;
     }

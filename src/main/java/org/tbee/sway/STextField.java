@@ -158,6 +158,11 @@ public class STextField<T> extends javax.swing.JTextField implements
         setHAlign(format.horizontalAlignment());
         setIcon(null);
 
+        if (format.editor() != null) {
+            setIcon(SIconRegistry.find(SIconRegistry.SwayInternallyUsedIcon.TEXTFIELD_POPUP));
+            onIconClick(evt -> format.editor().open(this, getValue(), this::setValue));
+        }
+
         // the FocusInterpreterListener must be kept in an instance variable, otherwise it will be cleared by the WeakArrayList used in the FocusInterpreter
         focusInterpreterListener = evt -> {
             if (evt.getState() == FocusInterpreter.State.LOSING_FOCUS) {
