@@ -15,6 +15,7 @@ import org.tbee.sway.mixin.JComponentMixin;
 import org.tbee.sway.mixin.OverlayMixin;
 import org.tbee.sway.mixin.TextIconMixin;
 import org.tbee.sway.mixin.ToolTipMixin;
+import org.tbee.sway.mixin.ValueMixin;
 import org.tbee.sway.support.FocusInterpreter;
 import org.tbee.sway.support.HAlign;
 import org.tbee.sway.text.DocumentFilterSize;
@@ -130,6 +131,7 @@ public class STextField<T> extends javax.swing.JTextField implements
         EditableMixin<STextField<T>>,
         ExceptionHandlerDefaultMixin<STextField<T>>,
         TextIconMixin<STextField<T>>,
+        ValueMixin<STextField<T>, T>,
         JComponentMixin<STextField<T>> {
 
     final static private org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(STextField.class);
@@ -424,7 +426,6 @@ public class STextField<T> extends javax.swing.JTextField implements
     // VALUE
 
     private T value = null;
-    final static public String VALUE = "value";
 
     protected void setTextFromValue(T value) {
         String text = format.toString(value);
@@ -496,13 +497,6 @@ public class STextField<T> extends javax.swing.JTextField implements
     }
     public T getValue() {
         return this.value;
-    }
-    public STextField<T> value(T value) {
-        setValue(value);
-        return this;
-    }
-    public BindingEndpoint<T> value$() {
-        return BindingEndpoint.of(this, VALUE, exceptionHandler);
     }
 
     protected void processKeyEvent(KeyEvent e) {

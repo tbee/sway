@@ -7,8 +7,8 @@ import org.tbee.sway.format.FormatRegistry;
 import org.tbee.sway.list.DefaultListCellRenderer;
 import org.tbee.sway.list.SListCore;
 import org.tbee.sway.mixin.BindToMixin;
-import org.tbee.sway.mixin.JComponentMixin;
 import org.tbee.sway.mixin.ExceptionHandlerDefaultMixin;
+import org.tbee.sway.mixin.JComponentMixin;
 import org.tbee.sway.mixin.SelectionMixin;
 import org.tbee.sway.support.SwayUtil;
 
@@ -96,9 +96,7 @@ public class SList<T> extends JPanel implements
 
     private Format<T> format = null;
 
-    // TBEERNOT not sure how to do this, but I know this API needs to be there. TTD? :-D
     /**
-     *
      * @param v
      * @return
      */
@@ -107,9 +105,7 @@ public class SList<T> extends JPanel implements
         return this;
     }
 
-    // TBEERNOT not sure how to do this, but I know this API needs to be there. TTD? :-D
     /**
-     *
      * @param clazz
      * @return
      */

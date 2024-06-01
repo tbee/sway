@@ -64,6 +64,11 @@ public class SFrame extends JFrame implements
         return this;
     }
 
+    public SFrame centerOnScreen() {
+        SwingUtil.centerOnScreen(this);
+        return this;
+    }
+
     public SFrame maximize() {
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         return this;

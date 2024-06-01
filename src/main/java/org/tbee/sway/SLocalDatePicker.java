@@ -29,7 +29,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.beans.PropertyVetoException;
-import java.text.SimpleDateFormat;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -62,7 +61,8 @@ public class SLocalDatePicker extends JComponent {
         value(LocalDate.now());
 
         // GUI
-        constructGUI();
+        setLayout(new CardLayout());
+        add(constructGUIPicker(), "PICKER");
     }
 
     // ===========================================================================================================
@@ -288,14 +288,6 @@ public class SLocalDatePicker extends JComponent {
 
     volatile protected LocalDate displayedLocalDate;
     final static public String DISPLAYEDLOCALDATE = "displayedLocalDate";
-
-    /**
-     *
-     */
-    protected void constructGUI() {
-        setLayout(new CardLayout());
-        add(constructGUIPicker(), "PICKER");
-    }
 
     /**
      * @return
@@ -863,7 +855,7 @@ public class SLocalDatePicker extends JComponent {
         while (firstOfMonthIdx < 0) {
             firstOfMonthIdx += 7;
         }
-        return firstOfMonthIdx;
+        return 0;//firstOfMonthIdx;
     }
 
     /**
