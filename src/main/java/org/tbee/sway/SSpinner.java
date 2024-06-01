@@ -113,12 +113,24 @@ public class SSpinner<T> extends JPanel implements
                         if (!isEditable()) {
                             return SSpinner.this.value;
                         }
-                        return format.toValue(text);
+                        try {
+                            return format.toValue(text);
+                        }
+                        catch (Exception e) {
+                            handleException(e);
+                            throw e;
+                        }
                     }
 
                     @Override
                     public String valueToString(Object value) throws ParseException {
-                        return format.toString((T)value);
+                        try {
+                            return format.toString((T)value);
+                        }
+                        catch (Exception e) {
+                            handleException(e);
+                            throw e;
+                        }
                     }
                 };
             }
