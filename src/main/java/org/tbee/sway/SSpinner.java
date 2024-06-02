@@ -4,12 +4,12 @@ import org.tbee.sway.binding.BindingEndpoint;
 import org.tbee.sway.binding.ExceptionHandler;
 import org.tbee.sway.format.Format;
 import org.tbee.sway.format.FormatRegistry;
+import org.tbee.sway.format.IntegerFormat;
 import org.tbee.sway.mixin.BindToMixin;
 import org.tbee.sway.mixin.ExceptionHandlerDefaultMixin;
 import org.tbee.sway.mixin.HAlignMixin;
 import org.tbee.sway.mixin.JComponentMixin;
 import org.tbee.sway.mixin.ValueMixin;
-import org.tbee.sway.support.HAlign;
 
 import javax.swing.AbstractSpinnerModel;
 import javax.swing.JFormattedTextField;
@@ -18,6 +18,7 @@ import javax.swing.JSpinner;
 import java.awt.BorderLayout;
 import java.text.ParseException;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 
 /**
@@ -100,8 +101,8 @@ public class SSpinner<T> extends JPanel implements
      * @return
      */
     public SSpinner<T> render(Format<T> format) {
-        JFormattedTextField f = getTextField();
-        f.setFormatterFactory(new JFormattedTextField.AbstractFormatterFactory() {
+        JFormattedTextField jFormattedTextField = getTextField();
+        jFormattedTextField.setFormatterFactory(new JFormattedTextField.AbstractFormatterFactory() {
             @Override
             public JFormattedTextField.AbstractFormatter getFormatter(JFormattedTextField tf) {
                 return new JFormattedTextField.AbstractFormatter() {
@@ -135,6 +136,10 @@ public class SSpinner<T> extends JPanel implements
                 };
             }
         });
+
+        jFormattedTextField.setColumns(format.columns());
+        hAlign(format.horizontalAlignment());
+
         return this;
     }
 
@@ -218,9 +223,19 @@ public class SSpinner<T> extends JPanel implements
     }
     static public SSpinner<Integer> ofInteger(int startValue) {
         return new SSpinner<>(startValue)
-                .hAlign(HAlign.TRAILING)
-                .nextValueFunction(i -> i + 1)
-                .previousValueFunction(i -> i - 1);
+                .render(new IntegerFormat())
+                .previousValueFunction(i -> {
+                    if (i == Integer.MIN_VALUE) {
+                        return i;
+                    }
+                    return i - 1;
+                })
+                .nextValueFunction(i -> {
+                    if (i == Integer.MAX_VALUE) {
+                        return i;
+                    }
+                    return i + 1;
+                });
     }
 
     static public <T> SSpinner<T> of(List<T> values) {
@@ -230,20 +245,23 @@ public class SSpinner<T> extends JPanel implements
         if (values.isEmpty()) {
             throw new IllegalArgumentException("List cannot be empty");
         }
+        AtomicInteger idx = new AtomicInteger(startIndex);
         return new SSpinner<>(values.get(startIndex))
                 .nextValueFunction(listEntry -> {
-                    int idx = values.indexOf(listEntry) + 1;
-                    if (idx >= values.size()) {
-                        return null;
+                    int i = idx.get() + 1;
+                    if (i >= values.size()) {
+                        i = values.size() - 1;
                     }
-                    return values.get(idx);
+                    idx.set(i);
+                    return values.get(i);
                 })
                 .previousValueFunction(listEntry -> {
-                    int idx = values.indexOf(listEntry) - 1;
-                    if (idx < 0) {
-                        return null;
+                    int i = idx.get() - 1;
+                    if (i < 0) {
+                        i = 0;
                     }
-                    return values.get(idx);
+                    idx.set(i);
+                    return values.get(i);
                 });
     }
 }

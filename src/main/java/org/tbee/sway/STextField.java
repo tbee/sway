@@ -488,6 +488,7 @@ public class STextField<T> extends javax.swing.JTextField implements
     /** Value (through Format) */
     public void setValue(T v) {
         setTextFromValue(v);
+        setIcon(format.toIcon(v));
         try {
             firePropertyChange(VALUE, this.value, this.value = v);
         }

@@ -47,6 +47,7 @@ public class SwayTestApp {
                     .tab("sTree", sTree())
                     .tab("sComboBox", sComboBox())
                     .tab("sTextField", sTextField())
+                    .tab("sSpinner", sSpinner())
                     .tab("sTextArea", sTextArea())
                     .tab("sCheckBox", sCheckBox())
                     .tab("sTabbedPane", sTabbedPane());
@@ -84,102 +85,81 @@ public class SwayTestApp {
     static JPanel sTextField() {
         City bean = City.of("test",12);
         BeanBinder<City> beanBinder = new BeanBinder<>(bean);
+        City amsterdam = City.of("Amsterdam", 150);
+        City berlin = City.of("Berlin", 560);
+        City rome = City.of("Rome", 1560);
+        City paris = City.of("Paris", 575);
+        var cities = List.of(amsterdam, berlin, rome, paris);
 
         STextField.ofStringBlankIsNull().value$().bindTo(City.name$(beanBinder)).unbind(); // test unbind
 
         SMigPanel migPanel = SMigPanel.of();
 
-        migPanel.addLabelAndField("String", STextField.ofString().value("abc"));
-        migPanel.wrap();
+        migPanel.addLabelAndField("String", STextField.ofString().value("abc")).wrap();
 
-        migPanel.addLabelAndField("String -> bean.name", STextField.ofString().bindTo(bean.name$()));
-        migPanel.wrap();
+        migPanel.addLabelAndField("String -> bean.name", STextField.ofString().bindTo(bean.name$())).wrap();
 
-        migPanel.addLabelAndField("StringBlankIsNull -> bean.name", STextField.ofStringBlankIsNull().bindTo(City.name$(beanBinder)));
-        migPanel.wrap();
+        migPanel.addLabelAndField("StringBlankIsNull -> bean.name", STextField.ofStringBlankIsNull().bindTo(City.name$(beanBinder))).wrap();
 
-        migPanel.addLabelAndField("Integer -> bean.distance", STextField.ofInteger().bindTo(bean.distance$()));
-        migPanel.wrap();
+        migPanel.addLabelAndField("Integer -> bean.distance", STextField.ofInteger().bindTo(bean.distance$())).wrap();
 
-        migPanel.addLabelAndField("Integer -> beanbinder.distance", STextField.ofInteger().bindTo(City.distance$(beanBinder)));
-        migPanel.wrap();
+        migPanel.addLabelAndField("Integer -> beanbinder.distance", STextField.ofInteger().bindTo(City.distance$(beanBinder))).wrap();
 
-        migPanel.addLabelAndField("Integer -> ofBind bean.distance", STextField.ofBindTo(bean.distance$()));
-        migPanel.wrap();
+        migPanel.addLabelAndField("Integer -> ofBind bean.distance", STextField.ofBindTo(bean.distance$())).wrap();
 
-        migPanel.addLabelAndField("Integer -> ofBind beanBinder.distance", STextField.ofBindTo(City.distance$(beanBinder)));
-        migPanel.wrap();
+        migPanel.addLabelAndField("Integer -> ofBind beanBinder.distance", STextField.ofBindTo(City.distance$(beanBinder))).wrap();
 
 //        migPanel.addLabel(SLabel.of("Integer -> bean.distance add"));
 //        STextField<Integer> integerSTextField = STextField.ofInteger();
 //        integerSTextField.value$().add(2).bind(bean.distance$());
-//        migPanel.addField(integerSTextField);
-//        migPanel.wrap();
+//        migPanel.addField(integerSTextField).wrap();
 
-        migPanel.addLabelAndField("Long", STextField.ofLong().value(123l));
-        migPanel.wrap();
+        migPanel.addLabelAndField("Long", STextField.ofLong().value(123l)).wrap();
 
-        migPanel.addLabelAndField("Double", STextField.ofDouble().value(1.23));
-        migPanel.wrap();
+        migPanel.addLabelAndField("Double", STextField.ofDouble().value(1.23)).wrap();
 
-        migPanel.addLabelAndField("Percent", STextField.ofPercent().value(1.23));
-        migPanel.wrap();
+        migPanel.addLabelAndField("Percent", STextField.ofPercent().value(1.23)).wrap();
 
-        migPanel.addLabelAndField("Currency", STextField.ofCurrency().value(1.23));
-        migPanel.wrap();
+        migPanel.addLabelAndField("Currency", STextField.ofCurrency().value(1.23)).wrap();
 
-        migPanel.addLabelAndField("Currency JAPAN", STextField.ofCurrency(Locale.JAPAN).value(1.23));
-        migPanel.wrap();
+        migPanel.addLabelAndField("Currency JAPAN", STextField.ofCurrency(Locale.JAPAN).value(1.23)).wrap();
 
-        migPanel.addLabelAndField("Currency EURO", STextField.ofCurrency(Currency.getInstance("EUR")).value(1.23));
-        migPanel.wrap();
+        migPanel.addLabelAndField("Currency EURO", STextField.ofCurrency(Currency.getInstance("EUR")).value(1.23)).wrap();
 
-        migPanel.addLabelAndField("BigInteger", STextField.ofBigInteger().value(BigInteger.ONE));
-        migPanel.wrap();
+        migPanel.addLabelAndField("BigInteger", STextField.ofBigInteger().value(BigInteger.ONE)).wrap();
 
-        migPanel.addLabelAndField("BigDecimal", STextField.ofBigDecimal().value(BigDecimal.TEN));
-        migPanel.wrap();
+        migPanel.addLabelAndField("BigDecimal", STextField.ofBigDecimal().value(BigDecimal.TEN)).wrap();
 
-        migPanel.addLabelAndField("LocalDate", STextField.ofLocalDate().value(LocalDate.now()));
-        migPanel.wrap();
+        migPanel.addLabelAndField("LocalDate", STextField.ofLocalDate().value(LocalDate.now())).wrap();
 
-        migPanel.addLabelAndField("LocalDateTime", STextField.ofLocalDateTime().value(LocalDateTime.now()));
-        migPanel.wrap();
+        migPanel.addLabelAndField("LocalDateTime", STextField.ofLocalDateTime().value(LocalDateTime.now())).wrap();
 
-        migPanel.addLabelAndField("ZonedDateTime", STextField.ofZonedDateTime().value(ZonedDateTime.now()));
-        migPanel.wrap();
+        migPanel.addLabelAndField("ZonedDateTime", STextField.ofZonedDateTime().value(ZonedDateTime.now())).wrap();
 
-        migPanel.addLabelAndField("OffsetDateTime", STextField.ofOffsetDateTime().value(OffsetDateTime.now()));
-        migPanel.wrap();
+        migPanel.addLabelAndField("OffsetDateTime", STextField.ofOffsetDateTime().value(OffsetDateTime.now())).wrap();
 
         JButton jButton = SButton.of("set name", e -> bean.setName("name" + System.currentTimeMillis()));
-        migPanel.addField(jButton).skip(1);
-        migPanel.wrap();
+        migPanel.addField(jButton).skip(1).wrap();
 
         migPanel.addLabelAndField("Icon", STextField.ofLong().value(123l)
                 .icon(SIconRegistry.find(SIconRegistry.SwayInternallyUsedIcon.MENU_PASTE))
                 .backIcon(SIconRegistry.find(SIconRegistry.SwayInternallyUsedIcon.MENU_COPY))
                 .onBackIconClick(evt -> SOptionPane.ofInfo(migPanel, "BackIcon clicked", "BackIcon clicked"))
-        );
-        migPanel.wrap();
+        ).wrap();
         migPanel.addLabelAndField("Icon", STextField.ofString().value("blabla")
                 .icon(SIconRegistry.find(SIconRegistry.SwayInternallyUsedIcon.MENU_PASTE))
                 .backIcon(SIconRegistry.find(SIconRegistry.SwayInternallyUsedIcon.MENU_COPY))
                 .onIconClick(evt -> SOptionPane.ofInfo(migPanel, "Icon clicked", "Icon clicked"))
-        );
-        migPanel.wrap();
+        ).wrap();
+        migPanel.addLabelAndField("Icon city", STextField.of(new CityFormat(cities)).value(amsterdam)).wrap();
 
-        migPanel.addLabelAndField("File", STextField.of(File.class));
-        migPanel.wrap();
+        migPanel.addLabelAndField("File", STextField.of(File.class)).wrap();
 
-        migPanel.addLabelAndField("File mustExist", STextField.of(FileFormat.of().mustExist(true)));
-        migPanel.wrap();
+        migPanel.addLabelAndField("File mustExist", STextField.of(FileFormat.of().mustExist(true))).wrap();
 
-        migPanel.addLabelAndField("File fileOnly", STextField.of(FileFormat.of().allowedType(FILE)));
-        migPanel.wrap();
+        migPanel.addLabelAndField("File fileOnly", STextField.of(FileFormat.of().allowedType(FILE))).wrap();
 
-        migPanel.addLabelAndField("File dirOnly", STextField.of(FileFormat.of().allowedType(DIR)));
-        migPanel.wrap();
+        migPanel.addLabelAndField("File dirOnly", STextField.of(FileFormat.of().allowedType(DIR))).wrap();
 
         return SVPanel.of(SLabel.of("STextField"), migPanel).margin(0);
     }
@@ -377,6 +357,17 @@ public class SwayTestApp {
     	migPanel.addLabelAndField("bind 1", STextArea.of().bindTo(city.name$())).wrap();
     	migPanel.addLabelAndField("bind 2", STextArea.of(5, 10).bindTo(city.name$())).wrap();
         return SVPanel.of(SLabel.of("STextArea"), migPanel).margin(0);
+    }
+
+    static JPanel sSpinner() {
+        List<City> cities = List.of(City.of("New York"), City.of("Amsterdam"), City.of("Rome"));
+
+        SMigPanel migPanel = SMigPanel.of();
+        migPanel.addLabelAndField("Integer", SSpinner.ofInteger()).wrap();
+        migPanel.addLabelAndField("List duplicate", SSpinner.of(List.of("A", "B", "C", "D", "B", "E"))).wrap();
+        migPanel.addLabelAndField("City", SSpinner.of(cities).render(new CityFormat())).wrap();
+        migPanel.addLabelAndField("City editable", SSpinner.of(cities).editable(true).render(new CityFormat(cities))).wrap();
+        return SVPanel.of(SLabel.of("SSPinner"), migPanel).margin(0);
     }
 
     static JPanel sTabbedPane() {
