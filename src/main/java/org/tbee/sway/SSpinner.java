@@ -18,7 +18,9 @@ import javax.swing.JSpinner;
 import java.awt.BorderLayout;
 import java.text.ParseException;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
@@ -76,8 +78,10 @@ public class SSpinner<T> extends JPanel implements
 
     /** Value) */
     public void setValue(T v) {
-        firePropertyChange(VALUE, this.value, this.value = v);
-        spinnerModel.fireStateChanged();
+        if (!Objects.equals(this.value, v)) {
+            firePropertyChange(VALUE, this.value, this.value = v);
+            spinnerModel.fireStateChanged();
+        }
     }
     public T getValue() {
         return this.value;
@@ -218,6 +222,11 @@ public class SSpinner<T> extends JPanel implements
     // ========================================================
     // FLUENT API
 
+    public SSpinner<T> columns(int columns) {
+        getTextField().setColumns(columns);
+        return this;
+    }
+
     static public SSpinner<Integer> ofInteger() {
         return ofInteger(0);
     }
@@ -245,8 +254,11 @@ public class SSpinner<T> extends JPanel implements
         if (values.isEmpty()) {
             throw new IllegalArgumentException("List cannot be empty");
         }
+
+        // In order to handle duplicates in the list correctly, the actual value is based on the index in the list
         AtomicInteger idx = new AtomicInteger(startIndex);
-        return new SSpinner<>(values.get(startIndex))
+
+        SSpinner<T> spinner = new SSpinner<>(values.get(startIndex))
                 .nextValueFunction(listEntry -> {
                     int i = idx.get() + 1;
                     if (i >= values.size()) {
@@ -263,5 +275,10 @@ public class SSpinner<T> extends JPanel implements
                     idx.set(i);
                     return values.get(i);
                 });
+
+        // Make sure that a setValue updates the index
+        spinner.value$().onChange((Consumer<T>)v -> idx.set(values.indexOf(v)));
+
+        return spinner;
     }
 }

@@ -1,11 +1,9 @@
-/*
- * Copyright: (c) KnowledgePlaza.nl
- * Version:   $Revision: 1.10 $
- * Modified:  $Date: 2010/10/08 08:39:34 $
- * By:        $Author: toeukpap $
- */
 package org.tbee.sway;
 
+import org.tbee.sway.binding.ExceptionHandler;
+import org.tbee.sway.mixin.ExceptionHandlerDefaultMixin;
+import org.tbee.sway.mixin.SelectionMixin;
+import org.tbee.sway.mixin.ValueMixin;
 import org.tbee.sway.support.ColorUtil;
 
 import javax.swing.BorderFactory;
@@ -13,12 +11,8 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JSpinner;
 import javax.swing.JTable;
 import javax.swing.JToggleButton;
-import javax.swing.SpinnerListModel;
-import javax.swing.SpinnerNumberModel;
-import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
@@ -36,13 +30,28 @@ import java.time.temporal.WeekFields;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.function.Consumer;
 
 /**
  * @author user
  */
-public class SLocalDatePicker extends JComponent {
+public class SLocalDatePicker extends JComponent implements
+        ValueMixin<SLocalDatePicker, LocalDate>,
+        SelectionMixin<SLocalDatePicker, LocalDate>,
+        ExceptionHandlerDefaultMixin<SLocalDatePicker> {
+
     public static final DateTimeFormatter MMMM = DateTimeFormatter.ofPattern("MMMM");
     public static final DateTimeFormatter E = DateTimeFormatter.ofPattern("E");
+    public static final LocalDate MONDAY = java.time.LocalDate.of(2009, 7, 6); // This is a monday
+
+    protected SSpinner<Integer> yearSpinner = null;
+    protected SSpinner<String> monthSpinner = null;
+    protected JLabel[] daynameLabels = new JLabel[7]; // seven days in a week
+    protected JLabel[] weeknumberLabels = new JLabel[6]; // we required a maximum of 6 weeks if the 1st of the month of a 31 days month falls on the last weekday
+    protected JToggleButton[] dateToggleButton = new JToggleButton[6 * 7]; // we required a maximum of 6 weeks if the 1st of the month of a 31 days month falls on the last weekday
+    private JLabel labelForColor = new JLabel(); // use to get the default colors
+    private JToggleButton toggleButtonForColor = new JToggleButton(); // use to get the default colors
+    private JPanel pickerPanel = new JPanel();
 
     // ===========================================================================================================
     // CONSTRUCTOR
@@ -54,16 +63,30 @@ public class SLocalDatePicker extends JComponent {
     public SLocalDatePicker(LocalDate c) {
         value(c);
 
-        // setup properties
-        mMode(Mode.SINGLE);
-        setLocale(Locale.getDefault());
-        referenceLocalDate(LocalDate.now());
-        value(LocalDate.now());
+        // setup defaults
+        mode(Mode.SINGLE);
+        locale(Locale.getDefault());
+//        referenceLocalDate(LocalDate.now());
 
         // GUI
         setLayout(new CardLayout());
-        add(constructGUIPicker(), "PICKER");
+        add(constructPickerCard(), "PICKER");
     }
+
+    // ========================================================
+    // EXCEPTION HANDLER
+
+    /**
+     * Set the ExceptionHandler used a.o. in binding
+     * @param v
+     */
+    public void setExceptionHandler(ExceptionHandler v) {
+        firePropertyChange(EXCEPTIONHANDLER, exceptionHandler, exceptionHandler = v);
+    }
+    public ExceptionHandler getExceptionHandler() {
+        return exceptionHandler;
+    }
+    private ExceptionHandler exceptionHandler = this::handleException;
 
     // ===========================================================================================================
     // PROPERTIES
@@ -71,52 +94,51 @@ public class SLocalDatePicker extends JComponent {
     /**
      * LocalDate: the last selected
      */
-    public LocalDate value() {
+    public LocalDate getValue() {
         return value;
     }
-
-    public SLocalDatePicker value(LocalDate v) {
+    public void setValue(LocalDate v) {
         try {
             // update calendar
             fireVetoableChange(VALUE, this.value, v);
             firePropertyChange(VALUE, this.value, this.value = v);
 
             // update calendars
-            if (v == null && values.contains(this.value)) {
-				removeLocalDate(this.value);
+            if (v == null && selection.contains(this.value)) {
+				removeFromSelection(this.value);
 			}
-            if (v != null && !values.contains(v)) {
-                values(List.of(v));
+            if (v != null && !selection.contains(v)) {
+                setSelection(List.of(v));
             }
 
             // refresh
             if (v != null) {
-                displayedLocalDate(v);
+                setDisplayedLocalDate(v);
             }
-            refreshLocalDate();
+            refreshDisplayedDateBasedComponents();
         }
         catch (PropertyVetoException e) {
             throw new IllegalArgumentException(e);
         }
-        return this;
     }
-    volatile protected LocalDate value = null;
-    final static public String VALUE = "value";
+    private LocalDate value = null;
 
     /**
      * values: all selected calendars (depends on the selection mode)
      */
-    public List<LocalDate> values() {
-        return values;
+    public List<LocalDate> getSelection() {
+        return selection;
     }
 
-    public SLocalDatePicker values(List<LocalDate> v) {
+    public void setSelection(List<LocalDate> v) {
         try {
-            fireVetoableChange(VALUES, this.values, v);
-            firePropertyChange(VALUES, this.values, this.values = v);
+            fireVetoableChange(SELECTION, this.selection, v);
+            firePropertyChange(SELECTION, this.selection, this.selection = v);
 
             // update calendar
-            if (!values.contains(this.value) && values.size() > 0) value(values.get(0));
+            if (!selection.contains(this.value) && selection.size() > 0) {
+                setValue(selection.get(0));
+            }
 
             // refresh
             refreshSelection();
@@ -124,56 +146,54 @@ public class SLocalDatePicker extends JComponent {
         catch (PropertyVetoException e) {
             throw new IllegalArgumentException(e);
         }
-        return this;
     }
-    volatile protected List<LocalDate> values = new ArrayList<LocalDate>();
-    final static public String VALUES = "values";
+    private List<LocalDate> selection = List.of();
 
-    public SLocalDatePicker addLocalDate(LocalDate v) {
-        List<LocalDate> newValues = new ArrayList<LocalDate>(values);
+    public SLocalDatePicker addToSelection(LocalDate v) {
+        List<LocalDate> newValues = new ArrayList<LocalDate>(selection);
         newValues.add(v);
-        values(newValues);
+        setSelection(newValues);
         return this;
     }
 
-    public SLocalDatePicker removeLocalDate(LocalDate v) {
-        List<LocalDate> newValues = new ArrayList<LocalDate>(values);
+    public SLocalDatePicker removeFromSelection(LocalDate v) {
+        List<LocalDate> newValues = new ArrayList<LocalDate>(selection);
         newValues.remove(v);
-        values(newValues);
+        setSelection(newValues);
         return this;
     }
 
-    /**
-     * ReferenceLocalDate: determines how the component looks like e.g. first day of week
-     */
-    public LocalDate referenceLocalDate() {
-        return referenceLocalDate;
-    }
-
-    public SLocalDatePicker referenceLocalDate(LocalDate v) {
-        try {
-            fireVetoableChange(REFERENCELOCALDATE, this.referenceLocalDate, v);
-            firePropertyChange(REFERENCELOCALDATE, this.referenceLocalDate, this.referenceLocalDate = v);
-
-            // refresh
-            refreshLabels();
-        }
-        catch (PropertyVetoException e) {
-            throw new IllegalArgumentException(e);
-        }
-        return this;
-    }
-    volatile protected LocalDate referenceLocalDate = null;
-    final static public String REFERENCELOCALDATE = "referenceLocalDate";
+//    /**
+//     * ReferenceLocalDate: determines how the component looks like e.g. first day of week
+//     */
+//    public LocalDate referenceLocalDate() {
+//        return referenceLocalDate;
+//    }
+//
+//    public SLocalDatePicker referenceLocalDate(LocalDate v) {
+//        try {
+//            fireVetoableChange(REFERENCELOCALDATE, this.referenceLocalDate, v);
+//            firePropertyChange(REFERENCELOCALDATE, this.referenceLocalDate, this.referenceLocalDate = v);
+//
+//            // refresh
+//            refreshLabels();
+//        }
+//        catch (PropertyVetoException e) {
+//            throw new IllegalArgumentException(e);
+//        }
+//        return this;
+//    }
+//    private LocalDate referenceLocalDate = null;
+//    final static public String REFERENCELOCALDATE = "referenceLocalDate";
 
     /**
      * Locale: determines the language of the labels
      */
-    public Locale locale() {
+    public Locale getLocale() {
         return locale;
     }
 
-    public SLocalDatePicker locale(Locale v) {
+    public void setLocale(Locale v) {
         try {
             fireVetoableChange(LOCALE, this.locale, v);
             firePropertyChange(LOCALE, this.locale, this.locale = v);
@@ -184,39 +204,42 @@ public class SLocalDatePicker extends JComponent {
         catch (PropertyVetoException e) {
             throw new IllegalArgumentException(e);
         }
+    }
+    private Locale locale = Locale.getDefault();
+    final static public String LOCALE = "locale";
+    public SLocalDatePicker locale(Locale v) {
+        setLocale(v);
         return this;
     }
-    volatile protected Locale locale = Locale.getDefault();
-    final static public String LOCALE = "locale";
 
     /**
      * Mode: single, range or multiple
      */
-    public Mode mode() {
+    public Mode getMode() {
         return mode;
     }
 
-    public void mMode(Mode v) {
+    public void setMode(Mode v) {
         try {
             fireVetoableChange(MODE, this.mode, v);
             firePropertyChange(MODE, this.mode, this.mode = v);
 
             // update calendars
             List<LocalDate> values = new ArrayList<>();
-            if (value() != null) values.add(value());
-            values(values);
+            if (value != null) {
+                values.add(value);
+            }
+            setSelection(values);
         }
         catch (PropertyVetoException e) {
             throw new IllegalArgumentException(e);
         }
     }
-
-    public SLocalDatePicker withMode(Mode value) {
-        mMode(value);
+    public SLocalDatePicker mode(Mode v) {
+        setMode(v);
         return this;
     }
-
-    volatile protected Mode mode = null;
+    private Mode mode = null;
     final static public String MODE = "mode";
 
     public enum Mode {SINGLE, RANGE, MULTIPLE}
@@ -228,47 +251,48 @@ public class SLocalDatePicker extends JComponent {
         if (v == null) {
             return false;
         }
-
-        return values.contains(v);
+        return selection.contains(v);
     }
 
     /**
      * WeekendLabelColor: single, range or multiple
      */
-    public Color weekendLabelColor() {
+    public Color getWeekendLabelColor() {
         return weekendLabelColor;
     }
-
-    public SLocalDatePicker weekendLabelColor(Color v) {
+    public void setWeekendLabelColor(Color v) {
         try {
             fireVetoableChange(WEEKENDLABELCOLOR, this.weekendLabelColor, v);
             firePropertyChange(WEEKENDLABELCOLOR, this.weekendLabelColor, this.weekendLabelColor = v);
 
             // update calendars
-            List<LocalDate> lLocalDates = new ArrayList<LocalDate>();
-            if (value() != null) lLocalDates.add(value());
-            values(lLocalDates);
+            List<LocalDate> localDates = new ArrayList<LocalDate>();
+            if (value != null) {
+                localDates.add(value);
+            }
+            setSelection(localDates);
         }
         catch (PropertyVetoException e) {
             throw new IllegalArgumentException(e);
         }
+    }
+    private Color weekendLabelColor = (new JTable()).getSelectionBackground();
+    final static public String WEEKENDLABELCOLOR = "weekendLabelColor";
+    public SLocalDatePicker weekendLabelColor(Color v) {
+        setWeekendLabelColor(v);
         return this;
     }
-    volatile protected Color weekendLabelColor = (new JTable()).getSelectionBackground();
-    final static public String WEEKENDLABELCOLOR = "weekendLabelColor";
-
-
     // ===========================================================================================================
     // LAYOUT
 
     /**
-     * ReferenceLocalDate: determines how the component looks like e.g. first day of week
+     * displayedLocalDate: determines how the component looks like e.g. first day of week
      */
-    public LocalDate displayedLocalDate() {
-        return (LocalDate) displayedLocalDate;
+    public LocalDate getDisplayedLocalDate() {
+        return displayedLocalDate;
     }
 
-    public void displayedLocalDate(LocalDate v) {
+    public void setDisplayedLocalDate(LocalDate v) {
         // the displayed localdate always points to the 1st of the month
         if (v == null) {
             throw new IllegalArgumentException("NULL not allowed");
@@ -279,14 +303,13 @@ public class SLocalDatePicker extends JComponent {
 			// set it
 			fireVetoableChange(DISPLAYEDLOCALDATE, displayedLocalDate, v);
 			firePropertyChange(DISPLAYEDLOCALDATE, displayedLocalDate, displayedLocalDate = v);
-			refreshLocalDate();
+			refreshDisplayedDateBasedComponents();
         }
         catch (PropertyVetoException e) {
             throw new IllegalArgumentException(e);
         }
     }
-
-    volatile protected LocalDate displayedLocalDate;
+    private LocalDate displayedLocalDate;
     final static public String DISPLAYEDLOCALDATE = "displayedLocalDate";
 
     /**
@@ -366,48 +389,42 @@ public class SLocalDatePicker extends JComponent {
 
     private JPanel monthPanel = null;
 
-    /**
-     * @return
-     */
-    protected JPanel constructGUIPicker() {
+    protected JPanel constructPickerCard() {
         // year spinner
-        yearSpinnerModel = new YearSpinnerModel();
-        yearJSpinner = new JSpinner(yearSpinnerModel);
-        yearJSpinner.setEditor(new JSpinner.NumberEditor(yearJSpinner, "####"));
-        ((JSpinner.DefaultEditor) yearJSpinner.getEditor()).getTextField().setHorizontalAlignment(SwingConstants.LEFT);
-        yearJSpinner.addChangeListener(e -> {
-            // modify displayed calendar
-            displayedLocalDate = displayedLocalDate.withYear(((Number) yearSpinnerModel.getValue()).intValue());
+        yearSpinner = SSpinner.ofInteger(value.getYear()).columns(5).editable(true);
+        yearSpinner.value$().onChange((Consumer<Integer>) v -> {
+            displayedLocalDate = displayedLocalDate.withYear(v);
+            refreshDisplayedDateBasedComponents();
         });
-        ((JSpinner.DefaultEditor) yearJSpinner.getEditor()).getTextField().addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(java.awt.event.MouseEvent e) {
-                // double click
-                if (e.getClickCount() < 2) return;
-
-                // add and show panel
-                add(constructGUIYear(), "YEAR");
-                ((CardLayout) getLayout()).show(SLocalDatePicker.this, "YEAR");
-            }
-        });
+//        ((JSpinner.DefaultEditor) yearJSpinner.getEditor()).getTextField().addMouseListener(new MouseAdapter() {
+//            @Override
+//            public void mouseClicked(java.awt.event.MouseEvent e) {
+//                // double click
+//                if (e.getClickCount() < 2) return;
+//
+//                // add and show panel
+//                add(constructGUIYear(), "YEAR");
+//                ((CardLayout) getLayout()).show(SLocalDatePicker.this, "YEAR");
+//            }
+//        });
 
         // month spinner
-        monthSpinnerModel = new MonthSpinnerModel();
-        monthJSpinner = new JSpinner(monthSpinnerModel);
-        ((JSpinner.DefaultEditor) monthJSpinner.getEditor()).getTextField().setHorizontalAlignment(SwingConstants.LEFT);
-        monthJSpinner.addChangeListener(e -> displayedLocalDate = displayedLocalDate.withMonth(monthSpinnerModel.getList().indexOf(monthSpinnerModel.getValue()) + 1));
-        yearJSpinner.setPreferredSize(monthJSpinner.getPreferredSize());
-        ((JSpinner.DefaultEditor) monthJSpinner.getEditor()).getTextField().addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(java.awt.event.MouseEvent e) {
-                // double click
-                if (e.getClickCount() < 2) return;
-
-                // add and show panel
-                add(constructGUIMonth(), "MONTH");
-                ((CardLayout) getLayout()).show(SLocalDatePicker.this, "MONTH");
-            }
+        monthSpinner = SSpinner.of(getMonthNames()).value(getMonthNames().get(value.getMonthValue() - 1));
+        monthSpinner.value$().onChange((Consumer<String>) v -> {
+            displayedLocalDate = displayedLocalDate.withMonth(getMonthNames().indexOf(v) + 1);
+            refreshDisplayedDateBasedComponents();
         });
+//        ((JSpinner.DefaultEditor) monthJSpinner.getEditor()).getTextField().addMouseListener(new MouseAdapter() {
+//            @Override
+//            public void mouseClicked(java.awt.event.MouseEvent e) {
+//                // double click
+//                if (e.getClickCount() < 2) return;
+//
+//                // add and show panel
+//                add(constructGUIMonth(), "MONTH");
+//                ((CardLayout) getLayout()).show(SLocalDatePicker.this, "MONTH");
+//            }
+//        });
 
         // daynames
         for (int i = 0; i < 7; i++) {
@@ -422,31 +439,45 @@ public class SLocalDatePicker extends JComponent {
         }
 
         // dates
-        ActionListener iDayActionListener = new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                // extract the date that was clicked
-                int dayIdx = Integer.parseInt(((JToggleButton) e.getSource()).getText());
-                LocalDate clickedLocalDate = displayedLocalDate.withDayOfMonth(dayIdx);
+        ActionListener dayActionListener = e -> {
+            // extract the date that was clicked
+            int dayIdx = Integer.parseInt(((JToggleButton) e.getSource()).getText());
+            LocalDate clickedLocalDate = displayedLocalDate.withDayOfMonth(dayIdx);
 
-                // current calendar
-                LocalDate currentLocalDate = value();
-                if (currentLocalDate == null) currentLocalDate = clickedLocalDate;
+            // current calendar
+            LocalDate currentLocalDate = value;
+            if (currentLocalDate == null) currentLocalDate = clickedLocalDate;
 
-                // the new collection
-                List<LocalDate> localDates = new ArrayList<LocalDate>(values);
+            // the new collection
+            List<LocalDate> localDates = new ArrayList<LocalDate>(selection);
 
-                // what modifiers were pressed?
-                boolean shiftPressed = (e.getModifiers() & ActionEvent.SHIFT_MASK) != 0;
-                boolean ctrlPressed = (e.getModifiers() & ActionEvent.CTRL_MASK) != 0;
-                LocalDate fromLocalDate = currentLocalDate.isBefore(clickedLocalDate) ? currentLocalDate : clickedLocalDate;
-                LocalDate toLocalDate = currentLocalDate.isBefore(clickedLocalDate) ? clickedLocalDate : currentLocalDate;
+            // what modifiers were pressed?
+            boolean shiftPressed = (e.getModifiers() & ActionEvent.SHIFT_MASK) != 0;
+            boolean ctrlPressed = (e.getModifiers() & ActionEvent.CTRL_MASK) != 0;
+            LocalDate fromLocalDate = currentLocalDate.isBefore(clickedLocalDate) ? currentLocalDate : clickedLocalDate;
+            LocalDate toLocalDate = currentLocalDate.isBefore(clickedLocalDate) ? clickedLocalDate : currentLocalDate;
 
-                // Single
-                if (mode() == Mode.SINGLE) {
-                    // if already present
-                    if (localDates.contains(clickedLocalDate)) {
+            // Single
+            if (mode == Mode.SINGLE) {
+                // if already present
+                if (localDates.contains(clickedLocalDate)) {
+                    // remove
+                    localDates.remove(clickedLocalDate);
+                }
+                else {
+                    // set one value
+                    localDates.clear();
+                    localDates.add(clickedLocalDate);
+                }
+            }
+
+            // range or multiple without extend active
+            if ((mode == Mode.RANGE) || (mode == Mode.MULTIPLE && !ctrlPressed)) {
+                if (!shiftPressed) {
+                    // if already present and only a range of one
+                    if (localDates.size() == 1 && localDates.contains(clickedLocalDate)) { // found
                         // remove
-                        localDates.remove(clickedLocalDate);
+                        localDates.clear();
                     }
                     else {
                         // set one value
@@ -454,74 +485,58 @@ public class SLocalDatePicker extends JComponent {
                         localDates.add(clickedLocalDate);
                     }
                 }
+                else {
+                    // add all dates to a new range
+                    LocalDate localDate = fromLocalDate;
+                    while (!localDate.isAfter(toLocalDate)) {
+                        localDates.add(localDate);
+                        localDate = localDate.plusDays(1);
+                    }
+                }
+            }
 
-                // range or multiple without extend active
-                if ((mode() == Mode.RANGE) || (mode() == Mode.MULTIPLE && !ctrlPressed)) {
-                    if (!shiftPressed) {
-                        // if already present and only a range of one
-                        if (localDates.size() == 1 && localDates.contains(clickedLocalDate)) { // found
-                            // remove
-                            localDates.clear();
-                        }
-                        else {
-                            // set one value
-                            localDates.clear();
-                            localDates.add(clickedLocalDate);
-                        }
+            // multiple with extend active
+            if (mode == Mode.MULTIPLE && ctrlPressed) {
+                if (!shiftPressed) {
+                    // if already present and only a range of one
+                    if (localDates.size() == 1 && localDates.contains(clickedLocalDate)) { // found
+                        // remove
+                        localDates.clear();
+                    }
+                    // if already present
+                    else if (localDates.contains(clickedLocalDate)) { // found
+                        // remove
+                        localDates.remove(clickedLocalDate);
                     }
                     else {
-                        // add all dates to a new range
-                        LocalDate localDate = fromLocalDate;
-                        while (!localDate.isAfter(toLocalDate)) {
+                        // add one value
+                        localDates.add(clickedLocalDate);
+                    }
+                }
+                else if (shiftPressed) {
+                    // add all dates to the range
+                    LocalDate localDate = fromLocalDate;
+                    while (!localDate.isAfter(toLocalDate)) {
+                        if (!localDates.contains(localDate)) {
                             localDates.add(localDate);
-                            localDate = localDate.plusDays(1);
                         }
+                        localDate = localDate.plusDays(1);
                     }
                 }
-
-                // multiple with extend active
-                if (mode() == Mode.MULTIPLE && ctrlPressed) {
-                    if (!shiftPressed) {
-                        // if already present and only a range of one
-                        if (localDates.size() == 1 && localDates.contains(clickedLocalDate)) { // found
-                            // remove
-                            localDates.clear();
-                        }
-                        // if already present
-                        else if (localDates.contains(clickedLocalDate)) { // found
-                            // remove
-                            localDates.remove(clickedLocalDate);
-                        }
-                        else {
-                            // add one value
-                            localDates.add(clickedLocalDate);
-                        }
-                    }
-                    else if (shiftPressed) {
-                        // add all dates to the range
-                        LocalDate localDate = fromLocalDate;
-                        while (!localDate.isAfter(toLocalDate)) {
-                            if (!localDates.contains(localDate)) {
-                                localDates.add(localDate);
-                            }
-                            localDate = localDate.plusDays(1);
-                        }
-                    }
-                }
-
-                // set
-                values(localDates);
-                value(clickedLocalDate);
-
-                // refresh
-                refreshSelection();
             }
+
+            // set
+            setSelection(localDates);
+            value(clickedLocalDate);
+
+            // refresh
+            refreshSelection();
         };
         Insets lEmptyInsets = new Insets(0, 0, 0, 0);
         for (int i = 0; i < 6 * 7; i++) {
-            dateToggleButton[i] = new JToggleButton("?");
+            dateToggleButton[i] = new JToggleButton("" + i);
             dateToggleButton[i].setMargin(lEmptyInsets);
-            dateToggleButton[i].addActionListener(iDayActionListener);
+            dateToggleButton[i].addActionListener(dayActionListener);
         }
 
         // goto today button
@@ -555,11 +570,11 @@ public class SLocalDatePicker extends JComponent {
         pickerPanel.setLayout(new BorderLayout());
 
         // layout header
-        JPanel lHeaderJPanel = new JPanel();
-        lHeaderJPanel.setLayout(new GridLayout(1, 2, 2, 2));
-        lHeaderJPanel.add(yearJSpinner);
-        lHeaderJPanel.add(monthJSpinner);
-        pickerPanel.add(lHeaderJPanel, BorderLayout.NORTH);
+        JPanel headerJPanel = new JPanel();
+        headerJPanel.setLayout(new GridLayout(1, 2, 2, 2));
+        headerJPanel.add(yearSpinner);
+        headerJPanel.add(monthSpinner);
+        pickerPanel.add(headerJPanel, BorderLayout.NORTH);
 
         // layout center
         JPanel contentJPanel = new JPanel();
@@ -583,204 +598,106 @@ public class SLocalDatePicker extends JComponent {
         return pickerPanel;
     }
 
-    protected JSpinner yearJSpinner = null;
-    protected YearSpinnerModel yearSpinnerModel = null;
-    protected JSpinner monthJSpinner = null;
-    protected SpinnerListModel monthSpinnerModel = null;
-    protected JLabel[] daynameLabels = new JLabel[7]; // seven days in a week
-    protected JLabel[] weeknumberLabels = new JLabel[6]; // we required a maximum of 6 weeks if the 1st of the month of a 31 days month falls on the last weekday
-    protected JToggleButton[] dateToggleButton = new JToggleButton[6 * 7]; // we required a maximum of 6 weeks if the 1st of the month of a 31 days month falls on the last weekday
-    private JLabel labelForColor = new JLabel(); // use to get the default colors
-    private JToggleButton toggleButtonForColor = new JToggleButton(); // use to get the default colors
-    private JPanel pickerPanel = new JPanel();
-
-    /*
-     *
-     * @author user
-     *
-     */
-    class YearSpinnerModel extends SpinnerNumberModel {
-        public YearSpinnerModel() {
-            super(displayedLocalDate.getYear(), Integer.MIN_VALUE, Integer.MAX_VALUE, 1);
-        }
-        public void increment() {
-            setValue(getNextValue());
-        }
-        public void decrement() {
-            setValue(getPreviousValue());
-        }
-    }
-
-    ;
-
-    /*
-     *
-     * @author user
-     *
-     */
-    class MonthSpinnerModel extends SpinnerListModel {
-        public MonthSpinnerModel() {
-            super(getMonthNames());
-        }
-
-        @Override
-        public Object getNextValue() {
-            if (getList().indexOf(getValue()) == 11) {
-                yearSpinnerModel.increment();
-                return getList().get(0);
-            }
-            return super.getNextValue();
-        }
-
-        @Override
-        public Object getPreviousValue() {
-            if (getList().indexOf(getValue()) == 0) {
-                yearSpinnerModel.decrement();
-                return getList().get(11);
-            }
-            return super.getPreviousValue();
-        }
-    }
-
-    ;
-
-    /**
-     *
-     */
     protected void refreshLabels() {
-        // we not setup yet
-        if (yearJSpinner == null) return;
-        Color normalDayColor = labelForColor.getForeground();
-        Color weekendDayColor = weekendLabelColor();
-
-        // mark as modifying
-        try {
-            // setup the dayLabels
-            // DayOfWeek.SUNDAY = 1 and DayOfWeek.SATURDAY = 7
-            WeekFields weekFields = WeekFields.of(locale);
-            int firstDayOfWeek = weekFields.getFirstDayOfWeek().getValue();
-            LocalDate localDate = LocalDate.of(2009, 7, 4 + firstDayOfWeek); // july 5th 2009 is a Sunday
-            for (int i = 0; i < 7; i++) {
-                // next
-                localDate = localDate.withDayOfMonth(4 + i + firstDayOfWeek);
-
-                // assign day
-                daynameLabels[i].setText(E.format(localDate));//.substring(0,1) );
-
-                // highlight weekend
-                DayOfWeek dayOfWeek = localDate.getDayOfWeek();
-                daynameLabels[i].setForeground(dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY ? weekendDayColor : normalDayColor);
-            }
-
-            // set month labels
-            monthSpinnerModel.setList(getMonthNames());
-
-            // refresh the rest
-            refreshLocalDate();
-        }
-        finally {
-            //TBEERNOT iModifying.decrementAndGet();
-        }
-    }
-
-    /**
-     *
-     */
-    protected void refreshLocalDate() {
-        // we not setup yet
-        if (yearJSpinner == null) {
+        // we're not setup yet
+        if (yearSpinner == null) {
             return;
         }
 
-        // mark as modifying
-        try {
-            // year
-            int year = displayedLocalDate.getYear();
-            yearSpinnerModel.setValue(year);
+        // setup the dayLabels monday to sunday
+        Color normalDayColor = labelForColor.getForeground();
+        for (int i = 0; i < 7; i++) {
+            LocalDate localDate = MONDAY.plusDays(i);
 
-            // month
-            int monthIdx = displayedLocalDate.getMonthValue();
-            monthSpinnerModel.setValue(monthSpinnerModel.getList().get(monthIdx - 1));
+            // assign day
+            daynameLabels[i].setText(E.format(localDate));
 
-            // setup the weekLabels
-            List<Integer> weekLabels = getWeekLabels();
-            for (int i = 0; i <= 5; i++) {
-                // set label
-                weeknumberLabels[i].setText(weekLabels.get(i).toString());
-
-                // first hide
-                // in GridBagLayout this becomes uneasy behavior: iWeeknumberJLabels[i].setVisible(false);
-            }
-
-            // setup the buttons [0..(6*7)-1]
-            // determine with which button to start
-            int firstOfMonthIdx = determineFirstOfMonthDayOfWeek();
-
-            // hide the preceeding buttons
-            for (int i = 0; i < firstOfMonthIdx; i++) {
-                dateToggleButton[i].setVisible(false);
-            }
-
-            // set the month buttons
-            int daysInMonth = determineDaysInMonth();
-            LocalDate localDate = displayedLocalDate;
-            for (int i = 1; i <= daysInMonth; i++) {
-                // set the date
-                localDate = localDate.withDayOfMonth(i);
-
-                // determine the index in the buttons
-                int idx = firstOfMonthIdx + i - 1;
-
-                // update the button
-                dateToggleButton[idx].setVisible(true);
-                dateToggleButton[idx].setText("" + i);
-
-                // make the corresponding weeklabel visible
-                weeknumberLabels[idx / 7].setVisible(true);
-
-                // highlight today
-                dateToggleButton[idx].setForeground(isToday(localDate) ? ColorUtil.brighterOrDarker(toggleButtonForColor.getForeground(), 0.3) : toggleButtonForColor.getForeground());
-            }
-
-            // hide the trailing buttons
-            for (int i = firstOfMonthIdx + daysInMonth; i < 6 * 7; i++) {
-                dateToggleButton[i].setVisible(false);
-            }
-
-            // also update the selection
-            refreshSelection();
+            // highlight weekend
+            DayOfWeek dayOfWeek = localDate.getDayOfWeek();
+            daynameLabels[i].setForeground(dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY ? weekendLabelColor : normalDayColor);
         }
-        finally {
-            // iModifying.decrementAndGet();
+
+        // set month labels
+//            monthSpinnerModel.setList(getMonthNames());
+
+        // refresh the rest
+        refreshDisplayedDateBasedComponents();
+    }
+
+    protected void refreshDisplayedDateBasedComponents() {
+        // we not setup yet
+        if (yearSpinner == null) {
+            return;
         }
+
+        // year
+        int year = displayedLocalDate.getYear();
+        yearSpinner.setValue(year);
+
+        // month
+        int monthIdx = displayedLocalDate.getMonthValue();
+        monthSpinner.setValue(getMonthNames().get(monthIdx - 1));
+
+        // setup the weekLabels
+        List<Integer> weekLabels = getWeekLabels();
+        for (int i = 0; i <= 5; i++) {
+            weeknumberLabels[i].setText(weekLabels.get(i).toString()); // TODO: move this into getWeekLabels or vice versa?
+        }
+
+        // setup the buttons [0..(6*7)-1]
+        // determine with which button to start
+        int firstOfMonthIdx = determineFirstOfMonthDayOfWeek();
+
+        // hide the preceeding buttons
+        for (int i = 0; i < firstOfMonthIdx; i++) {
+            dateToggleButton[i].setVisible(false);
+        }
+
+        // set the month buttons
+        int daysInMonth = determineDaysInMonth();
+        for (int i = 1; i <= daysInMonth; i++) {
+            LocalDate localDate = displayedLocalDate.withDayOfMonth(i);
+
+            // determine the index in the button
+            int idx = firstOfMonthIdx + (i - 1) - 1;
+
+            // update the button
+            dateToggleButton[idx].setVisible(true);
+            dateToggleButton[idx].setText("" + i);
+
+            // highlight today
+            dateToggleButton[idx].setForeground(isToday(localDate) ? ColorUtil.brighterOrDarker(toggleButtonForColor.getForeground(), 0.3) : toggleButtonForColor.getForeground());
+        }
+
+        // hide the trailing buttons
+        for (int i = firstOfMonthIdx + daysInMonth - 1; i < 6 * 7; i++) {
+            dateToggleButton[i].setVisible(false);
+        }
+
+        // also update the selection
+        refreshSelection();
     }
 
     public void refreshSelection() {
         // we not setup yet
-        if (yearJSpinner == null) return;
-
-        // mark as modifying
-        try {
-            // setup the buttons [0..(6*7)-1]
-            // determine with which button to start
-            int firstOfMonthIdx = determineFirstOfMonthDayOfWeek();
-
-            // set the month buttons
-            int daysInMonth = determineDaysInMonth();
-            LocalDate localDate = displayedLocalDate;
-            for (int i = 1; i <= daysInMonth; i++) {
-                // set the date
-                localDate = localDate.withDayOfMonth(i);
-
-                // determine the index in the buttons
-                int lIdx = firstOfMonthIdx + i - 1;
-
-                // is this date selected
-                dateToggleButton[lIdx].setSelected(isSelected(localDate));
-            }
+        if (yearSpinner == null) {
+            return;
         }
-        finally {
-            //iModifying.decrementAndGet();
+
+        // setup the buttons [0..(6*7)-1]
+        // determine with which button to start
+        int firstOfMonthIdx = determineFirstOfMonthDayOfWeek();
+
+        // set the month buttons
+        int daysInMonth = determineDaysInMonth();
+        for (int i = 1; i <= daysInMonth; i++) {
+            LocalDate localDate = displayedLocalDate.withDayOfMonth(i);
+
+            // determine the index in the buttons
+            int lIdx = firstOfMonthIdx + (i - 1) - 1;
+
+            // is this date selected
+            dateToggleButton[lIdx].setSelected(isSelected(localDate));
         }
     }
 
@@ -788,9 +705,7 @@ public class SLocalDatePicker extends JComponent {
     // =============================================================================
     // SUPPORT
 
-    /**
-     * @return
-     */
+    // TODO: can we cache this?
     protected List<String> getMonthNames() {
         List<String> monthNames = new ArrayList<String>();
         for (int i = 0; i < 12; i++) {
@@ -804,21 +719,17 @@ public class SLocalDatePicker extends JComponent {
      * Get a list with the weeklabels
      */
     protected List<Integer> getWeekLabels() {
-        // result
         List<Integer> weekLabels = new ArrayList<Integer>();
 
-        // setup the weekLabels
+        // determine the week-of-year
         LocalDate localDate = displayedLocalDate;
         WeekFields weekFields = WeekFields.of(locale);
         for (int i = 0; i <= 5; i++) {
-            // set label
             weekLabels.add(localDate.get(weekFields.weekOfWeekBasedYear()));
 
             // next week
             localDate = localDate.plusDays(7);
         }
-
-        // done
         return weekLabels;
     }
 
@@ -848,14 +759,8 @@ public class SLocalDatePicker extends JComponent {
      * determine on which day of week idx the first of the months is
      */
     protected int determineFirstOfMonthDayOfWeek() {
-        // determine with which button to start
-        WeekFields weekFields = WeekFields.of(locale);
-        int firstDayOfWeek = weekFields.getFirstDayOfWeek().getValue();
-        int firstOfMonthIdx = displayedLocalDate.get(weekFields.weekOfWeekBasedYear()) - firstDayOfWeek;
-        while (firstOfMonthIdx < 0) {
-            firstOfMonthIdx += 7;
-        }
-        return 0;//firstOfMonthIdx;
+        int firstOfMonthDayOfWeekIdx = displayedLocalDate.withDayOfMonth(1).getDayOfWeek().getValue();
+        return firstOfMonthDayOfWeekIdx;
     }
 
     /**
