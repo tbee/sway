@@ -176,6 +176,7 @@ public class SwayTestApp {
         var sList = SList.of(cities) //
                 .render(new CityFormat(cities))
                 .onSelectionChanged(cs -> System.out.println("List selection: " + cs));
+        sList.selection$().onChange(cs -> System.out.println("List selection$ onChange: " + cs));
 
         var sListDelayed = SList.<City>of() //
                 .render(new CityFormat(cities));
