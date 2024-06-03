@@ -1,6 +1,5 @@
 package org.tbee.sway.binding;
 
-import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiConsumer;

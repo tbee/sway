@@ -3,6 +3,7 @@ package org.tbee.sway.binding;
 import com.jgoodies.binding.beans.PropertyConnector;
 
 import javax.swing.JComponent;
+import java.beans.PropertyChangeListener;
 import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -92,14 +93,29 @@ public class BindUtil {
     /**
      * Bind to a property change and accept the old and new values
      */
-    static public <T> void onChange(Object bean1, String propertyName1, BiConsumer<T, T> biconsumer) {
-        com.jgoodies.binding.beans.BeanUtils.addPropertyChangeListener(bean1, propertyName1, pce -> biconsumer.accept((T)pce.getOldValue(), (T)pce.getNewValue()));
+    static public <T> OnChange onChange(Object bean1, String propertyName1, BiConsumer<T, T> biconsumer) {
+        PropertyChangeListener propertyChangeListener = pce -> biconsumer.accept((T) pce.getOldValue(), (T) pce.getNewValue());
+        com.jgoodies.binding.beans.BeanUtils.addPropertyChangeListener(bean1, propertyName1, propertyChangeListener);
+        return new OnChangeRecord(propertyChangeListener);
     }
 
     /**
      * Bind to a property change and accept the new values
      */
-    static public <T> void onChange(Object bean1, String propertyName1, Consumer<T> consumer) {
-        com.jgoodies.binding.beans.BeanUtils.addPropertyChangeListener(bean1, propertyName1, pce -> consumer.accept((T)pce.getNewValue()));
+    static public <T> OnChange onChange(Object bean1, String propertyName1, Consumer<T> consumer) {
+        PropertyChangeListener propertyChangeListener = pce -> consumer.accept((T) pce.getNewValue());
+        com.jgoodies.binding.beans.BeanUtils.addPropertyChangeListener(bean1, propertyName1, propertyChangeListener);
+        return new OnChangeRecord(propertyChangeListener);
     }
+
+    /**
+     * Bind to a property change and accept the new values
+     */
+    static public void unbindOnChange(Object bean1, String propertyName1, OnChange onChange) {
+        com.jgoodies.binding.beans.BeanUtils.removePropertyChangeListener(bean1, propertyName1, ((OnChangeRecord)onChange).propertyChangeListener);
+    }
+
+    // To hide implementation details
+    public interface OnChange { }
+    private record OnChangeRecord(PropertyChangeListener propertyChangeListener) implements OnChange {}
 }
