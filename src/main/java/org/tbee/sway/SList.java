@@ -76,6 +76,7 @@ public class SList<T> extends JPanel implements
     public void setData(List<T> v) {
 // TBEERNOT       unregisterFromAllBeans();
         this.data = Collections.unmodifiableList(v); // We don't allow outside changes to the provided list
+        setSelection(List.of());
 // TBEERNOT       registerToAllBeans();
     }
     public List<T> getData() {
