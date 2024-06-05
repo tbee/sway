@@ -34,8 +34,9 @@ public class SSpinner<T> extends JPanel implements
         HAlignMixin<SSpinner<T>>,
         BindToMixin<SSpinner<T>, T> {
 
-    private JSpinner jSpinner = new JSpinner();
-    private MySpinnerModel spinnerModel = new MySpinnerModel();
+    private final JSpinner jSpinner = new JSpinner();
+    private final MySpinnerModel spinnerModel = new MySpinnerModel();
+
     private T value = null;
     private Function<T, T> previousValueFunction = T -> T;
     private Function<T, T> nextValueFunction = T -> T;
@@ -74,6 +75,10 @@ public class SSpinner<T> extends JPanel implements
         protected void fireStateChanged() {
             super.fireStateChanged();
         }
+    }
+
+    public void refresh() {
+        spinnerModel.fireStateChanged();
     }
 
     /** Value) */

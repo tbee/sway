@@ -7,15 +7,11 @@ import org.tbee.sway.mixin.ValueMixin;
 import org.tbee.sway.support.ColorUtil;
 
 import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.JToggleButton;
-import javax.swing.SwingUtilities;
 import java.awt.BorderLayout;
-import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.GridLayout;
 import java.awt.Insets;
@@ -35,7 +31,7 @@ import java.util.function.Consumer;
 /**
  * @author user
  */
-public class SLocalDatePicker extends JComponent implements
+public class SLocalDatePicker extends JPanel implements
         ValueMixin<SLocalDatePicker, LocalDate>,
         SelectionMixin<SLocalDatePicker, LocalDate>,
         ExceptionHandlerDefaultMixin<SLocalDatePicker> {
@@ -44,14 +40,14 @@ public class SLocalDatePicker extends JComponent implements
     public static final DateTimeFormatter E = DateTimeFormatter.ofPattern("E");
     public static final LocalDate MONDAY = java.time.LocalDate.of(2009, 7, 6); // This is a monday
 
-    protected SSpinner<Integer> yearSpinner = null;
-    protected SSpinner<String> monthSpinner = null;
-    protected JLabel[] daynameLabels = new JLabel[7]; // seven days in a week
-    protected JLabel[] weeknumberLabels = new JLabel[6]; // we required a maximum of 6 weeks if the 1st of the month of a 31 days month falls on the last weekday
-    protected JToggleButton[] dateToggleButton = new JToggleButton[6 * 7]; // we required a maximum of 6 weeks if the 1st of the month of a 31 days month falls on the last weekday
-    private JLabel labelForColor = new JLabel(); // use to get the default colors
-    private JToggleButton toggleButtonForColor = new JToggleButton(); // use to get the default colors
-    private JPanel pickerPanel = new JPanel();
+    private final SSpinner<Integer> yearSpinner = SSpinner.ofInteger().columns(5).editable(true);;
+    private final List<String> monthNames = new ArrayList<String>();
+    private final SSpinner<String> monthSpinner;
+    private final JLabel[] daynameLabels = new JLabel[7]; // seven days in a week
+    private final JLabel[] weeknumberLabels = new JLabel[6]; // we required a maximum of 6 weeks if the 1st of the month of a 31 days month falls on the last weekday
+    private final JToggleButton[] dateToggleButton = new JToggleButton[6 * 7]; // we required a maximum of 6 weeks if the 1st of the month of a 31 days month falls on the last weekday
+    private final JLabel labelForColor = new JLabel(); // use to get the default colors
+    private final JToggleButton toggleButtonForColor = new JToggleButton(); // use to get the default colors
 
     // ===========================================================================================================
     // CONSTRUCTOR
@@ -60,17 +56,198 @@ public class SLocalDatePicker extends JComponent implements
         this(null);
     }
 
-    public SLocalDatePicker(LocalDate c) {
-        value(c);
+    public SLocalDatePicker(LocalDate localDate) {
+
+        // daynames
+        for (int i = 0; i < 7; i++) {
+            daynameLabels[i] = new JLabel("d" + i);
+            daynameLabels[i].setHorizontalAlignment(JLabel.CENTER);
+        }
+
+        // weeknumbers
+        for (int i = 0; i < 6; i++) {
+            weeknumberLabels[i] = new JLabel("w" + i);
+            weeknumberLabels[i].setHorizontalAlignment(JLabel.CENTER);
+        }
+
+        // year spinner
+        yearSpinner.value(displayedLocalDate.getYear());
+        yearSpinner.value$().onChange((Consumer<Integer>) v -> {
+            displayedLocalDate = displayedLocalDate.withYear(v);
+            refreshDisplayedDateBasedComponents();
+        });
+
+        // month spinner
+        populateMonthNames();
+        monthSpinner = SSpinner.of(monthNames).value(populateMonthNames().get(displayedLocalDate.getMonthValue() - 1));
+        monthSpinner.value$().onChange((Consumer<String>) v -> {
+            displayedLocalDate = displayedLocalDate.withMonth(populateMonthNames().indexOf(v) + 1);
+            refreshDisplayedDateBasedComponents();
+        });
+
+        // dates
+        ActionListener dayActionListener = e -> dayClicked(e);
+        Insets lEmptyInsets = new Insets(0, 0, 0, 0);
+        for (int i = 0; i < 6 * 7; i++) {
+            dateToggleButton[i] = new JToggleButton("" + i);
+            dateToggleButton[i].setMargin(lEmptyInsets);
+            dateToggleButton[i].addActionListener(dayActionListener);
+        }
+
+        // goto today button
+        final JLabel todayJButton = new JLabel(" ");
+        todayJButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                value(LocalDate.now());
+                todayJButton.setBorder(null);
+            }
+
+            @Override
+            public void mouseEntered(java.awt.event.MouseEvent e) {
+                // tooltip
+                LocalDate now = LocalDate.now();
+                if (!(displayedLocalDate.getMonth() == now.getMonth())) {
+                    todayJButton.setToolTipText(MMMM.format(now) + " " + now.getYear() + "...");
+
+                    // border
+                    todayJButton.setBorder(BorderFactory.createLineBorder(todayJButton.getForeground()));
+                }
+            }
+
+            @Override
+            public void mouseExited(java.awt.event.MouseEvent e) {
+                todayJButton.setBorder(null);
+            }
+        });
 
         // setup defaults
         mode(Mode.SINGLE);
         locale(Locale.getDefault());
-        displayedLocalDate(c != null ? c : LocalDate.now());
+        displayedLocalDate(localDate != null ? localDate : LocalDate.now());
+        refreshLabels();
+        value(localDate);
 
-        // GUI
-        setLayout(new CardLayout());
-        add(constructPickerCard(), "PICKER");
+        // construct GUI; we use always available layout managers. Miglayout would have been better.
+        setLayout(new BorderLayout());
+
+        // layout header
+        JPanel headerJPanel = new JPanel();
+        headerJPanel.setLayout(new GridLayout(1, 2, 2, 2));
+        headerJPanel.add(yearSpinner);
+        headerJPanel.add(monthSpinner);
+        add(headerJPanel, BorderLayout.NORTH);
+
+        // layout center
+        JPanel contentJPanel = new JPanel();
+        contentJPanel.setLayout(new GridLayout(7, 8, 0, 0));
+        contentJPanel.add(todayJButton);
+        for (int c = 0; c < 7; c++) {
+            contentJPanel.add(daynameLabels[c]);
+        }
+        for (int r = 0; r < 6; r++) {
+            contentJPanel.add(weeknumberLabels[r]);
+            for (int c = 0; c < 7; c++) {
+                contentJPanel.add(dateToggleButton[(r * 7) + c]);
+            }
+        }
+        add(contentJPanel, BorderLayout.CENTER);
+    }
+
+    private void dayClicked(ActionEvent e) {
+        // extract the date that was clicked
+        int dayIdx = Integer.parseInt(((JToggleButton) e.getSource()).getText());
+        LocalDate clickedLocalDate = displayedLocalDate.withDayOfMonth(dayIdx);
+
+        // current calendar
+        LocalDate currentLocalDate = value;
+        if (currentLocalDate == null) {
+            currentLocalDate = clickedLocalDate;
+        }
+
+        // the new collection
+        List<LocalDate> localDates = new ArrayList<LocalDate>(selection);
+
+        // what modifiers were pressed?
+        boolean shiftPressed = (e.getModifiers() & ActionEvent.SHIFT_MASK) != 0;
+        boolean ctrlPressed = (e.getModifiers() & ActionEvent.CTRL_MASK) != 0;
+        LocalDate fromLocalDate = currentLocalDate.isBefore(clickedLocalDate) ? currentLocalDate : clickedLocalDate;
+        LocalDate toLocalDate = currentLocalDate.isBefore(clickedLocalDate) ? clickedLocalDate : currentLocalDate;
+
+        // Single
+        if (mode == Mode.SINGLE) {
+            // if already present
+            if (localDates.contains(clickedLocalDate)) {
+                // remove
+                localDates.remove(clickedLocalDate);
+            }
+            else {
+                // set one value
+                localDates.clear();
+                localDates.add(clickedLocalDate);
+            }
+        }
+
+        // range or multiple without extend active
+        if ((mode == Mode.RANGE) || (mode == Mode.MULTIPLE && !ctrlPressed)) {
+            if (!shiftPressed) {
+                // if already present and only a range of one
+                if (localDates.size() == 1 && localDates.contains(clickedLocalDate)) { // found
+                    // remove
+                    localDates.clear();
+                }
+                else {
+                    // set one value
+                    localDates.clear();
+                    localDates.add(clickedLocalDate);
+                }
+            }
+            else {
+                // add all dates to a new range
+                LocalDate localDate = fromLocalDate;
+                while (!localDate.isAfter(toLocalDate)) {
+                    localDates.add(localDate);
+                    localDate = localDate.plusDays(1);
+                }
+            }
+        }
+
+        // multiple with extend active
+        if (mode == Mode.MULTIPLE && ctrlPressed) {
+            if (!shiftPressed) {
+                // if already present and only a range of one
+                if (localDates.size() == 1 && localDates.contains(clickedLocalDate)) { // found
+                    // remove
+                    localDates.clear();
+                }
+                // if already present
+                else if (localDates.contains(clickedLocalDate)) { // found
+                    // remove
+                    localDates.remove(clickedLocalDate);
+                }
+                else {
+                    // add one value
+                    localDates.add(clickedLocalDate);
+                }
+            }
+            else if (shiftPressed) {
+                // add all dates to the range
+                LocalDate localDate = fromLocalDate;
+                while (!localDate.isAfter(toLocalDate)) {
+                    if (!localDates.contains(localDate)) {
+                        localDates.add(localDate);
+                    }
+                    localDate = localDate.plusDays(1);
+                }
+            }
+        }
+
+        // set
+        setSelection(localDates);
+        value(clickedLocalDate);
+
+        // refresh
+        refreshSelection();
     }
 
     // ========================================================
@@ -163,28 +340,6 @@ public class SLocalDatePicker extends JComponent implements
         return this;
     }
 
-//    /**
-//     * ReferenceLocalDate: determines how the component looks like e.g. first day of week
-//     */
-//    public LocalDate referenceLocalDate() {
-//        return referenceLocalDate;
-//    }
-//
-//    public SLocalDatePicker referenceLocalDate(LocalDate v) {
-//        try {
-//            fireVetoableChange(REFERENCELOCALDATE, this.referenceLocalDate, v);
-//            firePropertyChange(REFERENCELOCALDATE, this.referenceLocalDate, this.referenceLocalDate = v);
-//
-//            // refresh
-//            refreshLabels();
-//        }
-//        catch (PropertyVetoException e) {
-//            throw new IllegalArgumentException(e);
-//        }
-//        return this;
-//    }
-//    private LocalDate referenceLocalDate = null;
-//    final static public String REFERENCELOCALDATE = "referenceLocalDate";
 
     /**
      * Locale: determines the language of the labels
@@ -198,7 +353,6 @@ public class SLocalDatePicker extends JComponent implements
             fireVetoableChange(LOCALE, this.locale, v);
             firePropertyChange(LOCALE, this.locale, this.locale = v);
 
-            // refresh
             refreshLabels();
         }
         catch (PropertyVetoException e) {
@@ -282,6 +436,8 @@ public class SLocalDatePicker extends JComponent implements
         setWeekendLabelColor(v);
         return this;
     }
+
+
     // ===========================================================================================================
     // LAYOUT
 
@@ -316,292 +472,6 @@ public class SLocalDatePicker extends JComponent implements
         return this;
     }
 
-    /**
-     * @return
-     */
-    protected JPanel constructGUIYear() {
-        // current year
-        int year = displayedLocalDate.getYear();
-
-        // grid
-        int lGridWidth = 3;
-        int lGridHeight = 6;
-        year -= (lGridWidth * lGridHeight) / 2;
-        yearPanel = new JPanel();
-        yearPanel.setLayout(new GridLayout(lGridHeight, lGridWidth));
-        for (int lCol = 0; lCol < lGridWidth; lCol++) {
-            for (int lRow = 0; lRow < lGridHeight; lRow++) {
-                // create button
-                JButton lJButton = new JButton("" + year);
-                lJButton.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        // set year
-                        displayedLocalDate = displayedLocalDate.withYear(Integer.parseInt(((JButton) e.getSource()).getText()));
-                        SLocalDatePicker.this.remove(yearPanel);
-                        yearPanel = null;
-                    }
-                });
-
-                // layout
-                yearPanel.add(lJButton);
-                year++;
-            }
-        }
-
-        // done
-        return yearPanel;
-    }
-    private JPanel yearPanel = null;
-
-    /**
-     * @return
-     */
-    protected JPanel constructGUIMonth() {
-        // current year
-        LocalDate localDate = displayedLocalDate;
-
-        // grid
-        int lGridWidth = 2;
-        int lGridHeight = 6;
-        monthPanel = new JPanel();
-        monthPanel.setLayout(new GridLayout(lGridHeight, lGridWidth));
-        int idx = 0;
-        for (int col = 0; col < lGridWidth; col++) {
-            for (int row = 0; row < lGridHeight; row++) {
-                // set month
-                localDate = localDate.withMonth(idx);
-
-                // create button
-                JButton jButton = new JButton("" + MMMM.format(localDate));
-                jButton.setActionCommand("" + idx);
-                jButton.addActionListener(e -> {
-                    displayedLocalDate = displayedLocalDate.withMonth(Integer.parseInt(((JButton) e.getSource()).getActionCommand()));
-                    SLocalDatePicker.this.remove(monthPanel);
-                    monthPanel = null;
-                });
-
-                // layout
-                monthPanel.add(jButton);
-                idx++;
-            }
-        }
-
-        // done
-        return monthPanel;
-    }
-
-    private JPanel monthPanel = null;
-
-    protected JPanel constructPickerCard() {
-        // year spinner
-        yearSpinner = SSpinner.ofInteger(displayedLocalDate.getYear()).columns(5).editable(true);
-        yearSpinner.value$().onChange((Consumer<Integer>) v -> {
-            displayedLocalDate = displayedLocalDate.withYear(v);
-            refreshDisplayedDateBasedComponents();
-        });
-//        ((JSpinner.DefaultEditor) yearJSpinner.getEditor()).getTextField().addMouseListener(new MouseAdapter() {
-//            @Override
-//            public void mouseClicked(java.awt.event.MouseEvent e) {
-//                // double click
-//                if (e.getClickCount() < 2) return;
-//
-//                // add and show panel
-//                add(constructGUIYear(), "YEAR");
-//                ((CardLayout) getLayout()).show(SLocalDatePicker.this, "YEAR");
-//            }
-//        });
-
-        // month spinner
-        monthSpinner = SSpinner.of(getMonthNames()).value(getMonthNames().get(displayedLocalDate.getMonthValue() - 1));
-        monthSpinner.value$().onChange((Consumer<String>) v -> {
-            displayedLocalDate = displayedLocalDate.withMonth(getMonthNames().indexOf(v) + 1);
-            refreshDisplayedDateBasedComponents();
-        });
-//        ((JSpinner.DefaultEditor) monthJSpinner.getEditor()).getTextField().addMouseListener(new MouseAdapter() {
-//            @Override
-//            public void mouseClicked(java.awt.event.MouseEvent e) {
-//                // double click
-//                if (e.getClickCount() < 2) return;
-//
-//                // add and show panel
-//                add(constructGUIMonth(), "MONTH");
-//                ((CardLayout) getLayout()).show(SLocalDatePicker.this, "MONTH");
-//            }
-//        });
-
-        // daynames
-        for (int i = 0; i < 7; i++) {
-            daynameLabels[i] = new JLabel("d" + i);
-            daynameLabels[i].setHorizontalAlignment(JLabel.CENTER);
-        }
-
-        // weeknumbers
-        for (int i = 0; i < 6; i++) {
-            weeknumberLabels[i] = new JLabel("w" + i);
-            weeknumberLabels[i].setHorizontalAlignment(JLabel.CENTER);
-        }
-
-        // dates
-        ActionListener dayActionListener = e -> {
-            // extract the date that was clicked
-            int dayIdx = Integer.parseInt(((JToggleButton) e.getSource()).getText());
-            LocalDate clickedLocalDate = displayedLocalDate.withDayOfMonth(dayIdx);
-
-            // current calendar
-            LocalDate currentLocalDate = value;
-            if (currentLocalDate == null) currentLocalDate = clickedLocalDate;
-
-            // the new collection
-            List<LocalDate> localDates = new ArrayList<LocalDate>(selection);
-
-            // what modifiers were pressed?
-            boolean shiftPressed = (e.getModifiers() & ActionEvent.SHIFT_MASK) != 0;
-            boolean ctrlPressed = (e.getModifiers() & ActionEvent.CTRL_MASK) != 0;
-            LocalDate fromLocalDate = currentLocalDate.isBefore(clickedLocalDate) ? currentLocalDate : clickedLocalDate;
-            LocalDate toLocalDate = currentLocalDate.isBefore(clickedLocalDate) ? clickedLocalDate : currentLocalDate;
-
-            // Single
-            if (mode == Mode.SINGLE) {
-                // if already present
-                if (localDates.contains(clickedLocalDate)) {
-                    // remove
-                    localDates.remove(clickedLocalDate);
-                }
-                else {
-                    // set one value
-                    localDates.clear();
-                    localDates.add(clickedLocalDate);
-                }
-            }
-
-            // range or multiple without extend active
-            if ((mode == Mode.RANGE) || (mode == Mode.MULTIPLE && !ctrlPressed)) {
-                if (!shiftPressed) {
-                    // if already present and only a range of one
-                    if (localDates.size() == 1 && localDates.contains(clickedLocalDate)) { // found
-                        // remove
-                        localDates.clear();
-                    }
-                    else {
-                        // set one value
-                        localDates.clear();
-                        localDates.add(clickedLocalDate);
-                    }
-                }
-                else {
-                    // add all dates to a new range
-                    LocalDate localDate = fromLocalDate;
-                    while (!localDate.isAfter(toLocalDate)) {
-                        localDates.add(localDate);
-                        localDate = localDate.plusDays(1);
-                    }
-                }
-            }
-
-            // multiple with extend active
-            if (mode == Mode.MULTIPLE && ctrlPressed) {
-                if (!shiftPressed) {
-                    // if already present and only a range of one
-                    if (localDates.size() == 1 && localDates.contains(clickedLocalDate)) { // found
-                        // remove
-                        localDates.clear();
-                    }
-                    // if already present
-                    else if (localDates.contains(clickedLocalDate)) { // found
-                        // remove
-                        localDates.remove(clickedLocalDate);
-                    }
-                    else {
-                        // add one value
-                        localDates.add(clickedLocalDate);
-                    }
-                }
-                else if (shiftPressed) {
-                    // add all dates to the range
-                    LocalDate localDate = fromLocalDate;
-                    while (!localDate.isAfter(toLocalDate)) {
-                        if (!localDates.contains(localDate)) {
-                            localDates.add(localDate);
-                        }
-                        localDate = localDate.plusDays(1);
-                    }
-                }
-            }
-
-            // set
-            setSelection(localDates);
-            value(clickedLocalDate);
-
-            // refresh
-            refreshSelection();
-        };
-        Insets lEmptyInsets = new Insets(0, 0, 0, 0);
-        for (int i = 0; i < 6 * 7; i++) {
-            dateToggleButton[i] = new JToggleButton("" + i);
-            dateToggleButton[i].setMargin(lEmptyInsets);
-            dateToggleButton[i].addActionListener(dayActionListener);
-        }
-
-        // goto today button
-        final JLabel todayJButton = new JLabel(" ");
-        todayJButton.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(java.awt.event.MouseEvent e) {
-                value(LocalDate.now());
-                todayJButton.setBorder(null);
-            }
-
-            @Override
-            public void mouseEntered(java.awt.event.MouseEvent e) {
-                // tooltip
-                LocalDate now = LocalDate.now();
-                if (!(displayedLocalDate.getMonth() == now.getMonth())) {
-                    todayJButton.setToolTipText(MMMM.format(now) + " " + now.getYear() + "...");
-
-                    // border
-                    todayJButton.setBorder(BorderFactory.createLineBorder(todayJButton.getForeground()));
-                }
-            }
-
-            @Override
-            public void mouseExited(java.awt.event.MouseEvent e) {
-                todayJButton.setBorder(null);
-            }
-        });
-
-        // construct GUI; we use always available layout managers. Miglayout would have been better.
-        pickerPanel.setLayout(new BorderLayout());
-
-        // layout header
-        JPanel headerJPanel = new JPanel();
-        headerJPanel.setLayout(new GridLayout(1, 2, 2, 2));
-        headerJPanel.add(yearSpinner);
-        headerJPanel.add(monthSpinner);
-        pickerPanel.add(headerJPanel, BorderLayout.NORTH);
-
-        // layout center
-        JPanel contentJPanel = new JPanel();
-        contentJPanel.setLayout(new GridLayout(7, 8, 0, 0));
-        contentJPanel.add(todayJButton);
-        for (int c = 0; c < 7; c++) {
-            contentJPanel.add(daynameLabels[c]);
-        }
-        for (int r = 0; r < 6; r++) {
-            contentJPanel.add(weeknumberLabels[r]);
-            for (int c = 0; c < 7; c++) {
-                contentJPanel.add(dateToggleButton[(r * 7) + c]);
-            }
-        }
-        pickerPanel.add(contentJPanel, BorderLayout.CENTER);
-
-        // refresh
-        refreshLabels();
-
-        // done
-        return pickerPanel;
-    }
-
     protected void refreshLabels() {
         // we're not setup yet
         if (yearSpinner == null) {
@@ -609,12 +479,13 @@ public class SLocalDatePicker extends JComponent implements
         }
 
         // setup the dayLabels monday to sunday
+        DateTimeFormatter dateTimeFormatter = E.withLocale(locale);
         Color normalDayColor = labelForColor.getForeground();
         for (int i = 0; i < 7; i++) {
             LocalDate localDate = MONDAY.plusDays(i);
 
             // assign day
-            daynameLabels[i].setText(E.format(localDate));
+            daynameLabels[i].setText(dateTimeFormatter.format(localDate));
 
             // highlight weekend
             DayOfWeek dayOfWeek = localDate.getDayOfWeek();
@@ -622,7 +493,8 @@ public class SLocalDatePicker extends JComponent implements
         }
 
         // set month labels
-//            monthSpinnerModel.setList(getMonthNames());
+        populateMonthNames();
+        monthSpinner.refresh();
 
         // refresh the rest
         refreshDisplayedDateBasedComponents();
@@ -640,7 +512,7 @@ public class SLocalDatePicker extends JComponent implements
 
         // month
         int monthIdx = displayedLocalDate.getMonthValue();
-        monthSpinner.setValue(getMonthNames().get(monthIdx - 1));
+        monthSpinner.setValue(populateMonthNames().get(monthIdx - 1));
 
         // setup the weekLabels
         List<Integer> weekLabels = getWeekLabels();
@@ -698,10 +570,10 @@ public class SLocalDatePicker extends JComponent implements
             LocalDate localDate = displayedLocalDate.withDayOfMonth(i);
 
             // determine the index in the buttons
-            int lIdx = firstOfMonthIdx + (i - 1) - 1;
+            int idx = firstOfMonthIdx + (i - 1) - 1;
 
             // is this date selected
-            dateToggleButton[lIdx].setSelected(isSelected(localDate));
+            dateToggleButton[idx].setSelected(isSelected(localDate));
         }
     }
 
@@ -709,12 +581,12 @@ public class SLocalDatePicker extends JComponent implements
     // =============================================================================
     // SUPPORT
 
-    // TODO: can we cache this?
-    protected List<String> getMonthNames() {
-        List<String> monthNames = new ArrayList<String>();
+    protected List<String> populateMonthNames() {
+        DateTimeFormatter dateTimeFormatter = MMMM.withLocale(locale);
+        monthNames.clear();
         for (int i = 0; i < 12; i++) {
             LocalDate localDate = LocalDate.of(2009, i + 1, 1);
-            monthNames.add(MMMM.format(localDate));
+            monthNames.add(dateTimeFormatter.format(localDate));
         }
         return monthNames;
     }

@@ -6,9 +6,8 @@ import org.tbee.sway.format.Format;
 import org.tbee.sway.format.FormatRegistry;
 import org.tbee.sway.list.DefaultListCellRenderer;
 import org.tbee.sway.mixin.BindToMixin;
-import org.tbee.sway.mixin.ExceptionHandlerMixin;
-import org.tbee.sway.mixin.JComponentMixin;
 import org.tbee.sway.mixin.ExceptionHandlerDefaultMixin;
+import org.tbee.sway.mixin.JComponentMixin;
 import org.tbee.sway.mixin.ValueMixin;
 import org.tbee.sway.support.SwayUtil;
 
@@ -247,4 +246,9 @@ public class SComboBox<T> extends JComboBox<T> implements
 
     // ===========================================================================
     // FLUENT API
+
+    public SComboBox<T> editable(boolean v) {
+        setEditable(v);
+        return this;
+    }
 }

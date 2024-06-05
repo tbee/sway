@@ -9,6 +9,7 @@ import org.tbee.util.ExceptionUtil;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JSeparator;
 import javax.swing.SwingUtilities;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
@@ -21,6 +22,7 @@ import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Currency;
 import java.util.List;
@@ -401,9 +403,15 @@ public class SwayTestApp {
     }
 
     static SHPanel sDatePicker() {
+        List<Locale> list = Arrays.stream(Locale.getAvailableLocales()).sorted(Comparator.comparing(Locale::getDisplayName)).toList();
+
+        SComboBox<Locale> localeSSpinner = SComboBox.of(list).value(Locale.getDefault()).editable(true);
         SLocalDatePicker sLocalDatePicker = SLocalDatePicker.of();
         STextField<LocalDate> valueTextField = STextField.ofBindTo(sLocalDatePicker.value$());
-        return SHPanel.of(SVPanel.of(sLocalDatePicker, valueTextField));
+
+        localeSSpinner.value$().onChange(sLocalDatePicker::setLocale);
+
+        return SHPanel.of(SVPanel.of(localeSSpinner, new JSeparator(), sLocalDatePicker, new JSeparator(), valueTextField));
     }
 
 
