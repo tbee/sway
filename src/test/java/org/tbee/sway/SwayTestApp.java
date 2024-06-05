@@ -45,6 +45,7 @@ public class SwayTestApp {
                     .tab("sTable", sTable())
                     .tab("sList", sList())
                     .tab("sTree", sTree())
+                    .tab("sDatePicker", sDatePicker())
                     .tab("sComboBox", sComboBox())
                     .tab("sTextField", sTextField())
                     .tab("sSpinner", sSpinner())
@@ -396,11 +397,15 @@ public class SwayTestApp {
                                     , value -> doSomeBackgroundStuff(value)
                                     , (result, component) -> asyncTextfield.setValue(result))
             );
-
-
-
         return SBorderPanel.of(sTabbedPane).north(masterSTextField);
     }
+
+    static SHPanel sDatePicker() {
+        SLocalDatePicker sLocalDatePicker = SLocalDatePicker.of();
+        STextField<LocalDate> valueTextField = STextField.ofBindTo(sLocalDatePicker.value$());
+        return SHPanel.of(SVPanel.of(sLocalDatePicker, valueTextField));
+    }
+
 
     private static int doSomeBackgroundStuff(String value) {
         if (value.contains("exc")) throw new RuntimeException("oops");

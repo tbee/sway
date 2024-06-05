@@ -57,7 +57,7 @@ public class SLocalDatePicker extends JComponent implements
     // CONSTRUCTOR
 
     public SLocalDatePicker() {
-        this(LocalDate.now());
+        this(null);
     }
 
     public SLocalDatePicker(LocalDate c) {
@@ -66,7 +66,7 @@ public class SLocalDatePicker extends JComponent implements
         // setup defaults
         mode(Mode.SINGLE);
         locale(Locale.getDefault());
-//        referenceLocalDate(LocalDate.now());
+        displayedLocalDate(c != null ? c : LocalDate.now());
 
         // GUI
         setLayout(new CardLayout());
@@ -103,8 +103,8 @@ public class SLocalDatePicker extends JComponent implements
             fireVetoableChange(VALUE, this.value, v);
             firePropertyChange(VALUE, this.value, this.value = v);
 
-            // update calendars
-            if (v == null && selection.contains(this.value)) {
+            // sync selection
+            if (v == null && this.value != null && selection.contains(this.value)) {
 				removeFromSelection(this.value);
 			}
             if (v != null && !selection.contains(v)) {
@@ -309,8 +309,12 @@ public class SLocalDatePicker extends JComponent implements
             throw new IllegalArgumentException(e);
         }
     }
-    private LocalDate displayedLocalDate;
+    private LocalDate displayedLocalDate = LocalDate.now();
     final static public String DISPLAYEDLOCALDATE = "displayedLocalDate";
+    public SLocalDatePicker displayedLocalDate(LocalDate v) {
+        setDisplayedLocalDate(v);
+        return this;
+    }
 
     /**
      * @return
@@ -391,7 +395,7 @@ public class SLocalDatePicker extends JComponent implements
 
     protected JPanel constructPickerCard() {
         // year spinner
-        yearSpinner = SSpinner.ofInteger(value.getYear()).columns(5).editable(true);
+        yearSpinner = SSpinner.ofInteger(displayedLocalDate.getYear()).columns(5).editable(true);
         yearSpinner.value$().onChange((Consumer<Integer>) v -> {
             displayedLocalDate = displayedLocalDate.withYear(v);
             refreshDisplayedDateBasedComponents();
@@ -409,7 +413,7 @@ public class SLocalDatePicker extends JComponent implements
 //        });
 
         // month spinner
-        monthSpinner = SSpinner.of(getMonthNames()).value(getMonthNames().get(value.getMonthValue() - 1));
+        monthSpinner = SSpinner.of(getMonthNames()).value(getMonthNames().get(displayedLocalDate.getMonthValue() - 1));
         monthSpinner.value$().onChange((Consumer<String>) v -> {
             displayedLocalDate = displayedLocalDate.withMonth(getMonthNames().indexOf(v) + 1);
             refreshDisplayedDateBasedComponents();
@@ -777,13 +781,8 @@ public class SLocalDatePicker extends JComponent implements
         return LocalDate.now().equals(v);
     }
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            SLookAndFeel.installDefault();
-            SFrame.of(SHPanel.of(new SLocalDatePicker(), new SLocalDatePicker().locale(Locale.ENGLISH)))
-                    .exitOnClose()
-                    .sizeToPreferred()
-                    .visible(true);
-        });
+
+    static public SLocalDatePicker of() {
+        return new SLocalDatePicker();
     }
 }

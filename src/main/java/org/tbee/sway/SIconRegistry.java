@@ -24,7 +24,6 @@ public class SIconRegistry {
 
     static {
         // Register default icons for those that are required visually
-        SIconRegistry.register(SIconRegistry.SwayInternallyUsedIcon.OVERLAY_LOADING, createIcon(MaterialDesignL.LOADING, SwayInternallyUsedIcon.OVERLAY_LOADING.typicalSize()));
         SIconRegistry.register(SIconRegistry.SwayInternallyUsedIcon.TEXTFIELD_POPUP, createIcon(MaterialDesignM.MENU, SIconRegistry.SwayInternallyUsedIcon.TEXTFIELD_POPUP.typicalSize()));
     }
 
