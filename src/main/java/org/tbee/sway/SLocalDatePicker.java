@@ -11,6 +11,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.JToggleButton;
+import javax.swing.border.Border;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.GridLayout;
@@ -156,8 +157,8 @@ public class SLocalDatePicker extends JPanel implements
 
     private void dayClicked(ActionEvent e) {
         // extract the date that was clicked
-        int dayIdx = Integer.parseInt(((JToggleButton) e.getSource()).getText());
-        LocalDate clickedLocalDate = displayedLocalDate.withDayOfMonth(dayIdx);
+        String dateStr = ((JToggleButton) e.getSource()).getActionCommand();
+        LocalDate clickedLocalDate = LocalDate.parse(dateStr, DateTimeFormatter.ISO_LOCAL_DATE);
 
         // current calendar
         LocalDate currentLocalDate = value;
@@ -287,12 +288,6 @@ public class SLocalDatePicker extends JPanel implements
             if (v != null && !selection.contains(v)) {
                 setSelection(List.of(v));
             }
-
-            // refresh
-            if (v != null) {
-                setDisplayedLocalDate(v);
-            }
-            refreshDisplayedDateBasedComponents();
         }
         catch (PropertyVetoException e) {
             throw new IllegalArgumentException(e);
@@ -511,8 +506,8 @@ public class SLocalDatePicker extends JPanel implements
         yearSpinner.setValue(year);
 
         // month
-        int monthIdx = displayedLocalDate.getMonthValue();
-        monthSpinner.setValue(populateMonthNames().get(monthIdx - 1));
+        int displayedMonth = displayedLocalDate.getMonthValue();
+        monthSpinner.setValue(populateMonthNames().get(displayedMonth - 1));
 
         // setup the weekLabels
         List<Integer> weekLabels = getWeekLabels();
@@ -525,29 +520,22 @@ public class SLocalDatePicker extends JPanel implements
         int firstOfMonthIdx = determineFirstOfMonthDayOfWeek();
 
         // hide the preceeding buttons
-        for (int i = 0; i < firstOfMonthIdx; i++) {
-            dateToggleButton[i].setVisible(false);
-        }
-
-        // set the month buttons
-        int daysInMonth = determineDaysInMonth();
-        for (int i = 1; i <= daysInMonth; i++) {
-            LocalDate localDate = displayedLocalDate.withDayOfMonth(i);
-
-            // determine the index in the button
-            int idx = firstOfMonthIdx + (i - 1) - 1;
-
-            // update the button
-            dateToggleButton[idx].setVisible(true);
-            dateToggleButton[idx].setText("" + i);
+        Color borderColor = ColorUtil.brighterOrDarker(toggleButtonForColor.getForeground(), 0.5);
+        Border todayBorder = BorderFactory.createLineBorder(borderColor, 2);
+        Border notTodayBorder = BorderFactory.createEmptyBorder(2, 2, 2, 2);
+        Color altForgroundColor = ColorUtil.brighterOrDarker(toggleButtonForColor.getForeground(), 0.2);
+        Color altBackgroundColor = ColorUtil.brighterOrDarker(toggleButtonForColor.getBackground(), 0.2);
+        LocalDate startDate = displayedLocalDate.minusDays(firstOfMonthIdx - 1);
+        for (int idx = 0; idx < 6 * 7; idx++) {
+            LocalDate localDate = startDate.plusDays(idx);
+            dateToggleButton[idx].setText("" + localDate.getDayOfMonth());
+            dateToggleButton[idx].setActionCommand(localDate.format(DateTimeFormatter.ISO_LOCAL_DATE));
 
             // highlight today
-            dateToggleButton[idx].setForeground(isToday(localDate) ? ColorUtil.brighterOrDarker(toggleButtonForColor.getForeground(), 0.3) : toggleButtonForColor.getForeground());
-        }
-
-        // hide the trailing buttons
-        for (int i = firstOfMonthIdx + daysInMonth - 1; i < 6 * 7; i++) {
-            dateToggleButton[i].setVisible(false);
+            dateToggleButton[idx].setBorder(isToday(localDate) ? todayBorder : notTodayBorder);
+            boolean otherMonth = (localDate.getMonthValue() != displayedMonth);
+            dateToggleButton[idx].setForeground(otherMonth ? altForgroundColor : toggleButtonForColor.getForeground());
+            dateToggleButton[idx].setBackground(otherMonth ? altBackgroundColor : toggleButtonForColor.getBackground());
         }
 
         // also update the selection
@@ -565,14 +553,9 @@ public class SLocalDatePicker extends JPanel implements
         int firstOfMonthIdx = determineFirstOfMonthDayOfWeek();
 
         // set the month buttons
-        int daysInMonth = determineDaysInMonth();
-        for (int i = 1; i <= daysInMonth; i++) {
-            LocalDate localDate = displayedLocalDate.withDayOfMonth(i);
-
-            // determine the index in the buttons
-            int idx = firstOfMonthIdx + (i - 1) - 1;
-
-            // is this date selected
+        LocalDate startDate = displayedLocalDate.minusDays(firstOfMonthIdx - 1);
+        for (int idx = 0; idx < 6 * 7; idx++) {
+            LocalDate localDate = startDate.plusDays(idx);
             dateToggleButton[idx].setSelected(isSelected(localDate));
         }
     }

@@ -411,7 +411,7 @@ public class SwayTestApp {
 
         localeSSpinner.value$().onChange(sLocalDatePicker::setLocale);
 
-        return SHPanel.of(SVPanel.of(localeSSpinner, new JSeparator(), sLocalDatePicker, new JSeparator(), valueTextField));
+        return SHPanel.of(SVPanel.of(localeSSpinner, new JSeparator(), sLocalDatePicker, new JSeparator(), valueTextField).fillWidth(true));
     }
 
 
