@@ -8,6 +8,7 @@ public interface JComponentMixin<T extends JComponent> extends
         ComponentMixin<T>,
         PropertyChangeListenerMixin<T>,
         KeyListenerMixin<T>,
+        MouseListenerMixin<T>,
         OverlayMixin<T>,
         FontMixin<T> {
 

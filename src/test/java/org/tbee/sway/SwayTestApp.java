@@ -164,6 +164,8 @@ public class SwayTestApp {
 
         migPanel.addLabelAndField("File dirOnly", STextField.of(FileFormat.of().allowedType(DIR))).wrap();
 
+        migPanel.addLabelAndField("Transparent", STextField.ofString().value("blabla").transparentAsLabel()).wrap();
+
         return SVPanel.of(SLabel.of("STextField"), migPanel).margin(0);
     }
 

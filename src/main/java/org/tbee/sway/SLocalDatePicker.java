@@ -1,10 +1,13 @@
 package org.tbee.sway;
 
 import org.tbee.sway.binding.ExceptionHandler;
+import org.tbee.sway.format.Format;
+import org.tbee.sway.format.FormatToString;
 import org.tbee.sway.mixin.ExceptionHandlerDefaultMixin;
 import org.tbee.sway.mixin.SelectionMixin;
 import org.tbee.sway.mixin.ValueMixin;
 import org.tbee.sway.support.ColorUtil;
+import org.tbee.sway.support.HAlign;
 
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
@@ -41,9 +44,14 @@ public class SLocalDatePicker extends JPanel implements
     public static final DateTimeFormatter E = DateTimeFormatter.ofPattern("E");
     public static final LocalDate MONDAY = java.time.LocalDate.of(2009, 7, 6); // This is a monday
 
-    private final SSpinner<Integer> yearSpinner = SSpinner.ofInteger().columns(5).editable(true);;
-    private final List<String> monthNames = new ArrayList<String>();
-    private final SSpinner<String> monthSpinner;
+    private final STextField<Integer> yearTextField = STextField.ofInteger().columns(15).transparentAsLabel().hAlign(HAlign.LEADING);
+    private final Format<LocalDate> monthFormat = new FormatToString<>() {
+        @Override
+        public String toString(LocalDate value) {
+            return MMMM.withLocale(locale).format(value);
+        }
+    };
+    private final STextField<LocalDate> monthTextField = STextField.of(monthFormat).columns(15).transparentAsLabel().editable(false).hAlign(HAlign.TRAILING);
     private final JLabel[] daynameLabels = new JLabel[7]; // seven days in a week
     private final JLabel[] weeknumberLabels = new JLabel[6]; // we required a maximum of 6 weeks if the 1st of the month of a 31 days month falls on the last weekday
     private final JToggleButton[] dateToggleButton = new JToggleButton[6 * 7]; // we required a maximum of 6 weeks if the 1st of the month of a 31 days month falls on the last weekday
@@ -71,20 +79,17 @@ public class SLocalDatePicker extends JPanel implements
             weeknumberLabels[i].setHorizontalAlignment(JLabel.CENTER);
         }
 
-        // year spinner
-        yearSpinner.value(displayedLocalDate.getYear());
-        yearSpinner.value$().onChange((Consumer<Integer>) v -> {
+        // year
+        yearTextField.value(displayedLocalDate.getYear());
+        yearTextField.value$().onChange((Consumer<Integer>) v -> {
             displayedLocalDate = displayedLocalDate.withYear(v);
             refreshDisplayedDateBasedComponents();
         });
+        setFontForHeader(yearTextField);
 
-        // month spinner
-        populateMonthNames();
-        monthSpinner = SSpinner.of(monthNames).value(populateMonthNames().get(displayedLocalDate.getMonthValue() - 1));
-        monthSpinner.value$().onChange((Consumer<String>) v -> {
-            displayedLocalDate = displayedLocalDate.withMonth(populateMonthNames().indexOf(v) + 1);
-            refreshDisplayedDateBasedComponents();
-        });
+        // month
+        monthTextField.value(displayedLocalDate);
+        setFontForHeader(monthTextField);
 
         // dates
         ActionListener dayActionListener = e -> dayClicked(e);
@@ -133,10 +138,14 @@ public class SLocalDatePicker extends JPanel implements
         setLayout(new BorderLayout());
 
         // layout header
-        JPanel headerJPanel = new JPanel();
-        headerJPanel.setLayout(new GridLayout(1, 2, 2, 2));
-        headerJPanel.add(yearSpinner);
-        headerJPanel.add(monthSpinner);
+        SMigPanel headerJPanel = SMigPanel.of().fillX();
+        // TODO: use transparent button for larger click area
+        headerJPanel.add(SLabel.of(SIconRegistry.find(SIconRegistry.SwayInternallyUsedIcon.DATEPICKER_PREVYEAR)).onMouseClick(e -> prevYear()));
+        headerJPanel.add(SLabel.of(SIconRegistry.find(SIconRegistry.SwayInternallyUsedIcon.DATEPICKER_PREVMONTH)).onMouseClick(e -> prevMonth()));
+        headerJPanel.add(monthTextField);
+        headerJPanel.add(yearTextField);
+        headerJPanel.add(SLabel.of(SIconRegistry.find(SIconRegistry.SwayInternallyUsedIcon.DATEPICKER_NEXTMONTH)).onMouseClick(e -> nextMonth()));
+        headerJPanel.add(SLabel.of(SIconRegistry.find(SIconRegistry.SwayInternallyUsedIcon.DATEPICKER_NEXTYEAR)).onMouseClick(e -> nextYear()));
         add(headerJPanel, BorderLayout.NORTH);
 
         // layout center
@@ -153,6 +162,40 @@ public class SLocalDatePicker extends JPanel implements
             }
         }
         add(contentJPanel, BorderLayout.CENTER);
+    }
+
+    private void prevYear() {
+        displayedLocalDate = displayedLocalDate.withYear(displayedLocalDate.getYear() - 1);
+        refreshDisplayedDateBasedComponents();
+    }
+
+    private void prevMonth() {
+        int month = displayedLocalDate.getMonthValue();
+        if (month == 1) {
+            displayedLocalDate = displayedLocalDate.withMonth(12).withYear(displayedLocalDate.getYear() - 1);
+        } else {
+            displayedLocalDate = displayedLocalDate.withMonth(month - 1);
+        }
+        refreshDisplayedDateBasedComponents();
+    }
+
+    private void nextMonth() {
+        int month = displayedLocalDate.getMonthValue();
+        if (month == 12) {
+            displayedLocalDate = displayedLocalDate.withMonth(1).withYear(displayedLocalDate.getYear() + 1);
+        } else {
+            displayedLocalDate = displayedLocalDate.withMonth(month + 1);
+        }
+        refreshDisplayedDateBasedComponents();
+    }
+
+    private void nextYear() {
+        displayedLocalDate = displayedLocalDate.withYear(displayedLocalDate.getYear() + 1);
+        refreshDisplayedDateBasedComponents();
+    }
+
+    private void setFontForHeader(STextField<?> sTextField) {
+        sTextField.font(sTextField.getFont().deriveFont(sTextField.getFont().getSize() * 1.5f));
     }
 
     private void dayClicked(ActionEvent e) {
@@ -468,10 +511,6 @@ public class SLocalDatePicker extends JPanel implements
     }
 
     protected void refreshLabels() {
-        // we're not setup yet
-        if (yearSpinner == null) {
-            return;
-        }
 
         // setup the dayLabels monday to sunday
         DateTimeFormatter dateTimeFormatter = E.withLocale(locale);
@@ -487,27 +526,19 @@ public class SLocalDatePicker extends JPanel implements
             daynameLabels[i].setForeground(dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY ? weekendLabelColor : normalDayColor);
         }
 
-        // set month labels
-        populateMonthNames();
-        monthSpinner.refresh();
-
         // refresh the rest
         refreshDisplayedDateBasedComponents();
     }
 
     protected void refreshDisplayedDateBasedComponents() {
-        // we not setup yet
-        if (yearSpinner == null) {
-            return;
-        }
 
         // year
         int year = displayedLocalDate.getYear();
-        yearSpinner.setValue(year);
+        yearTextField.setValue(year);
 
         // month
         int displayedMonth = displayedLocalDate.getMonthValue();
-        monthSpinner.setValue(populateMonthNames().get(displayedMonth - 1));
+        monthTextField.setValue(displayedLocalDate);
 
         // setup the weekLabels
         List<Integer> weekLabels = getWeekLabels();
@@ -543,10 +574,6 @@ public class SLocalDatePicker extends JPanel implements
     }
 
     public void refreshSelection() {
-        // we not setup yet
-        if (yearSpinner == null) {
-            return;
-        }
 
         // setup the buttons [0..(6*7)-1]
         // determine with which button to start
@@ -563,16 +590,6 @@ public class SLocalDatePicker extends JPanel implements
 
     // =============================================================================
     // SUPPORT
-
-    protected List<String> populateMonthNames() {
-        DateTimeFormatter dateTimeFormatter = MMMM.withLocale(locale);
-        monthNames.clear();
-        for (int i = 0; i < 12; i++) {
-            LocalDate localDate = LocalDate.of(2009, i + 1, 1);
-            monthNames.add(dateTimeFormatter.format(localDate));
-        }
-        return monthNames;
-    }
 
     /**
      * Get a list with the weeklabels

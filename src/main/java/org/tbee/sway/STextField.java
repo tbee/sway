@@ -437,6 +437,9 @@ public class STextField<T> extends javax.swing.JTextField implements
      * @return true is the value was set, false if there was an error
      */
     public boolean setValueFromText() {
+        if (!isEnabled() || !isEditable()) {
+            return true;
+        }
         try {
             String text = getText();
             T value = format.toValue(text);
@@ -539,4 +542,11 @@ public class STextField<T> extends javax.swing.JTextField implements
         setColumns(value);
         return this;
     }
+
+    public STextField<T> transparentAsLabel() {
+        setBorder(BorderFactory.createEmptyBorder());
+        setBackground(null);
+        return this;
+    }
+
 }

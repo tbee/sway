@@ -1,8 +1,8 @@
 package org.tbee.sway;
 
+import org.kordamp.ikonli.materialdesign2.MaterialDesignA;
 import org.kordamp.ikonli.materialdesign2.MaterialDesignC;
 import org.kordamp.ikonli.materialdesign2.MaterialDesignF;
-import org.kordamp.ikonli.materialdesign2.MaterialDesignL;
 import org.kordamp.ikonli.materialdesign2.MaterialDesignM;
 import org.kordamp.ikonli.materialdesign2.MaterialDesignR;
 import org.kordamp.ikonli.materialdesign2.MaterialDesignS;
@@ -24,7 +24,12 @@ public class SIconRegistry {
 
     static {
         // Register default icons for those that are required visually
+        // https://kordamp.org/ikonli/cheat-sheet-materialdesign2.html
         SIconRegistry.register(SIconRegistry.SwayInternallyUsedIcon.TEXTFIELD_POPUP, createIcon(MaterialDesignM.MENU, SIconRegistry.SwayInternallyUsedIcon.TEXTFIELD_POPUP.typicalSize()));
+        SIconRegistry.register(SIconRegistry.SwayInternallyUsedIcon.DATEPICKER_NEXTMONTH, createIcon(MaterialDesignA.ARROW_RIGHT_BOLD, SIconRegistry.SwayInternallyUsedIcon.DATEPICKER_NEXTMONTH.typicalSize()));
+        SIconRegistry.register(SIconRegistry.SwayInternallyUsedIcon.DATEPICKER_PREVMONTH, createIcon(MaterialDesignA.ARROW_LEFT_BOLD, SIconRegistry.SwayInternallyUsedIcon.DATEPICKER_PREVMONTH.typicalSize()));
+        SIconRegistry.register(SIconRegistry.SwayInternallyUsedIcon.DATEPICKER_NEXTYEAR, createIcon(MaterialDesignA.ARROW_RIGHT_BOLD, SIconRegistry.SwayInternallyUsedIcon.DATEPICKER_NEXTYEAR.typicalSize()));
+        SIconRegistry.register(SIconRegistry.SwayInternallyUsedIcon.DATEPICKER_PREVYEAR, createIcon(MaterialDesignA.ARROW_LEFT_BOLD, SIconRegistry.SwayInternallyUsedIcon.DATEPICKER_PREVYEAR.typicalSize()));
     }
 
     public enum SwayInternallyUsedIcon { //
@@ -42,6 +47,10 @@ public class SIconRegistry {
         MENU_SELECTION("selection@menu", 16), //
         OVERLAY_LOADING("loading@overlay", 48),
         TEXTFIELD_POPUP("popup@textfield", 16),
+        DATEPICKER_NEXTMONTH("nextMonth@textfield", 20),
+        DATEPICKER_PREVMONTH("prevMonth@textfield", 20),
+        DATEPICKER_NEXTYEAR("nextYear@textfield", 28),
+        DATEPICKER_PREVYEAR("prevYear@textfield", 28),
         ; //
 
         final String id;
