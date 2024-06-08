@@ -9,7 +9,7 @@ public interface MouseListenerMixin<T extends Component> {
 
     void addMouseListener(MouseListener l);
 
-    default T onMouseClick(Consumer<MouseEvent> consumer) {
+    default T onClick(Consumer<MouseEvent> consumer) {
         addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -33,7 +33,7 @@ public interface MouseListenerMixin<T extends Component> {
         return (T)this;
     }
 
-    default T onMouseDoubleClick(Consumer<MouseEvent> consumer) {
+    default T onDoubleClick(Consumer<MouseEvent> consumer) {
         addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {

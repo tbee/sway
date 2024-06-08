@@ -32,6 +32,11 @@ import java.util.List;
 import java.util.Locale;
 import java.util.function.Consumer;
 
+import static org.tbee.sway.SIconRegistry.SwayInternallyUsedIcon.DATEPICKER_NEXTMONTH;
+import static org.tbee.sway.SIconRegistry.SwayInternallyUsedIcon.DATEPICKER_NEXTYEAR;
+import static org.tbee.sway.SIconRegistry.SwayInternallyUsedIcon.DATEPICKER_PREVMONTH;
+import static org.tbee.sway.SIconRegistry.SwayInternallyUsedIcon.DATEPICKER_PREVYEAR;
+
 /**
  * @author user
  */
@@ -139,13 +144,13 @@ public class SLocalDatePicker extends JPanel implements
 
         // layout header
         SMigPanel headerJPanel = SMigPanel.of().fillX();
-        // TODO: use transparent button for larger click area
-        headerJPanel.add(SLabel.of(SIconRegistry.find(SIconRegistry.SwayInternallyUsedIcon.DATEPICKER_PREVYEAR)).onMouseClick(e -> prevYear()));
-        headerJPanel.add(SLabel.of(SIconRegistry.find(SIconRegistry.SwayInternallyUsedIcon.DATEPICKER_PREVMONTH)).onMouseClick(e -> prevMonth()));
+        // TODO: this panel causes the click to be wide
+        headerJPanel.add(iconButton(DATEPICKER_PREVYEAR, this::prevYear));
+        headerJPanel.add(iconButton(DATEPICKER_PREVMONTH, this::prevMonth));
         headerJPanel.add(monthTextField);
         headerJPanel.add(yearTextField);
-        headerJPanel.add(SLabel.of(SIconRegistry.find(SIconRegistry.SwayInternallyUsedIcon.DATEPICKER_NEXTMONTH)).onMouseClick(e -> nextMonth()));
-        headerJPanel.add(SLabel.of(SIconRegistry.find(SIconRegistry.SwayInternallyUsedIcon.DATEPICKER_NEXTYEAR)).onMouseClick(e -> nextYear()));
+        headerJPanel.add(iconButton(DATEPICKER_NEXTMONTH, this::nextMonth));
+        headerJPanel.add(iconButton(DATEPICKER_NEXTYEAR, this::nextYear));
         add(headerJPanel, BorderLayout.NORTH);
 
         // layout center
@@ -162,6 +167,12 @@ public class SLocalDatePicker extends JPanel implements
             }
         }
         add(contentJPanel, BorderLayout.CENTER);
+    }
+
+    private SButton iconButton(SIconRegistry.SwayInternallyUsedIcon icon, Runnable runnable) {
+        return SButton.of(SIconRegistry.find(icon))
+                .transparentAsLabel()
+                .onAction(e -> runnable.run());
     }
 
     private void prevYear() {

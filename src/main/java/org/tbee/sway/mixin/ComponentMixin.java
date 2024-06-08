@@ -10,6 +10,7 @@ import java.awt.Point;
 public interface ComponentMixin<T extends Component> extends
         PropertyChangeListenerMixin<T>,
         KeyListenerMixin<T>,
+        FocusListenerMixIn<T>,
         OverlayMixin<T>,
         FontMixin<T> {
 

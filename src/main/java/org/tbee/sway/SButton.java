@@ -12,6 +12,7 @@ import org.tbee.sway.mixin.VAlignMixin;
 import javax.swing.Action;
 import javax.swing.Icon;
 import javax.swing.JButton;
+import java.awt.Cursor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -25,8 +26,10 @@ public class SButton extends JButton implements
         JComponentMixin<SButton> {
     final static private org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(SButton.class);
 
-    public SButton() {
-    }
+    public static final Cursor DEFAULT_CURSOR = new Cursor(Cursor.DEFAULT_CURSOR);
+    public static final Cursor CLICKABLE_CURSOR = new Cursor(Cursor.HAND_CURSOR);
+
+    public SButton() { }
 
     public SButton(Icon icon) {
         super(icon);
@@ -83,6 +86,23 @@ public class SButton extends JButton implements
     
     // ==============================================
     // FLUENT API
+
+    public SButton transparentAsLabel() {
+        setOpaque(false);
+        setContentAreaFilled(false);
+
+        // TODO: make sure focus is still visible: how to get the current focused border?
+//        setBorderPainted(false);
+//        onFocusGained(e -> border(BorderFactory.createLineBorder(Color.RED, 1)));
+//        onFocusLost(e -> border(BorderFactory.createEmptyBorder(1,1,1,1)));
+        return this;
+    }
+
+    public SButton showMouseOverInCursor() {
+        onMouseEnter(e -> setCursor(CLICKABLE_CURSOR));
+        onMouseExit(e -> setCursor(DEFAULT_CURSOR));
+        return this;
+    }
 
     static public SButton of() {
         return new SButton();
