@@ -1,5 +1,6 @@
 package org.tbee.sway;
 
+import net.miginfocom.layout.AlignX;
 import org.tbee.sway.binding.ExceptionHandler;
 import org.tbee.sway.format.Format;
 import org.tbee.sway.format.FormatToString;
@@ -50,7 +51,7 @@ public class SLocalDatePicker extends JPanel implements
     public static final LocalDate MONDAY = java.time.LocalDate.of(2009, 7, 6); // This is a monday
 
     private final STextField<Integer> yearTextField = STextField.ofInteger()
-            .columns(15)
+            .columns(8)
             .transparentAsLabel()
             .hAlign(HAlign.LEADING);
     private final Format<LocalDate> monthFormat = new FormatToString<>() {
@@ -60,7 +61,7 @@ public class SLocalDatePicker extends JPanel implements
         }
     };
     private final STextField<LocalDate> monthTextField = STextField.of(monthFormat)
-            .columns(15)
+            .columns(yearTextField.getColumns())
             .transparentAsLabel()
             .focusable(false)
             .editable(false)
@@ -151,12 +152,12 @@ public class SLocalDatePicker extends JPanel implements
         setLayout(new BorderLayout());
 
         // layout header
-        SMigPanel headerJPanel = SMigPanel.of().fillX();
+        SMigPanel headerJPanel = SMigPanel.of().fillX().noMargins();
         // TODO: this panel causes the click to be wide
         headerJPanel.add(iconButton(DATEPICKER_PREVYEAR, this::prevYear));
         headerJPanel.add(iconButton(DATEPICKER_PREVMONTH, this::prevMonth));
-        headerJPanel.add(monthTextField);
-        headerJPanel.add(yearTextField);
+        headerJPanel.addField(monthTextField).sizeGroup("monthyear");
+        headerJPanel.addField(yearTextField).sizeGroup("monthyear").alignX(AlignX.LEADING);
         headerJPanel.add(iconButton(DATEPICKER_NEXTMONTH, this::nextMonth));
         headerJPanel.add(iconButton(DATEPICKER_NEXTYEAR, this::nextYear));
         add(headerJPanel, BorderLayout.NORTH);
@@ -179,7 +180,7 @@ public class SLocalDatePicker extends JPanel implements
 
     private SButton iconButton(SIconRegistry.SwayInternallyUsedIcon icon, Runnable runnable) {
         return SButton.of(SIconRegistry.find(icon))
-                .transparentAsLabel()
+                .asImageButton()
                 .onAction(e -> runnable.run());
     }
 

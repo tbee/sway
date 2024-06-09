@@ -158,7 +158,9 @@ public class STextField<T> extends javax.swing.JTextField implements
             throw new IllegalArgumentException("Null not allowed for format");
         }
         this.format = format;
-        setColumns(format.columns());
+        if (format.columns() >= 0) {
+            setColumns(format.columns());
+        }
         setHAlign(format.horizontalAlignment());
         setIcon(null);
         setBackIcon(null);

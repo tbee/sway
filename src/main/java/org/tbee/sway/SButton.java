@@ -15,11 +15,9 @@ import javax.swing.BorderFactory;
 import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.border.Border;
-import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Stack;
 
 public class SButton extends JButton implements
         HAlignMixin<SButton>,
@@ -92,7 +90,12 @@ public class SButton extends JButton implements
     // ==============================================
     // FLUENT API
 
-    public SButton transparentAsLabel() {
+    /**
+     * If the button only contains an icon, it can be visually more pleasing to not paint the background and border.
+     * It basically becomes an image button.
+     * We still paint a border when the button has focus, otherwise usability becomes an issue.
+     */
+    public SButton asImageButton() {
         setOpaque(false);
         setContentAreaFilled(false);
 
@@ -102,7 +105,6 @@ public class SButton extends JButton implements
         border(noFocusBorder);
         return this;
     }
-    private final Stack<Color> colors = new Stack<>();
 
     public SButton showMouseOverInCursor() {
         onMouseEnter(e -> setCursor(CLICKABLE_CURSOR));

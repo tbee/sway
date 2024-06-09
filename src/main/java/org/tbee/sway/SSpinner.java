@@ -146,7 +146,9 @@ public class SSpinner<T> extends JPanel implements
             }
         });
 
-        jFormattedTextField.setColumns(format.columns());
+        if (format.columns() >= 0) {
+            jFormattedTextField.setColumns(format.columns());
+        }
         hAlign(format.horizontalAlignment());
 
         return this;

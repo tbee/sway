@@ -12,7 +12,7 @@ public interface Format<T> {
     T toValue(String string);
 
     default int columns() {
-        return 20;
+        return -1;
     }
 
     default HAlign horizontalAlignment() {
