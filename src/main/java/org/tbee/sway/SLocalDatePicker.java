@@ -49,14 +49,22 @@ public class SLocalDatePicker extends JPanel implements
     public static final DateTimeFormatter E = DateTimeFormatter.ofPattern("E");
     public static final LocalDate MONDAY = java.time.LocalDate.of(2009, 7, 6); // This is a monday
 
-    private final STextField<Integer> yearTextField = STextField.ofInteger().columns(15).transparentAsLabel().hAlign(HAlign.LEADING);
+    private final STextField<Integer> yearTextField = STextField.ofInteger()
+            .columns(15)
+            .transparentAsLabel()
+            .hAlign(HAlign.LEADING);
     private final Format<LocalDate> monthFormat = new FormatToString<>() {
         @Override
         public String toString(LocalDate value) {
             return MMMM.withLocale(locale).format(value);
         }
     };
-    private final STextField<LocalDate> monthTextField = STextField.of(monthFormat).columns(15).transparentAsLabel().editable(false).hAlign(HAlign.TRAILING);
+    private final STextField<LocalDate> monthTextField = STextField.of(monthFormat)
+            .columns(15)
+            .transparentAsLabel()
+            .focusable(false)
+            .editable(false)
+            .hAlign(HAlign.TRAILING);
     private final JLabel[] daynameLabels = new JLabel[7]; // seven days in a week
     private final JLabel[] weeknumberLabels = new JLabel[6]; // we required a maximum of 6 weeks if the 1st of the month of a 31 days month falls on the last weekday
     private final JToggleButton[] dateToggleButton = new JToggleButton[6 * 7]; // we required a maximum of 6 weeks if the 1st of the month of a 31 days month falls on the last weekday

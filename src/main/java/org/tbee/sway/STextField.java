@@ -549,4 +549,8 @@ public class STextField<T> extends javax.swing.JTextField implements
         return this;
     }
 
+    public STextField<T> focusable(boolean v) {
+        setFocusable(v);
+        return this;
+    }
 }

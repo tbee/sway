@@ -26,10 +26,10 @@ public class SIconRegistry {
         // Register default icons for those that are required visually
         // https://kordamp.org/ikonli/cheat-sheet-materialdesign2.html
         SIconRegistry.register(SIconRegistry.SwayInternallyUsedIcon.TEXTFIELD_POPUP, createIcon(MaterialDesignM.MENU, SIconRegistry.SwayInternallyUsedIcon.TEXTFIELD_POPUP.typicalSize()));
-        SIconRegistry.register(SIconRegistry.SwayInternallyUsedIcon.DATEPICKER_NEXTMONTH, createIcon(MaterialDesignA.ARROW_RIGHT_BOLD, SIconRegistry.SwayInternallyUsedIcon.DATEPICKER_NEXTMONTH.typicalSize()));
-        SIconRegistry.register(SIconRegistry.SwayInternallyUsedIcon.DATEPICKER_PREVMONTH, createIcon(MaterialDesignA.ARROW_LEFT_BOLD, SIconRegistry.SwayInternallyUsedIcon.DATEPICKER_PREVMONTH.typicalSize()));
-        SIconRegistry.register(SIconRegistry.SwayInternallyUsedIcon.DATEPICKER_NEXTYEAR, createIcon(MaterialDesignA.ARROW_RIGHT_BOLD, SIconRegistry.SwayInternallyUsedIcon.DATEPICKER_NEXTYEAR.typicalSize()));
-        SIconRegistry.register(SIconRegistry.SwayInternallyUsedIcon.DATEPICKER_PREVYEAR, createIcon(MaterialDesignA.ARROW_LEFT_BOLD, SIconRegistry.SwayInternallyUsedIcon.DATEPICKER_PREVYEAR.typicalSize()));
+        SIconRegistry.register(SIconRegistry.SwayInternallyUsedIcon.DATEPICKER_NEXTMONTH, createIcon(MaterialDesignA.ARROW_RIGHT_BOLD, SIconRegistry.SwayInternallyUsedIcon.DATEPICKER_NEXTMONTH.typicalSize() - 4));
+        SIconRegistry.register(SIconRegistry.SwayInternallyUsedIcon.DATEPICKER_PREVMONTH, createIcon(MaterialDesignA.ARROW_LEFT_BOLD, SIconRegistry.SwayInternallyUsedIcon.DATEPICKER_PREVMONTH.typicalSize() - 4));
+        SIconRegistry.register(SIconRegistry.SwayInternallyUsedIcon.DATEPICKER_NEXTYEAR, createIcon(MaterialDesignA.ARROW_RIGHT_BOLD, SIconRegistry.SwayInternallyUsedIcon.DATEPICKER_NEXTYEAR.typicalSize() + 4));
+        SIconRegistry.register(SIconRegistry.SwayInternallyUsedIcon.DATEPICKER_PREVYEAR, createIcon(MaterialDesignA.ARROW_LEFT_BOLD, SIconRegistry.SwayInternallyUsedIcon.DATEPICKER_PREVYEAR.typicalSize() + 4));
     }
 
     public enum SwayInternallyUsedIcon { //
@@ -47,10 +47,10 @@ public class SIconRegistry {
         MENU_SELECTION("selection@menu", 16), //
         OVERLAY_LOADING("loading@overlay", 48),
         TEXTFIELD_POPUP("popup@textfield", 16),
-        DATEPICKER_NEXTMONTH("nextMonth@textfield", 20),
-        DATEPICKER_PREVMONTH("prevMonth@textfield", 20),
-        DATEPICKER_NEXTYEAR("nextYear@textfield", 28),
-        DATEPICKER_PREVYEAR("prevYear@textfield", 28),
+        DATEPICKER_NEXTMONTH("nextMonth@textfield", 24),
+        DATEPICKER_PREVMONTH("prevMonth@textfield", 24),
+        DATEPICKER_NEXTYEAR("nextYear@textfield", 24),
+        DATEPICKER_PREVYEAR("prevYear@textfield", 24),
         ; //
 
         final String id;

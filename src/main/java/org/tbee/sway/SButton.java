@@ -8,13 +8,18 @@ import org.tbee.sway.mixin.JComponentMixin;
 import org.tbee.sway.mixin.TextIconMixin;
 import org.tbee.sway.mixin.ToolTipMixin;
 import org.tbee.sway.mixin.VAlignMixin;
+import org.tbee.sway.support.ColorUtil;
 
 import javax.swing.Action;
+import javax.swing.BorderFactory;
 import javax.swing.Icon;
 import javax.swing.JButton;
+import javax.swing.border.Border;
+import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Stack;
 
 public class SButton extends JButton implements
         HAlignMixin<SButton>,
@@ -91,12 +96,13 @@ public class SButton extends JButton implements
         setOpaque(false);
         setContentAreaFilled(false);
 
-        // TODO: make sure focus is still visible: how to get the current focused border?
-//        setBorderPainted(false);
-//        onFocusGained(e -> border(BorderFactory.createLineBorder(Color.RED, 1)));
-//        onFocusLost(e -> border(BorderFactory.createEmptyBorder(1,1,1,1)));
+        Border noFocusBorder = BorderFactory.createEmptyBorder(1, 1, 1, 1);
+        onFocusGained(e -> border(BorderFactory.createLineBorder(ColorUtil.brighterOrDarker(getBackground(), 0.3), 1)));
+        onFocusLost(e -> border(noFocusBorder));
+        border(noFocusBorder);
         return this;
     }
+    private final Stack<Color> colors = new Stack<>();
 
     public SButton showMouseOverInCursor() {
         onMouseEnter(e -> setCursor(CLICKABLE_CURSOR));
