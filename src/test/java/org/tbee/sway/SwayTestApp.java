@@ -166,7 +166,7 @@ public class SwayTestApp {
 
         migPanel.addLabelAndField("Transparent", STextField.ofString().value("blabla").transparentAsLabel()).wrap();
 
-        return SVPanel.of(SLabel.of("STextField"), migPanel).margin(0);
+        return SVPanel.of(migPanel).margin(0);
     }
 
     static SVPanel sList() {
@@ -197,7 +197,7 @@ public class SwayTestApp {
             sListDelayed2.refresh();
         });
 
-        return SVPanel.of(SLabel.of("SList"), sList, sListDelayed, sListDelayed2, delayedPopulateButton).fillWidth(true).margin(0);
+        return SVPanel.of(sList, sListDelayed, sListDelayed2, delayedPopulateButton).fillWidth(true).margin(0);
     }
 
     static SVPanel sTree() {
@@ -233,7 +233,7 @@ public class SwayTestApp {
 
         STextField<String> leidsepleinNameSTextField = STextField.ofBindTo(leidseplein.name$());
         SButton addButton = SButton.of("Add street to Rome", e -> rome.addStreet(Street.of("Street" + System.currentTimeMillis())));
-        return SVPanel.of(SLabel.of("STree"), sTree, leidsepleinNameSTextField, addButton).fillWidth(true).margin(0);
+        return SVPanel.of(sTree, leidsepleinNameSTextField, addButton).fillWidth(true).margin(0);
     }
 
     static SVPanel sComboBox() {
@@ -258,7 +258,7 @@ public class SwayTestApp {
         STextField<City> sTextField = STextField.of(new CityFormat(cities));
         sTextField.bindTo(sComboBox.value$());
 
-        return SVPanel.of(SLabel.of("SComboBox"), sComboBox, sTextFieldDisplay, sTextField).fillWidth(true).margin(0);
+        return SVPanel.of(sComboBox, sTextFieldDisplay, sTextField).fillWidth(true);
     }
 
     static SSplitPanel sTable() {
@@ -353,7 +353,7 @@ public class SwayTestApp {
         migPanel.addField(SCheckBox3.of("Boolean beanBinder").bindTo(City.cityRights$(beanBinder)));
         migPanel.wrap();
 
-        return SVPanel.of(SLabel.of("SCheckbox"), migPanel).margin(0);
+        return migPanel;
     }
     
     static JPanel sTextArea() {
@@ -362,7 +362,7 @@ public class SwayTestApp {
         SMigPanel migPanel = SMigPanel.of();
     	migPanel.addLabelAndField("bind 1", STextArea.of().bindTo(city.name$())).wrap();
     	migPanel.addLabelAndField("bind 2", STextArea.of(5, 10).bindTo(city.name$())).wrap();
-        return SVPanel.of(SLabel.of("STextArea"), migPanel).margin(0);
+        return SVPanel.of(migPanel).margin(0);
     }
 
     static JPanel sSpinner() {
@@ -373,7 +373,7 @@ public class SwayTestApp {
         migPanel.addLabelAndField("List duplicate", SSpinner.of(List.of("A", "B", "C", "D", "B", "E"))).wrap();
         migPanel.addLabelAndField("City", SSpinner.of(cities).render(new CityFormat())).wrap();
         migPanel.addLabelAndField("City editable", SSpinner.of(cities).editable(true).render(new CityFormat(cities))).wrap();
-        return SVPanel.of(SLabel.of("SSPinner"), migPanel).margin(0);
+        return SVPanel.of(migPanel).margin(0);
     }
 
     static JPanel sTabbedPane() {
