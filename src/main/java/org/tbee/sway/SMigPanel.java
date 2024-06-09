@@ -47,6 +47,19 @@ public class SMigPanel extends SPanelExtendable<SMigPanel> implements
         return this;
     }
 
+
+    /**
+     * Add a component using no default layout, but returning the CC.
+     * If you do not like it, just add the component normally, with your own CC.
+     * @param component
+     * @return
+     */
+    public CC addComponent(JComponent component) {
+        CC cc = new CC();
+        add(component, cc);
+        return cc;
+    }
+
     /**
      * Add a component using the default label layout (align baseline right).
      * If you do not like it, just add a SLabel normally, with your own CC.

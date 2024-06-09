@@ -38,9 +38,6 @@ import static org.tbee.sway.SIconRegistry.SwayInternallyUsedIcon.DATEPICKER_NEXT
 import static org.tbee.sway.SIconRegistry.SwayInternallyUsedIcon.DATEPICKER_PREVMONTH;
 import static org.tbee.sway.SIconRegistry.SwayInternallyUsedIcon.DATEPICKER_PREVYEAR;
 
-/**
- * @author user
- */
 public class SLocalDatePicker extends JPanel implements
         ValueMixin<SLocalDatePicker, LocalDate>,
         SelectionMixin<SLocalDatePicker, LocalDate>,
@@ -153,7 +150,6 @@ public class SLocalDatePicker extends JPanel implements
 
         // layout header
         SMigPanel headerJPanel = SMigPanel.of().fillX().noMargins();
-        // TODO: this panel causes the click to be wide
         headerJPanel.add(iconButton(DATEPICKER_PREVYEAR, this::prevYear));
         headerJPanel.add(iconButton(DATEPICKER_PREVMONTH, this::prevMonth));
         headerJPanel.addField(monthTextField).sizeGroup("monthyear");

@@ -410,10 +410,13 @@ public class SwayTestApp {
         SComboBox<Locale> localeSSpinner = SComboBox.of(list).value(Locale.getDefault()).editable(true);
         SLocalDatePicker sLocalDatePicker = SLocalDatePicker.of();
         STextField<LocalDate> valueTextField = STextField.ofBindTo(sLocalDatePicker.value$());
-
         localeSSpinner.value$().onChange(sLocalDatePicker::setLocale);
 
-        return SHPanel.of(SVPanel.of(localeSSpinner, new JSeparator(), sLocalDatePicker, new JSeparator(), valueTextField).fillWidth(true));
+        SLocalTimePicker sLocalTimePicker = SLocalTimePicker.of();
+
+        SVPanel date = SVPanel.of(localeSSpinner, new JSeparator(), sLocalDatePicker, new JSeparator(), valueTextField).fillWidth(true);
+        SVPanel time = SVPanel.of(sLocalTimePicker);
+        return SHPanel.of(SHPanel.of(date, sLocalTimePicker));
     }
 
 
