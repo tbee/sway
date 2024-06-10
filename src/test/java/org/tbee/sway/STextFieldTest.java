@@ -71,7 +71,7 @@ public class STextFieldTest extends TestBase {
         moveFocus();
         // THEN
         JOptionPaneFixture optionPaneFixture = JOptionPaneFinder.findOptionPane().using(frameFixture.robot());
-        optionPaneFixture.requireErrorMessage().requireMessage("For input string: \"abc\"");
+        optionPaneFixture.requireErrorMessage().requireMessage("Unparseable number: \"abc\"");
         optionPaneFixture.okButton().click();
         Assertions.assertTrue(sTextField.hasFocus());
         Assertions.assertEquals("abc", sTextField.getText());
@@ -93,7 +93,7 @@ public class STextFieldTest extends TestBase {
 
         // THEN
         JOptionPaneFixture optionPaneFixture = JOptionPaneFinder.findOptionPane().using(frameFixture.robot());
-        optionPaneFixture.requireErrorMessage().requireMessage("For input string: \"abc\"");
+        optionPaneFixture.requireErrorMessage().requireMessage("Unparseable number: \"abc\"");
         optionPaneFixture.okButton().click();
         Assertions.assertTrue(sTextField.hasFocus());
         Assertions.assertEquals("abc", sTextField.getText());

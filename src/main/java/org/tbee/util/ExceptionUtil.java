@@ -8,6 +8,9 @@ public class ExceptionUtil {
      * @return
      */
     static public String determineMessage(Throwable t) {
+        while (t.getCause() != null) {
+            t = t.getCause();
+        }
         String message = null;
         message = t.getLocalizedMessage();
         if (message != null && message.trim().length() > 0) {
