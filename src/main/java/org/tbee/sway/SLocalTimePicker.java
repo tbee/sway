@@ -2,11 +2,14 @@ package org.tbee.sway;
 
 import net.miginfocom.layout.AlignX;
 import org.tbee.sway.binding.ExceptionHandler;
+import org.tbee.sway.format.IntegerFormat;
 import org.tbee.sway.mixin.ExceptionHandlerDefaultMixin;
 import org.tbee.sway.mixin.ValueMixin;
 import org.tbee.sway.support.HAlign;
 
 import javax.swing.JLabel;
+import javax.swing.JPanel;
+import java.awt.BorderLayout;
 import java.beans.PropertyVetoException;
 import java.time.LocalTime;
 
@@ -17,17 +20,21 @@ import static org.tbee.sway.SIconRegistry.SwayInternallyUsedIcon.TIMEPICKER_PREV
 import static org.tbee.sway.SIconRegistry.SwayInternallyUsedIcon.TIMEPICKER_PREVMINUTE;
 import static org.tbee.sway.SIconRegistry.SwayInternallyUsedIcon.TIMEPICKER_PREVSECOND;
 
-public class SLocalTimePicker extends SMigPanel implements
+public class SLocalTimePicker extends JPanel implements
         ValueMixin<SLocalTimePicker, LocalTime>,
         ExceptionHandlerDefaultMixin<SLocalTimePicker> {
 
-    private final STextField<Integer> hourTextField = STextField.ofInteger()
+    public static final IntegerFormat FORMAT = new IntegerFormat("00");
+    private final STextField<Integer> hourTextField = STextField.of(FORMAT)
+            .columns(1)
             .transparentAsLabel()
             .hAlign(HAlign.CENTER);
-    private final STextField<Integer> minuteTextField = STextField.ofInteger()
+    private final STextField<Integer> minuteTextField = STextField.of(FORMAT)
+            .columns(1)
             .transparentAsLabel()
             .hAlign(HAlign.CENTER);
-    private final STextField<Integer> secondTextField = STextField.ofInteger()
+    private final STextField<Integer> secondTextField = STextField.of(FORMAT)
+            .columns(1)
             .transparentAsLabel()
             .hAlign(HAlign.CENTER);
 
@@ -44,19 +51,23 @@ public class SLocalTimePicker extends SMigPanel implements
         value(localTime);
 
         // layout
-        addComponent(iconButton(TIMEPICKER_NEXTHOUR, this::nextHour)).alignX(AlignX.CENTER);
-        addComponent(iconButton(TIMEPICKER_NEXTMINUTE, this::nextMinute)).alignX(AlignX.CENTER).skip();
-        addComponent(iconButton(TIMEPICKER_NEXTSECOND, this::nextSecond)).alignX(AlignX.CENTER).skip();
-        wrap();
-        addComponent(hourTextField).sizeGroup("time").alignX(AlignX.CENTER).growX();
-        addComponent(new JLabel(":")).sizeGroup("sep").alignX(AlignX.CENTER);
-        addComponent(minuteTextField).sizeGroup("time").alignX(AlignX.CENTER).growX();
-        addComponent(new JLabel(":")).sizeGroup("sep").alignX(AlignX.CENTER);
-        addComponent(secondTextField).sizeGroup("time").alignX(AlignX.CENTER).growX();
-        wrap();
-        addComponent(iconButton(TIMEPICKER_PREVHOUR, this::prevHour)).alignX(AlignX.CENTER);
-        addComponent(iconButton(TIMEPICKER_PREVMINUTE, this::prevMinute)).alignX(AlignX.CENTER).skip();
-        addComponent(iconButton(TIMEPICKER_PREVSECOND, this::prevSecond)).alignX(AlignX.CENTER).skip();
+        SMigPanel smigPanel = new SMigPanel().noGaps();
+        smigPanel.addComponent(iconButton(TIMEPICKER_NEXTHOUR, this::nextHour)).alignX(AlignX.CENTER);
+        smigPanel.addComponent(iconButton(TIMEPICKER_NEXTMINUTE, this::nextMinute)).alignX(AlignX.CENTER).skip();
+        smigPanel.addComponent(iconButton(TIMEPICKER_NEXTSECOND, this::nextSecond)).alignX(AlignX.CENTER).skip();
+        smigPanel.wrap();
+        smigPanel.addComponent(hourTextField).sizeGroup("time").alignX(AlignX.CENTER).growX();
+        smigPanel.addComponent(new JLabel(":")).sizeGroup("sep").alignX(AlignX.CENTER);
+        smigPanel.addComponent(minuteTextField).sizeGroup("time").alignX(AlignX.CENTER).growX();
+        smigPanel.addComponent(new JLabel(":")).sizeGroup("sep").alignX(AlignX.CENTER);
+        smigPanel.addComponent(secondTextField).sizeGroup("time").alignX(AlignX.CENTER).growX();
+        smigPanel.wrap();
+        smigPanel.addComponent(iconButton(TIMEPICKER_PREVHOUR, this::prevHour)).alignX(AlignX.CENTER);
+        smigPanel.addComponent(iconButton(TIMEPICKER_PREVMINUTE, this::prevMinute)).alignX(AlignX.CENTER).skip();
+        smigPanel.addComponent(iconButton(TIMEPICKER_PREVSECOND, this::prevSecond)).alignX(AlignX.CENTER).skip();
+
+        setLayout(new BorderLayout());
+        add(smigPanel, BorderLayout.CENTER);
 
         updateComponents();
     }
@@ -95,12 +106,12 @@ public class SLocalTimePicker extends SMigPanel implements
     }
 
     private void prevSecond() {
-        value = value.withSecond(decrease(value.getMinute(), 59));
+        value = value.withSecond(decrease(value.getSecond(), 59));
         updateComponents();
     }
 
     private void nextSecond() {
-        value = value.withSecond(increase(value.getMinute(), 59));
+        value = value.withSecond(increase(value.getSecond(), 59));
         updateComponents();
     }
 
