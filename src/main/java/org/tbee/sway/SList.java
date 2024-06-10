@@ -3,7 +3,6 @@ package org.tbee.sway;
 import org.tbee.sway.binding.BindingEndpoint;
 import org.tbee.sway.binding.ExceptionHandler;
 import org.tbee.sway.format.Format;
-import org.tbee.sway.format.FormatRegistry;
 import org.tbee.sway.list.DefaultListCellRenderer;
 import org.tbee.sway.list.SListCore;
 import org.tbee.sway.mixin.BindToMixin;
@@ -111,7 +110,7 @@ public class SList<T> extends JPanel implements
      * @return
      */
     public SList<T> renderFor(Class<T> clazz) {
-        return render((Format<T>) FormatRegistry.findFor(clazz));
+        return render((Format<T>) SFormatRegistry.findFor(clazz));
     }
 
     // ===========================================================================

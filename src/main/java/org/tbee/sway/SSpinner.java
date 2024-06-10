@@ -3,7 +3,6 @@ package org.tbee.sway;
 import org.tbee.sway.binding.BindingEndpoint;
 import org.tbee.sway.binding.ExceptionHandler;
 import org.tbee.sway.format.Format;
-import org.tbee.sway.format.FormatRegistry;
 import org.tbee.sway.format.IntegerFormat;
 import org.tbee.sway.mixin.BindToMixin;
 import org.tbee.sway.mixin.ExceptionHandlerDefaultMixin;
@@ -164,7 +163,7 @@ public class SSpinner<T> extends JPanel implements
      * @return
      */
     public SSpinner<T> renderFor(Class<T> clazz) {
-        return render((Format<T>) FormatRegistry.findFor(clazz));
+        return render((Format<T>) SFormatRegistry.findFor(clazz));
     }
 
     // ===========================================================================================================================

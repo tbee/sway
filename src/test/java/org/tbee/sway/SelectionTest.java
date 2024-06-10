@@ -4,7 +4,6 @@ import org.assertj.swing.core.MouseButton;
 import org.assertj.swing.data.TableCell;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.tbee.sway.format.FormatRegistry;
 
 import java.awt.event.KeyEvent;
 import java.util.List;
@@ -26,7 +25,7 @@ public class SelectionTest extends TestBase {
         var cities = List.of(amsterdam, berlin, rome, paris);
 
         // GIVEN
-        FormatRegistry.register(City.class, new CityFormat(cities));
+        SFormatRegistry.register(City.class, new CityFormat(cities));
 
         // GIVEN
         var tableRef = new AtomicReference<STable<City>>();

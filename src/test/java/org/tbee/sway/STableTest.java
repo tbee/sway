@@ -5,7 +5,6 @@ import org.assertj.swing.data.TableCell;
 import org.assertj.swing.fixture.JTableFixture;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.tbee.sway.format.FormatRegistry;
 
 import javax.swing.SwingUtilities;
 import java.awt.event.KeyEvent;
@@ -139,7 +138,7 @@ public class STableTest extends TestBase {
         amsterdam.sisterCity(berlin);
         List<City> data = List.of(amsterdam, berlin, rome, paris);
 
-        FormatRegistry.register(City.class, new CityFormat(data));
+        SFormatRegistry.register(City.class, new CityFormat(data));
         try {
             construct(() -> {
                 sTable = new STable<City>() //
@@ -158,7 +157,7 @@ public class STableTest extends TestBase {
             Assertions.assertEquals(rome, sTable.getSTableCore().getValueAt(0, 1));
         }
         finally {
-            Assertions.assertTrue(FormatRegistry.unregister(City.class));
+            Assertions.assertTrue(SFormatRegistry.unregister(City.class));
         }
     }
 

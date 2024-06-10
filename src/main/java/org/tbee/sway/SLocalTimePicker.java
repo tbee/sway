@@ -86,33 +86,27 @@ public class SLocalTimePicker extends JPanel implements
     }
 
     private void prevHour() {
-        value = value.withHour(decrease(value.getHour(), 23));
-        updateComponents();
+        value(value.withHour(decrease(value.getHour(), 23)));
     }
 
     private void nextHour() {
-        value = value.withHour(increase(value.getHour(), 23));
-        updateComponents();
+        value(value.withHour(increase(value.getHour(), 23)));
     }
 
     private void prevMinute() {
-        value = value.withMinute(decrease(value.getMinute(), 59));
-        updateComponents();
+        value(value.withMinute(decrease(value.getMinute(), 59)));
     }
 
     private void nextMinute() {
-        value = value.withMinute(increase(value.getMinute(), 59));
-        updateComponents();
+        value(value.withMinute(increase(value.getMinute(), 59)));
     }
 
     private void prevSecond() {
-        value = value.withSecond(decrease(value.getSecond(), 59));
-        updateComponents();
+        value(value.withSecond(decrease(value.getSecond(), 59)));
     }
 
     private void nextSecond() {
-        value = value.withSecond(increase(value.getSecond(), 59));
-        updateComponents();
+        value(value.withSecond(increase(value.getSecond(), 59)));
     }
 
     // ========================================================
@@ -138,9 +132,9 @@ public class SLocalTimePicker extends JPanel implements
     }
     public void setValue(LocalTime v) {
         try {
-            // update calendar
             fireVetoableChange(VALUE, this.value, v);
             firePropertyChange(VALUE, this.value, this.value = v);
+            updateComponents();
         }
         catch (PropertyVetoException e) {
             throw new IllegalArgumentException(e);

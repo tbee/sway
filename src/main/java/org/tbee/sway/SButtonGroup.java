@@ -3,7 +3,6 @@ package org.tbee.sway;
 import org.tbee.sway.binding.BindingEndpoint;
 import org.tbee.sway.binding.ExceptionHandler;
 import org.tbee.sway.format.Format;
-import org.tbee.sway.format.FormatRegistry;
 import org.tbee.sway.mixin.BindToMixin;
 import org.tbee.sway.mixin.ExceptionHandlerMixin;
 import org.tbee.sway.mixin.PropertyChangeListenerMixin;
@@ -243,7 +242,7 @@ public class SButtonGroup<T> extends ButtonGroup implements
      * @param <T>
      */
     public static <T> SButtonGroup<T> of(Class<T> clazz, Supplier<AbstractButton> supplier, T... values) {
-        Format<T> format = (Format<T>) FormatRegistry.findFor(clazz);
+        Format<T> format = (Format<T>) SFormatRegistry.findFor(clazz);
         return of(format, supplier, values);
     }
 
@@ -255,7 +254,7 @@ public class SButtonGroup<T> extends ButtonGroup implements
      * @param <T>
      */
     public static <T> SButtonGroup<T> of(Supplier<AbstractButton> supplier, T... values) {
-        Format<T> format = (Format<T>) FormatRegistry.findFor(values[0].getClass());
+        Format<T> format = (Format<T>) SFormatRegistry.findFor(values[0].getClass());
         return of(format, supplier, values);
     }
 

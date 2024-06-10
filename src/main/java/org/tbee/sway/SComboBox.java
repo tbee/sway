@@ -3,7 +3,6 @@ package org.tbee.sway;
 import org.tbee.sway.binding.BindingEndpoint;
 import org.tbee.sway.binding.ExceptionHandler;
 import org.tbee.sway.format.Format;
-import org.tbee.sway.format.FormatRegistry;
 import org.tbee.sway.list.DefaultListCellRenderer;
 import org.tbee.sway.mixin.BindToMixin;
 import org.tbee.sway.mixin.ExceptionHandlerDefaultMixin;
@@ -88,7 +87,7 @@ public class SComboBox<T> extends JComboBox<T> implements
      * @return
      */
     public SComboBox<T> renderFor(Class<T> clazz) {
-        return render((Format<T>) FormatRegistry.findFor(clazz));
+        return render((Format<T>) SFormatRegistry.findFor(clazz));
     }
 
     // ===========================================================================
@@ -216,7 +215,7 @@ public class SComboBox<T> extends JComboBox<T> implements
     }
 
     static public <T> SComboBox<T> of(Class<T> clazz) {
-        Format<T> format = (Format<T>) FormatRegistry.findFor(clazz);
+        Format<T> format = (Format<T>) SFormatRegistry.findFor(clazz);
         if (format == null) {
             throw new IllegalArgumentException("No format found for " + clazz);
         }

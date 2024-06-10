@@ -2,7 +2,6 @@ package org.tbee.sway;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.tbee.sway.format.FormatRegistry;
 
 import javax.swing.SwingUtilities;
 import java.util.List;
@@ -122,7 +121,7 @@ public class SButtonGroupTest extends TestBase {
         City rome = City.of("Rome", 1560);
         List<City> cities = List.of(berlin, bredevoort, amsterdam, rome, paris);
 
-        FormatRegistry.register(City.class, new CityFormat(cities));
+        SFormatRegistry.register(City.class, new CityFormat(cities));
         try {
             var ref = new AtomicReference<SButtonGroup<City>>();
             construct(() -> {
@@ -140,7 +139,7 @@ public class SButtonGroupTest extends TestBase {
             Assertions.assertEquals(amsterdam, sButtonGroup.getValue());
         }
         finally {
-            Assertions.assertTrue(FormatRegistry.unregister(City.class));
+            Assertions.assertTrue(SFormatRegistry.unregister(City.class));
         }
     }
 
@@ -155,7 +154,7 @@ public class SButtonGroupTest extends TestBase {
         City rome = City.of("Rome", 1560);
         List<City> cities = List.of(berlin, bredevoort, amsterdam, rome, paris);
 
-        FormatRegistry.register(City.class, new CityFormat(cities));
+        SFormatRegistry.register(City.class, new CityFormat(cities));
         try {
             var ref = new AtomicReference<SButtonGroup<City>>();
             construct(() -> {
@@ -173,7 +172,7 @@ public class SButtonGroupTest extends TestBase {
             Assertions.assertEquals(amsterdam, sButtonGroup.getValue());
         }
         finally {
-            Assertions.assertTrue(FormatRegistry.unregister(City.class));
+            Assertions.assertTrue(SFormatRegistry.unregister(City.class));
         }
     }
 
@@ -188,7 +187,7 @@ public class SButtonGroupTest extends TestBase {
         City rome = City.of("Rome", 1560);
         List<City> cities = List.of(berlin, bredevoort, amsterdam, rome, paris);
 
-        FormatRegistry.register(City.class, new CityFormat(cities));
+        SFormatRegistry.register(City.class, new CityFormat(cities));
         try {
             var ref = new AtomicReference<SButtonGroup<City>>();
             construct(() -> {
@@ -206,7 +205,7 @@ public class SButtonGroupTest extends TestBase {
             Assertions.assertEquals(amsterdam, sButtonGroup.getValue());
         }
         finally {
-            Assertions.assertTrue(FormatRegistry.unregister(City.class));
+            Assertions.assertTrue(SFormatRegistry.unregister(City.class));
         }
     }
 
@@ -221,7 +220,7 @@ public class SButtonGroupTest extends TestBase {
         City rome = City.of("Rome", 1560);
         List<City> cities = List.of(berlin, bredevoort, amsterdam, rome, paris);
 
-        FormatRegistry.register(City.class, new CityFormat(cities));
+        SFormatRegistry.register(City.class, new CityFormat(cities));
         try {
             var ref = new AtomicReference<SButtonGroup<City>>();
             construct(() -> {
@@ -239,7 +238,7 @@ public class SButtonGroupTest extends TestBase {
             Assertions.assertEquals(amsterdam, sButtonGroup.getValue());
         }
         finally {
-            Assertions.assertTrue(FormatRegistry.unregister(City.class));
+            Assertions.assertTrue(SFormatRegistry.unregister(City.class));
         }
     }
 }

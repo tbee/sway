@@ -1,7 +1,7 @@
 package org.tbee.sway.list;
 
+import org.tbee.sway.SFormatRegistry;
 import org.tbee.sway.format.Format;
-import org.tbee.sway.format.FormatRegistry;
 
 import javax.swing.JLabel;
 import java.awt.Color;
@@ -29,7 +29,7 @@ public class DefaultListCellRenderer<T> extends javax.swing.DefaultListCellRende
         // Get values
         Format format = formatSupplier == null ? null : formatSupplier.get();
         if (format == null && value != null) {
-            format = FormatRegistry.findFor(value.getClass());
+            format = SFormatRegistry.findFor(value.getClass());
         }
         Color firstAlternateRowColor = firstAlternateRowColorSupplier == null ? null : firstAlternateRowColorSupplier.get();
         Color secondAlternateRowColor = secondAlternateRowColorSupplier == null ? null : secondAlternateRowColorSupplier.get();

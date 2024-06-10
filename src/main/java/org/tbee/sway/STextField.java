@@ -4,7 +4,6 @@ import org.tbee.sway.binding.BeanBinder;
 import org.tbee.sway.binding.BindingEndpoint;
 import org.tbee.sway.binding.ExceptionHandler;
 import org.tbee.sway.format.Format;
-import org.tbee.sway.format.FormatRegistry;
 import org.tbee.sway.format.JavaFormat;
 import org.tbee.sway.format.StringFormat;
 import org.tbee.sway.mixin.BindToMixin;
@@ -315,7 +314,7 @@ public class STextField<T> extends javax.swing.JTextField implements
     }
 
     static public <T> STextField<T> of(Class<T> clazz) {
-        Format<T> format = (Format<T>) FormatRegistry.findFor(clazz);
+        Format<T> format = (Format<T>) SFormatRegistry.findFor(clazz);
         if (format == null) {
             throw new IllegalArgumentException("No format found for " + clazz);
         }

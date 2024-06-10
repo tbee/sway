@@ -19,6 +19,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -409,14 +410,15 @@ public class SwayTestApp {
 
         SComboBox<Locale> localeSSpinner = SComboBox.of(list).value(Locale.getDefault()).editable(true);
         SLocalDatePicker sLocalDatePicker = SLocalDatePicker.of();
-        STextField<LocalDate> valueTextField = STextField.ofBindTo(sLocalDatePicker.value$());
+        STextField<LocalDate> dateValueTextField = STextField.ofBindTo(sLocalDatePicker.value$());
         localeSSpinner.value$().onChange(sLocalDatePicker::setLocale);
 
         SLocalTimePicker sLocalTimePicker = SLocalTimePicker.of();
+        STextField<LocalTime> timeValueTextField = STextField.ofBindTo(sLocalTimePicker.value$());
 
-        SVPanel date = SVPanel.of(localeSSpinner, new JSeparator(), sLocalDatePicker, new JSeparator(), valueTextField).fillWidth(true);
-        SVPanel time = SVPanel.of(sLocalTimePicker);
-        return SHPanel.of(SHPanel.of(date, sLocalTimePicker));
+        SVPanel date = SVPanel.of(localeSSpinner, new JSeparator(), sLocalDatePicker, new JSeparator(), dateValueTextField);
+        SVPanel time = SVPanel.of(sLocalTimePicker, new JSeparator(), timeValueTextField);
+        return SHPanel.of(SHPanel.of(date, time));
     }
 
 

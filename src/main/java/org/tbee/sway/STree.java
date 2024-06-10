@@ -3,10 +3,9 @@ package org.tbee.sway;
 import org.tbee.sway.binding.BindingEndpoint;
 import org.tbee.sway.binding.ExceptionHandler;
 import org.tbee.sway.format.Format;
-import org.tbee.sway.format.FormatRegistry;
 import org.tbee.sway.mixin.BindToMixin;
-import org.tbee.sway.mixin.JComponentMixin;
 import org.tbee.sway.mixin.ExceptionHandlerDefaultMixin;
+import org.tbee.sway.mixin.JComponentMixin;
 import org.tbee.sway.mixin.SelectionMixin;
 import org.tbee.sway.support.BeanMonitor;
 import org.tbee.sway.tree.Node;
@@ -92,7 +91,7 @@ public class STree<T extends Object> extends JPanel implements
                     format = formats.get(value.getClass());
                 }
                 if (format == null && value != null) {
-                    format = FormatRegistry.findFor(value.getClass());
+                    format = SFormatRegistry.findFor(value.getClass());
                 }
                 if (format != null && component instanceof JLabel jLabel) {
                     jLabel.setText(format.toString((T)value));

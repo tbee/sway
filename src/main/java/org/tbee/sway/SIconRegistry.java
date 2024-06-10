@@ -1,6 +1,6 @@
 package org.tbee.sway;
 
-import org.kordamp.ikonli.materialdesign2.MaterialDesignA;
+import org.kordamp.ikonli.material2.Material2AL;
 import org.kordamp.ikonli.materialdesign2.MaterialDesignC;
 import org.kordamp.ikonli.materialdesign2.MaterialDesignF;
 import org.kordamp.ikonli.materialdesign2.MaterialDesignM;
@@ -18,26 +18,28 @@ import static org.tbee.sway.support.IkonliUtil.createIcon;
  * The user can register them here.
  */
 public class SIconRegistry {
-    static private org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(SIconRegistry.class);
+    static private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(SIconRegistry.class);
 
     final static Map<String, Icon> icons = new HashMap<>();
 
     static {
         // Register default icons for those that are required visually
         // https://kordamp.org/ikonli/cheat-sheet-materialdesign2.html
+        // https://kordamp.org/ikonli/cheat-sheet-material2.html
+
         SIconRegistry.register(SIconRegistry.SwayInternallyUsedIcon.TEXTFIELD_POPUP, createIcon(MaterialDesignM.MENU, SIconRegistry.SwayInternallyUsedIcon.TEXTFIELD_POPUP.typicalSize()));
 
-        SIconRegistry.register(SIconRegistry.SwayInternallyUsedIcon.DATEPICKER_NEXTMONTH, createIcon(MaterialDesignA.ARROW_RIGHT_BOLD, SIconRegistry.SwayInternallyUsedIcon.DATEPICKER_NEXTMONTH.typicalSize() - 4));
-        SIconRegistry.register(SIconRegistry.SwayInternallyUsedIcon.DATEPICKER_PREVMONTH, createIcon(MaterialDesignA.ARROW_LEFT_BOLD, SIconRegistry.SwayInternallyUsedIcon.DATEPICKER_PREVMONTH.typicalSize() - 4));
-        SIconRegistry.register(SIconRegistry.SwayInternallyUsedIcon.DATEPICKER_NEXTYEAR, createIcon(MaterialDesignA.ARROW_RIGHT_BOLD, SIconRegistry.SwayInternallyUsedIcon.DATEPICKER_NEXTYEAR.typicalSize() + 4));
-        SIconRegistry.register(SIconRegistry.SwayInternallyUsedIcon.DATEPICKER_PREVYEAR, createIcon(MaterialDesignA.ARROW_LEFT_BOLD, SIconRegistry.SwayInternallyUsedIcon.DATEPICKER_PREVYEAR.typicalSize() + 4));
+        SIconRegistry.register(SIconRegistry.SwayInternallyUsedIcon.DATEPICKER_NEXTMONTH, createIcon(Material2AL.KEYBOARD_ARROW_RIGHT, SIconRegistry.SwayInternallyUsedIcon.DATEPICKER_NEXTMONTH.typicalSize() - 4));
+        SIconRegistry.register(SIconRegistry.SwayInternallyUsedIcon.DATEPICKER_PREVMONTH, createIcon(Material2AL.KEYBOARD_ARROW_LEFT, SIconRegistry.SwayInternallyUsedIcon.DATEPICKER_PREVMONTH.typicalSize() - 4));
+        SIconRegistry.register(SIconRegistry.SwayInternallyUsedIcon.DATEPICKER_NEXTYEAR, createIcon(Material2AL.KEYBOARD_ARROW_RIGHT, SIconRegistry.SwayInternallyUsedIcon.DATEPICKER_NEXTYEAR.typicalSize() + 4));
+        SIconRegistry.register(SIconRegistry.SwayInternallyUsedIcon.DATEPICKER_PREVYEAR, createIcon(Material2AL.KEYBOARD_ARROW_LEFT, SIconRegistry.SwayInternallyUsedIcon.DATEPICKER_PREVYEAR.typicalSize() + 4));
 
-        SIconRegistry.register(SIconRegistry.SwayInternallyUsedIcon.TIMEPICKER_NEXTHOUR, createIcon(MaterialDesignA.ARROW_UP_BOLD, SIconRegistry.SwayInternallyUsedIcon.TIMEPICKER_NEXTHOUR.typicalSize()));
-        SIconRegistry.register(SIconRegistry.SwayInternallyUsedIcon.TIMEPICKER_PREVHOUR, createIcon(MaterialDesignA.ARROW_DOWN_BOLD, SIconRegistry.SwayInternallyUsedIcon.TIMEPICKER_PREVHOUR.typicalSize()));
-        SIconRegistry.register(SIconRegistry.SwayInternallyUsedIcon.TIMEPICKER_NEXTMINUTE, createIcon(MaterialDesignA.ARROW_UP_BOLD, SIconRegistry.SwayInternallyUsedIcon.TIMEPICKER_NEXTMINUTE.typicalSize()));
-        SIconRegistry.register(SIconRegistry.SwayInternallyUsedIcon.TIMEPICKER_PREVMINUTE, createIcon(MaterialDesignA.ARROW_DOWN_BOLD, SIconRegistry.SwayInternallyUsedIcon.TIMEPICKER_PREVMINUTE.typicalSize()));
-        SIconRegistry.register(SIconRegistry.SwayInternallyUsedIcon.TIMEPICKER_NEXTSECOND, createIcon(MaterialDesignA.ARROW_UP_BOLD, SIconRegistry.SwayInternallyUsedIcon.TIMEPICKER_NEXTSECOND.typicalSize()));
-        SIconRegistry.register(SIconRegistry.SwayInternallyUsedIcon.TIMEPICKER_PREVSECOND, createIcon(MaterialDesignA.ARROW_DOWN_BOLD, SIconRegistry.SwayInternallyUsedIcon.TIMEPICKER_PREVSECOND.typicalSize()));
+        SIconRegistry.register(SIconRegistry.SwayInternallyUsedIcon.TIMEPICKER_NEXTHOUR, createIcon(Material2AL.KEYBOARD_ARROW_UP, SIconRegistry.SwayInternallyUsedIcon.TIMEPICKER_NEXTHOUR.typicalSize()));
+        SIconRegistry.register(SIconRegistry.SwayInternallyUsedIcon.TIMEPICKER_PREVHOUR, createIcon(Material2AL.KEYBOARD_ARROW_DOWN, SIconRegistry.SwayInternallyUsedIcon.TIMEPICKER_PREVHOUR.typicalSize()));
+        SIconRegistry.register(SIconRegistry.SwayInternallyUsedIcon.TIMEPICKER_NEXTMINUTE, createIcon(Material2AL.KEYBOARD_ARROW_UP, SIconRegistry.SwayInternallyUsedIcon.TIMEPICKER_NEXTMINUTE.typicalSize()));
+        SIconRegistry.register(SIconRegistry.SwayInternallyUsedIcon.TIMEPICKER_PREVMINUTE, createIcon(Material2AL.KEYBOARD_ARROW_DOWN, SIconRegistry.SwayInternallyUsedIcon.TIMEPICKER_PREVMINUTE.typicalSize()));
+        SIconRegistry.register(SIconRegistry.SwayInternallyUsedIcon.TIMEPICKER_NEXTSECOND, createIcon(Material2AL.KEYBOARD_ARROW_UP, SIconRegistry.SwayInternallyUsedIcon.TIMEPICKER_NEXTSECOND.typicalSize()));
+        SIconRegistry.register(SIconRegistry.SwayInternallyUsedIcon.TIMEPICKER_PREVSECOND, createIcon(Material2AL.KEYBOARD_ARROW_DOWN, SIconRegistry.SwayInternallyUsedIcon.TIMEPICKER_PREVSECOND.typicalSize()));
     }
 
     public enum SwayInternallyUsedIcon { //

@@ -113,6 +113,12 @@
             <artifactId>ikonli-materialdesign2-pack</artifactId>
             <version>12.3.1</version>
         </dependency>
+        <!-- https://kordamp.org/ikonli/cheat-sheet-material2.html -->
+        <dependency>
+            <groupId>org.kordamp.ikonli</groupId>
+            <artifactId>ikonli-material2-pack</artifactId>
+            <version>12.3.1</version>
+        </dependency>
 
 
         <!-- TBEERNOT right now this is only needed for the splitter in STablePasteSelection - can that be removed? -->

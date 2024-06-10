@@ -7,10 +7,9 @@ import org.tbee.sway.binding.BindingEndpoint;
 import org.tbee.sway.binding.ExceptionHandler;
 import org.tbee.sway.format.Format;
 import org.tbee.sway.format.FormatAsJavaTextFormat;
-import org.tbee.sway.format.FormatRegistry;
 import org.tbee.sway.mixin.BindToMixin;
-import org.tbee.sway.mixin.JComponentMixin;
 import org.tbee.sway.mixin.ExceptionHandlerDefaultMixin;
+import org.tbee.sway.mixin.JComponentMixin;
 import org.tbee.sway.mixin.OverlayMixin;
 import org.tbee.sway.mixin.PreferencesMixin;
 import org.tbee.sway.mixin.PropertyChangeListenerMixin;
@@ -683,7 +682,7 @@ public class STable<TableType> extends JPanel implements
                 format = formatCellRenderer.getFormat();
             }
             if (format == null) {
-                format = FormatRegistry.findFor(columnClass);
+                format = SFormatRegistry.findFor(columnClass);
             }
             // If format found, configure it
             if (format != null && tableFilterHeader.getParserModel().getFormat(columnClass) == null) {
