@@ -20,21 +20,20 @@ import static org.tbee.sway.SIconRegistry.SwayInternallyUsedIcon.TIMEPICKER_PREV
 import static org.tbee.sway.SIconRegistry.SwayInternallyUsedIcon.TIMEPICKER_PREVMINUTE;
 import static org.tbee.sway.SIconRegistry.SwayInternallyUsedIcon.TIMEPICKER_PREVSECOND;
 
+// TODO: AM/PM
 public class SLocalTimePicker extends JPanel implements
         ValueMixin<SLocalTimePicker, LocalTime>,
         ExceptionHandlerDefaultMixin<SLocalTimePicker> {
 
     public static final IntegerFormat FORMAT = new IntegerFormat("00");
+
     private final STextField<Integer> hourTextField = STextField.of(FORMAT)
-            .columns(1)
             .transparentAsLabel()
             .hAlign(HAlign.CENTER);
     private final STextField<Integer> minuteTextField = STextField.of(FORMAT)
-            .columns(1)
             .transparentAsLabel()
             .hAlign(HAlign.CENTER);
     private final STextField<Integer> secondTextField = STextField.of(FORMAT)
-            .columns(1)
             .transparentAsLabel()
             .hAlign(HAlign.CENTER);
 
@@ -51,7 +50,7 @@ public class SLocalTimePicker extends JPanel implements
         value(localTime);
 
         // layout
-        SMigPanel smigPanel = new SMigPanel().noGaps();
+        SMigPanel smigPanel = new SMigPanel().noGaps().noMargins();
         smigPanel.addComponent(iconButton(TIMEPICKER_NEXTHOUR, this::nextHour)).alignX(AlignX.CENTER);
         smigPanel.addComponent(iconButton(TIMEPICKER_NEXTMINUTE, this::nextMinute)).alignX(AlignX.CENTER).skip();
         smigPanel.addComponent(iconButton(TIMEPICKER_NEXTSECOND, this::nextSecond)).alignX(AlignX.CENTER).skip();
@@ -147,8 +146,6 @@ public class SLocalTimePicker extends JPanel implements
     // LAYOUT
 
     protected void updateComponents() {
-
-        // TODO: AM/PM
         hourTextField.setValue(value.getHour());
         minuteTextField.setValue(value.getMinute());
         secondTextField.setValue(value.getSecond());

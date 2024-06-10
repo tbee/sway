@@ -1,5 +1,6 @@
 package org.tbee.sway;
 
+import net.miginfocom.layout.AlignY;
 import org.kordamp.ikonli.materialdesign2.MaterialDesignC;
 import org.tbee.sway.binding.BeanBinder;
 import org.tbee.sway.format.FileFormat;
@@ -405,7 +406,7 @@ public class SwayTestApp {
         return SBorderPanel.of(sTabbedPane).north(masterSTextField);
     }
 
-    static SHPanel sDatePicker() {
+    static SMigPanel sDatePicker() {
         List<Locale> list = Arrays.stream(Locale.getAvailableLocales()).sorted(Comparator.comparing(Locale::getDisplayName)).toList();
 
         SComboBox<Locale> localeSSpinner = SComboBox.of(list).value(Locale.getDefault()).editable(true);
@@ -416,9 +417,19 @@ public class SwayTestApp {
         SLocalTimePicker sLocalTimePicker = SLocalTimePicker.of();
         STextField<LocalTime> timeValueTextField = STextField.ofBindTo(sLocalTimePicker.value$());
 
-        SVPanel date = SVPanel.of(localeSSpinner, new JSeparator(), sLocalDatePicker, new JSeparator(), dateValueTextField);
-        SVPanel time = SVPanel.of(sLocalTimePicker, new JSeparator(), timeValueTextField);
-        return SHPanel.of(SHPanel.of(date, time));
+        SMigPanel migPanel = SMigPanel.of();
+        migPanel.addComponent(localeSSpinner);
+        migPanel.wrap();
+        migPanel.addComponent(new JSeparator()).spanX().growX();
+        migPanel.wrap();
+        migPanel.addComponent(sLocalDatePicker).growX().alignY(AlignY.TOP);
+        migPanel.addComponent(sLocalTimePicker).growX().alignY(AlignY.TOP);
+        migPanel.wrap();
+        migPanel.addComponent(new JSeparator()).spanX().growX();
+        migPanel.wrap();
+        migPanel.addComponent(dateValueTextField).growX();
+        migPanel.addComponent(timeValueTextField).growX();
+        return migPanel;
     }
 
 
