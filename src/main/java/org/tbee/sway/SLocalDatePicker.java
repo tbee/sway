@@ -43,18 +43,18 @@ public class SLocalDatePicker extends JPanel implements
         SelectionMixin<SLocalDatePicker, LocalDate>,
         ExceptionHandlerDefaultMixin<SLocalDatePicker> {
 
-    public static final DateTimeFormatter MMMM = DateTimeFormatter.ofPattern("MMMM");
+    public static final DateTimeFormatter MMM = DateTimeFormatter.ofPattern("MMM");
     public static final DateTimeFormatter E = DateTimeFormatter.ofPattern("E");
     public static final LocalDate MONDAY = java.time.LocalDate.of(2009, 7, 6); // This is a monday
 
     private final STextField<Integer> yearTextField = STextField.ofInteger()
-            .columns(8)
+            .columns(3)
             .transparentAsLabel()
             .hAlign(HAlign.LEADING);
     private final Format<LocalDate> monthFormat = new FormatToString<>() {
         @Override
         public String toString(LocalDate value) {
-            return MMMM.withLocale(locale).format(value);
+            return MMM.withLocale(locale).format(value);
         }
     };
     private final STextField<LocalDate> monthTextField = STextField.of(monthFormat)
@@ -125,7 +125,7 @@ public class SLocalDatePicker extends JPanel implements
                 // tooltip
                 LocalDate now = LocalDate.now();
                 if (!(displayedLocalDate.getMonth() == now.getMonth())) {
-                    todayJButton.setToolTipText(MMMM.format(now) + " " + now.getYear() + "...");
+                    todayJButton.setToolTipText(MMM.format(now) + " " + now.getYear() + "...");
 
                     // border
                     todayJButton.setBorder(BorderFactory.createLineBorder(todayJButton.getForeground()));
@@ -150,12 +150,12 @@ public class SLocalDatePicker extends JPanel implements
 
         // layout header
         SMigPanel headerJPanel = SMigPanel.of().fillX().noMargins();
-        headerJPanel.add(iconButton(DATEPICKER_PREVYEAR, this::prevYear));
-        headerJPanel.add(iconButton(DATEPICKER_PREVMONTH, this::prevMonth));
-        headerJPanel.addField(monthTextField).sizeGroup("monthyear");
-        headerJPanel.addField(yearTextField).sizeGroup("monthyear").alignX(AlignX.LEADING);
-        headerJPanel.add(iconButton(DATEPICKER_NEXTMONTH, this::nextMonth));
-        headerJPanel.add(iconButton(DATEPICKER_NEXTYEAR, this::nextYear));
+        headerJPanel.addComponent(iconButton(DATEPICKER_PREVYEAR, this::prevYear));
+        headerJPanel.addComponent(iconButton(DATEPICKER_PREVMONTH, this::prevMonth));
+        headerJPanel.addComponent(monthTextField).sizeGroup("monthyear").alignX(AlignX.TRAILING);
+        headerJPanel.addComponent(yearTextField).sizeGroup("monthyear").alignX(AlignX.LEADING);
+        headerJPanel.addComponent(iconButton(DATEPICKER_NEXTMONTH, this::nextMonth));
+        headerJPanel.addComponent(iconButton(DATEPICKER_NEXTYEAR, this::nextYear));
         add(headerJPanel, BorderLayout.NORTH);
 
         // layout center
