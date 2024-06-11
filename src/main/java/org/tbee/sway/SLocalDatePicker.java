@@ -13,11 +13,11 @@ import org.tbee.sway.support.HAlign;
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTable;
 import javax.swing.JToggleButton;
 import javax.swing.border.Border;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
@@ -63,11 +63,9 @@ public class SLocalDatePicker extends JPanel implements
             .focusable(false)
             .editable(false)
             .hAlign(HAlign.TRAILING);
-    private final JLabel[] daynameLabels = new JLabel[7]; // seven days in a week
-    private final JLabel[] weeknumberLabels = new JLabel[6]; // we required a maximum of 6 weeks if the 1st of the month of a 31 days month falls on the last weekday
-    private final JToggleButton[] dateToggleButton = new JToggleButton[6 * 7]; // we required a maximum of 6 weeks if the 1st of the month of a 31 days month falls on the last weekday
-    private final JLabel labelForColor = new JLabel(); // use to get the default colors
-    private final JToggleButton toggleButtonForColor = new JToggleButton(); // use to get the default colors
+    private final SLabel[] daynameLabels = new SLabel[7]; // seven days in a week
+    private final SLabel[] weeknumberLabels = new SLabel[6]; // we required a maximum of 6 weeks if the 1st of the month of a 31 days month falls on the last weekday
+    private final SToggleButton[] dateToggleButton = new SToggleButton[6 * 7]; // we required a maximum of 6 weeks if the 1st of the month of a 31 days month falls on the last weekday
 
     // ===========================================================================================================
     // CONSTRUCTOR
@@ -80,14 +78,16 @@ public class SLocalDatePicker extends JPanel implements
 
         // daynames
         for (int i = 0; i < 7; i++) {
-            daynameLabels[i] = new JLabel("d" + i);
+            daynameLabels[i] = SLabel.of("d" + i);
             daynameLabels[i].setHorizontalAlignment(JLabel.CENTER);
+            weekdayFont(daynameLabels[i]);
         }
 
         // weeknumbers
         for (int i = 0; i < 6; i++) {
-            weeknumberLabels[i] = new JLabel("w" + i);
+            weeknumberLabels[i] = SLabel.of("w" + i);
             weeknumberLabels[i].setHorizontalAlignment(JLabel.CENTER);
+            weeknumberFont(weeknumberLabels[i]);
         }
 
         // year
@@ -96,17 +96,17 @@ public class SLocalDatePicker extends JPanel implements
             displayedLocalDate = displayedLocalDate.withYear(v);
             refreshDisplayedDateBasedComponents();
         });
-        setFontForHeader(yearTextField);
+        headerFont(yearTextField);
 
         // month
         monthTextField.value(displayedLocalDate);
-        setFontForHeader(monthTextField);
+        headerFont(monthTextField);
 
         // dates
         ActionListener dayActionListener = e -> dayClicked(e);
         Insets lEmptyInsets = new Insets(0, 0, 0, 0);
         for (int i = 0; i < 6 * 7; i++) {
-            dateToggleButton[i] = new JToggleButton("" + i);
+            dateToggleButton[i] = SToggleButton.of("" + i);
             dateToggleButton[i].setMargin(lEmptyInsets);
             dateToggleButton[i].addActionListener(dayActionListener);
         }
@@ -210,8 +210,14 @@ public class SLocalDatePicker extends JPanel implements
         refreshDisplayedDateBasedComponents();
     }
 
-    private void setFontForHeader(STextField<?> sTextField) {
-        sTextField.font(sTextField.getFont().deriveFont(sTextField.getFont().getSize() * 1.5f));
+    private <T> STextField<T> headerFont(STextField<T> sTextField) {
+        return sTextField.font(sTextField.getFont().deriveFont(sTextField.getFont().getSize() * 1.5f));
+    }
+    private SLabel weekdayFont(SLabel sLabel) {
+        return sLabel.font(sLabel.getFont().deriveFont(Font.BOLD));
+    }
+    private SLabel weeknumberFont(SLabel sLabel) {
+        return sLabel.font(sLabel.getFont().deriveFont(Font.ITALIC));
     }
 
     private void dayClicked(ActionEvent e) {
@@ -484,7 +490,7 @@ public class SLocalDatePicker extends JPanel implements
             throw new IllegalArgumentException(e);
         }
     }
-    private Color weekendLabelColor = (new JTable()).getSelectionBackground();
+    private Color weekendLabelColor = ColorUtil.brighterOrDarker(new JLabel().getForeground(), 0.2);
     final static public String WEEKENDLABELCOLOR = "weekendLabelColor";
     public SLocalDatePicker weekendLabelColor(Color v) {
         setWeekendLabelColor(v);
@@ -530,7 +536,7 @@ public class SLocalDatePicker extends JPanel implements
 
         // setup the dayLabels monday to sunday
         DateTimeFormatter dateTimeFormatter = E.withLocale(locale);
-        Color normalDayColor = labelForColor.getForeground();
+        Color normalDayColor = new JLabel().getForeground();
         for (int i = 0; i < 7; i++) {
             LocalDate localDate = MONDAY.plusDays(i);
 
@@ -567,11 +573,14 @@ public class SLocalDatePicker extends JPanel implements
         int firstOfMonthIdx = determineFirstOfMonthDayOfWeek();
 
         // hide the preceeding buttons
-        Color borderColor = ColorUtil.brighterOrDarker(toggleButtonForColor.getForeground(), 0.5);
-        Border todayBorder = BorderFactory.createLineBorder(borderColor, 2);
+        JToggleButton toggleButtonForColor = new JToggleButton();
+        Color foreground = toggleButtonForColor.getForeground();
+        Color background = toggleButtonForColor.getBackground();
+        Color todayBorderColor = ColorUtil.brighterOrDarker(background, 0.1);
+        Border todayBorder = BorderFactory.createLineBorder(todayBorderColor, 2);
         Border notTodayBorder = BorderFactory.createEmptyBorder(2, 2, 2, 2);
-        Color altForgroundColor = ColorUtil.brighterOrDarker(toggleButtonForColor.getForeground(), 0.2);
-        Color altBackgroundColor = ColorUtil.brighterOrDarker(toggleButtonForColor.getBackground(), 0.2);
+        Color altForegroundColor = foreground;//ColorUtil.brighterOrDarker(toggleButtonForColor.getForeground(), 0.1);
+        Color altBackgroundColor = ColorUtil.brighterOrDarker(background, 0.1);
         LocalDate startDate = displayedLocalDate.minusDays(firstOfMonthIdx - 1);
         for (int idx = 0; idx < 6 * 7; idx++) {
             LocalDate localDate = startDate.plusDays(idx);
@@ -581,8 +590,8 @@ public class SLocalDatePicker extends JPanel implements
             // highlight today
             dateToggleButton[idx].setBorder(isToday(localDate) ? todayBorder : notTodayBorder);
             boolean otherMonth = (localDate.getMonthValue() != displayedMonth);
-            dateToggleButton[idx].setForeground(otherMonth ? altForgroundColor : toggleButtonForColor.getForeground());
-            dateToggleButton[idx].setBackground(otherMonth ? altBackgroundColor : toggleButtonForColor.getBackground());
+            dateToggleButton[idx].setForeground(otherMonth ? altForegroundColor : foreground);
+            dateToggleButton[idx].setBackground(otherMonth ? altBackgroundColor : background);
         }
 
         // also update the selection

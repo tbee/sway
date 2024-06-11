@@ -47,26 +47,32 @@ public class SIconRegistry {
     	BUTTON_CANCEL("cancel@button", 16), //
     	BUTTON_YES("yes@button", 16), //
     	BUTTON_NO("no@button", 16), //
+
     	CHECKBOX_SELECTED("selected@checkbox", 16), //
     	CHECKBOX_UNSELECTED("unselected@checkbox", 16), //
     	CHECKBOX_UNDETERMINED("undetermined@checkbox", 16),
+
         MENU_COPY("copy@menu", 16), //
         MENU_CUT("cut@menu", 16), //
         MENU_PASTE("paste@menu", 16), //
         MENU_FILTER("filter@menu", 16), //
         MENU_SELECTION("selection@menu", 16), //
+
         OVERLAY_LOADING("loading@overlay", 48),
+
         TEXTFIELD_POPUP("popup@textfield", 16),
+
         DATEPICKER_NEXTMONTH("nextMonth@datepicker", 24),
         DATEPICKER_PREVMONTH("prevMonth@datepicker", 24),
         DATEPICKER_NEXTYEAR("nextYear@datepicker", 24),
         DATEPICKER_PREVYEAR("prevYear@datepicker", 24),
-        TIMEPICKER_NEXTHOUR("nextHour@timepicker", 24),
-        TIMEPICKER_PREVHOUR("prevHour@timepicker", 24),
-        TIMEPICKER_NEXTMINUTE("nextMinute@timepicker", 24),
-        TIMEPICKER_PREVMINUTE("prevMinute@timepicker", 24),
-        TIMEPICKER_NEXTSECOND("nextSecond@timepicker", 24),
-        TIMEPICKER_PREVSECOND("prevSecond@timepicker", 24),
+
+        TIMEPICKER_NEXTHOUR("nextHour@timepicker", 20),
+        TIMEPICKER_PREVHOUR("prevHour@timepicker", 20),
+        TIMEPICKER_NEXTMINUTE("nextMinute@timepicker", 20),
+        TIMEPICKER_PREVMINUTE("prevMinute@timepicker", 20),
+        TIMEPICKER_NEXTSECOND("nextSecond@timepicker", 20),
+        TIMEPICKER_PREVSECOND("prevSecond@timepicker", 20),
         ; //
 
         final String id;
