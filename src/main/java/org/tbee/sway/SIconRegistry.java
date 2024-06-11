@@ -29,10 +29,10 @@ public class SIconRegistry {
 
         SIconRegistry.register(SIconRegistry.SwayInternallyUsedIcon.TEXTFIELD_POPUP, createIcon(MaterialDesignM.MENU, SIconRegistry.SwayInternallyUsedIcon.TEXTFIELD_POPUP.typicalSize()));
 
-        SIconRegistry.register(SIconRegistry.SwayInternallyUsedIcon.DATEPICKER_NEXTMONTH, createIcon(Material2AL.KEYBOARD_ARROW_RIGHT, SIconRegistry.SwayInternallyUsedIcon.DATEPICKER_NEXTMONTH.typicalSize() - 4));
-        SIconRegistry.register(SIconRegistry.SwayInternallyUsedIcon.DATEPICKER_PREVMONTH, createIcon(Material2AL.KEYBOARD_ARROW_LEFT, SIconRegistry.SwayInternallyUsedIcon.DATEPICKER_PREVMONTH.typicalSize() - 4));
-        SIconRegistry.register(SIconRegistry.SwayInternallyUsedIcon.DATEPICKER_NEXTYEAR, createIcon(Material2AL.KEYBOARD_ARROW_RIGHT, SIconRegistry.SwayInternallyUsedIcon.DATEPICKER_NEXTYEAR.typicalSize() + 4));
-        SIconRegistry.register(SIconRegistry.SwayInternallyUsedIcon.DATEPICKER_PREVYEAR, createIcon(Material2AL.KEYBOARD_ARROW_LEFT, SIconRegistry.SwayInternallyUsedIcon.DATEPICKER_PREVYEAR.typicalSize() + 4));
+        SIconRegistry.register(SIconRegistry.SwayInternallyUsedIcon.DATEPICKER_NEXTMONTH, createIcon(Material2AL.KEYBOARD_ARROW_RIGHT, SIconRegistry.SwayInternallyUsedIcon.DATEPICKER_NEXTMONTH.typicalSize() - 2));
+        SIconRegistry.register(SIconRegistry.SwayInternallyUsedIcon.DATEPICKER_PREVMONTH, createIcon(Material2AL.KEYBOARD_ARROW_LEFT, SIconRegistry.SwayInternallyUsedIcon.DATEPICKER_PREVMONTH.typicalSize() - 2));
+        SIconRegistry.register(SIconRegistry.SwayInternallyUsedIcon.DATEPICKER_NEXTYEAR, createIcon(Material2AL.KEYBOARD_ARROW_RIGHT, SIconRegistry.SwayInternallyUsedIcon.DATEPICKER_NEXTYEAR.typicalSize() + 2));
+        SIconRegistry.register(SIconRegistry.SwayInternallyUsedIcon.DATEPICKER_PREVYEAR, createIcon(Material2AL.KEYBOARD_ARROW_LEFT, SIconRegistry.SwayInternallyUsedIcon.DATEPICKER_PREVYEAR.typicalSize() + 2));
 
         SIconRegistry.register(SIconRegistry.SwayInternallyUsedIcon.TIMEPICKER_NEXTHOUR, createIcon(Material2AL.KEYBOARD_ARROW_UP, SIconRegistry.SwayInternallyUsedIcon.TIMEPICKER_NEXTHOUR.typicalSize()));
         SIconRegistry.register(SIconRegistry.SwayInternallyUsedIcon.TIMEPICKER_PREVHOUR, createIcon(Material2AL.KEYBOARD_ARROW_DOWN, SIconRegistry.SwayInternallyUsedIcon.TIMEPICKER_PREVHOUR.typicalSize()));
@@ -62,10 +62,10 @@ public class SIconRegistry {
 
         TEXTFIELD_POPUP("popup@textfield", 16),
 
-        DATEPICKER_NEXTMONTH("nextMonth@datepicker", 24),
-        DATEPICKER_PREVMONTH("prevMonth@datepicker", 24),
-        DATEPICKER_NEXTYEAR("nextYear@datepicker", 24),
-        DATEPICKER_PREVYEAR("prevYear@datepicker", 24),
+        DATEPICKER_NEXTMONTH("nextMonth@datepicker", 20),
+        DATEPICKER_PREVMONTH("prevMonth@datepicker", 20),
+        DATEPICKER_NEXTYEAR("nextYear@datepicker", 20),
+        DATEPICKER_PREVYEAR("prevYear@datepicker", 20),
 
         TIMEPICKER_NEXTHOUR("nextHour@timepicker", 20),
         TIMEPICKER_PREVHOUR("prevHour@timepicker", 20),

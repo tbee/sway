@@ -78,7 +78,7 @@ public class SLocalDatePicker extends JPanel implements
 
         // daynames
         for (int i = 0; i < 7; i++) {
-            daynameLabels[i] = SLabel.of("d" + i);
+            daynameLabels[i] = SLabel.of("d" + i).margin(0, 0, 0, 1);
             daynameLabels[i].setHorizontalAlignment(JLabel.CENTER);
             weekdayFont(daynameLabels[i]);
         }
@@ -149,10 +149,10 @@ public class SLocalDatePicker extends JPanel implements
         setLayout(new BorderLayout());
 
         // layout header
-        SMigPanel headerJPanel = SMigPanel.of().fillX().noMargins();
+        SMigPanel headerJPanel = SMigPanel.of().fillX().noMargins().noGaps();
         headerJPanel.addComponent(iconButton(DATEPICKER_PREVYEAR, this::prevYear));
         headerJPanel.addComponent(iconButton(DATEPICKER_PREVMONTH, this::prevMonth));
-        headerJPanel.addComponent(monthTextField).sizeGroup("monthyear").alignX(AlignX.TRAILING);
+        headerJPanel.addComponent(monthTextField).sizeGroup("monthyear").alignX(AlignX.TRAILING).gapAfter("2px");
         headerJPanel.addComponent(yearTextField).sizeGroup("monthyear").alignX(AlignX.LEADING);
         headerJPanel.addComponent(iconButton(DATEPICKER_NEXTMONTH, this::nextMonth));
         headerJPanel.addComponent(iconButton(DATEPICKER_NEXTYEAR, this::nextYear));
@@ -211,7 +211,7 @@ public class SLocalDatePicker extends JPanel implements
     }
 
     private <T> STextField<T> headerFont(STextField<T> sTextField) {
-        return sTextField.font(sTextField.getFont().deriveFont(sTextField.getFont().getSize() * 1.5f));
+        return sTextField.font(sTextField.getFont().deriveFont(sTextField.getFont().getSize() * 1.3f).deriveFont(Font.BOLD));
     }
     private SLabel weekdayFont(SLabel sLabel) {
         return sLabel.font(sLabel.getFont().deriveFont(Font.BOLD));
