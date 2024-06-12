@@ -33,6 +33,9 @@ public interface JComponentMixin<T extends JComponent> extends
     default T margin(int v) {
         return margin(v, v, v, v);
     }
+    default T noMargin() {
+        return margin(0);
+    }
 
     default T doubleBuffered(boolean v) {
         ((T)this).setDoubleBuffered(v);

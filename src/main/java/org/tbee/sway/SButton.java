@@ -16,6 +16,7 @@ import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.border.Border;
 import java.awt.Cursor;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -85,6 +86,15 @@ public class SButton extends JButton implements
     		}
 			throw t;
     	}
+    }
+
+    // ==============================================
+    // FOR MIXINS
+
+    // JComponentMixIn
+    public SButton margin(int top, int left, int bottom, int right) {
+        setMargin(new Insets(top, left, bottom, right));
+        return this;
     }
     
     // ==============================================
