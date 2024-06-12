@@ -25,7 +25,19 @@ public class SLocalTimePicker extends JPanel implements
         ValueMixin<SLocalTimePicker, LocalTime>,
         ExceptionHandlerDefaultMixin<SLocalTimePicker> {
 
-    public static final IntegerFormat FORMAT = new IntegerFormat("00");
+    public static final IntegerFormat FORMAT = new IntegerFormat("00") {
+        public static final String NULL_STRING = "--";
+
+        @Override
+        public String toString(Integer value) {
+            return value == null ? NULL_STRING : super.toString(value);
+        }
+
+        @Override
+        public Integer toValue(String string) {
+            return NULL_STRING.equals(string) ? null : super.toValue(string);
+        }
+    };
 
     private final STextField<Integer> hourTextField = STextField.of(FORMAT)
             .transparentAsLabel()
@@ -41,13 +53,16 @@ public class SLocalTimePicker extends JPanel implements
     // CONSTRUCTOR
 
     public SLocalTimePicker() {
-        this(LocalTime.now());
+        this(null);
     }
 
     public SLocalTimePicker(LocalTime localTime) {
 
         // setup defaults
         value(localTime);
+        hourTextField.onFocusLost(e -> this.manualTyped());
+        minuteTextField.onFocusLost(e -> this.manualTyped());
+        secondTextField.onFocusLost(e -> this.manualTyped());
 
         // layout
         SMigPanel smigPanel = new SMigPanel().noGaps().noMargins();
@@ -77,6 +92,9 @@ public class SLocalTimePicker extends JPanel implements
                 .onAction(e -> runnable.run());
     }
 
+    private LocalTime unnull(LocalTime value) {
+        return value == null ? LocalTime.now() : value;
+    }
     private int decrease(int value, int max) {
         return (value <= 0 ? max : value - 1);
     }
@@ -84,27 +102,43 @@ public class SLocalTimePicker extends JPanel implements
         return (value >= max ? 0 : value + 1);
     }
 
+    private void manualTyped() {
+        LocalTime now = LocalTime.now();
+        value = unnull(value);
+        value = value.withHour(hourTextField.getValue() != null ? hourTextField.getValue() : value.getHour())
+                     .withMinute(minuteTextField.getValue() != null ? minuteTextField.getValue() : value.getMinute())
+                     .withSecond(secondTextField.getValue() != null ? secondTextField.getValue() : value.getSecond());
+        value(value);
+        updateComponents();
+    }
+
     private void prevHour() {
+        value = unnull(value);
         value(value.withHour(decrease(value.getHour(), 23)));
     }
 
     private void nextHour() {
+        value = unnull(value);
         value(value.withHour(increase(value.getHour(), 23)));
     }
 
     private void prevMinute() {
+        value = unnull(value);
         value(value.withMinute(decrease(value.getMinute(), 59)));
     }
 
     private void nextMinute() {
+        value = unnull(value);
         value(value.withMinute(increase(value.getMinute(), 59)));
     }
 
     private void prevSecond() {
+        value = unnull(value);
         value(value.withSecond(decrease(value.getSecond(), 59)));
     }
 
     private void nextSecond() {
+        value = unnull(value);
         value(value.withSecond(increase(value.getSecond(), 59)));
     }
 
@@ -146,9 +180,9 @@ public class SLocalTimePicker extends JPanel implements
     // LAYOUT
 
     protected void updateComponents() {
-        hourTextField.setValue(value.getHour());
-        minuteTextField.setValue(value.getMinute());
-        secondTextField.setValue(value.getSecond());
+        hourTextField.setValue(value == null ? null : value.getHour());
+        minuteTextField.setValue(value == null ? null : value.getMinute());
+        secondTextField.setValue(value == null ? null : value.getSecond());
     }
 
 
