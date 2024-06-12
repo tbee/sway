@@ -5,7 +5,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.function.Consumer;
 
-public interface KeyListenerMixin<T extends Component> {
+public interface KeyListenerMixin<T extends Component> extends ExceptionHandleMixin<T> {
 
     void addKeyListener(KeyListener l);
 
@@ -13,7 +13,12 @@ public interface KeyListenerMixin<T extends Component> {
         addKeyListener(new KeyListener() {
             @Override
             public void keyTyped(KeyEvent e) {
-                consumer.accept(e);
+                try {
+                    consumer.accept(e);
+                }
+                catch (Exception ex) {
+                    handleException(ex);
+                }
             }
 
             @Override
@@ -32,7 +37,12 @@ public interface KeyListenerMixin<T extends Component> {
 
             @Override
             public void keyPressed(KeyEvent e) {
-                consumer.accept(e);
+                try {
+                    consumer.accept(e);
+                }
+                catch (Exception ex) {
+                    handleException(ex);
+                }
             }
 
             @Override
@@ -51,7 +61,12 @@ public interface KeyListenerMixin<T extends Component> {
 
             @Override
             public void keyReleased(KeyEvent e) {
-                consumer.accept(e);
+                try {
+                    consumer.accept(e);
+                }
+                catch (Exception ex) {
+                    handleException(ex);
+                }
             }
         });
         return (T)this;

@@ -8,7 +8,7 @@ import org.tbee.sway.format.JavaFormat;
 import org.tbee.sway.format.StringFormat;
 import org.tbee.sway.mixin.BindToMixin;
 import org.tbee.sway.mixin.EditableMixin;
-import org.tbee.sway.mixin.ExceptionHandlerDefaultMixin;
+import org.tbee.sway.mixin.ExceptionHandlerMixin;
 import org.tbee.sway.mixin.HAlignMixin;
 import org.tbee.sway.mixin.JComponentMixin;
 import org.tbee.sway.mixin.OverlayMixin;
@@ -128,7 +128,7 @@ public class STextField<T> extends javax.swing.JTextField implements
         ToolTipMixin<STextField<T>>,
         BindToMixin<STextField<T>, T>,
         EditableMixin<STextField<T>>,
-        ExceptionHandlerDefaultMixin<STextField<T>>,
+        ExceptionHandlerMixin<STextField<T>>,
         TextIconMixin<STextField<T>>,
         ValueMixin<STextField<T>, T>,
         JComponentMixin<STextField<T>> {

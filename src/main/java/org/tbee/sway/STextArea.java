@@ -4,7 +4,7 @@ import org.tbee.sway.binding.BindingEndpoint;
 import org.tbee.sway.binding.ExceptionHandler;
 import org.tbee.sway.mixin.BindToMixin;
 import org.tbee.sway.mixin.EditableMixin;
-import org.tbee.sway.mixin.ExceptionHandlerDefaultMixin;
+import org.tbee.sway.mixin.ExceptionHandlerMixin;
 import org.tbee.sway.mixin.JComponentMixin;
 import org.tbee.sway.mixin.TextMixin;
 import org.tbee.sway.support.FocusInterpreter;
@@ -18,7 +18,7 @@ import java.awt.BorderLayout;
 
 public class STextArea extends JPanel implements
         JComponentMixin<STextArea>,
-        ExceptionHandlerDefaultMixin<STextArea>,
+        ExceptionHandlerMixin<STextArea>,
         EditableMixin<STextArea>,
         TextMixin<STextArea>,
         BindToMixin<STextArea, String> {

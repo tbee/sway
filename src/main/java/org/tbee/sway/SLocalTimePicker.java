@@ -3,7 +3,7 @@ package org.tbee.sway;
 import net.miginfocom.layout.AlignX;
 import org.tbee.sway.binding.ExceptionHandler;
 import org.tbee.sway.format.IntegerFormat;
-import org.tbee.sway.mixin.ExceptionHandlerDefaultMixin;
+import org.tbee.sway.mixin.ExceptionHandlerMixin;
 import org.tbee.sway.mixin.ValueMixin;
 import org.tbee.sway.support.HAlign;
 
@@ -23,7 +23,7 @@ import static org.tbee.sway.SIconRegistry.SwayInternallyUsedIcon.TIMEPICKER_PREV
 // TODO: AM/PM
 public class SLocalTimePicker extends JPanel implements
         ValueMixin<SLocalTimePicker, LocalTime>,
-        ExceptionHandlerDefaultMixin<SLocalTimePicker> {
+        ExceptionHandlerMixin<SLocalTimePicker> {
 
     public static final IntegerFormat FORMAT = new IntegerFormat("00") {
         public static final String NULL_STRING = "--";

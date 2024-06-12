@@ -1,11 +1,11 @@
 package org.tbee.sway.mixin;
 
-import java.awt.Component;
+import javax.swing.JComponent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.function.Consumer;
 
-public interface MouseListenerMixin<T extends Component> {
+public interface MouseListenerMixin<T extends JComponent> extends ExceptionHandleMixin<T> {
 
     void addMouseListener(MouseListener l);
 
@@ -14,7 +14,12 @@ public interface MouseListenerMixin<T extends Component> {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (e.getClickCount() == 1) {
-                    consumer.accept(e);
+                    try {
+                        consumer.accept(e);
+                    }
+                    catch (Exception ex) {
+                        handleException(ex);
+                    }
                 }
             }
 
@@ -38,7 +43,12 @@ public interface MouseListenerMixin<T extends Component> {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (e.getClickCount() == 2) {
-                    consumer.accept(e);
+                    try {
+                        consumer.accept(e);
+                    }
+                    catch (Exception ex) {
+                        handleException(ex);
+                    }
                 }
             }
 
@@ -64,7 +74,12 @@ public interface MouseListenerMixin<T extends Component> {
 
             @Override
             public void mousePressed(MouseEvent e) {
-                consumer.accept(e);
+                try {
+                    consumer.accept(e);
+                }
+                catch (Exception ex) {
+                    handleException(ex);
+                }
             }
 
             @Override
@@ -89,7 +104,12 @@ public interface MouseListenerMixin<T extends Component> {
 
             @Override
             public void mouseReleased(MouseEvent e) {
-                consumer.accept(e);
+                try {
+                    consumer.accept(e);
+                }
+                catch (Exception ex) {
+                    handleException(ex);
+                }
             }
 
             @Override
@@ -114,7 +134,12 @@ public interface MouseListenerMixin<T extends Component> {
 
             @Override
             public void mouseEntered(MouseEvent e) {
-                consumer.accept(e);
+                try {
+                    consumer.accept(e);
+                }
+                catch (Exception ex) {
+                    handleException(ex);
+                }
             }
 
             @Override
@@ -139,7 +164,12 @@ public interface MouseListenerMixin<T extends Component> {
 
             @Override
             public void mouseExited(MouseEvent e) {
-                consumer.accept(e);
+                try {
+                    consumer.accept(e);
+                }
+                catch (Exception ex) {
+                    handleException(ex);
+                }
             }
         });
         return (T)this;

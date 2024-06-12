@@ -14,7 +14,6 @@ public interface ComponentMixin<T extends Component> extends
         OverlayMixin<T>,
         FontMixin<T> {
 
-
     default T name(String v) {
         ((T)this).setName(v);
         return (T) this;

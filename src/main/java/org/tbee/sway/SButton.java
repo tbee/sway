@@ -2,7 +2,7 @@ package org.tbee.sway;
 
 import org.tbee.sway.binding.ExceptionHandler;
 import org.tbee.sway.mixin.ActionMixin;
-import org.tbee.sway.mixin.ExceptionHandlerDefaultMixin;
+import org.tbee.sway.mixin.ExceptionHandlerMixin;
 import org.tbee.sway.mixin.HAlignMixin;
 import org.tbee.sway.mixin.JComponentMixin;
 import org.tbee.sway.mixin.TextIconMixin;
@@ -22,7 +22,7 @@ import java.awt.event.ActionListener;
 public class SButton extends JButton implements
         HAlignMixin<SButton>,
         VAlignMixin<SButton>,
-        ExceptionHandlerDefaultMixin<SButton>,
+        ExceptionHandlerMixin<SButton>,
         ToolTipMixin<SButton>,
         ActionMixin<SButton>,
         TextIconMixin<SButton>,

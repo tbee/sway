@@ -4,7 +4,7 @@ import org.tbee.sway.binding.BindingEndpoint;
 import org.tbee.sway.binding.ExceptionHandler;
 import org.tbee.sway.format.Format;
 import org.tbee.sway.mixin.BindToMixin;
-import org.tbee.sway.mixin.ExceptionHandlerDefaultMixin;
+import org.tbee.sway.mixin.ExceptionHandlerMixin;
 import org.tbee.sway.mixin.JComponentMixin;
 import org.tbee.sway.mixin.SelectionMixin;
 import org.tbee.sway.support.BeanMonitor;
@@ -64,7 +64,7 @@ import java.util.function.Function;
  */
 public class STree<T extends Object> extends JPanel implements
         JComponentMixin<STree<T>>,
-        ExceptionHandlerDefaultMixin<STree<T>>,
+        ExceptionHandlerMixin<STree<T>>,
         SelectionMixin<STree<T>, T>,
         BindToMixin<STree<T>, List<T>> {
     static private org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(STree.class);

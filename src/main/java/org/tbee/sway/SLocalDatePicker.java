@@ -4,7 +4,7 @@ import net.miginfocom.layout.AlignX;
 import org.tbee.sway.binding.ExceptionHandler;
 import org.tbee.sway.format.Format;
 import org.tbee.sway.format.FormatToString;
-import org.tbee.sway.mixin.ExceptionHandlerDefaultMixin;
+import org.tbee.sway.mixin.ExceptionHandlerMixin;
 import org.tbee.sway.mixin.SelectionMixin;
 import org.tbee.sway.mixin.ValueMixin;
 import org.tbee.sway.support.ColorUtil;
@@ -41,7 +41,7 @@ import static org.tbee.sway.SIconRegistry.SwayInternallyUsedIcon.DATEPICKER_PREV
 public class SLocalDatePicker extends JPanel implements
         ValueMixin<SLocalDatePicker, LocalDate>,
         SelectionMixin<SLocalDatePicker, LocalDate>,
-        ExceptionHandlerDefaultMixin<SLocalDatePicker> {
+        ExceptionHandlerMixin<SLocalDatePicker> {
 
     public static final DateTimeFormatter MMM = DateTimeFormatter.ofPattern("MMM");
     public static final DateTimeFormatter E = DateTimeFormatter.ofPattern("E");

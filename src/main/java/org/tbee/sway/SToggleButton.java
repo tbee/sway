@@ -2,8 +2,8 @@ package org.tbee.sway;
 
 import org.tbee.sway.binding.ExceptionHandler;
 import org.tbee.sway.mixin.ActionMixin;
+import org.tbee.sway.mixin.ExceptionHandlerMixin;
 import org.tbee.sway.mixin.JComponentMixin;
-import org.tbee.sway.mixin.ExceptionHandlerDefaultMixin;
 import org.tbee.sway.mixin.SelectedMixin;
 import org.tbee.sway.mixin.TextIconMixin;
 import org.tbee.sway.mixin.ToolTipMixin;
@@ -23,7 +23,7 @@ public class SToggleButton extends JToggleButton implements
         JComponentMixin<SToggleButton>,
         TextIconMixin<SToggleButton>,
         ActionMixin<SToggleButton>,
-        ExceptionHandlerDefaultMixin<SToggleButton>,
+        ExceptionHandlerMixin<SToggleButton>,
         SelectedMixin<SToggleButton>,
         ToolTipMixin<SToggleButton> {
     static private org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(SToggleButton.class);

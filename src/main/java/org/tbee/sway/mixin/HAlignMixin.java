@@ -4,9 +4,9 @@ import org.tbee.sway.binding.BindingEndpoint;
 import org.tbee.sway.binding.ExceptionHandler;
 import org.tbee.sway.support.HAlign;
 
-import java.awt.Component;
+import javax.swing.JComponent;
 
-public interface HAlignMixin<T extends Component> {
+public interface HAlignMixin<T extends JComponent> {
 
     int getHorizontalAlignment();
     void setHorizontalAlignment(int alignment);

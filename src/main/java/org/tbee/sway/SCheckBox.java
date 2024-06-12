@@ -4,7 +4,7 @@ import org.tbee.sway.binding.BindingEndpoint;
 import org.tbee.sway.binding.ExceptionHandler;
 import org.tbee.sway.mixin.ActionMixin;
 import org.tbee.sway.mixin.BindToMixin;
-import org.tbee.sway.mixin.ExceptionHandlerDefaultMixin;
+import org.tbee.sway.mixin.ExceptionHandlerMixin;
 import org.tbee.sway.mixin.JComponentMixin;
 import org.tbee.sway.mixin.SelectedMixin;
 import org.tbee.sway.mixin.TextIconMixin;
@@ -22,7 +22,7 @@ public class SCheckBox extends JCheckBox implements
         ActionMixin<SCheckBox>,
         ToolTipMixin<SCheckBox>,
         SelectedMixin<SCheckBox>,
-        ExceptionHandlerDefaultMixin<SCheckBox>,
+        ExceptionHandlerMixin<SCheckBox>,
         BindToMixin<SCheckBox, Boolean> {
     static private org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(SCheckBox.class);
 

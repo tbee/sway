@@ -3,9 +3,7 @@ package org.tbee.sway.mixin;
 import org.tbee.sway.binding.BindingEndpoint;
 import org.tbee.sway.binding.ExceptionHandler;
 
-import javax.swing.JComponent;
-
-public interface ExceptionHandlerMixin<T> {
+public interface ExceptionHandlerMixin<T> extends ExceptionHandleMixin<T> {
 
     void setExceptionHandler(ExceptionHandler v);
     ExceptionHandler getExceptionHandler();
@@ -17,10 +15,5 @@ public interface ExceptionHandlerMixin<T> {
     String EXCEPTIONHANDLER = "exceptionHandler";
     default BindingEndpoint<ExceptionHandler> exceptionHandler$() {
         return BindingEndpoint.of(this, EXCEPTIONHANDLER, getExceptionHandler());
-    }
-
-    boolean handleException(Throwable e);
-    default boolean handleException(Throwable e, JComponent component, Object oldValue, Object newValue) {
-        return handleException(e);
     }
 }

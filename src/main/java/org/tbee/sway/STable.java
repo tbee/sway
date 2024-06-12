@@ -8,7 +8,7 @@ import org.tbee.sway.binding.ExceptionHandler;
 import org.tbee.sway.format.Format;
 import org.tbee.sway.format.FormatAsJavaTextFormat;
 import org.tbee.sway.mixin.BindToMixin;
-import org.tbee.sway.mixin.ExceptionHandlerDefaultMixin;
+import org.tbee.sway.mixin.ExceptionHandlerMixin;
 import org.tbee.sway.mixin.JComponentMixin;
 import org.tbee.sway.mixin.OverlayMixin;
 import org.tbee.sway.mixin.PreferencesMixin;
@@ -199,7 +199,7 @@ public class STable<TableType> extends JPanel implements
         PropertyChangeListenerMixin<STable<TableType>>,
         OverlayMixin<STable<TableType>>,
         JComponentMixin<STable<TableType>>,
-        ExceptionHandlerDefaultMixin<STable<TableType>>,
+        ExceptionHandlerMixin<STable<TableType>>,
         SelectionMixin<STable<TableType>, TableType>,
         PreferencesMixin<STable<TableType>>,
         BindToMixin<STable<TableType>, List<TableType>> {

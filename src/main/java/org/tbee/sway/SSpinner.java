@@ -5,7 +5,7 @@ import org.tbee.sway.binding.ExceptionHandler;
 import org.tbee.sway.format.Format;
 import org.tbee.sway.format.IntegerFormat;
 import org.tbee.sway.mixin.BindToMixin;
-import org.tbee.sway.mixin.ExceptionHandlerDefaultMixin;
+import org.tbee.sway.mixin.ExceptionHandlerMixin;
 import org.tbee.sway.mixin.HAlignMixin;
 import org.tbee.sway.mixin.JComponentMixin;
 import org.tbee.sway.mixin.ValueMixin;
@@ -29,7 +29,7 @@ import java.util.function.Function;
 public class SSpinner<T> extends JPanel implements
         JComponentMixin<SSpinner<T>>,
         ValueMixin<SSpinner<T>, T>,
-        ExceptionHandlerDefaultMixin<SSpinner<T>>,
+        ExceptionHandlerMixin<SSpinner<T>>,
         HAlignMixin<SSpinner<T>>,
         BindToMixin<SSpinner<T>, T> {
 

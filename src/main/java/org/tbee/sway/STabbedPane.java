@@ -1,11 +1,10 @@
 package org.tbee.sway;
 
-import org.checkerframework.checker.units.qual.K;
 import org.tbee.sway.binding.BindingEndpoint;
 import org.tbee.sway.binding.ExceptionHandler;
 import org.tbee.sway.mixin.BindToMixin;
+import org.tbee.sway.mixin.ExceptionHandlerMixin;
 import org.tbee.sway.mixin.JComponentMixin;
-import org.tbee.sway.mixin.ExceptionHandlerDefaultMixin;
 import org.tbee.sway.mixin.ToolTipMixin;
 import org.tbee.sway.mixin.ValueMixin;
 
@@ -20,7 +19,6 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ForkJoinPool;
 import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
 import java.util.function.Function;
 
 /**
@@ -54,7 +52,7 @@ import java.util.function.Function;
 public class STabbedPane<T> extends JTabbedPane implements
         JComponentMixin<STabbedPane<T>>,
         BindToMixin<STabbedPane<T>, T>,
-        ExceptionHandlerDefaultMixin<STabbedPane<T>>,
+        ExceptionHandlerMixin<STabbedPane<T>>,
         ValueMixin<STabbedPane<T>, T>,
         ToolTipMixin<STabbedPane<T>> {
 

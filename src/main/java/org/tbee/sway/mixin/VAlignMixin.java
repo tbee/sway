@@ -4,9 +4,9 @@ import org.tbee.sway.binding.BindingEndpoint;
 import org.tbee.sway.binding.ExceptionHandler;
 import org.tbee.sway.support.VAlign;
 
-import java.awt.Component;
+import javax.swing.JComponent;
 
-public interface VAlignMixin<T extends Component> {
+public interface VAlignMixin<T extends JComponent> {
 
     int getVerticalAlignment();
     void setVerticalAlignment(int alignment);

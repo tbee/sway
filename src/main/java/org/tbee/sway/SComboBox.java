@@ -5,7 +5,7 @@ import org.tbee.sway.binding.ExceptionHandler;
 import org.tbee.sway.format.Format;
 import org.tbee.sway.list.DefaultListCellRenderer;
 import org.tbee.sway.mixin.BindToMixin;
-import org.tbee.sway.mixin.ExceptionHandlerDefaultMixin;
+import org.tbee.sway.mixin.ExceptionHandlerMixin;
 import org.tbee.sway.mixin.JComponentMixin;
 import org.tbee.sway.mixin.ValueMixin;
 import org.tbee.sway.support.SwayUtil;
@@ -21,7 +21,7 @@ import java.util.function.Consumer;
 
 public class SComboBox<T> extends JComboBox<T> implements
         JComponentMixin<SComboBox<T>>,
-        ExceptionHandlerDefaultMixin<SComboBox<T>>,
+        ExceptionHandlerMixin<SComboBox<T>>,
         ValueMixin<SComboBox<T>, T>,
         BindToMixin<SComboBox<T>, T> {
 

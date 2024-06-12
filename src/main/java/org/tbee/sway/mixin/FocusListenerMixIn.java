@@ -5,7 +5,7 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.util.function.Consumer;
 
-public interface FocusListenerMixIn<T extends Component> {
+public interface FocusListenerMixIn<T extends Component> extends ExceptionHandleMixin<T> {
 
     void addFocusListener(FocusListener l);
 
@@ -13,7 +13,12 @@ public interface FocusListenerMixIn<T extends Component> {
         addFocusListener(new FocusListener() {
             @Override
             public void focusGained(FocusEvent e) {
-                consumer.accept(e);
+                try {
+                    consumer.accept(e);
+                }
+                catch (Exception ex) {
+                    handleException(ex);
+                }
             }
 
             @Override
@@ -31,7 +36,12 @@ public interface FocusListenerMixIn<T extends Component> {
 
             @Override
             public void focusLost(FocusEvent e) {
-                consumer.accept(e);
+                try {
+                    consumer.accept(e);
+                }
+                catch (Exception ex) {
+                    handleException(ex);
+                }
             }
         });
         return (T)this;

@@ -2,12 +2,11 @@ package org.tbee.sway;
 
 import javax.swing.JComponent;
 import javax.swing.JPanel;
-import java.awt.Component;
 import java.awt.LayoutManager;
 import java.util.Arrays;
 import java.util.Collection;
 
-abstract public class SPanelExtendable<T extends Component> extends JPanel {
+abstract public class SPanelExtendable<T extends JComponent> extends JPanel {
     public SPanelExtendable() {
     }
 
