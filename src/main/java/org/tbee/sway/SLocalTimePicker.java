@@ -25,8 +25,14 @@ public class SLocalTimePicker extends JPanel implements
         ValueMixin<SLocalTimePicker, LocalTime>,
         ExceptionHandlerMixin<SLocalTimePicker> {
 
-    public static final IntegerFormat FORMAT = new IntegerFormat("00") {
+    class TimeFormat extends IntegerFormat {
         public static final String NULL_STRING = "--";
+
+        private final int maxValue;
+        public TimeFormat(int maxValue) {
+            super("00");
+            this.maxValue = maxValue;
+        }
 
         @Override
         public String toString(Integer value) {
@@ -35,17 +41,21 @@ public class SLocalTimePicker extends JPanel implements
 
         @Override
         public Integer toValue(String string) {
-            return NULL_STRING.equals(string) ? null : super.toValue(string);
+            Integer value = NULL_STRING.equals(string) ? null : super.toValue(string);
+            if (value != null && value > maxValue) {
+                throw new NumberFormatException("Value " + value + " exceeds max value " + maxValue);
+            }
+            return value;
         }
     };
 
-    private final STextField<Integer> hourTextField = STextField.of(FORMAT)
+    private final STextField<Integer> hourTextField = STextField.of(new TimeFormat(23))
             .transparentAsLabel()
             .hAlign(HAlign.CENTER);
-    private final STextField<Integer> minuteTextField = STextField.of(FORMAT)
+    private final STextField<Integer> minuteTextField = STextField.of(new TimeFormat(59))
             .transparentAsLabel()
             .hAlign(HAlign.CENTER);
-    private final STextField<Integer> secondTextField = STextField.of(FORMAT)
+    private final STextField<Integer> secondTextField = STextField.of(new TimeFormat(59))
             .transparentAsLabel()
             .hAlign(HAlign.CENTER);
 
