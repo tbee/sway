@@ -115,11 +115,13 @@ public class SLocalTimePicker extends JPanel implements
     }
 
     private LocalTime unnull(final LocalTime value) {
-        LocalTime result = value == null ? LocalTime.now() : value;
+        if (value != null) {
+            return value;
+        }
+        LocalTime result = LocalTime.now().withNano(0);
         if (!showSeconds) {
             result = result.withSecond(0);
         }
-        result = result.withNano(0);
         return result;
     }
     private int decrease(int value, int max) {
