@@ -417,6 +417,9 @@ public class SwayTestApp {
         SLocalTimePicker sLocalTimePicker = SLocalTimePicker.of();
         STextField<LocalTime> timeValueTextField = STextField.ofBindTo(sLocalTimePicker.value$());
 
+        SLocalTimePicker sLocalTimePickerNoSec = SLocalTimePicker.of().showSeconds(false);
+        STextField<LocalTime> timeValueNoSecTextField = STextField.ofBindTo(sLocalTimePickerNoSec.value$());
+
         SMigPanel migPanel = SMigPanel.of();
         migPanel.addComponent(localeSSpinner);
         migPanel.wrap();
@@ -424,11 +427,13 @@ public class SwayTestApp {
         migPanel.wrap();
         migPanel.addComponent(sLocalDatePicker).growX().alignY(AlignY.TOP);
         migPanel.addComponent(sLocalTimePicker).growX().alignY(AlignY.TOP);
+        migPanel.addComponent(sLocalTimePickerNoSec).growX().alignY(AlignY.TOP);
         migPanel.wrap();
         migPanel.addComponent(new JSeparator()).spanX().growX();
         migPanel.wrap();
         migPanel.addComponent(dateValueTextField).growX();
         migPanel.addComponent(timeValueTextField).growX();
+        migPanel.addComponent(timeValueNoSecTextField).growX();
         return migPanel;
     }
 

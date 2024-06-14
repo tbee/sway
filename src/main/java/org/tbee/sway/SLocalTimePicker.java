@@ -1,13 +1,13 @@
 package org.tbee.sway;
 
 import net.miginfocom.layout.AlignX;
+import net.miginfocom.layout.HideMode;
 import org.tbee.sway.binding.ExceptionHandler;
 import org.tbee.sway.format.IntegerFormat;
 import org.tbee.sway.mixin.ExceptionHandlerMixin;
 import org.tbee.sway.mixin.ValueMixin;
 import org.tbee.sway.support.HAlign;
 
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
 import java.beans.PropertyVetoException;
@@ -55,12 +55,21 @@ public class SLocalTimePicker extends JPanel implements
     private final STextField<Integer> hourTextField = STextField.of(new TimeFormat(23))
             .transparentAsLabel()
             .hAlign(HAlign.CENTER);
+    private final SLabel minuteSeparator = SLabel.of(":");
     private final STextField<Integer> minuteTextField = STextField.of(new TimeFormat(59))
             .transparentAsLabel()
             .hAlign(HAlign.CENTER);
+    private final SLabel secondSeparator = SLabel.of(":");
     private final STextField<Integer> secondTextField = STextField.of(new TimeFormat(59))
             .transparentAsLabel()
             .hAlign(HAlign.CENTER);
+
+    private final SButton hourUpButton = iconButton(TIMEPICKER_NEXTHOUR, this::nextHour);
+    private final SButton minuteUpButton = iconButton(TIMEPICKER_NEXTMINUTE, this::nextMinute);
+    private final SButton secondUpButton = iconButton(TIMEPICKER_NEXTSECOND, this::nextSecond);
+    private final SButton hourDownButton = iconButton(TIMEPICKER_PREVHOUR, this::prevHour);
+    private final SButton minuteDownButton = iconButton(TIMEPICKER_PREVMINUTE, this::prevMinute);
+    private final SButton secondDownButton = iconButton(TIMEPICKER_PREVSECOND, this::prevSecond);
 
     // ===========================================================================================================
     // CONSTRUCTOR
@@ -78,20 +87,20 @@ public class SLocalTimePicker extends JPanel implements
         secondTextField.onFocusLost(e -> this.manualTyped());
 
         // layout
-        SMigPanel smigPanel = new SMigPanel().noGaps().noMargins();
-        smigPanel.addComponent(iconButton(TIMEPICKER_NEXTHOUR, this::nextHour)).alignX(AlignX.CENTER);
-        smigPanel.addComponent(iconButton(TIMEPICKER_NEXTMINUTE, this::nextMinute)).alignX(AlignX.CENTER).skip();
-        smigPanel.addComponent(iconButton(TIMEPICKER_NEXTSECOND, this::nextSecond)).alignX(AlignX.CENTER).skip();
-        smigPanel.wrap();
+        SMigPanel smigPanel = new SMigPanel().noGaps().noMargins().hideMode(HideMode.DISREGARD);
+        smigPanel.addComponent(hourUpButton).alignX(AlignX.CENTER);
+        smigPanel.addComponent(minuteUpButton).alignX(AlignX.CENTER).skip();
+        smigPanel.addComponent(secondUpButton).alignX(AlignX.CENTER).skip();
+        smigPanel.addComponent(SLabel.of()).wrap(); // we cannot attach the wrap to the last component, because it may be hidden
         smigPanel.addComponent(hourTextField).sizeGroup("time").alignX(AlignX.CENTER).growX();
-        smigPanel.addComponent(new JLabel(":")).sizeGroup("sep").alignX(AlignX.CENTER);
+        smigPanel.addComponent(minuteSeparator).sizeGroup("sep").alignX(AlignX.CENTER);
         smigPanel.addComponent(minuteTextField).sizeGroup("time").alignX(AlignX.CENTER).growX();
-        smigPanel.addComponent(new JLabel(":")).sizeGroup("sep").alignX(AlignX.CENTER);
+        smigPanel.addComponent(secondSeparator).sizeGroup("sep").alignX(AlignX.CENTER);
         smigPanel.addComponent(secondTextField).sizeGroup("time").alignX(AlignX.CENTER).growX();
-        smigPanel.wrap();
-        smigPanel.addComponent(iconButton(TIMEPICKER_PREVHOUR, this::prevHour)).alignX(AlignX.CENTER);
-        smigPanel.addComponent(iconButton(TIMEPICKER_PREVMINUTE, this::prevMinute)).alignX(AlignX.CENTER).skip();
-        smigPanel.addComponent(iconButton(TIMEPICKER_PREVSECOND, this::prevSecond)).alignX(AlignX.CENTER).skip();
+        smigPanel.addComponent(SLabel.of()).wrap(); // we cannot attach the wrap to the last component, because it may be hidden
+        smigPanel.addComponent(hourDownButton).alignX(AlignX.CENTER);
+        smigPanel.addComponent(minuteDownButton).alignX(AlignX.CENTER).skip();
+        smigPanel.addComponent(secondDownButton).alignX(AlignX.CENTER).skip();
 
         setLayout(new BorderLayout());
         add(smigPanel, BorderLayout.CENTER);
@@ -105,8 +114,13 @@ public class SLocalTimePicker extends JPanel implements
                 .onAction(e -> runnable.run());
     }
 
-    private LocalTime unnull(LocalTime value) {
-        return value == null ? LocalTime.now() : value;
+    private LocalTime unnull(final LocalTime value) {
+        LocalTime result = value == null ? LocalTime.now() : value;
+        if (!showSeconds) {
+            result = result.withSecond(0);
+        }
+        result = result.withNano(0);
+        return result;
     }
     private int decrease(int value, int max) {
         return (value <= 0 ? max : value - 1);
@@ -194,6 +208,27 @@ public class SLocalTimePicker extends JPanel implements
     private LocalTime value = null;
 
 
+    public boolean getShowSeconds() {
+        return showSeconds;
+    }
+    public void setShowSeconds(boolean v) {
+        try {
+            fireVetoableChange(SHOWSECONDS, this.showSeconds, v);
+            firePropertyChange(SHOWSECONDS, this.showSeconds, this.showSeconds = v);
+            updateComponents();
+        }
+        catch (PropertyVetoException e) {
+            throw new IllegalArgumentException(e);
+        }
+    }
+    private boolean showSeconds = true;
+    public static String SHOWSECONDS = "showSeconds";
+    public SLocalTimePicker showSeconds(boolean v) {
+        setShowSeconds(v);
+        updateComponents();
+        return this;
+    }
+
     // ===========================================================================================================
     // LAYOUT
 
@@ -201,12 +236,16 @@ public class SLocalTimePicker extends JPanel implements
         hourTextField.setValue(value == null ? null : value.getHour());
         minuteTextField.setValue(value == null ? null : value.getMinute());
         secondTextField.setValue(value == null ? null : value.getSecond());
+
+        secondUpButton.visible(showSeconds);
+        secondSeparator.visible(showSeconds);
+        secondTextField.visible(showSeconds);
+        secondDownButton.visible(showSeconds);
     }
 
 
     // =============================================================================
-    // SUPPORT
-
+    // FLUNT API
 
     static public SLocalTimePicker of() {
         return new SLocalTimePicker();
