@@ -214,7 +214,7 @@ public class SLocalDatePicker extends JPanel implements
         List<LocalDate> localDates = new ArrayList<LocalDate>(selection);
 
         // what modifiers were pressed?
-        boolean shiftPressed = (e.getModifiers() & ActionEvent.SHIFT_MASK) != 0;
+        boolean shiftPressed = (e.getModifiers() & ActionEvent.SHIFT_MASK) != 0; // for a range
         boolean ctrlPressed = (e.getModifiers() & ActionEvent.CTRL_MASK) != 0;
         LocalDate fromLocalDate = currentLocalDate.isBefore(clickedLocalDate) ? currentLocalDate : clickedLocalDate;
         LocalDate toLocalDate = currentLocalDate.isBefore(clickedLocalDate) ? clickedLocalDate : currentLocalDate;

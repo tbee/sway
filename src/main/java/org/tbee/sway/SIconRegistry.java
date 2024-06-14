@@ -26,6 +26,7 @@ import static org.tbee.sway.SIconRegistry.SwayInternallyUsedIcon.MENU_PASTE;
 import static org.tbee.sway.SIconRegistry.SwayInternallyUsedIcon.MENU_SELECTION;
 import static org.tbee.sway.SIconRegistry.SwayInternallyUsedIcon.OVERLAY_LOADING;
 import static org.tbee.sway.SIconRegistry.SwayInternallyUsedIcon.TEXTFIELD_POPUP;
+import static org.tbee.sway.SIconRegistry.SwayInternallyUsedIcon.TIMEPICKER_CLEAR;
 import static org.tbee.sway.SIconRegistry.SwayInternallyUsedIcon.TIMEPICKER_NEXTHOUR;
 import static org.tbee.sway.SIconRegistry.SwayInternallyUsedIcon.TIMEPICKER_NEXTMINUTE;
 import static org.tbee.sway.SIconRegistry.SwayInternallyUsedIcon.TIMEPICKER_NEXTSECOND;
@@ -62,6 +63,7 @@ public class SIconRegistry {
         register(TIMEPICKER_PREVMINUTE, createIcon(Material2AL.KEYBOARD_ARROW_DOWN, TIMEPICKER_PREVMINUTE.typicalSize()));
         register(TIMEPICKER_NEXTSECOND, createIcon(Material2AL.KEYBOARD_ARROW_UP, TIMEPICKER_NEXTSECOND.typicalSize()));
         register(TIMEPICKER_PREVSECOND, createIcon(Material2AL.KEYBOARD_ARROW_DOWN, TIMEPICKER_PREVSECOND.typicalSize()));
+        register(TIMEPICKER_CLEAR, createIcon(Material2AL.CLEAR, TIMEPICKER_CLEAR.typicalSize()));
     }
 
     public enum SwayInternallyUsedIcon { //
@@ -96,6 +98,7 @@ public class SIconRegistry {
         TIMEPICKER_PREVMINUTE("prevMinute@timepicker", 20),
         TIMEPICKER_NEXTSECOND("nextSecond@timepicker", 20),
         TIMEPICKER_PREVSECOND("prevSecond@timepicker", 20),
+        TIMEPICKER_CLEAR("clear@timepicker", 14),
         ; //
 
         final String id;

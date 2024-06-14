@@ -13,6 +13,7 @@ import java.awt.BorderLayout;
 import java.beans.PropertyVetoException;
 import java.time.LocalTime;
 
+import static org.tbee.sway.SIconRegistry.SwayInternallyUsedIcon.TIMEPICKER_CLEAR;
 import static org.tbee.sway.SIconRegistry.SwayInternallyUsedIcon.TIMEPICKER_NEXTHOUR;
 import static org.tbee.sway.SIconRegistry.SwayInternallyUsedIcon.TIMEPICKER_NEXTMINUTE;
 import static org.tbee.sway.SIconRegistry.SwayInternallyUsedIcon.TIMEPICKER_NEXTSECOND;
@@ -70,6 +71,7 @@ public class SLocalTimePicker extends JPanel implements
     private final SButton hourDownButton = iconButton(TIMEPICKER_PREVHOUR, this::prevHour);
     private final SButton minuteDownButton = iconButton(TIMEPICKER_PREVMINUTE, this::prevMinute);
     private final SButton secondDownButton = iconButton(TIMEPICKER_PREVSECOND, this::prevSecond);
+    private final SButton clearButton = iconButton(TIMEPICKER_CLEAR, this::clear);
 
     // ===========================================================================================================
     // CONSTRUCTOR
@@ -97,6 +99,7 @@ public class SLocalTimePicker extends JPanel implements
         smigPanel.addComponent(minuteTextField).sizeGroup("time").alignX(AlignX.CENTER).growX();
         smigPanel.addComponent(secondSeparator).sizeGroup("sep").alignX(AlignX.CENTER);
         smigPanel.addComponent(secondTextField).sizeGroup("time").alignX(AlignX.CENTER).growX();
+        smigPanel.addComponent(clearButton).alignX(AlignX.LEFT);
         smigPanel.addComponent(SLabel.of()).wrap(); // we cannot attach the wrap to the last component, because it may be hidden
         smigPanel.addComponent(hourDownButton).alignX(AlignX.CENTER);
         smigPanel.addComponent(minuteDownButton).alignX(AlignX.CENTER).skip();
@@ -137,8 +140,8 @@ public class SLocalTimePicker extends JPanel implements
             value = null;
         }
         else {
-            value = unnull(value);
-            value = value.withHour(hourTextField.getValue() != null ? hourTextField.getValue() : value.getHour())
+            value = unnull(value)
+                    .withHour(hourTextField.getValue() != null ? hourTextField.getValue() : value.getHour())
                     .withMinute(minuteTextField.getValue() != null ? minuteTextField.getValue() : value.getMinute())
                     .withSecond(secondTextField.getValue() != null ? secondTextField.getValue() : value.getSecond());
         }
@@ -174,6 +177,10 @@ public class SLocalTimePicker extends JPanel implements
     private void nextSecond() {
         value = unnull(value);
         value(value.withSecond(increase(value.getSecond(), 59)));
+    }
+
+    private void clear() {
+        value(null);
     }
 
     // ========================================================
