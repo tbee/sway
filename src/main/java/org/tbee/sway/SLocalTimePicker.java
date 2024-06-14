@@ -41,7 +41,10 @@ public class SLocalTimePicker extends JPanel implements
 
         @Override
         public Integer toValue(String string) {
-            Integer value = NULL_STRING.equals(string) ? null : super.toValue(string);
+            if (string.isEmpty()) {
+                return null;
+            }
+            Integer value = NULL_STRING.equals(string) ? null : super.toValue(string.replaceAll("-", ""));
             if (value != null && value > maxValue) {
                 throw new NumberFormatException("Value " + value + " exceeds max value " + maxValue);
             }
@@ -113,11 +116,16 @@ public class SLocalTimePicker extends JPanel implements
     }
 
     private void manualTyped() {
-        LocalTime now = LocalTime.now();
-        value = unnull(value);
-        value = value.withHour(hourTextField.getValue() != null ? hourTextField.getValue() : value.getHour())
-                     .withMinute(minuteTextField.getValue() != null ? minuteTextField.getValue() : value.getMinute())
-                     .withSecond(secondTextField.getValue() != null ? secondTextField.getValue() : value.getSecond());
+        // If there is a value, but one part becomes null, all becomes null
+        if (value != null && (hourTextField.getValue() == null || minuteTextField.getValue() == null || secondTextField.getValue() == null)) {
+            value = null;
+        }
+        else {
+            value = unnull(value);
+            value = value.withHour(hourTextField.getValue() != null ? hourTextField.getValue() : value.getHour())
+                    .withMinute(minuteTextField.getValue() != null ? minuteTextField.getValue() : value.getMinute())
+                    .withSecond(secondTextField.getValue() != null ? secondTextField.getValue() : value.getSecond());
+        }
         value(value);
         updateComponents();
     }

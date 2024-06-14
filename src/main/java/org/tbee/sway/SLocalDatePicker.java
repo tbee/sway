@@ -22,7 +22,6 @@ import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
 import java.beans.PropertyVetoException;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -111,32 +110,12 @@ public class SLocalDatePicker extends JPanel implements
             dateToggleButton[i].addActionListener(dayActionListener);
         }
 
-        // goto today button
-        final JLabel todayJButton = new JLabel(" ");
-        todayJButton.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(java.awt.event.MouseEvent e) {
-                value(LocalDate.now());
-                todayJButton.setBorder(null);
-            }
-
-            @Override
-            public void mouseEntered(java.awt.event.MouseEvent e) {
-                // tooltip
-                LocalDate now = LocalDate.now();
-                if (!(displayedLocalDate.getMonth() == now.getMonth())) {
-                    todayJButton.setToolTipText(MMM.format(now) + " " + now.getYear() + "...");
-
-                    // border
-                    todayJButton.setBorder(BorderFactory.createLineBorder(todayJButton.getForeground()));
-                }
-            }
-
-            @Override
-            public void mouseExited(java.awt.event.MouseEvent e) {
-                todayJButton.setBorder(null);
-            }
-        });
+        // goto-today button
+        SButton todayButton = SButton.of(SIconRegistry.find(SIconRegistry.SwayInternallyUsedIcon.DATEPICKER_TODAY))
+                .asImageButton()
+                .onAction(evt -> {
+                    displayedLocalDate(LocalDate.now());
+                });
 
         // setup defaults
         mode(Mode.SINGLE);
@@ -161,7 +140,7 @@ public class SLocalDatePicker extends JPanel implements
         // layout center
         JPanel contentJPanel = new JPanel();
         contentJPanel.setLayout(new GridLayout(7, 8, 0, 0));
-        contentJPanel.add(todayJButton);
+        contentJPanel.add(todayButton);
         for (int c = 0; c < 7; c++) {
             contentJPanel.add(daynameLabels[c]);
         }
