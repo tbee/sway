@@ -57,7 +57,7 @@ public class SLocalDatePicker extends JPanel implements
         }
     };
     private final STextField<LocalDate> monthTextField = STextField.of(monthFormat)
-            .columns(yearTextField.getColumns())
+            .columns(4)
             .transparentAsLabel()
             .focusable(false)
             .editable(false)
@@ -527,7 +527,17 @@ public class SLocalDatePicker extends JPanel implements
             daynameLabels[i].setForeground(dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY ? weekendLabelColor : normalDayColor);
         }
 
-        // refresh the rest
+        // month
+        final LocalDate JAN1ST = LocalDate.of(2024, 1, 1);
+        int maxLen = 0;
+        for (int i = 0; i < 12; i++) {
+            int len = monthFormat.toString(JAN1ST.plusMonths(i)).length();
+            if (len > maxLen) {
+                maxLen = len;
+            }
+        }
+        monthTextField.columns(maxLen);
+
         refreshDisplayedDateBasedComponents();
     }
 

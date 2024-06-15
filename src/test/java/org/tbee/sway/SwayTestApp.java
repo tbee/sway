@@ -414,6 +414,12 @@ public class SwayTestApp {
         STextField<LocalDate> dateValueTextField = STextField.ofBindTo(sLocalDatePicker.value$());
         localeSSpinner.value$().onChange(sLocalDatePicker::setLocale);
 
+        SLocalDatePicker sLocalDatePickerMulti = SLocalDatePicker.of().mode(SLocalDatePicker.Mode.MULTIPLE);
+        SList<LocalDate> slistMulti = SList.of();
+        sLocalDatePickerMulti.selection$().onChange(slistMulti::data);
+        STextField<LocalDate> dateValueTextFieldMulti = STextField.ofBindTo(sLocalDatePickerMulti.value$());
+        localeSSpinner.value$().onChange(sLocalDatePickerMulti::setLocale);
+
         SLocalTimePicker sLocalTimePicker = SLocalTimePicker.of();
         STextField<LocalTime> timeValueTextField = STextField.ofBindTo(sLocalTimePicker.value$());
 
@@ -421,19 +427,24 @@ public class SwayTestApp {
         STextField<LocalTime> timeValueNoSecTextField = STextField.ofBindTo(sLocalTimePickerNoSec.value$());
 
         SMigPanel migPanel = SMigPanel.of();
-        migPanel.addComponent(localeSSpinner);
+        migPanel.addComponent(localeSSpinner).spanX(2).growX();
         migPanel.wrap();
         migPanel.addComponent(new JSeparator()).spanX().growX();
         migPanel.wrap();
         migPanel.addComponent(sLocalDatePicker).growX().alignY(AlignY.TOP);
+        migPanel.addComponent(sLocalDatePickerMulti).growX().alignY(AlignY.TOP);
         migPanel.addComponent(sLocalTimePicker).growX().alignY(AlignY.TOP);
         migPanel.addComponent(sLocalTimePickerNoSec).growX().alignY(AlignY.TOP);
         migPanel.wrap();
         migPanel.addComponent(new JSeparator()).spanX().growX();
         migPanel.wrap();
         migPanel.addComponent(dateValueTextField).growX();
+        migPanel.addComponent(dateValueTextFieldMulti).growX();
         migPanel.addComponent(timeValueTextField).growX();
         migPanel.addComponent(timeValueNoSecTextField).growX();
+        migPanel.wrap();
+        migPanel.addComponent(SLabel.of()).growX();
+        migPanel.addComponent(slistMulti).growX();
         return migPanel;
     }
 
