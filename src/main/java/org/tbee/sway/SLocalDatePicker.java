@@ -131,8 +131,8 @@ public class SLocalDatePicker extends JPanel implements
         SMigPanel headerJPanel = SMigPanel.of().fillX().noMargins().noGaps();
         headerJPanel.addComponent(iconButton(DATEPICKER_PREVYEAR, this::prevYear));
         headerJPanel.addComponent(iconButton(DATEPICKER_PREVMONTH, this::prevMonth));
-        headerJPanel.addComponent(monthTextField).sizeGroup("monthyear").alignX(AlignX.TRAILING).gapAfter("2px");
-        headerJPanel.addComponent(yearTextField).sizeGroup("monthyear").alignX(AlignX.LEADING);
+        headerJPanel.addComponent(monthTextField).sizeGroup("monthyear").alignX(AlignX.TRAILING).gapAfter("2px").growX().pushX();
+        headerJPanel.addComponent(yearTextField).sizeGroup("monthyear").alignX(AlignX.LEADING).growX().pushX();
         headerJPanel.addComponent(iconButton(DATEPICKER_NEXTMONTH, this::nextMonth));
         headerJPanel.addComponent(iconButton(DATEPICKER_NEXTYEAR, this::nextYear));
         add(headerJPanel, BorderLayout.NORTH);
