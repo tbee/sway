@@ -6,6 +6,7 @@ import org.tbee.sway.format.Format;
 import org.tbee.sway.list.DefaultListCellRenderer;
 import org.tbee.sway.list.SListCore;
 import org.tbee.sway.mixin.BindToMixin;
+import org.tbee.sway.mixin.DataMixin;
 import org.tbee.sway.mixin.ExceptionHandlerMixin;
 import org.tbee.sway.mixin.JComponentMixin;
 import org.tbee.sway.mixin.SelectionMixin;
@@ -24,6 +25,7 @@ import java.util.function.Consumer;
 public class SList<T> extends JPanel implements
         JComponentMixin<SList<T>>,
         ExceptionHandlerMixin<SList<T>>,
+        DataMixin<SList<T>, T>,
         SelectionMixin<SList<T>, T>,
         BindToMixin<SList<T>, List<T>> {
     static private org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(SList.class);
@@ -73,18 +75,12 @@ public class SList<T> extends JPanel implements
      * @param v
      */
     public void setData(List<T> v) {
-// TBEERNOT       unregisterFromAllBeans();
-        this.data = Collections.unmodifiableList(v); // We don't allow outside changes to the provided list
+        firePropertyChange(DATA, this.data, this.data = Collections.unmodifiableList(v)); // We don't allow outside changes to the provided list
         setSelection(List.of());
-// TBEERNOT       registerToAllBeans();
+        refresh();
     }
     public List<T> getData() {
         return this.data;
-    }
-    public SList<T> data(List<T> v) {
-        setData(v);
-        refresh();
-        return this;
     }
 
     public void refresh() {

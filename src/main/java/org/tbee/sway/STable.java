@@ -8,6 +8,7 @@ import org.tbee.sway.binding.ExceptionHandler;
 import org.tbee.sway.format.Format;
 import org.tbee.sway.format.FormatAsJavaTextFormat;
 import org.tbee.sway.mixin.BindToMixin;
+import org.tbee.sway.mixin.DataMixin;
 import org.tbee.sway.mixin.ExceptionHandlerMixin;
 import org.tbee.sway.mixin.JComponentMixin;
 import org.tbee.sway.mixin.OverlayMixin;
@@ -200,6 +201,7 @@ public class STable<TableType> extends JPanel implements
         OverlayMixin<STable<TableType>>,
         JComponentMixin<STable<TableType>>,
         ExceptionHandlerMixin<STable<TableType>>,
+        DataMixin<STable<TableType>, TableType>,
         SelectionMixin<STable<TableType>, TableType>,
         PreferencesMixin<STable<TableType>>,
         BindToMixin<STable<TableType>, List<TableType>> {
@@ -258,9 +260,9 @@ public class STable<TableType> extends JPanel implements
     		throw new IllegalArgumentException("Null not allowed, provide an empty list");
     	}
         unregisterFromAllBeans();
-        this.data = new ArrayList<>(v); // We don't allow outside changes to the provided list
+        firePropertyChange(DATA, this.data, this.data = new ArrayList<>(v)); // We don't allow outside changes to the provided list
         registerToAllBeans();
-       sTableCore.getTableModel().fireTableDataChanged();
+        sTableCore.getTableModel().fireTableDataChanged();
     }
     public List<TableType> getData() {
         return Collections.unmodifiableList(this.data);

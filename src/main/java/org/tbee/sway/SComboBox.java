@@ -5,6 +5,7 @@ import org.tbee.sway.binding.ExceptionHandler;
 import org.tbee.sway.format.Format;
 import org.tbee.sway.list.DefaultListCellRenderer;
 import org.tbee.sway.mixin.BindToMixin;
+import org.tbee.sway.mixin.DataMixin;
 import org.tbee.sway.mixin.ExceptionHandlerMixin;
 import org.tbee.sway.mixin.JComponentMixin;
 import org.tbee.sway.mixin.ValueMixin;
@@ -22,6 +23,7 @@ import java.util.function.Consumer;
 public class SComboBox<T> extends JComboBox<T> implements
         JComponentMixin<SComboBox<T>>,
         ExceptionHandlerMixin<SComboBox<T>>,
+        DataMixin<SComboBox<T>, T>,
         ValueMixin<SComboBox<T>, T>,
         BindToMixin<SComboBox<T>, T> {
 
@@ -51,17 +53,11 @@ public class SComboBox<T> extends JComboBox<T> implements
      * @param v
      */
     public void setData(List<T> v) {
-// TBEERNOT        unregisterFromAllBeans();
-        this.data = Collections.unmodifiableList(v); // We don't allow outside changes to the provided list
+        firePropertyChange(DATA, this.data, this.data = Collections.unmodifiableList(v)); // We don't allow outside changes to the provided list
         setModel(new DefaultComboBoxModel<>(new Vector<>(this.data)));
-// TBEERNOT       registerToAllBeans();
     }
     public List<T> getData() {
         return this.data;
-    }
-    public SComboBox<T> data(List<T> v) {
-        setData(v);
-        return this;
     }
 
     // ===========================================================================

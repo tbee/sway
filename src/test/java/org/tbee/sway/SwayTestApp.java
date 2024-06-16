@@ -414,13 +414,13 @@ public class SwayTestApp {
         STextField<LocalDate> dateValueTextField = STextField.ofBindTo(sLocalDatePicker.value$());
         localeSSpinner.value$().onChange(sLocalDatePicker::setLocale);
         SList<LocalDate> slist = SList.of();
-        sLocalDatePicker.selection$().onChange(slist::data);
+        slist.data$().bindTo(sLocalDatePicker.selection$());
 
         SLocalDatePicker sLocalDatePickerMulti = SLocalDatePicker.of().mode(SLocalDatePicker.Mode.MULTIPLE);
         STextField<LocalDate> dateValueTextFieldMulti = STextField.ofBindTo(sLocalDatePickerMulti.value$());
         localeSSpinner.value$().onChange(sLocalDatePickerMulti::setLocale);
         SList<LocalDate> slistMulti = SList.of();
-        sLocalDatePickerMulti.selection$().onChange(slistMulti::data);
+        slistMulti.data$().bindTo(sLocalDatePickerMulti.selection$());
 
         SLocalTimePicker sLocalTimePicker = SLocalTimePicker.of();
         STextField<LocalTime> timeValueTextField = STextField.ofBindTo(sLocalTimePicker.value$());
