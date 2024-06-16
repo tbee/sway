@@ -37,6 +37,9 @@ import static org.tbee.sway.SIconRegistry.SwayInternallyUsedIcon.DATEPICKER_NEXT
 import static org.tbee.sway.SIconRegistry.SwayInternallyUsedIcon.DATEPICKER_NEXTYEAR;
 import static org.tbee.sway.SIconRegistry.SwayInternallyUsedIcon.DATEPICKER_PREVMONTH;
 import static org.tbee.sway.SIconRegistry.SwayInternallyUsedIcon.DATEPICKER_PREVYEAR;
+import static org.tbee.sway.SLocalDatePicker.Mode.MULTIPLE;
+import static org.tbee.sway.SLocalDatePicker.Mode.RANGE;
+import static org.tbee.sway.SLocalDatePicker.Mode.SINGLE;
 
 public class SLocalDatePicker extends JPanel implements
         ValueMixin<SLocalDatePicker, LocalDate>,
@@ -120,7 +123,7 @@ public class SLocalDatePicker extends JPanel implements
                 });
 
         // setup defaults
-        mode(Mode.SINGLE);
+        mode(SINGLE);
         locale(Locale.getDefault());
         displayedLocalDate(localDate != null ? localDate : LocalDate.now());
         refreshLabels();
@@ -211,82 +214,39 @@ public class SLocalDatePicker extends JPanel implements
         LocalDate newValue = clickedLocalDate;
 
         // what modifiers were pressed?
+        boolean clickedIsInSelection = selection.contains(clickedLocalDate);
         boolean shiftPressed = (e.getModifiers() & ActionEvent.SHIFT_MASK) != 0; // for a range
         boolean ctrlPressed = (e.getModifiers() & ActionEvent.CTRL_MASK) != 0;
         LocalDate rangeStart = (value != null ? value : clickedLocalDate);
         LocalDate fromLocalDate = rangeStart.isBefore(clickedLocalDate) ? rangeStart : clickedLocalDate;
         LocalDate toLocalDate = rangeStart.isBefore(clickedLocalDate) ? clickedLocalDate : rangeStart;
 
-        // Single
-        if (mode == Mode.SINGLE) {
-            // if already present
-            if (selection.contains(clickedLocalDate)) {
-                // remove
-                selection.remove(clickedLocalDate);
-                newValue = null;
-            }
-            else {
-                // set one value
-                selection.clear();
+        // If we're not extending a selection, clear the selection
+        if (mode == SINGLE || (mode == RANGE && !shiftPressed) || (mode == MULTIPLE && !shiftPressed && !ctrlPressed)) {
+            selection.clear();
+        }
+
+        // If clicked an already selected date
+        if (clickedIsInSelection && !shiftPressed) {
+            // remove from selection
+            selection.remove(clickedLocalDate);
+            newValue = null;
+        }
+        else {
+            if (!selection.contains(clickedLocalDate)) {
                 selection.add(clickedLocalDate);
             }
         }
 
-        // range or multiple without extend active
-        if ((mode == Mode.RANGE) || (mode == Mode.MULTIPLE && !ctrlPressed)) {
-            if (!shiftPressed) {
-                // if already present and only a range of one
-                if (selection.size() == 1 && selection.contains(clickedLocalDate)) { // found
-                    // remove
-                    selection.clear();
-                    newValue = null;
+        // Add range
+        if (shiftPressed && (mode == RANGE || mode == MULTIPLE)) {
+            // add all dates to a new range
+            LocalDate localDate = fromLocalDate;
+            while (!localDate.isAfter(toLocalDate)) {
+                if (!selection.contains(localDate)) {
+                    selection.add(localDate);
                 }
-                else {
-                    // set one value
-                    selection.clear();
-                    selection.add(clickedLocalDate);
-                }
-            }
-            else {
-                // add all dates to a new range
-                LocalDate localDate = fromLocalDate;
-                while (!localDate.isAfter(toLocalDate)) {
-                    if (!selection.contains(localDate)) {
-                        selection.add(localDate);
-                    }
-                    localDate = localDate.plusDays(1);
-                }
-            }
-        }
-
-        // multiple with extend active
-        if (mode == Mode.MULTIPLE && ctrlPressed) {
-            if (!shiftPressed) {
-                // if already present and only a range of one
-                if (selection.size() == 1 && selection.contains(clickedLocalDate)) { // found
-                    // remove
-                    selection.clear();
-                    newValue = null;
-                }
-                // if already present
-                else if (selection.contains(clickedLocalDate)) { // found
-                    // remove
-                    selection.remove(clickedLocalDate);
-                }
-                else {
-                    // add one value
-                    selection.add(clickedLocalDate);
-                }
-            }
-            else if (shiftPressed) {
-                // add all dates to the range
-                LocalDate localDate = fromLocalDate;
-                while (!localDate.isAfter(toLocalDate)) {
-                    if (!selection.contains(localDate)) {
-                        selection.add(localDate);
-                    }
-                    localDate = localDate.plusDays(1);
-                }
+                localDate = localDate.plusDays(1);
             }
         }
 
