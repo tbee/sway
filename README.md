@@ -9,7 +9,7 @@ What if creating a table with sorting, filtering, automatic updates of cells whe
 ``` java
 var sTable = new STable<City>()
         .columns(City.class, "name", "distance", "roundtrip")
-        .data(cities); // cities is a List<City>, and City is a Java Bean with PropertyChangeEvents
+        .items(cities); // cities is a List<City>, and City is a Java Bean with PropertyChangeEvents
 ```
 
 Or creating a strongly typed text field that is bound to the property of a Java bean would be as simple as:
@@ -43,7 +43,7 @@ var sCheckBox = SCheckBox3.of("Cityrights").bindTo(city.cityrights$());
 var sList = new SList<City>()
         .render(new CityFormat())
         .selectionMode(SList.SelectionMode.MULTIPLE)        
-        .data(cities); // cities is a List<City>
+        .items(cities); // cities is a List<City>
         
 // Bind the selection of the list to that of the table created above        
 sList.selection$().bindTo(sTable.selection$());

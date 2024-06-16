@@ -12,12 +12,12 @@ public class ListModel<T> extends javax.swing.AbstractListModel<T> {
 
     @Override
     public int getSize() {
-        return sList.getData().size();
+        return sList.getItems().size();
     }
 
     @Override
     public T getElementAt(int index) {
-        return sList.getData().get(index);
+        return sList.getItems().get(index);
     }
 
     public void contentsChanged() {

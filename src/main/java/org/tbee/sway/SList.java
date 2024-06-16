@@ -6,8 +6,8 @@ import org.tbee.sway.format.Format;
 import org.tbee.sway.list.DefaultListCellRenderer;
 import org.tbee.sway.list.SListCore;
 import org.tbee.sway.mixin.BindToMixin;
-import org.tbee.sway.mixin.DataMixin;
 import org.tbee.sway.mixin.ExceptionHandlerMixin;
+import org.tbee.sway.mixin.ItemsMixin;
 import org.tbee.sway.mixin.JComponentMixin;
 import org.tbee.sway.mixin.SelectionMixin;
 import org.tbee.sway.support.SwayUtil;
@@ -25,7 +25,7 @@ import java.util.function.Consumer;
 public class SList<T> extends JPanel implements
         JComponentMixin<SList<T>>,
         ExceptionHandlerMixin<SList<T>>,
-        DataMixin<SList<T>, T>,
+        ItemsMixin<SList<T>, T>,
         SelectionMixin<SList<T>, T>,
         BindToMixin<SList<T>, List<T>> {
     static private org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(SList.class);
@@ -74,12 +74,12 @@ public class SList<T> extends JPanel implements
      *
      * @param v
      */
-    public void setData(List<T> v) {
-        firePropertyChange(DATA, this.data, this.data = Collections.unmodifiableList(v)); // We don't allow outside changes to the provided list
+    public void setItems(List<T> v) {
+        firePropertyChange(ITEMS, this.data, this.data = Collections.unmodifiableList(v)); // We don't allow outside changes to the provided list
         setSelection(List.of());
         refresh();
     }
-    public List<T> getData() {
+    public List<T> getItems() {
         return this.data;
     }
 
@@ -200,7 +200,7 @@ public class SList<T> extends JPanel implements
     public List<T> getSelection() {
         var selectedItems = new ArrayList<T>(sListCore.getSelectionModel().getSelectedItemsCount());
         for (int rowIdx : sListCore.getSelectionModel().getSelectedIndices()) {
-            selectedItems.add(getData().get(rowIdx));
+            selectedItems.add(getItems().get(rowIdx));
         }
         return Collections.unmodifiableList(selectedItems);
     }
@@ -210,7 +210,7 @@ public class SList<T> extends JPanel implements
      */
     public void setSelection(List<T> values) {
         clearSelection();
-        List<T> data = getData();
+        List<T> data = getItems();
         for (T value : values) {
             int index = data.indexOf(value);
             sListCore.getSelectionModel().addSelectionInterval(index, index);
@@ -281,6 +281,6 @@ public class SList<T> extends JPanel implements
     }
 
     static public <T> SList<T> of(List<T> data) {
-    	return new SList<T>().data(data);
+    	return new SList<T>().items(data);
     }
 }

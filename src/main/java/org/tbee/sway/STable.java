@@ -8,8 +8,8 @@ import org.tbee.sway.binding.ExceptionHandler;
 import org.tbee.sway.format.Format;
 import org.tbee.sway.format.FormatAsJavaTextFormat;
 import org.tbee.sway.mixin.BindToMixin;
-import org.tbee.sway.mixin.DataMixin;
 import org.tbee.sway.mixin.ExceptionHandlerMixin;
+import org.tbee.sway.mixin.ItemsMixin;
 import org.tbee.sway.mixin.JComponentMixin;
 import org.tbee.sway.mixin.OverlayMixin;
 import org.tbee.sway.mixin.PreferencesMixin;
@@ -80,14 +80,14 @@ import java.util.stream.Collectors;
  * This table implements an opinionated way how the table API should look.
  * The basic approach is that the end user does NOT provide a TableModel implementation anymore,
  * but interacts completely via the STable's API.
- * Data is shown using setData(), columns are added using the column() method(s).
+ * Data is set using setItems(), columns are added using the column() method(s).
  * <br/>
  * <br/>
  * The main focus of Sway is simplicity, the simplest example of this component is:
  * <pre>{@code
  * var sTable = new STable<SomeBean>() //
  *         .columns(SomeBean.class, "name", "distance", "roundtrip") //
- *         .data(aListOfSomeBeans);
+ *         .items(aListOfSomeBeans);
  * }
  * </pre>
  * Note: it would be wise to introduce public constants in SomeBean to hold the property names.
@@ -116,7 +116,7 @@ import java.util.stream.Collectors;
  *         .column(String.class).title("name RW").valueSupplier(SomeBean::getName).valueConsumer(SomeBean::setName).table() // read write
  *         .column(Integer.class).title("distance RW").valueSupplier(SomeBean::getDistance).valueConsumer(SomeBean::setDistance).table() // read write
  *         .column(Integer.class).title("roundtrip RO").valueSupplier(SomeBean::getRoundtrip).table() // derived property, so read only
- *         .data(aListOfSomeBeans);
+ *         .items(aListOfSomeBeans);
  * }
  * </pre>
  * Note: the columns() method uses Java's BeanInfo class to generate columns similar to the example above.
@@ -144,7 +144,7 @@ import java.util.stream.Collectors;
  *         .column(Integer.class).title("distance RW")...monitorProperty("distance").table() //
  *         .column(Integer.class).title("roundtrip RO")...monitorProperty("roundtrip").table() //
  *         .monitorBean(SomeBean.class) //
- *         .data(aListOfSomeBeans);
+ *         .items(aListOfSomeBeans);
  * }
  * </pre>
  * Note: the columns() method calls monitorBean, and monitorProperty on each column.
@@ -163,7 +163,7 @@ import java.util.stream.Collectors;
  * <pre>{@code
  * var sTable = new STable<SomeBean>() //
  *         .selectionMode(STable.SelectionMode.MULTIPLE) //
- *         .data(aListOfSomeBeans); //
+ *         .items(aListOfSomeBeans); //
  *
  *  sTable.setSelection(List.of(bean1, bean3, bean12));
  *  List<SomeBean> selection = sTable.getSelection();
@@ -178,7 +178,7 @@ import java.util.stream.Collectors;
  * var sTable = new STable<SomeBean>() //
  *         .columns(SomeBean.class, "name", "distance", "roundtrip") //
  *         .filterHeaderEnabled(true) // This will show the filter header
- *         .data(aListOfSomeBeans);
+ *         .items(aListOfSomeBeans);
  * }
  * </pre>
  *
@@ -188,7 +188,7 @@ import java.util.stream.Collectors;
  *         .columns(SomeBean.class, "name", "distance", "roundtrip") //
  *         .beanFactory(() -> new SomeBean()) //
  *         .onRowAdded(b -> ...) // fired when a row was added
- *         .data(aListOfSomeBeans);
+ *         .items(aListOfSomeBeans);
  * }
  * </pre>
  * If configured, the bean factory allows the table to automatically add new rows.
@@ -201,7 +201,7 @@ public class STable<TableType> extends JPanel implements
         OverlayMixin<STable<TableType>>,
         JComponentMixin<STable<TableType>>,
         ExceptionHandlerMixin<STable<TableType>>,
-        DataMixin<STable<TableType>, TableType>,
+        ItemsMixin<STable<TableType>, TableType>,
         SelectionMixin<STable<TableType>, TableType>,
         PreferencesMixin<STable<TableType>>,
         BindToMixin<STable<TableType>, List<TableType>> {
@@ -255,20 +255,20 @@ public class STable<TableType> extends JPanel implements
      *
      * @param v
      */
-    public void setData(List<TableType> v) {
+    public void setItems(List<TableType> v) {
     	if (v == null) {
     		throw new IllegalArgumentException("Null not allowed, provide an empty list");
     	}
         unregisterFromAllBeans();
-        firePropertyChange(DATA, this.data, this.data = new ArrayList<>(v)); // We don't allow outside changes to the provided list
+        firePropertyChange(ITEMS, this.data, this.data = new ArrayList<>(v)); // We don't allow outside changes to the provided list
         registerToAllBeans();
         sTableCore.getTableModel().fireTableDataChanged();
     }
-    public List<TableType> getData() {
+    public List<TableType> getItems() {
         return Collections.unmodifiableList(this.data);
     }
-    public STable<TableType> data(List<TableType> v) {
-        setData(v);
+    public STable<TableType> items(List<TableType> v) {
+        setItems(v);
         return this;
     }
 
@@ -494,7 +494,7 @@ public class STable<TableType> extends JPanel implements
         var selectedItems = new ArrayList<TableType>(sTableCore.getSelectionModel().getSelectionMode());
         for (int rowIdx : sTableCore.getSelectionModel().getSelectedIndices()) {
             rowIdx = sTableCore.convertRowIndexToModel(rowIdx);
-            selectedItems.add(getData().get(rowIdx));
+            selectedItems.add(getItems().get(rowIdx));
         }
         return Collections.unmodifiableList(selectedItems);
     }
@@ -504,7 +504,7 @@ public class STable<TableType> extends JPanel implements
      */
     public void setSelection(List<TableType> values) {
         clearSelection();
-        List<TableType> data = getData();
+        List<TableType> data = getItems();
         for (TableType value : values) {
             int index = data.indexOf(value);
             int rowIdx = sTableCore.convertRowIndexToView(index);
@@ -1279,7 +1279,7 @@ public class STable<TableType> extends JPanel implements
     }
 
     static public <TableType> STable<TableType> of(List<TableType> data) {
-        return new STable<TableType>().data(data);
+        return new STable<TableType>().items(data);
     }
 
     @Override

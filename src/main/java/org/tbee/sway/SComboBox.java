@@ -5,8 +5,8 @@ import org.tbee.sway.binding.ExceptionHandler;
 import org.tbee.sway.format.Format;
 import org.tbee.sway.list.DefaultListCellRenderer;
 import org.tbee.sway.mixin.BindToMixin;
-import org.tbee.sway.mixin.DataMixin;
 import org.tbee.sway.mixin.ExceptionHandlerMixin;
+import org.tbee.sway.mixin.ItemsMixin;
 import org.tbee.sway.mixin.JComponentMixin;
 import org.tbee.sway.mixin.ValueMixin;
 import org.tbee.sway.support.SwayUtil;
@@ -23,7 +23,7 @@ import java.util.function.Consumer;
 public class SComboBox<T> extends JComboBox<T> implements
         JComponentMixin<SComboBox<T>>,
         ExceptionHandlerMixin<SComboBox<T>>,
-        DataMixin<SComboBox<T>, T>,
+        ItemsMixin<SComboBox<T>, T>,
         ValueMixin<SComboBox<T>, T>,
         BindToMixin<SComboBox<T>, T> {
 
@@ -52,11 +52,11 @@ public class SComboBox<T> extends JComboBox<T> implements
      *
      * @param v
      */
-    public void setData(List<T> v) {
-        firePropertyChange(DATA, this.data, this.data = Collections.unmodifiableList(v)); // We don't allow outside changes to the provided list
+    public void setItems(List<T> v) {
+        firePropertyChange(ITEMS, this.data, this.data = Collections.unmodifiableList(v)); // We don't allow outside changes to the provided list
         setModel(new DefaultComboBoxModel<>(new Vector<>(this.data)));
     }
-    public List<T> getData() {
+    public List<T> getItems() {
         return this.data;
     }
 
@@ -219,7 +219,7 @@ public class SComboBox<T> extends JComboBox<T> implements
     }
 
     static public <T> SComboBox<T> of(List<T> data) {
-        return new SComboBox<T>().data(data);
+        return new SComboBox<T>().items(data);
     }
 
 

@@ -37,13 +37,13 @@ public class SelectionTest extends TestBase {
                     .name("table")
                     .columns(City.class, City.NAME)
                     .selectionMode(STable.SelectionMode.MULTIPLE)
-                    .data(cities);
+                    .items(cities);
             tableRef.set(sTable);
 
             var sList = new SList<City>()
                     .name("list")
                     .selectionMode(SList.SelectionMode.MULTIPLE)
-                    .data(cities);
+                    .items(cities);
             sList.selection$().bindTo(sTable.selection$());
             listRef.set(sList);
 

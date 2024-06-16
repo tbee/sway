@@ -21,7 +21,7 @@ public class SListTest extends TestBase {
         construct(() -> {
             var sList = new SList<City>() //
                     .render(new CityFormat(cities)) //
-                    .data(cities);
+                    .items(cities);
             ref.set(sList);
             return TestUtil.inSFrame(sList, focusMeComponent());
         });
@@ -48,7 +48,7 @@ public class SListTest extends TestBase {
                     .name("sList") //
                     .render(new CityFormat(cities)) //
                     .selectionMode(SList.SelectionMode.SINGLE) //
-                    .data(cities);
+                    .items(cities);
             ref.set(sList);
             return TestUtil.inSFrame(sList);
         });

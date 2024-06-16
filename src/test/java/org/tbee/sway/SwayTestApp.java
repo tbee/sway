@@ -193,7 +193,7 @@ public class SwayTestApp {
                 .render(new CityFormat(cities));
 
         SButton delayedPopulateButton = SButton.of("Populate").onAction(evt -> {
-            sListDelayed.data(cities);
+            sListDelayed.items(cities);
 
             cities2.addAll(cities);
             sListDelayed2.refresh();
@@ -250,7 +250,7 @@ public class SwayTestApp {
         var sComboBox = SComboBox.<City>of() //
                 .render(new CityFormat(cities))
                 .onValueChanged(c -> System.out.println("Combobox: " + c))
-                .data(cities);
+                .items(cities);
 
         // The combobox is bound to the textfield, so it should have the value
         STextField<City> sTextFieldDisplay = STextField.of(new CityFormat(cities)).value(cities.get(0)).enabled(false);
@@ -306,7 +306,7 @@ public class SwayTestApp {
                 .filterHeaderEnabled(true) //
 
                 // data
-                .data(cities) //
+                .items(cities) //
                 .beanFactory(() -> City.of()) //
                 .onRowAdded((b, i) -> System.out.println("added " + i + ": " + b)) //
                 
@@ -414,13 +414,13 @@ public class SwayTestApp {
         STextField<LocalDate> dateValueTextField = STextField.ofBindTo(sLocalDatePicker.value$());
         localeSSpinner.value$().onChange(sLocalDatePicker::setLocale);
         SList<LocalDate> slist = SList.of();
-        slist.data$().bindTo(sLocalDatePicker.selection$());
+        slist.items$().bindTo(sLocalDatePicker.selection$());
 
         SLocalDatePicker sLocalDatePickerMulti = SLocalDatePicker.of().mode(SLocalDatePicker.Mode.MULTIPLE);
         STextField<LocalDate> dateValueTextFieldMulti = STextField.ofBindTo(sLocalDatePickerMulti.value$());
         localeSSpinner.value$().onChange(sLocalDatePickerMulti::setLocale);
         SList<LocalDate> slistMulti = SList.of();
-        slistMulti.data$().bindTo(sLocalDatePickerMulti.selection$());
+        slistMulti.items$().bindTo(sLocalDatePickerMulti.selection$());
 
         SLocalTimePicker sLocalTimePicker = SLocalTimePicker.of();
         STextField<LocalTime> timeValueTextField = STextField.ofBindTo(sLocalTimePicker.value$());

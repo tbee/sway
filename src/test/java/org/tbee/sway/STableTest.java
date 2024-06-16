@@ -33,7 +33,7 @@ public class STableTest extends TestBase {
                     .name("table") //
                     .column(String.class).valueSupplier(City::getName).valueConsumer(City::setName).table()
                     .column(Integer.class).valueSupplier(d -> d.getDistance()).table() //
-                    .data(data);
+                    .items(data);
             return TestUtil.inSFrame(sTable, focusMeComponent());
         });
 
@@ -59,7 +59,7 @@ public class STableTest extends TestBase {
             sTable = new STable<City>() //
                     .name("table") //
                     .columns(City.class, City.NAME, City.DISTANCE) //
-                    .data(data);
+                    .items(data);
             return TestUtil.inSFrame(sTable, focusMeComponent());
         });
 
@@ -84,7 +84,7 @@ public class STableTest extends TestBase {
             sTable = new STable<City>() //
                     .name("table") //
                     .columns(City.class, City.NAME, City.DISTANCE)
-                    .data(data);
+                    .items(data);
             return TestUtil.inSFrame(sTable, focusMeComponent());
         });
 
@@ -115,7 +115,7 @@ public class STableTest extends TestBase {
                     .name("table") //
                     .columns(City.class, City.NAME, City.SISTERCITY) //
                     .<City>findColumnById(City.SISTERCITY).renderer(cityFormat).editor(cityFormat).table() //
-                    .data(data);
+                    .items(data);
             return TestUtil.inSFrame(sTable, focusMeComponent());
         });
 
@@ -145,7 +145,7 @@ public class STableTest extends TestBase {
                         .name("table") //
                         .columns(City.class, City.NAME, City.SISTERCITY) //
                         .<City>findColumnById(City.SISTERCITY).table() //
-                        .data(data);
+                        .items(data);
                 return TestUtil.inSFrame(sTable, focusMeComponent());
             });
 
@@ -182,7 +182,7 @@ public class STableTest extends TestBase {
                     .columns(City.class, City.NAME, City.DISTANCE, City.SISTERCITY) //
                     .<City>findColumnById(City.SISTERCITY).renderer(cityFormat).editor(cityFormat).sorting(Comparator.comparing(City::getName)).table() // Sort on name
                     .column(String.class).title("Name sort 2nd").valueSupplier(City::getName).sorting(Comparator.comparing(o -> o.substring(1))).table() // sort starting on the 2nd letter of the name
-                    .data(data);
+                    .items(data);
             return TestUtil.inSFrame(sTable, focusMeComponent());
         });
 
@@ -239,7 +239,7 @@ public class STableTest extends TestBase {
                     .columns(City.class, City.NAME, City.DISTANCE, City.SISTERCITY) //
                     .<City>findColumnById(City.SISTERCITY).renderer(cityFormat).editor(cityFormat).sorting(Comparator.comparing(City::getName)).table() // Sort on name
                     .selectionMode(STable.SelectionMode.SINGLE)
-                    .data(data);
+                    .items(data);
             return TestUtil.inSFrame(sTable, focusMeComponent());
         });
         JTableFixture tableFixture = frameFixture.table("table.sTableCore");
@@ -287,7 +287,7 @@ public class STableTest extends TestBase {
                     .name("table") //
                     .columns(City.class, City.NAME, City.DISTANCE) //
                     .selectionMode(STable.SelectionMode.MULTIPLE)
-                    .data(data);
+                    .items(data);
             return TestUtil.inSFrame(sTable, focusMeComponent());
         });
         JTableFixture tableFixture = frameFixture.table("table.sTableCore");
@@ -335,7 +335,7 @@ public class STableTest extends TestBase {
                     .name("table") //
                     .columns(City.class, City.NAME, City.DISTANCE) //
                     .selectionMode(STable.SelectionMode.SINGLE)
-                    .data(data);
+                    .items(data);
             return TestUtil.inSFrame(sTable, focusMeComponent());
         });
         JTableFixture tableFixture = frameFixture.table("table.sTableCore");
@@ -382,7 +382,7 @@ public class STableTest extends TestBase {
                     .name("table") //
                     .columns(City.class, City.NAME, City.DISTANCE) //
                     .selectionMode(STable.SelectionMode.MULTIPLE)
-                    .data(data);
+                    .items(data);
             return TestUtil.inSFrame(sTable, focusMeComponent());
         });
         JTableFixture tableFixture = frameFixture.table("table.sTableCore");
@@ -423,7 +423,7 @@ public class STableTest extends TestBase {
                     .name("table") //
                     .columns(City.class, City.NAME, City.DISTANCE) //
                     .selectionMode(STable.SelectionMode.INTERVAL)
-                    .data(data);
+                    .items(data);
             return TestUtil.inSFrame(sTable, focusMeComponent());
         });
         JTableFixture tableFixture = frameFixture.table("table.sTableCore");

@@ -18,7 +18,7 @@ public class TableModel<TableType> extends AbstractTableModel {
 
     @Override
     public int getRowCount() {
-        return sTable.getData().size();
+        return sTable.getItems().size();
     }
 
     @Override
@@ -44,27 +44,27 @@ public class TableModel<TableType> extends AbstractTableModel {
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
         TableColumn<TableType, ?> column = sTable.getTableColumns().get(columnIndex);
-        TableType record = sTable.getData().get(rowIndex);
+        TableType record = sTable.getItems().get(rowIndex);
         return column.getValue(record);
     }
 
     @Override
     public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
         TableColumn<TableType, ?> column = sTable.getTableColumns().get(columnIndex);
-        TableType record = sTable.getData().get(rowIndex);
+        TableType record = sTable.getItems().get(rowIndex);
         column.setValue(record, aValue);
         fireTableCellUpdated(rowIndex, columnIndex);
     }
 
     public String getValueAtAsString(int rowIndex, int columnIndex) {
         TableColumn<TableType, ?> column = sTable.getTableColumns().get(columnIndex);
-        TableType record = sTable.getData().get(rowIndex);
+        TableType record = sTable.getItems().get(rowIndex);
         return column.getValueAsString(record);
     }
 
     public void setValueAtAsString(String aValue, int rowIndex, int columnIndex) {
         TableColumn<TableType, ?> column = sTable.getTableColumns().get(columnIndex);
-        TableType record = sTable.getData().get(rowIndex);
+        TableType record = sTable.getItems().get(rowIndex);
         column.setValueAsString(record, aValue);
         fireTableCellUpdated(rowIndex, columnIndex);
     }
