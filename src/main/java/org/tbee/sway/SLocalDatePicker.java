@@ -82,15 +82,15 @@ public class SLocalDatePicker extends JPanel implements
 
         // daynames
         for (int i = 0; i < 7; i++) {
-            daynameLabels[i] = SLabel.of("d" + i).margin(0, 0, 0, 1);
-            daynameLabels[i].setHorizontalAlignment(JLabel.CENTER);
+            daynameLabels[i] = SLabel.of("d" + i).margin(0, 0, 0, 1)
+                    .hAlign(HAlign.CENTER);
             weekdayFont(daynameLabels[i]);
         }
 
         // weeknumbers
         for (int i = 0; i < 6; i++) {
-            weeknumberLabels[i] = SLabel.of("w" + i);
-            weeknumberLabels[i].setHorizontalAlignment(JLabel.CENTER);
+            weeknumberLabels[i] = SLabel.of("w" + i)
+                    .hAlign(HAlign.CENTER);
             weeknumberFont(weeknumberLabels[i]);
         }
 
