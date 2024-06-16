@@ -83,15 +83,15 @@ public class SDatePickerTest extends TestBase {
 
         // WHEN shift click on another data -> extend range
         withShiftPressed(() -> {
-            frameFixture.toggleButton("2024-06-18").click();
+            frameFixture.toggleButton("2024-06-14").click();
         });
         // THEN
         Assertions.assertEquals(4, sLocalDatePicker.getSelection().size());
         Assertions.assertEquals(LocalDate.of(2024, 6, 15), sLocalDatePicker.getSelection().get(0));
         Assertions.assertEquals(LocalDate.of(2024, 6, 16), sLocalDatePicker.getSelection().get(1));
         Assertions.assertEquals(LocalDate.of(2024, 6, 17), sLocalDatePicker.getSelection().get(2));
-        Assertions.assertEquals(LocalDate.of(2024, 6, 18), sLocalDatePicker.getSelection().get(3));
-        Assertions.assertEquals(LocalDate.of(2024, 6, 18), sLocalDatePicker.getValue());
+        Assertions.assertEquals(LocalDate.of(2024, 6, 14), sLocalDatePicker.getSelection().get(3));
+        Assertions.assertEquals(LocalDate.of(2024, 6, 14), sLocalDatePicker.getValue());
 
         // WHEN click on single date -> select only one
         frameFixture.toggleButton("2024-06-20").click();
@@ -141,15 +141,15 @@ public class SDatePickerTest extends TestBase {
 
         // WHEN shift click on another data -> extend range
         withShiftPressed(() -> {
-            frameFixture.toggleButton("2024-06-18").click();
+            frameFixture.toggleButton("2024-06-14").click();
         });
         // THEN
         Assertions.assertEquals(4, sLocalDatePicker.getSelection().size());
         Assertions.assertEquals(LocalDate.of(2024, 6, 15), sLocalDatePicker.getSelection().get(0));
         Assertions.assertEquals(LocalDate.of(2024, 6, 16), sLocalDatePicker.getSelection().get(1));
         Assertions.assertEquals(LocalDate.of(2024, 6, 17), sLocalDatePicker.getSelection().get(2));
-        Assertions.assertEquals(LocalDate.of(2024, 6, 18), sLocalDatePicker.getSelection().get(3));
-        Assertions.assertEquals(LocalDate.of(2024, 6, 18), sLocalDatePicker.getValue());
+        Assertions.assertEquals(LocalDate.of(2024, 6, 14), sLocalDatePicker.getSelection().get(3));
+        Assertions.assertEquals(LocalDate.of(2024, 6, 14), sLocalDatePicker.getValue());
 
         // WHEN ctrl click on another data -> extend range
         withControlPressed(() -> {
@@ -160,7 +160,7 @@ public class SDatePickerTest extends TestBase {
         Assertions.assertEquals(LocalDate.of(2024, 6, 15), sLocalDatePicker.getSelection().get(0));
         Assertions.assertEquals(LocalDate.of(2024, 6, 16), sLocalDatePicker.getSelection().get(1));
         Assertions.assertEquals(LocalDate.of(2024, 6, 17), sLocalDatePicker.getSelection().get(2));
-        Assertions.assertEquals(LocalDate.of(2024, 6, 18), sLocalDatePicker.getSelection().get(3));
+        Assertions.assertEquals(LocalDate.of(2024, 6, 14), sLocalDatePicker.getSelection().get(3));
         Assertions.assertEquals(LocalDate.of(2024, 6, 10), sLocalDatePicker.getSelection().get(4));
         Assertions.assertEquals(LocalDate.of(2024, 6, 10), sLocalDatePicker.getValue());
 
