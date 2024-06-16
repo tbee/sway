@@ -202,34 +202,31 @@ public class SLocalDatePicker extends JPanel implements
     private void dayClicked(ActionEvent e) {
         // extract the date that was clicked
         String dateStr = ((JToggleButton) e.getSource()).getActionCommand();
-        LocalDate clickedLocalDate = LocalDate.parse(dateStr, DateTimeFormatter.ISO_LOCAL_DATE);
+        final LocalDate clickedLocalDate = LocalDate.parse(dateStr, DateTimeFormatter.ISO_LOCAL_DATE);
 
-        // current calendar
-        LocalDate currentLocalDate = value;
-        if (currentLocalDate == null) {
-            currentLocalDate = clickedLocalDate;
-        }
-
-        // the new collection
-        List<LocalDate> localDates = new ArrayList<LocalDate>(selection);
+        // the resulting values
+        List<LocalDate> selection = new ArrayList<LocalDate>(this.selection);
+        LocalDate newValue = clickedLocalDate;
 
         // what modifiers were pressed?
         boolean shiftPressed = (e.getModifiers() & ActionEvent.SHIFT_MASK) != 0; // for a range
         boolean ctrlPressed = (e.getModifiers() & ActionEvent.CTRL_MASK) != 0;
-        LocalDate fromLocalDate = currentLocalDate.isBefore(clickedLocalDate) ? currentLocalDate : clickedLocalDate;
-        LocalDate toLocalDate = currentLocalDate.isBefore(clickedLocalDate) ? clickedLocalDate : currentLocalDate;
+        LocalDate rangeStart = (value != null ? value : clickedLocalDate);
+        LocalDate fromLocalDate = rangeStart.isBefore(clickedLocalDate) ? rangeStart : clickedLocalDate;
+        LocalDate toLocalDate = rangeStart.isBefore(clickedLocalDate) ? clickedLocalDate : rangeStart;
 
         // Single
         if (mode == Mode.SINGLE) {
             // if already present
-            if (localDates.contains(clickedLocalDate)) {
+            if (selection.contains(clickedLocalDate)) {
                 // remove
-                localDates.remove(clickedLocalDate);
+                selection.remove(clickedLocalDate);
+                newValue = null;
             }
             else {
                 // set one value
-                localDates.clear();
-                localDates.add(clickedLocalDate);
+                selection.clear();
+                selection.add(clickedLocalDate);
             }
         }
 
@@ -237,21 +234,22 @@ public class SLocalDatePicker extends JPanel implements
         if ((mode == Mode.RANGE) || (mode == Mode.MULTIPLE && !ctrlPressed)) {
             if (!shiftPressed) {
                 // if already present and only a range of one
-                if (localDates.size() == 1 && localDates.contains(clickedLocalDate)) { // found
+                if (selection.size() == 1 && selection.contains(clickedLocalDate)) { // found
                     // remove
-                    localDates.clear();
+                    selection.clear();
+                    newValue = null;
                 }
                 else {
                     // set one value
-                    localDates.clear();
-                    localDates.add(clickedLocalDate);
+                    selection.clear();
+                    selection.add(clickedLocalDate);
                 }
             }
             else {
                 // add all dates to a new range
                 LocalDate localDate = fromLocalDate;
                 while (!localDate.isAfter(toLocalDate)) {
-                    localDates.add(localDate);
+                    selection.add(localDate);
                     localDate = localDate.plusDays(1);
                 }
             }
@@ -261,26 +259,27 @@ public class SLocalDatePicker extends JPanel implements
         if (mode == Mode.MULTIPLE && ctrlPressed) {
             if (!shiftPressed) {
                 // if already present and only a range of one
-                if (localDates.size() == 1 && localDates.contains(clickedLocalDate)) { // found
+                if (selection.size() == 1 && selection.contains(clickedLocalDate)) { // found
                     // remove
-                    localDates.clear();
+                    selection.clear();
+                    newValue = null;
                 }
                 // if already present
-                else if (localDates.contains(clickedLocalDate)) { // found
+                else if (selection.contains(clickedLocalDate)) { // found
                     // remove
-                    localDates.remove(clickedLocalDate);
+                    selection.remove(clickedLocalDate);
                 }
                 else {
                     // add one value
-                    localDates.add(clickedLocalDate);
+                    selection.add(clickedLocalDate);
                 }
             }
             else if (shiftPressed) {
                 // add all dates to the range
                 LocalDate localDate = fromLocalDate;
                 while (!localDate.isAfter(toLocalDate)) {
-                    if (!localDates.contains(localDate)) {
-                        localDates.add(localDate);
+                    if (!selection.contains(localDate)) {
+                        selection.add(localDate);
                     }
                     localDate = localDate.plusDays(1);
                 }
@@ -288,10 +287,8 @@ public class SLocalDatePicker extends JPanel implements
         }
 
         // set
-        setSelection(localDates);
-        value(clickedLocalDate);
-
-        // refresh
+        setSelectionInternal(selection);
+        setValueInternal(newValue);
         refreshSelection();
     }
 
@@ -320,18 +317,21 @@ public class SLocalDatePicker extends JPanel implements
         return value;
     }
     public void setValue(LocalDate v) {
+        setValueInternal(v);
+
+        // sync selection
+        if (v == null && this.value != null && selection.contains(this.value)) {
+            removeFromSelection(this.value);
+        }
+        if (v != null && !selection.contains(v)) {
+            setSelection(List.of(v));
+        }
+    }
+    public void setValueInternal(LocalDate v) {
         try {
             // update calendar
             fireVetoableChange(VALUE, this.value, v);
             firePropertyChange(VALUE, this.value, this.value = v);
-
-            // sync selection
-            if (v == null && this.value != null && selection.contains(this.value)) {
-				removeFromSelection(this.value);
-			}
-            if (v != null && !selection.contains(v)) {
-                setSelection(List.of(v));
-            }
         }
         catch (PropertyVetoException e) {
             throw new IllegalArgumentException(e);
@@ -347,17 +347,20 @@ public class SLocalDatePicker extends JPanel implements
     }
 
     public void setSelection(List<LocalDate> v) {
+        setSelectionInternal(v);
+
+        // update calendar
+        if (!selection.contains(this.value) && selection.size() > 0) {
+            setValue(selection.get(0));
+        }
+
+        // refresh
+        refreshSelection();
+    }
+    public void setSelectionInternal(List<LocalDate> v) {
         try {
             fireVetoableChange(SELECTION, this.selection, v);
             firePropertyChange(SELECTION, this.selection, this.selection = v);
-
-            // update calendar
-            if (!selection.contains(this.value) && selection.size() > 0) {
-                setValue(selection.get(0));
-            }
-
-            // refresh
-            refreshSelection();
         }
         catch (PropertyVetoException e) {
             throw new IllegalArgumentException(e);

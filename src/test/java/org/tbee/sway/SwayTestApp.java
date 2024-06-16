@@ -413,12 +413,14 @@ public class SwayTestApp {
         SLocalDatePicker sLocalDatePicker = SLocalDatePicker.of();
         STextField<LocalDate> dateValueTextField = STextField.ofBindTo(sLocalDatePicker.value$());
         localeSSpinner.value$().onChange(sLocalDatePicker::setLocale);
+        SList<LocalDate> slist = SList.of();
+        sLocalDatePicker.selection$().onChange(slist::data);
 
         SLocalDatePicker sLocalDatePickerMulti = SLocalDatePicker.of().mode(SLocalDatePicker.Mode.MULTIPLE);
-        SList<LocalDate> slistMulti = SList.of();
-        sLocalDatePickerMulti.selection$().onChange(slistMulti::data);
         STextField<LocalDate> dateValueTextFieldMulti = STextField.ofBindTo(sLocalDatePickerMulti.value$());
         localeSSpinner.value$().onChange(sLocalDatePickerMulti::setLocale);
+        SList<LocalDate> slistMulti = SList.of();
+        sLocalDatePickerMulti.selection$().onChange(slistMulti::data);
 
         SLocalTimePicker sLocalTimePicker = SLocalTimePicker.of();
         STextField<LocalTime> timeValueTextField = STextField.ofBindTo(sLocalTimePicker.value$());
@@ -443,7 +445,7 @@ public class SwayTestApp {
         migPanel.addComponent(timeValueTextField).growX();
         migPanel.addComponent(timeValueNoSecTextField).growX();
         migPanel.wrap();
-        migPanel.addComponent(SLabel.of()).growX();
+        migPanel.addComponent(slist).growX();
         migPanel.addComponent(slistMulti).growX();
         return migPanel;
     }
