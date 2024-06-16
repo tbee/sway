@@ -5,6 +5,7 @@ import org.tbee.sway.binding.ExceptionHandler;
 import org.tbee.sway.format.Format;
 import org.tbee.sway.format.FormatToString;
 import org.tbee.sway.mixin.ExceptionHandlerMixin;
+import org.tbee.sway.mixin.JComponentMixin;
 import org.tbee.sway.mixin.SelectionMixin;
 import org.tbee.sway.mixin.ValueMixin;
 import org.tbee.sway.support.ColorUtil;
@@ -40,7 +41,8 @@ import static org.tbee.sway.SIconRegistry.SwayInternallyUsedIcon.DATEPICKER_PREV
 public class SLocalDatePicker extends JPanel implements
         ValueMixin<SLocalDatePicker, LocalDate>,
         SelectionMixin<SLocalDatePicker, LocalDate>,
-        ExceptionHandlerMixin<SLocalDatePicker> {
+        ExceptionHandlerMixin<SLocalDatePicker>,
+        JComponentMixin<SLocalDatePicker> {
 
     public static final DateTimeFormatter MMM = DateTimeFormatter.ofPattern("MMM");
     public static final DateTimeFormatter E = DateTimeFormatter.ofPattern("E");
@@ -249,7 +251,9 @@ public class SLocalDatePicker extends JPanel implements
                 // add all dates to a new range
                 LocalDate localDate = fromLocalDate;
                 while (!localDate.isAfter(toLocalDate)) {
-                    selection.add(localDate);
+                    if (!selection.contains(localDate)) {
+                        selection.add(localDate);
+                    }
                     localDate = localDate.plusDays(1);
                 }
             }
@@ -566,24 +570,25 @@ public class SLocalDatePicker extends JPanel implements
 
         // hide the preceeding buttons
         JToggleButton toggleButtonForColor = new JToggleButton();
-        Color foreground = toggleButtonForColor.getForeground();
         Color background = toggleButtonForColor.getBackground();
         Color todayBorderColor = ColorUtil.brighterOrDarker(background, 0.1);
         Border todayBorder = BorderFactory.createLineBorder(todayBorderColor, 2);
         Border notTodayBorder = BorderFactory.createEmptyBorder(2, 2, 2, 2);
-        Color altForegroundColor = foreground;//ColorUtil.brighterOrDarker(toggleButtonForColor.getForeground(), 0.1);
         Color altBackgroundColor = ColorUtil.brighterOrDarker(background, 0.1);
         LocalDate startDate = displayedLocalDate.minusDays(firstOfMonthIdx - 1);
         for (int idx = 0; idx < 6 * 7; idx++) {
             LocalDate localDate = startDate.plusDays(idx);
-            dateToggleButton[idx].setText("" + localDate.getDayOfMonth());
-            dateToggleButton[idx].setActionCommand(localDate.format(DateTimeFormatter.ISO_LOCAL_DATE));
+            String localDateISO = localDate.format(DateTimeFormatter.ISO_LOCAL_DATE);
+            dateToggleButton[idx]
+                    .name(localDateISO)
+                    .text("" + localDate.getDayOfMonth())
+                    .actionCommand(localDateISO);
 
-            // highlight today
-            dateToggleButton[idx].setBorder(isToday(localDate) ? todayBorder : notTodayBorder);
+            // highlight today and buttons outside of current month
             boolean otherMonth = (localDate.getMonthValue() != displayedMonth);
-            dateToggleButton[idx].setForeground(otherMonth ? altForegroundColor : foreground);
-            dateToggleButton[idx].setBackground(otherMonth ? altBackgroundColor : background);
+            dateToggleButton[idx]
+                    .border(isToday(localDate) ? todayBorder : notTodayBorder)
+                    .background(otherMonth ? altBackgroundColor : background);
         }
 
         // also update the selection

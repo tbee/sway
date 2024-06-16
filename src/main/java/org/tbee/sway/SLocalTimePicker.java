@@ -5,6 +5,7 @@ import net.miginfocom.layout.HideMode;
 import org.tbee.sway.binding.ExceptionHandler;
 import org.tbee.sway.format.IntegerFormat;
 import org.tbee.sway.mixin.ExceptionHandlerMixin;
+import org.tbee.sway.mixin.JComponentMixin;
 import org.tbee.sway.mixin.ValueMixin;
 import org.tbee.sway.support.HAlign;
 
@@ -24,7 +25,8 @@ import static org.tbee.sway.SIconRegistry.SwayInternallyUsedIcon.TIMEPICKER_PREV
 // TODO: AM/PM
 public class SLocalTimePicker extends JPanel implements
         ValueMixin<SLocalTimePicker, LocalTime>,
-        ExceptionHandlerMixin<SLocalTimePicker> {
+        ExceptionHandlerMixin<SLocalTimePicker>,
+        JComponentMixin<SLocalTimePicker> {
 
     class TimeFormat extends IntegerFormat {
         public static final String NULL_STRING = "--";

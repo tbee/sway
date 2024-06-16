@@ -16,4 +16,10 @@ public interface ActionMixin<T> {
         setAction(v);
         return (T)this;
     }
+
+    void setActionCommand(String actionCommand);
+    default T actionCommand(String v) {
+        setActionCommand(v);
+        return (T)this;
+    }
 }

@@ -12,6 +12,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.awt.GraphicsEnvironment;
+import java.awt.event.KeyEvent;
 import java.util.concurrent.Callable;
 import java.util.function.Supplier;
 
@@ -73,6 +74,26 @@ public class TestBase extends AssertJSwingTestCaseTemplate {
         }
         if (retryCount < 0) {
             throw new IllegalStateException("waitFor timed out");
+        }
+    }
+
+    protected void withShiftPressed(Runnable runnable) {
+        try {
+            frameFixture.pressKey(KeyEvent.VK_SHIFT);
+            runnable.run();
+        }
+        finally {
+            frameFixture.releaseKey(KeyEvent.VK_SHIFT);
+        }
+    }
+
+    protected void withControlPressed(Runnable runnable) {
+        try {
+            frameFixture.pressKey(KeyEvent.VK_CONTROL);
+            runnable.run();
+        }
+        finally {
+            frameFixture.releaseKey(KeyEvent.VK_CONTROL);
         }
     }
 }
