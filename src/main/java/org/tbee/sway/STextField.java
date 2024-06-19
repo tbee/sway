@@ -477,7 +477,7 @@ public class STextField<T> extends javax.swing.JTextField implements
             SwingUtilities.invokeLater(() -> this.grabFocus());
 
             // Display the error
-            if (LOGGER.isDebugEnabled()) LOGGER.debug(e.getMessage(), e);
+            if (LOGGER.isInfoEnabled()) LOGGER.info(e.getMessage(), e);
             JOptionPane.showMessageDialog(this, ExceptionUtil.determineMessage(e), "ERROR", JOptionPane.ERROR_MESSAGE);
 
             // Mark exception as handled

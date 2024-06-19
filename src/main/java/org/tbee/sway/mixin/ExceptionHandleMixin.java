@@ -19,7 +19,7 @@ public interface ExceptionHandleMixin<T> {
 
         // Display the error
         Logger logger = LoggerFactory.getLogger(this.getClass());
-        if (logger.isDebugEnabled()) logger.debug(e.getMessage(), e);
+        if (logger.isInfoEnabled()) logger.info(e.getMessage(), e);
         if (this instanceof Component component) {
             JOptionPane.showMessageDialog(component, e.getMessage() != null ? e.getMessage() : e.getClass().getSimpleName(), "ERROR", JOptionPane.ERROR_MESSAGE);
         }

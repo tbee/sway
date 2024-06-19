@@ -354,7 +354,7 @@ public class SButtonGroup<T> extends ButtonGroup implements
     public boolean handleException(Throwable e) {
 
         // Display the error
-        if (LOGGER.isDebugEnabled()) LOGGER.debug(e.getMessage(), e);
+        if (LOGGER.isInfoEnabled()) LOGGER.info(e.getMessage(), e);
         JOptionPane.showMessageDialog(buttons.isEmpty() ? FocusManager.getCurrentManager().getActiveWindow() : buttons.get(0), ExceptionUtil.determineMessage(e), "ERROR", JOptionPane.ERROR_MESSAGE);
 
         // Mark exception as handled
