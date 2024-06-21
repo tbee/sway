@@ -136,12 +136,12 @@ public class SLocalTimePicker extends JPanel implements
             value = null;
         }
         else {
-            value = unnull(value)
-                    .withHour(hourTextField.getValue() != null ? hourTextField.getValue() : value.getHour())
-                    .withMinute(minuteTextField.getValue() != null ? minuteTextField.getValue() : value.getMinute())
-                    .withSecond(secondTextField.getValue() != null ? secondTextField.getValue() : value.getSecond());
+            value = unnull(value);
+            value.withHour(hourTextField.getValue() != null ? hourTextField.getValue() : value.getHour())
+                 .withMinute(minuteTextField.getValue() != null ? minuteTextField.getValue() : value.getMinute())
+                 .withSecond(secondTextField.getValue() != null ? secondTextField.getValue() : value.getSecond());
         }
-        value(value);
+        setValue(value);
         updateComponents();
     }
 
@@ -226,7 +226,6 @@ public class SLocalTimePicker extends JPanel implements
     public static String SHOWSECONDS = "showSeconds";
     public SLocalTimePicker showSeconds(boolean v) {
         setShowSeconds(v);
-        updateComponents();
         return this;
     }
 

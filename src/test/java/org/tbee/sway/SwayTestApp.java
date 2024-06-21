@@ -409,6 +409,7 @@ public class SwayTestApp {
     static SMigPanel sDatePicker() {
         List<Locale> list = Arrays.stream(Locale.getAvailableLocales()).sorted(Comparator.comparing(Locale::getDisplayName)).toList();
 
+        // Date1
         SComboBox<Locale> localeSSpinner = SComboBox.of(list).value(Locale.getDefault()).editable(true);
         SLocalDatePicker sLocalDatePicker = SLocalDatePicker.of();
         STextField<LocalDate> dateValueTextField = STextField.ofBindTo(sLocalDatePicker.value$());
@@ -416,35 +417,50 @@ public class SwayTestApp {
         SList<LocalDate> slist = SList.of();
         slist.items$().bindTo(sLocalDatePicker.selection$());
 
+        // Date2
         SLocalDatePicker sLocalDatePickerMulti = SLocalDatePicker.of().mode(SLocalDatePicker.Mode.MULTIPLE);
         STextField<LocalDate> dateValueTextFieldMulti = STextField.ofBindTo(sLocalDatePickerMulti.value$());
         localeSSpinner.value$().onChange(sLocalDatePickerMulti::setLocale);
         SList<LocalDate> slistMulti = SList.of();
         slistMulti.items$().bindTo(sLocalDatePickerMulti.selection$());
 
+        // Time1
         SLocalTimePicker sLocalTimePicker = SLocalTimePicker.of();
         STextField<LocalTime> timeValueTextField = STextField.ofBindTo(sLocalTimePicker.value$());
 
+        // Time2
         SLocalTimePicker sLocalTimePickerNoSec = SLocalTimePicker.of().showSeconds(false);
         STextField<LocalTime> timeValueNoSecTextField = STextField.ofBindTo(sLocalTimePickerNoSec.value$());
 
+        // DateTime1
+        SLocalDateTimePicker sLocalDateTimePicker = SLocalDateTimePicker.of();
+        STextField<LocalDateTime> dateTimeValueTextField = STextField.ofBindTo(sLocalDateTimePicker.value$());
+        localeSSpinner.value$().onChange(sLocalDateTimePicker::setLocale);
+
         SMigPanel migPanel = SMigPanel.of();
-        migPanel.addComponent(localeSSpinner).spanX(2).growX();
+        migPanel.addComponent(localeSSpinner).spanX(3).growX();
         migPanel.wrap();
+
         migPanel.addComponent(new JSeparator()).spanX().growX();
         migPanel.wrap();
+
         migPanel.addComponent(sLocalDatePicker).growX().alignY(AlignY.TOP);
         migPanel.addComponent(sLocalDatePickerMulti).growX().alignY(AlignY.TOP);
+        migPanel.addComponent(sLocalDateTimePicker).growX().alignY(AlignY.TOP);
         migPanel.addComponent(sLocalTimePicker).growX().alignY(AlignY.TOP);
         migPanel.addComponent(sLocalTimePickerNoSec).growX().alignY(AlignY.TOP);
         migPanel.wrap();
+
         migPanel.addComponent(new JSeparator()).spanX().growX();
         migPanel.wrap();
+
         migPanel.addComponent(dateValueTextField).growX();
         migPanel.addComponent(dateValueTextFieldMulti).growX();
+        migPanel.addComponent(dateTimeValueTextField).growX();
         migPanel.addComponent(timeValueTextField).growX();
         migPanel.addComponent(timeValueNoSecTextField).growX();
         migPanel.wrap();
+
         migPanel.addComponent(slist).growX();
         migPanel.addComponent(slistMulti).growX();
         return migPanel;

@@ -281,15 +281,16 @@ public class SLocalDatePicker extends JPanel implements
         return value;
     }
     public void setValue(LocalDate v) {
-        setValueInternal(v);
-
-        // sync selection
         if (v == null && this.value != null && selection.contains(this.value)) {
             removeFromSelection(this.value);
         }
+
+        setValueInternal(v);
+
         if (v != null && !selection.contains(v)) {
             setSelection(List.of(v));
         }
+        refreshDisplayedDateBasedComponents();
     }
     public void setValueInternal(LocalDate v) {
         try {
@@ -345,7 +346,6 @@ public class SLocalDatePicker extends JPanel implements
         setSelection(newValues);
         return this;
     }
-
 
     /**
      * Locale: determines the language of the labels
