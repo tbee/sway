@@ -67,12 +67,12 @@ public class SLocalTimePicker extends JPanel implements
             .transparentAsLabel()
             .hAlign(HAlign.CENTER);
 
-    private final SButton hourUpButton = iconButton(TIMEPICKER_NEXTHOUR, this::nextHour);
-    private final SButton minuteUpButton = iconButton(TIMEPICKER_NEXTMINUTE, this::nextMinute);
-    private final SButton secondUpButton = iconButton(TIMEPICKER_NEXTSECOND, this::nextSecond);
-    private final SButton hourDownButton = iconButton(TIMEPICKER_PREVHOUR, this::prevHour);
-    private final SButton minuteDownButton = iconButton(TIMEPICKER_PREVMINUTE, this::prevMinute);
-    private final SButton secondDownButton = iconButton(TIMEPICKER_PREVSECOND, this::prevSecond);
+    private final SButton hourDownButton = iconButton(TIMEPICKER_PREVHOUR, () -> modifyHour(-1));
+    private final SButton hourUpButton = iconButton(TIMEPICKER_NEXTHOUR, () -> modifyHour(1));
+    private final SButton minuteDownButton = iconButton(TIMEPICKER_PREVMINUTE, () -> modifyMinute(-1));
+    private final SButton minuteUpButton = iconButton(TIMEPICKER_NEXTMINUTE, () -> modifyMinute(1));
+    private final SButton secondDownButton = iconButton(TIMEPICKER_PREVSECOND, () -> modifySecond(-1));
+    private final SButton secondUpButton = iconButton(TIMEPICKER_NEXTSECOND, () -> modifySecond(1));
     private final SButton clearButton = iconButton(TIMEPICKER_CLEAR, this::clear);
 
     // ===========================================================================================================
@@ -129,12 +129,6 @@ public class SLocalTimePicker extends JPanel implements
         }
         return result;
     }
-    private int decrease(int value, int max) {
-        return (value <= 0 ? max : value - 1);
-    }
-    private int increase(int value, int max) {
-        return (value >= max ? 0 : value + 1);
-    }
 
     private void manualTyped() {
         // If there is a value, but one part becomes null, all becomes null
@@ -151,34 +145,30 @@ public class SLocalTimePicker extends JPanel implements
         updateComponents();
     }
 
-    private void prevHour() {
+    private void modifyHour(int delta) {
         value = unnull(value);
-        value(value.withHour(decrease(value.getHour(), 23)));
+        value(value.withHour(modify(value.getHour(), delta, 23)));
     }
 
-    private void nextHour() {
+    private void modifyMinute(int delta) {
         value = unnull(value);
-        value(value.withHour(increase(value.getHour(), 23)));
+        value(value.withMinute(modify(value.getMinute(), delta, 59)));
     }
 
-    private void prevMinute() {
+    private void modifySecond(int delta) {
         value = unnull(value);
-        value(value.withMinute(decrease(value.getMinute(), 59)));
+        value(value.withSecond(modify(value.getSecond(), delta, 59)));
     }
 
-    private void nextMinute() {
-        value = unnull(value);
-        value(value.withMinute(increase(value.getMinute(), 59)));
-    }
-
-    private void prevSecond() {
-        value = unnull(value);
-        value(value.withSecond(decrease(value.getSecond(), 59)));
-    }
-
-    private void nextSecond() {
-        value = unnull(value);
-        value(value.withSecond(increase(value.getSecond(), 59)));
+    private int modify(int value, int delta, int max) {
+        value += delta;
+        while (value > max) {
+            value -= (max + 1);
+        }
+        while (value < 0) {
+            value += (max + 1);
+        }
+        return value;
     }
 
     private void clear() {
