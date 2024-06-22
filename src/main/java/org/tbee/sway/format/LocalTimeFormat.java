@@ -1,5 +1,9 @@
 package org.tbee.sway.format;
 
+import net.miginfocom.layout.AlignX;
+import org.tbee.sway.SDialog;
+import org.tbee.sway.SLocalTimePicker;
+import org.tbee.sway.SMigPanel;
 import org.tbee.sway.support.HAlign;
 
 import java.time.LocalDate;
@@ -68,5 +72,21 @@ public class LocalTimeFormat implements Format<LocalTime> {
     @Override
     public HAlign horizontalAlignment() {
         return HAlign.LEADING;
+    }
+
+
+    // ==============================================
+    // EDITOR
+
+    @Override
+    public Editor<LocalTime> editor() {
+        return (owner, value, callback) -> {
+            SLocalTimePicker timePicker =  new SLocalTimePicker().value(value);
+            SMigPanel migPanel = SMigPanel.of().fill();
+            migPanel.addComponent(timePicker).alignX(AlignX.CENTER); // otherwise the time picker is aligned left in the dialog
+            SDialog.ofOkCancel(owner, "", migPanel)
+                    .onOk(() -> callback.accept(timePicker.getValue()))
+                    .showAndWait();
+        };
     }
 }

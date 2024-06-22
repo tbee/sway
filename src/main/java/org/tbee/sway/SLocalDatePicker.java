@@ -315,7 +315,7 @@ public class SLocalDatePicker extends JPanel implements
         setSelectionInternal(v);
 
         // update calendar
-        if (!selection.contains(this.value) && selection.size() > 0) {
+        if (this.value != null && !selection.contains(this.value) && selection.size() > 0) {
             setValue(selection.get(0));
         }
 

@@ -1,5 +1,7 @@
 package org.tbee.sway.format;
 
+import org.tbee.sway.SDialog;
+import org.tbee.sway.SLocalDateTimePicker;
 import org.tbee.sway.support.HAlign;
 
 import java.time.LocalDateTime;
@@ -68,5 +70,19 @@ public class LocalDateTimeFormat implements Format<LocalDateTime> {
     @Override
     public HAlign horizontalAlignment() {
         return HAlign.LEADING;
+    }
+
+
+    // ==============================================
+    // EDITOR
+
+    @Override
+    public Editor<LocalDateTime> editor() {
+        return (owner, value, callback) -> {
+            SLocalDateTimePicker dateTimePicker =  new SLocalDateTimePicker().margin(0, 5, 10, 5).value(value);
+            SDialog.ofOkCancel(owner, "", dateTimePicker)
+                    .onOk(() -> callback.accept(dateTimePicker.getValue()))
+                    .showAndWait();
+        };
     }
 }
