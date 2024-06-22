@@ -131,7 +131,7 @@ public class SLocalDateTimePicker extends JPanel implements
             throw new IllegalArgumentException(e);
         }
     }
-    private Locale locale = Locale.getDefault();
+    private Locale locale = datePicker.getLocale();
     final static public String LOCALE = "locale";
     public SLocalDateTimePicker locale(Locale v) {
         setLocale(v);
@@ -151,7 +151,7 @@ public class SLocalDateTimePicker extends JPanel implements
             throw new IllegalArgumentException(e);
         }
     }
-    private boolean showSeconds = true;
+    private boolean showSeconds = timePicker.getShowSeconds();
     public static String SHOWSECONDS = "showSeconds";
     public SLocalDateTimePicker showSeconds(boolean v) {
         setShowSeconds(v);
