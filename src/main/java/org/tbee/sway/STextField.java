@@ -266,10 +266,10 @@ public class STextField<T> extends javax.swing.JTextField implements
     protected void processMouseEvent(MouseEvent e) {
         switch (e.getID()) {
             case MouseEvent.MOUSE_CLICKED -> {
-                if (onIconClick != null && mouseIsOverIcon(e.getX())) {
+                if (isEnabled() && isEditable() && onIconClick != null && mouseIsOverIcon(e.getX())) {
                     onIconClick.accept(e);
                 }
-                if (onBackIconClick != null && mouseIsOverBackIcon(e.getX())) {
+                if (isEnabled() && isEditable() && onBackIconClick != null && mouseIsOverBackIcon(e.getX())) {
                     onBackIconClick.accept(e);
                 }
             }
@@ -281,7 +281,7 @@ public class STextField<T> extends javax.swing.JTextField implements
     protected void processMouseMotionEvent(MouseEvent e) {
         switch (e.getID()) {
             case MouseEvent.MOUSE_MOVED -> {
-                if (icon != null || backIcon != null) {
+                if (isEnabled() && isEditable() && (icon != null || backIcon != null)) {
                     this.setCursor( (mouseIsOverIcon(e.getX()) && onIconClick != null)
                                  || (mouseIsOverBackIcon(e.getX()) && onBackIconClick != null)
                                   ? ICON_CURSOR : TEXT_CURSOR);
@@ -336,11 +336,17 @@ public class STextField<T> extends javax.swing.JTextField implements
     }
 
     static private <T> STextField<T> ofBindTo(Object bean, String propertyName) {
+        if (bean == null) {
+            throw new IllegalArgumentException("For ofBindTo('" + propertyName + "') the binding needs to have an object, aka it cannot be null, in order to be able to determine the class");
+        }
         Class<?> propertyType = determinePropertyType(bean.getClass(), propertyName);
         return (STextField<T>) of(propertyType).bindTo(BindingEndpoint.of(bean, propertyName));
     }
 
     static private <T> STextField<T> ofBindTo(BeanBinder<T> beanBinder, String propertyName) {
+        if (beanBinder.get() == null) {
+            throw new IllegalArgumentException("For ofBindTo('" + propertyName + "') the binding needs to have an object, aka it cannot be null, in order to be able to determine the class");
+        }
         Class<?> propertyType = determinePropertyType(beanBinder.get().getClass(), propertyName);
         return (STextField<T>) of(propertyType).bindTo(BindingEndpoint.of(beanBinder, propertyName));
     }
