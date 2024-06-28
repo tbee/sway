@@ -4,6 +4,7 @@ import org.kordamp.ikonli.material2.Material2AL;
 import org.kordamp.ikonli.materialdesign2.MaterialDesignC;
 import org.kordamp.ikonli.materialdesign2.MaterialDesignF;
 import org.kordamp.ikonli.materialdesign2.MaterialDesignM;
+import org.kordamp.ikonli.materialdesign2.MaterialDesignP;
 import org.kordamp.ikonli.materialdesign2.MaterialDesignR;
 import org.kordamp.ikonli.materialdesign2.MaterialDesignS;
 
@@ -33,6 +34,7 @@ import static org.tbee.sway.SIconRegistry.SwayInternallyUsedIcon.TIMEPICKER_NEXT
 import static org.tbee.sway.SIconRegistry.SwayInternallyUsedIcon.TIMEPICKER_PREVHOUR;
 import static org.tbee.sway.SIconRegistry.SwayInternallyUsedIcon.TIMEPICKER_PREVMINUTE;
 import static org.tbee.sway.SIconRegistry.SwayInternallyUsedIcon.TIMEPICKER_PREVSECOND;
+import static org.tbee.sway.SIconRegistry.SwayInternallyUsedIcon.ZONEPICKER_PLUS;
 import static org.tbee.sway.support.IkonliUtil.createIcon;
 
 /**
@@ -64,6 +66,7 @@ public class SIconRegistry {
         register(TIMEPICKER_NEXTSECOND, createIcon(Material2AL.KEYBOARD_ARROW_UP, TIMEPICKER_NEXTSECOND.typicalSize()));
         register(TIMEPICKER_PREVSECOND, createIcon(Material2AL.KEYBOARD_ARROW_DOWN, TIMEPICKER_PREVSECOND.typicalSize()));
         register(TIMEPICKER_CLEAR, createIcon(Material2AL.CLEAR, TIMEPICKER_CLEAR.typicalSize()));
+        register(ZONEPICKER_PLUS, createIcon(MaterialDesignP.PLUS, ZONEPICKER_PLUS.typicalSize()));
     }
 
     public enum SwayInternallyUsedIcon { //
@@ -99,6 +102,8 @@ public class SIconRegistry {
         TIMEPICKER_NEXTSECOND("nextSecond@timepicker", 20),
         TIMEPICKER_PREVSECOND("prevSecond@timepicker", 20),
         TIMEPICKER_CLEAR("clear@timepicker", 14),
+
+        ZONEPICKER_PLUS("plusr@zonepicker", 14),
         ; //
 
         final String id;

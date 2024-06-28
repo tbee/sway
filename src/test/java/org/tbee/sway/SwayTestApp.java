@@ -437,8 +437,13 @@ public class SwayTestApp {
         STextField<LocalDateTime> dateTimeValueTextField = STextField.ofBindTo(sLocalDateTimePicker.value$());
         localeSSpinner.value$().onChange(sLocalDateTimePicker::setLocale);
 
+        // OffsetDateTime1
+        SOffsetDateTimePicker sOffsetDateTimePicker = SOffsetDateTimePicker.of();
+        STextField<OffsetDateTime> offsetDateTimeValueTextField = STextField.ofBindTo(sOffsetDateTimePicker.value$());
+        localeSSpinner.value$().onChange(sOffsetDateTimePicker::setLocale);
+
         SMigPanel migPanel = SMigPanel.of();
-        migPanel.addComponent(localeSSpinner).spanX(3).growX();
+        migPanel.addComponent(localeSSpinner).spanX(4).growX();
         migPanel.wrap();
 
         migPanel.addComponent(new JSeparator()).spanX().growX();
@@ -447,6 +452,7 @@ public class SwayTestApp {
         migPanel.addComponent(sLocalDatePicker).growX().alignY(AlignY.TOP);
         migPanel.addComponent(sLocalDatePickerMulti).growX().alignY(AlignY.TOP);
         migPanel.addComponent(sLocalDateTimePicker).growX().alignY(AlignY.TOP);
+        migPanel.addComponent(sOffsetDateTimePicker).growX().alignY(AlignY.TOP);
         migPanel.addComponent(sLocalTimePicker).growX().alignY(AlignY.TOP);
         migPanel.addComponent(sLocalTimePickerNoSec).growX().alignY(AlignY.TOP);
         migPanel.wrap();
@@ -457,6 +463,7 @@ public class SwayTestApp {
         migPanel.addComponent(dateValueTextField).growX();
         migPanel.addComponent(dateValueTextFieldMulti).growX();
         migPanel.addComponent(dateTimeValueTextField).growX();
+        migPanel.addComponent(offsetDateTimeValueTextField).growX();
         migPanel.addComponent(timeValueTextField).growX();
         migPanel.addComponent(timeValueNoSecTextField).growX();
         migPanel.wrap();

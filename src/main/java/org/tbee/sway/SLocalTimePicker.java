@@ -13,6 +13,7 @@ import javax.swing.JPanel;
 import java.awt.BorderLayout;
 import java.beans.PropertyVetoException;
 import java.time.LocalTime;
+import java.util.function.Supplier;
 
 import static org.tbee.sway.SIconRegistry.SwayInternallyUsedIcon.TIMEPICKER_CLEAR;
 import static org.tbee.sway.SIconRegistry.SwayInternallyUsedIcon.TIMEPICKER_NEXTHOUR;
@@ -75,6 +76,7 @@ public class SLocalTimePicker extends JPanel implements
     private final SButton secondUpButton = iconButton(TIMEPICKER_NEXTSECOND, () -> modifySecond(1));
     private final SButton clearButton = iconButton(TIMEPICKER_CLEAR, this::clear);
 
+    private final Supplier<LocalTime> defaultSupplier;
     // ===========================================================================================================
     // CONSTRUCTOR
 
@@ -83,6 +85,11 @@ public class SLocalTimePicker extends JPanel implements
     }
 
     public SLocalTimePicker(LocalTime localTime) {
+        this(localTime, () -> LocalTime.now());
+    }
+
+    public SLocalTimePicker(LocalTime localTime, Supplier<LocalTime> defaultSupplier) {
+        this.defaultSupplier = defaultSupplier;
 
         // setup defaults
         value(localTime);
@@ -123,7 +130,7 @@ public class SLocalTimePicker extends JPanel implements
         if (value != null) {
             return value;
         }
-        LocalTime result = LocalTime.now().withNano(0);
+        LocalTime result = defaultSupplier.get().withNano(0);
         if (!showSeconds) {
             result = result.withSecond(0);
         }
@@ -208,7 +215,6 @@ public class SLocalTimePicker extends JPanel implements
     }
     private LocalTime value = null;
 
-
     public boolean getShowSeconds() {
         return showSeconds;
     }
@@ -229,6 +235,26 @@ public class SLocalTimePicker extends JPanel implements
         return this;
     }
 
+    public boolean getShowClear() {
+        return showClear;
+    }
+    public void setShowClear(boolean v) {
+        try {
+            fireVetoableChange(SHOWCLEAR, this.showClear, v);
+            firePropertyChange(SHOWCLEAR, this.showClear, this.showClear = v);
+            updateComponents();
+        }
+        catch (PropertyVetoException e) {
+            throw new IllegalArgumentException(e);
+        }
+    }
+    private boolean showClear = true;
+    public static String SHOWCLEAR = "showClear";
+    public SLocalTimePicker showClear(boolean v) {
+        setShowClear(v);
+        return this;
+    }
+
     // ===========================================================================================================
     // LAYOUT
 
@@ -241,11 +267,13 @@ public class SLocalTimePicker extends JPanel implements
         secondSeparator.visible(showSeconds);
         secondTextField.visible(showSeconds);
         secondDownButton.visible(showSeconds);
+
+        clearButton.visible(showClear);
     }
 
 
     // =============================================================================
-    // FLUNT API
+    // FLUENT API
 
     static public SLocalTimePicker of() {
         return new SLocalTimePicker();

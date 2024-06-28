@@ -1,5 +1,7 @@
 package org.tbee.sway.format;
 
+import org.tbee.sway.SDialog;
+import org.tbee.sway.SOffsetDateTimePicker;
 import org.tbee.sway.support.HAlign;
 
 import java.time.LocalDateTime;
@@ -40,5 +42,19 @@ public class OffsetDateTimeFormat implements Format<OffsetDateTime> {
     @Override
     public HAlign horizontalAlignment() {
         return HAlign.LEADING;
+    }
+
+
+    // ==============================================
+    // EDITOR
+
+    @Override
+    public Editor<OffsetDateTime> editor() {
+        return (owner, value, callback) -> {
+            SOffsetDateTimePicker offsetDateTimePicker =  new SOffsetDateTimePicker().margin(0, 5, 10, 5).value(value);
+            SDialog.ofOkCancel(owner, "", offsetDateTimePicker)
+                    .onOk(() -> callback.accept(offsetDateTimePicker.getValue()))
+                    .showAndWait();
+        };
     }
 }

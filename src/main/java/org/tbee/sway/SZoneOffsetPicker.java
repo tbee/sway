@@ -2,6 +2,7 @@ package org.tbee.sway;
 
 import net.miginfocom.layout.AlignX;
 import net.miginfocom.layout.CC;
+import net.miginfocom.layout.LC;
 import net.miginfocom.swing.MigLayout;
 import org.tbee.sway.binding.ExceptionHandler;
 import org.tbee.sway.mixin.ExceptionHandlerMixin;
@@ -10,39 +11,38 @@ import org.tbee.sway.mixin.ValueMixin;
 
 import javax.swing.JPanel;
 import java.beans.PropertyVetoException;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.Locale;
+import java.time.ZoneOffset;
 import java.util.Objects;
 
-public class SLocalDateTimePicker extends JPanel implements
-        ValueMixin<SLocalDateTimePicker, LocalDateTime>,
-        ExceptionHandlerMixin<SLocalDateTimePicker>,
-        JComponentMixin<SLocalDateTimePicker> {
+import static org.tbee.sway.SIconRegistry.SwayInternallyUsedIcon.ZONEPICKER_PLUS;
 
-    private final SLocalDatePicker datePicker = SLocalDatePicker.of().mode(SLocalDatePicker.Mode.SINGLE);
-    private final SLocalTimePicker timePicker = SLocalTimePicker.of();
+public class SZoneOffsetPicker extends JPanel implements
+        ValueMixin<SZoneOffsetPicker, ZoneOffset>,
+        ExceptionHandlerMixin<SZoneOffsetPicker>,
+        JComponentMixin<SZoneOffsetPicker> {
+
+    private final SLocalTimePicker timePicker = new SLocalTimePicker(null, () -> LocalTime.of(0, 0));
 
     // ===========================================================================================================
     // CONSTRUCTOR
 
-    public SLocalDateTimePicker() {
+    public SZoneOffsetPicker() {
         this(null);
     }
 
-    public SLocalDateTimePicker(LocalDateTime localDateTime) {
+    public SZoneOffsetPicker(ZoneOffset zoneOffset) {
 
         // setup defaults
-        setValue(localDateTime);
+        setValue(zoneOffset);
 
         // layout
-        setLayout(new MigLayout());
-        add(datePicker, new CC().alignX(AlignX.CENTER).wrap());
-        add(timePicker, new CC().alignX(AlignX.CENTER));
+        setLayout(new MigLayout(new LC().gridGap("0", "0").insets("0")));
+        add(SLabel.of(SIconRegistry.find(ZONEPICKER_PLUS)), new CC().alignX(AlignX.RIGHT).gapX("0", "0"));
+        add(timePicker, new CC().alignX(AlignX.LEFT));
+        timePicker.setShowSeconds(false);
 
         // Adopt changes
-        datePicker.value$().onChange(v -> deriveValue());
         timePicker.value$().onChange(v -> deriveValue());
     }
 
@@ -53,20 +53,8 @@ public class SLocalDateTimePicker extends JPanel implements
         derivingValue++;
 
         try {
-            LocalDate localDate = datePicker.getValue();
             LocalTime localTime = timePicker.getValue();
-
-            // If either changed to null -> null
-            if (value != null && (localDate == null || localTime == null)) {
-                setValue(null);
-                return;
-            }
-
-            // Make sure neither is null
-            localDate = (localDate == null ? LocalDate.now() : localDate);
-            localTime = (localTime == null ? LocalTime.now() : localTime);
-            LocalDateTime localDateTime = LocalDateTime.of(localDate, localTime);
-            setValue(localDateTime);
+            setValue(localTime == null ? null : ZoneOffset.ofHoursMinutesSeconds(localTime.getHour(), localTime.getMinute(), localTime.getSecond()));
         }
         finally {
             derivingValue--;
@@ -92,10 +80,10 @@ public class SLocalDateTimePicker extends JPanel implements
     // ===========================================================================================================
     // PROPERTIES
 
-    public LocalDateTime getValue() {
+    public ZoneOffset getValue() {
         return value;
     }
-    public void setValue(LocalDateTime v) {
+    public void setValue(ZoneOffset v) {
         try {
             boolean changed = !Objects.equals(this.value, v);
 
@@ -103,39 +91,22 @@ public class SLocalDateTimePicker extends JPanel implements
             firePropertyChange(VALUE, this.value, this.value = v);
 
             if (changed) {
-                datePicker.setValue(v == null ? null : v.toLocalDate());
-                timePicker.setValue(v == null ? null : v.toLocalTime());
+                timePicker.setValue(v == null ? null : toLocalTime(v));
             }
         }
         catch (PropertyVetoException e) {
             throw new IllegalArgumentException(e);
         }
     }
-    private LocalDateTime value = null;
+    private ZoneOffset value = null;
 
-
-    /**
-     * Locale: determines the language of the labels
-     */
-    public Locale getLocale() {
-        return locale;
-    }
-
-    public void setLocale(Locale v) {
-        try {
-            fireVetoableChange(LOCALE, this.locale, v);
-            firePropertyChange(LOCALE, this.locale, this.locale = v);
-            datePicker.locale(v);
-        }
-        catch (PropertyVetoException e) {
-            throw new IllegalArgumentException(e);
-        }
-    }
-    private Locale locale = datePicker.getLocale();
-    final static public String LOCALE = "locale";
-    public SLocalDateTimePicker locale(Locale v) {
-        setLocale(v);
-        return this;
+    private LocalTime toLocalTime(ZoneOffset zoneOffset) {
+        int seconds = zoneOffset.getTotalSeconds();
+        int hours = seconds / 60 / 60;
+        seconds -= hours * 60 * 60;
+        int minutes = seconds / 60;
+        seconds -= minutes * 60;
+        return LocalTime.of(hours, minutes, seconds);
     }
 
     public boolean getShowSeconds() {
@@ -153,8 +124,28 @@ public class SLocalDateTimePicker extends JPanel implements
     }
     private boolean showSeconds = timePicker.getShowSeconds();
     public static String SHOWSECONDS = "showSeconds";
-    public SLocalDateTimePicker showSeconds(boolean v) {
+    public SZoneOffsetPicker showSeconds(boolean v) {
         setShowSeconds(v);
+        return this;
+    }
+
+    public boolean getShowClear() {
+        return showClear;
+    }
+    public void setShowClear(boolean v) {
+        try {
+            fireVetoableChange(SHOWCLEAR, this.showClear, v);
+            firePropertyChange(SHOWCLEAR, this.showClear, this.showClear = v);
+            timePicker.setShowClear(v);
+        }
+        catch (PropertyVetoException e) {
+            throw new IllegalArgumentException(e);
+        }
+    }
+    private boolean showClear = true;
+    public static String SHOWCLEAR = "showClear";
+    public SZoneOffsetPicker showClear(boolean v) {
+        setShowClear(v);
         return this;
     }
 
@@ -163,9 +154,9 @@ public class SLocalDateTimePicker extends JPanel implements
 
 
     // =============================================================================
-    // FLUNT API
+    // FLUENT API
 
-    static public SLocalDateTimePicker of() {
-        return new SLocalDateTimePicker();
+    static public SZoneOffsetPicker of() {
+        return new SZoneOffsetPicker();
     }
 }

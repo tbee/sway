@@ -133,7 +133,7 @@ public class SLocalDatePicker extends JPanel implements
         setLayout(new BorderLayout());
 
         // layout header
-        SMigPanel headerJPanel = SMigPanel.of().fillX().noMargins().noGaps();
+        SMigPanel headerJPanel = SMigPanel.of().fillX().noGaps().margin(0, 0, 5, 0);
         headerJPanel.addComponent(iconButton(DATEPICKER_PREVYEAR, this::prevYear));
         headerJPanel.addComponent(iconButton(DATEPICKER_PREVMONTH, this::prevMonth));
         headerJPanel.addComponent(monthTextField).sizeGroup("monthyear").alignX(AlignX.TRAILING).gapAfter("2px").growX().pushX();
