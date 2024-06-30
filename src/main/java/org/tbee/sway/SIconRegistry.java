@@ -34,6 +34,7 @@ import static org.tbee.sway.SIconRegistry.SwayInternallyUsedIcon.TIMEPICKER_NEXT
 import static org.tbee.sway.SIconRegistry.SwayInternallyUsedIcon.TIMEPICKER_PREVHOUR;
 import static org.tbee.sway.SIconRegistry.SwayInternallyUsedIcon.TIMEPICKER_PREVMINUTE;
 import static org.tbee.sway.SIconRegistry.SwayInternallyUsedIcon.TIMEPICKER_PREVSECOND;
+import static org.tbee.sway.SIconRegistry.SwayInternallyUsedIcon.ZONEPICKER_MINUS;
 import static org.tbee.sway.SIconRegistry.SwayInternallyUsedIcon.ZONEPICKER_PLUS;
 import static org.tbee.sway.support.IkonliUtil.createIcon;
 
@@ -67,6 +68,7 @@ public class SIconRegistry {
         register(TIMEPICKER_PREVSECOND, createIcon(Material2AL.KEYBOARD_ARROW_DOWN, TIMEPICKER_PREVSECOND.typicalSize()));
         register(TIMEPICKER_CLEAR, createIcon(Material2AL.CLEAR, TIMEPICKER_CLEAR.typicalSize()));
         register(ZONEPICKER_PLUS, createIcon(MaterialDesignP.PLUS, ZONEPICKER_PLUS.typicalSize()));
+        register(ZONEPICKER_MINUS, createIcon(MaterialDesignM.MINUS, ZONEPICKER_PLUS.typicalSize()));
     }
 
     public enum SwayInternallyUsedIcon { //
@@ -103,8 +105,9 @@ public class SIconRegistry {
         TIMEPICKER_PREVSECOND("prevSecond@timepicker", 20),
         TIMEPICKER_CLEAR("clear@timepicker", 14),
 
-        ZONEPICKER_PLUS("plusr@zonepicker", 14),
-        ; //
+        ZONEPICKER_PLUS("plus@zonepicker", 14),
+        ZONEPICKER_MINUS("minus@zonepicker", 14),
+        ;
 
         final String id;
         final int typicalSize;

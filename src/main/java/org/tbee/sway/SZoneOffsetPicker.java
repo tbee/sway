@@ -2,27 +2,50 @@ package org.tbee.sway;
 
 import net.miginfocom.layout.AlignX;
 import net.miginfocom.layout.CC;
-import net.miginfocom.layout.LC;
-import net.miginfocom.swing.MigLayout;
 import org.tbee.sway.binding.ExceptionHandler;
 import org.tbee.sway.mixin.ExceptionHandlerMixin;
 import org.tbee.sway.mixin.JComponentMixin;
 import org.tbee.sway.mixin.ValueMixin;
 
+import javax.swing.Icon;
 import javax.swing.JPanel;
+import java.awt.BorderLayout;
 import java.beans.PropertyVetoException;
 import java.time.LocalTime;
 import java.time.ZoneOffset;
 import java.util.Objects;
 
+import static org.tbee.sway.SIconRegistry.SwayInternallyUsedIcon.ZONEPICKER_MINUS;
 import static org.tbee.sway.SIconRegistry.SwayInternallyUsedIcon.ZONEPICKER_PLUS;
+import static org.tbee.sway.SLocalTimePicker.DATA_ROW;
+import static org.tbee.sway.SLocalTimePicker.HOUR_COL;
 
 public class SZoneOffsetPicker extends JPanel implements
         ValueMixin<SZoneOffsetPicker, ZoneOffset>,
         ExceptionHandlerMixin<SZoneOffsetPicker>,
         JComponentMixin<SZoneOffsetPicker> {
 
-    private final SLocalTimePicker timePicker = new SLocalTimePicker(null, () -> LocalTime.of(0, 0));
+    public final Icon minusIcon = SIconRegistry.find(ZONEPICKER_MINUS);
+    public final Icon plusIcon = SIconRegistry.find(ZONEPICKER_PLUS);
+    public final SButton plusminusButton = SButton.of(plusIcon, e -> toggleSign()).asImageButton();
+
+    private final SLocalTimePicker timePicker = new SLocalTimePicker(null, () -> LocalTime.of(0, 0)) {
+        @Override
+        int modify(int value, int delta, int max) {
+            int sign = (plusminusButton.getIcon() == minusIcon ? -1 : 1);
+            max = (max == HOURS_MAX ? 18 : max); // hours can only go to +/-18:00 (TODO: this is a bit of a kludge, think of something more correct)
+
+            value += sign * delta;
+            while (value > max) {
+                value = max;
+            }
+            while (value < 0) {
+                toggleSign();
+                value = -value;
+            }
+            return value;
+        }
+    };
 
     // ===========================================================================================================
     // CONSTRUCTOR
@@ -37,13 +60,21 @@ public class SZoneOffsetPicker extends JPanel implements
         setValue(zoneOffset);
 
         // layout
-        setLayout(new MigLayout(new LC().gridGap("0", "0").insets("0")));
-        add(SLabel.of(SIconRegistry.find(ZONEPICKER_PLUS)), new CC().alignX(AlignX.RIGHT).gapX("0", "0"));
-        add(timePicker, new CC().alignX(AlignX.LEFT));
+        setLayout(new BorderLayout());
+        add(timePicker, BorderLayout.CENTER);
+
+        // Setup timepicker
+        timePicker.migPanel.add(plusminusButton, new CC().cell(HOUR_COL - 1, DATA_ROW).alignX(AlignX.RIGHT));
         timePicker.setShowSeconds(false);
 
         // Adopt changes
         timePicker.value$().onChange(v -> deriveValue());
+    }
+
+
+    private void toggleSign() {
+        plusminusButton.setIcon(plusminusButton.getIcon().equals(minusIcon) ? plusIcon : minusIcon);
+        deriveValue();
     }
 
     private void deriveValue() {
@@ -54,12 +85,26 @@ public class SZoneOffsetPicker extends JPanel implements
 
         try {
             LocalTime localTime = timePicker.getValue();
-            setValue(localTime == null ? null : ZoneOffset.ofHoursMinutesSeconds(localTime.getHour(), localTime.getMinute(), localTime.getSecond()));
+            if (localTime == null) {
+                setValue(null);
+            }
+            else {
+                int hours = localTime.getHour();
+                int minutes = localTime.getMinute();
+                int seconds = localTime.getSecond();
+                int sign = sign();
+                setValue(ZoneOffset.ofTotalSeconds(sign * ((hours * 60 * 60) + (minutes * 60) + seconds)));
+            }
         }
         finally {
             derivingValue--;
         }
     }
+
+    private int sign() {
+        return plusminusButton.getIcon().equals(minusIcon) ? -1 : 1;
+    }
+
     private int derivingValue = 0; // this all happens in the EDT thead, so no need for multithreading fuss
 
     // ========================================================
@@ -91,7 +136,9 @@ public class SZoneOffsetPicker extends JPanel implements
             firePropertyChange(VALUE, this.value, this.value = v);
 
             if (changed) {
-                timePicker.setValue(v == null ? null : toLocalTime(v));
+                int seconds = v.getTotalSeconds();
+                timePicker.setValue(v == null ? null : toLocalTime(seconds));
+                plusminusButton.setIcon(seconds < 0 ? minusIcon : plusIcon);
             }
         }
         catch (PropertyVetoException e) {
@@ -100,8 +147,8 @@ public class SZoneOffsetPicker extends JPanel implements
     }
     private ZoneOffset value = null;
 
-    private LocalTime toLocalTime(ZoneOffset zoneOffset) {
-        int seconds = zoneOffset.getTotalSeconds();
+    private LocalTime toLocalTime(int seconds) {
+        seconds = Math.abs(seconds);
         int hours = seconds / 60 / 60;
         seconds -= hours * 60 * 60;
         int minutes = seconds / 60;

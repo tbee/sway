@@ -29,6 +29,8 @@ public class SLocalTimePicker extends JPanel implements
         ExceptionHandlerMixin<SLocalTimePicker>,
         JComponentMixin<SLocalTimePicker> {
 
+    static final int HOURS_MAX = 23;
+
     class TimeFormat extends IntegerFormat {
         public static final String NULL_STRING = "--";
 
@@ -75,8 +77,17 @@ public class SLocalTimePicker extends JPanel implements
     private final SButton secondDownButton = iconButton(TIMEPICKER_PREVSECOND, () -> modifySecond(-1));
     private final SButton secondUpButton = iconButton(TIMEPICKER_NEXTSECOND, () -> modifySecond(1));
     private final SButton clearButton = iconButton(TIMEPICKER_CLEAR, this::clear);
+    final SMigPanel migPanel = new SMigPanel().noGaps().noMargins().hideMode(HideMode.DISREGARD);
+    static final int UP_ROW = 10;
+    static final int DATA_ROW = 20;
+    static final int DOWN_ROW = 30;
+    static final int HOUR_COL = 10;
+    static final int MINUTE_COL = 20;
+    static final int SECOND_COL = 30;
+    static final int CLEAR_COL = 40;
 
     private final Supplier<LocalTime> defaultSupplier;
+
     // ===========================================================================================================
     // CONSTRUCTOR
 
@@ -98,24 +109,21 @@ public class SLocalTimePicker extends JPanel implements
         secondTextField.onFocusLost(e -> this.manualTyped());
 
         // layout
-        SMigPanel smigPanel = new SMigPanel().noGaps().noMargins().hideMode(HideMode.DISREGARD);
-        smigPanel.addComponent(hourUpButton).alignX(AlignX.CENTER);
-        smigPanel.addComponent(minuteUpButton).alignX(AlignX.CENTER).skip();
-        smigPanel.addComponent(secondUpButton).alignX(AlignX.CENTER).skip();
-        smigPanel.addComponent(SLabel.of()).wrap(); // we cannot attach the wrap to the last component, because it may be hidden
-        smigPanel.addComponent(hourTextField).sizeGroup("time").alignX(AlignX.CENTER).growX();
-        smigPanel.addComponent(minuteSeparator).sizeGroup("sep").alignX(AlignX.CENTER);
-        smigPanel.addComponent(minuteTextField).sizeGroup("time").alignX(AlignX.CENTER).growX();
-        smigPanel.addComponent(secondSeparator).sizeGroup("sep").alignX(AlignX.CENTER);
-        smigPanel.addComponent(secondTextField).sizeGroup("time").alignX(AlignX.CENTER).growX();
-        smigPanel.addComponent(clearButton).alignX(AlignX.LEFT);
-        smigPanel.addComponent(SLabel.of()).wrap(); // we cannot attach the wrap to the last component, because it may be hidden
-        smigPanel.addComponent(hourDownButton).alignX(AlignX.CENTER);
-        smigPanel.addComponent(minuteDownButton).alignX(AlignX.CENTER).skip();
-        smigPanel.addComponent(secondDownButton).alignX(AlignX.CENTER).skip();
+        migPanel.addComponent(hourUpButton).cell(HOUR_COL, UP_ROW).alignX(AlignX.CENTER);
+        migPanel.addComponent(minuteUpButton).cell(MINUTE_COL, UP_ROW).alignX(AlignX.CENTER);
+        migPanel.addComponent(secondUpButton).cell(SECOND_COL, UP_ROW).alignX(AlignX.CENTER);
+        migPanel.addComponent(hourTextField).cell(HOUR_COL, DATA_ROW).sizeGroup("time").alignX(AlignX.CENTER).growX();
+        migPanel.addComponent(minuteSeparator).cell(HOUR_COL + 1, DATA_ROW).sizeGroup("sep").alignX(AlignX.CENTER);
+        migPanel.addComponent(minuteTextField).cell(MINUTE_COL, DATA_ROW).sizeGroup("time").alignX(AlignX.CENTER).growX();
+        migPanel.addComponent(secondSeparator).cell(MINUTE_COL + 1, DATA_ROW).sizeGroup("sep").alignX(AlignX.CENTER);
+        migPanel.addComponent(secondTextField).cell(SECOND_COL, DATA_ROW).sizeGroup("time").alignX(AlignX.CENTER).growX();
+        migPanel.addComponent(clearButton).cell(CLEAR_COL, DATA_ROW).alignX(AlignX.LEFT);
+        migPanel.addComponent(hourDownButton).cell(HOUR_COL, DOWN_ROW).alignX(AlignX.CENTER);
+        migPanel.addComponent(minuteDownButton).cell(MINUTE_COL, DOWN_ROW).alignX(AlignX.CENTER);
+        migPanel.addComponent(secondDownButton).cell(SECOND_COL, DOWN_ROW).alignX(AlignX.CENTER);
 
         setLayout(new BorderLayout());
-        add(smigPanel, BorderLayout.CENTER);
+        add(migPanel, BorderLayout.CENTER);
 
         updateComponents();
     }
@@ -154,7 +162,7 @@ public class SLocalTimePicker extends JPanel implements
 
     private void modifyHour(int delta) {
         value = unnull(value);
-        value(value.withHour(modify(value.getHour(), delta, 23)));
+        value(value.withHour(modify(value.getHour(), delta, HOURS_MAX)));
     }
 
     private void modifyMinute(int delta) {
@@ -167,7 +175,7 @@ public class SLocalTimePicker extends JPanel implements
         value(value.withSecond(modify(value.getSecond(), delta, 59)));
     }
 
-    private int modify(int value, int delta, int max) {
+    int modify(int value, int delta, int max) {
         value += delta;
         while (value > max) {
             value -= (max + 1);
