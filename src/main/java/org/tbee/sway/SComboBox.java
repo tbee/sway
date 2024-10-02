@@ -15,6 +15,7 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Vector;
@@ -30,7 +31,7 @@ public class SComboBox<T> extends JComboBox<T> implements
     final static private org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(SComboBox.class);
 
     public SComboBox() {
-        setRenderer(new DefaultListCellRenderer(() -> format, () -> alternateRowColor, () -> firstAlternateRowColor, () -> secondAlternateRowColor));
+        setRenderer(new DefaultListCellRenderer<>(() -> format, () -> alternateRowColor, () -> firstAlternateRowColor, () -> secondAlternateRowColor));
         addActionListener (e -> fireValueChanged());
     }
 
@@ -218,8 +219,29 @@ public class SComboBox<T> extends JComboBox<T> implements
         return of(format);
     }
 
+    static public <T> SComboBox<T> of(List<T> data, boolean addNull) {
+        List<T> items = new ArrayList<>(data);
+        if (addNull) {
+            items.add(0, null);
+        }
+        return new SComboBox<T>().items(items);
+    }
     static public <T> SComboBox<T> of(List<T> data) {
-        return new SComboBox<T>().items(data);
+        return of(data, false);
+    }
+    static public <T> SComboBox<T> of(T[] data) {
+        return of(Arrays.asList(data));
+    }
+    static public <T> SComboBox<T> of(T[] data, boolean addNull) {
+        return of(Arrays.asList(data), addNull);
+    }
+    static public <T extends Enum<T>> SComboBox<T> ofEnum(Class<T> enumClass) {
+        return ofEnum(enumClass, false);
+    }
+    static public <T extends Enum<T>> SComboBox<T> ofEnum(Class<T> enumClass, boolean addNull) {
+        SComboBox<T> comboBox = of(enumClass.getEnumConstants(), addNull);
+        comboBox.renderFor(enumClass);
+        return comboBox;
     }
 
 

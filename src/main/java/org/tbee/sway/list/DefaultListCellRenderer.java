@@ -37,8 +37,8 @@ public class DefaultListCellRenderer<T> extends javax.swing.DefaultListCellRende
 
         // Apply format
         if (format != null && component instanceof JLabel jLabel) {
-            jLabel.setText(format.toString((T)value));
-            jLabel.setIcon(format.toIcon((T)value));
+            jLabel.setText(format.toString(value));
+            jLabel.setIcon(format.toIcon(value));
             jLabel.setHorizontalAlignment(format.horizontalAlignment().getSwingConstant());
         }
 

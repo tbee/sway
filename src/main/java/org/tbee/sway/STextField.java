@@ -380,8 +380,8 @@ public class STextField<T> extends javax.swing.JTextField implements
     static public STextField<String> ofString() {
         return of(String.class);
     }
-    static public STextField<String> ofStringBlankIsNull() {
-        return new STextField<String>(new StringFormat(true));
+    static public STextField<String> ofStringWithNullString(String nullString) {
+        return new STextField<String>(new StringFormat(nullString));
     }
     static public STextField<Integer> ofInteger() {
         return of(Integer.class);
@@ -399,21 +399,21 @@ public class STextField<T> extends javax.swing.JTextField implements
         return of(BigDecimal.class);
     }
     static public STextField<Number> ofPercent() {
-        return new STextField<Number>(new JavaFormat<Number>(NumberFormat.getPercentInstance(), ("" + Double.MIN_VALUE).length(), HAlign.TRAILING));
+        return new STextField<>(new JavaFormat<>(NumberFormat.getPercentInstance(), ("" + Double.MIN_VALUE).length(), HAlign.TRAILING));
     }
     static public STextField<Number> ofPercent(Locale locale) {
-        return new STextField<Number>(new JavaFormat<Number>(NumberFormat.getPercentInstance(locale), ("" + Double.MIN_VALUE).length(), HAlign.TRAILING));
+        return new STextField<>(new JavaFormat<>(NumberFormat.getPercentInstance(locale), ("" + Double.MIN_VALUE).length(), HAlign.TRAILING));
     }
     static public STextField<Number> ofCurrency() {
-        return new STextField<Number>(new JavaFormat<Number>(NumberFormat.getCurrencyInstance(), ("" + Double.MIN_VALUE).length() + 1, HAlign.TRAILING));
+        return new STextField<>(new JavaFormat<>(NumberFormat.getCurrencyInstance(), ("" + Double.MIN_VALUE).length() + 1, HAlign.TRAILING));
     }
     static public STextField<Number> ofCurrency(Locale locale) {
-        return new STextField<Number>(new JavaFormat<Number>(NumberFormat.getCurrencyInstance(locale), ("" + Double.MIN_VALUE).length() + 4, HAlign.TRAILING));
+        return new STextField<>(new JavaFormat<>(NumberFormat.getCurrencyInstance(locale), ("" + Double.MIN_VALUE).length() + 4, HAlign.TRAILING));
     }
     static public STextField<Number> ofCurrency(Currency currency) {
         NumberFormat currencyInstance = NumberFormat.getCurrencyInstance();
         currencyInstance.setCurrency(currency);
-        return new STextField<Number>(new JavaFormat<Number>(currencyInstance, ("" + Double.MIN_VALUE).length() + 4, HAlign.TRAILING));
+        return new STextField<>(new JavaFormat<>(currencyInstance, ("" + Double.MIN_VALUE).length() + 4, HAlign.TRAILING));
     }
     static public STextField<LocalDate> ofLocalDate() {
         return of(LocalDate.class);

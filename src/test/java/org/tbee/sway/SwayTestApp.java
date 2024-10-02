@@ -96,7 +96,7 @@ public class SwayTestApp {
         City paris = City.of("Paris", 575);
         var cities = List.of(amsterdam, berlin, rome, paris);
 
-        STextField.ofStringBlankIsNull().value$().bindTo(City.name$(beanBinder)).unbind(); // test unbind
+        STextField.ofStringWithNullString("").value$().bindTo(City.name$(beanBinder)).unbind(); // test unbind
 
         SMigPanel migPanel = SMigPanel.of();
 
@@ -104,7 +104,7 @@ public class SwayTestApp {
 
         migPanel.addLabelAndField("String -> bean.name", STextField.ofString().bindTo(bean.name$())).wrap();
 
-        migPanel.addLabelAndField("StringBlankIsNull -> bean.name", STextField.ofStringBlankIsNull().bindTo(City.name$(beanBinder))).wrap();
+        migPanel.addLabelAndField("StringBlankIsNull -> bean.name", STextField.ofStringWithNullString("").bindTo(City.name$(beanBinder))).wrap();
 
         migPanel.addLabelAndField("Integer -> bean.distance", STextField.ofInteger().bindTo(bean.distance$())).wrap();
 

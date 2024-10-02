@@ -61,7 +61,7 @@ public class SFormatRegistry {
             return format;
         }
 
-        if (clazz.equals(String.class)) return new StringFormat(false);
+        if (clazz.equals(String.class)) return new StringFormat();
         if (clazz.equals(Integer.class)) return new IntegerFormat();
         if (clazz.equals(Long.class)) return new LongFormat();
         if (clazz.equals(Double.class)) return new DoubleFormat();
