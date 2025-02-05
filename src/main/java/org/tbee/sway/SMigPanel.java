@@ -9,7 +9,10 @@ import net.miginfocom.layout.LC;
 import net.miginfocom.swing.MigLayout;
 import org.tbee.sway.mixin.JComponentMixin;
 
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import java.awt.Component;
 import java.util.Collection;
@@ -105,20 +108,33 @@ public class SMigPanel extends SPanelExtendable<SMigPanel> implements
      * Additional fields can for example be a qualifier SLabel, e.g. "length: [field] meter"
      * @param labelComponent
      * @param fieldComponent
-     * @param additionalFieldComponents
+     * @param additionalComponents
      * @return CC of field component
      */
-    public CC addLabelAndField(JComponent labelComponent, JComponent fieldComponent, JComponent... additionalFieldComponents) {
+    public CC addLabelAndField(JComponent labelComponent, JComponent fieldComponent, JComponent... additionalComponents) {
     	CC labelCC = addLabel(labelComponent);
+
         // Automatically switch label to alignY top if the field is larger than roughly 1 line
+        AlignY labelAlignY = AlignY.BASELINE;
         if (fieldComponent instanceof JScrollPane || fieldComponent.getPreferredSize().height > (1.1 * STextField.ofString().value("X").getPreferredSize().height)) { // if (fieldComponent instanceof STextArea)
-        	labelCC.alignY(AlignY.TOP);
+        	labelAlignY = AlignY.TOP;
         }
+        labelCC.alignY(AlignY.TOP);
+
         CC fieldCC = addField(fieldComponent);
-        if (additionalFieldComponents.length > 0) {
-            fieldCC.split(additionalFieldComponents.length + 1);
-            for (int i = 0; i < additionalFieldComponents.length; i++) {
-                addField(additionalFieldComponents[i]);
+        if (additionalComponents.length > 0) {
+            fieldCC.split(additionalComponents.length + 1);
+            for (int i = 0; i < additionalComponents.length; i++) {
+
+                // align like a label
+                if (additionalComponents[i] instanceof JLabel
+                 || additionalComponents[i] instanceof JButton
+                 || additionalComponents[i] instanceof JCheckBox) {
+                    addLabel(additionalComponents[i]).alignY(labelAlignY);
+                }
+                else {
+                    addField(additionalComponents[i]);
+                }
             }
         }
         return fieldCC;
