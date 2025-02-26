@@ -143,6 +143,8 @@ public class SwayTestApp {
 
         migPanel.addLabelAndField("OffsetDateTime", STextField.ofOffsetDateTime().value(OffsetDateTime.now())).wrap();
 
+        migPanel.addLabelAndField("LocalTime", STextField.ofLocalTime().value(LocalTime.now())).wrap();
+
         JButton jButton = SButton.of("set name", e -> bean.setName("name" + System.currentTimeMillis()));
         migPanel.addField(jButton).skip(1).wrap();
 

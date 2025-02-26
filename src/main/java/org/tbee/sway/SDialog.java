@@ -177,6 +177,11 @@ public class SDialog extends JDialog implements
 		return this;
 	}
 
+	public SDialog close() {
+		setVisible(false);
+		return this;
+	}
+
 	public SDialog noWindowDecoration() {
 		getRootPane().setWindowDecorationStyle(JRootPane.NONE);
 		return this;

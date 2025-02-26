@@ -42,6 +42,7 @@ import java.math.BigInteger;
 import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.ZonedDateTime;
 import java.util.Arrays;
@@ -426,6 +427,9 @@ public class STextField<T> extends javax.swing.JTextField implements
     }
     static public STextField<OffsetDateTime> ofOffsetDateTime() {
         return of(OffsetDateTime.class);
+    }
+    static public STextField<LocalTime> ofLocalTime() {
+        return of(LocalTime.class);
     }
 
 

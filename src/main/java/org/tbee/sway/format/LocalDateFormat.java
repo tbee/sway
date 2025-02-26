@@ -79,10 +79,18 @@ public class LocalDateFormat implements Format<LocalDate> {
     @Override
     public Editor<LocalDate> editor() {
         return (owner, value, callback) -> {
-            SLocalDatePicker datePicker =  new SLocalDatePicker().margin(0, 5, 10, 5).value(value);
-            SDialog.ofOkCancel(owner, "", datePicker)
-                    .onOk(() -> callback.accept(datePicker.getValue()))
-                    .showAndWait();
+            SLocalDatePicker datePicker =  new SLocalDatePicker().margin(0, 5, 10, 5)
+                    .value(value)
+                    .displayedLocalDate(value != null ? value : LocalDate.now());
+
+            SDialog sDialog = SDialog.of(owner, "", datePicker);
+
+            datePicker.value$().onChange((LocalDate ld) -> {
+                callback.accept(ld);
+                sDialog.close();
+            });
+
+            sDialog.showAndWait();
         };
     }
 }

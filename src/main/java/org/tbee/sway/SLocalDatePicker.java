@@ -107,7 +107,7 @@ public class SLocalDatePicker extends JPanel implements
         headerFont(monthTextField);
 
         // dates
-        ActionListener dayActionListener = e -> dayClicked(e);
+        ActionListener dayActionListener = this::dayClicked;
         Insets lEmptyInsets = new Insets(0, 0, 0, 0);
         for (int i = 0; i < 6 * 7; i++) {
             dateToggleButton[i] = SToggleButton.of("" + i);
