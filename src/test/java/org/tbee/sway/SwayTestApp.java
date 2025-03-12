@@ -145,6 +145,9 @@ public class SwayTestApp {
 
         migPanel.addLabelAndField("LocalTime", STextField.ofLocalTime().value(LocalTime.now())).wrap();
 
+        migPanel.addLabelAndField("LocalTime not enabled", STextField.ofLocalTime().value(LocalTime.now()).enabled(false)).wrap();
+        migPanel.addLabelAndField("LocalTime not editable", STextField.ofLocalTime().value(LocalTime.now()).editable(false)).wrap();
+
         JButton jButton = SButton.of("set name", e -> bean.setName("name" + System.currentTimeMillis()));
         migPanel.addField(jButton).skip(1).wrap();
 

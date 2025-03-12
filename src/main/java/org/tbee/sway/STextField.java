@@ -238,9 +238,9 @@ public class STextField<T> extends javax.swing.JTextField implements
     public void setBorder(Border border) {
         this.border = border;
         Border borderForIcon = BorderFactory.createMatteBorder(0
-                , (icon == null ? 0 : icon.getIconWidth() + ICON_SPACING)
+                , (icon == null || !isEnabled() || !isEditable() ? 0 : icon.getIconWidth() + ICON_SPACING)
                 , 0
-                , (backIcon == null ? 0 : backIcon.getIconWidth() + ICON_SPACING)
+                , (backIcon == null || !isEnabled() || !isEditable() ? 0 : backIcon.getIconWidth() + ICON_SPACING)
                 , TRANSPARENT_COLOR);
         super.setBorder(BorderFactory.createCompoundBorder(border, borderForIcon));
     }
@@ -253,11 +253,11 @@ public class STextField<T> extends javax.swing.JTextField implements
     protected void paintComponent(Graphics graphics) {
         super.paintComponent(graphics);
 
-        if (icon != null) {
+        if (icon != null && isEnabled() &&  isEditable()) {
             Insets iconInsets = border == null ? ZERO_INSETS : border.getBorderInsets(this);
             icon.paintIcon(this, graphics, iconInsets.left - ICON_SPACING, iconInsets.top);
         }
-        if (backIcon != null) {
+        if (backIcon != null && isEnabled() && isEditable()) {
             Insets iconInsets = border == null ? ZERO_INSETS : border.getBorderInsets(this);
             backIcon.paintIcon(this, graphics, this.getWidth() - backIcon.getIconWidth() - iconInsets.right, iconInsets.top);
         }
@@ -293,18 +293,27 @@ public class STextField<T> extends javax.swing.JTextField implements
     }
 
     protected boolean mouseIsOverIcon(int x) {
-        if (icon == null) {
+        if (icon == null || !isEnabled()) {
             return false;
         }
         return x <= icon.getIconWidth();
     }
 
     protected boolean mouseIsOverBackIcon(int x) {
-        if (backIcon == null) {
+        if (backIcon == null || !isEnabled()) {
             return false;
         }
         Insets iconInsets = border == null ? ZERO_INSETS : border.getBorderInsets(this);
         return x >= this.getWidth() - backIcon.getIconWidth() - iconInsets.right;
+    }
+
+    public STextField<T> editable(boolean v) {
+        setEditable(v);
+        return this;
+    }
+    String EDITABLE = "editable";
+    public BindingEndpoint<Boolean> editable$() {
+        return BindingEndpoint.of(this, EDITABLE);
     }
 
     // ========================================================
