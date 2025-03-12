@@ -238,9 +238,9 @@ public class STextField<T> extends javax.swing.JTextField implements
     public void setBorder(Border border) {
         this.border = border;
         Border borderForIcon = BorderFactory.createMatteBorder(0
-                , (icon == null || !isEnabled() || !isEditable() ? 0 : icon.getIconWidth() + ICON_SPACING)
+                , (icon == null ? 0 : icon.getIconWidth() + ICON_SPACING)
                 , 0
-                , (backIcon == null || !isEnabled() || !isEditable() ? 0 : backIcon.getIconWidth() + ICON_SPACING)
+                , (backIcon == null ? 0 : backIcon.getIconWidth() + ICON_SPACING)
                 , TRANSPARENT_COLOR);
         super.setBorder(BorderFactory.createCompoundBorder(border, borderForIcon));
     }
