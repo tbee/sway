@@ -72,4 +72,9 @@ public interface ComponentMixin<T extends Component> extends
         ((T)this).setSize(c);
         return (T) this;
     }
+
+    default T minSizeIsPrefSize() {
+        ((T)this).setMinimumSize(((T)this).getPreferredSize());
+        return (T) this;
+    }
 }
