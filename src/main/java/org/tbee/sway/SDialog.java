@@ -10,12 +10,15 @@ import javax.swing.JRootPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import java.awt.Component;
+import java.awt.Container;
 import java.awt.Dialog;
 import java.awt.Window;
 import java.util.ArrayList;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+/// Usage:
+///  SDialog sDialog = SDialog.of(owner, "Pick me", datePicker);
 public class SDialog extends JDialog implements
 		SOverlayPane.OverlayProvider,
 		WindowMixin<SDialog>,
@@ -145,8 +148,10 @@ public class SDialog extends JDialog implements
 		}
 		
 		// Populate and show dialog
-		dialog.setContentPane(SBorderPanel.of(content).south(SButtonPanel.of(buttons)).margin(4));
-		dialog.pack();
+		if (content != null) {
+			dialog.setContentPane(SBorderPanel.of(content).south(SButtonPanel.of(buttons).margin(5, 0, 0, 0)).margin(4));
+			dialog.pack();
+		}
 		if (parent != null) {
 			dialog.setLocationRelativeTo(parent);
 		}
@@ -184,6 +189,11 @@ public class SDialog extends JDialog implements
 
 	public SDialog noWindowDecoration() {
 		getRootPane().setWindowDecorationStyle(JRootPane.NONE);
+		return this;
+	}
+
+	public SDialog contentPane(Container contentPane) {
+		setContentPane(contentPane);
 		return this;
 	}
 

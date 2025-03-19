@@ -451,7 +451,7 @@ public class STable<TableType> extends JPanel implements
     // ===========================================================================
     // SELECTION
 
-    enum SelectionMode{ //
+    public enum SelectionMode{ //
         SINGLE(ListSelectionModel.SINGLE_SELECTION), //
         INTERVAL(ListSelectionModel.SINGLE_INTERVAL_SELECTION), //
         MULTIPLE(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
