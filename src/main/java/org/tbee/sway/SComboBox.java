@@ -229,7 +229,7 @@ public class SComboBox<T> extends JComboBox<T> implements
     static public <T> SComboBox<T> of(List<T> data) {
         return of(data, false);
     }
-    static public <T> SComboBox<T> of(T[] data) {
+    static public <T> SComboBox<T> of(T... data) {
         return of(Arrays.asList(data));
     }
     static public <T> SComboBox<T> of(T[] data, boolean addNull) {

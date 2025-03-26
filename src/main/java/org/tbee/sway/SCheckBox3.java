@@ -181,6 +181,10 @@ public class SCheckBox3 extends JCheckBox implements
 			return Boolean.FALSE;
 		}
 	}
+	public SCheckBox3 selected3(Boolean v) {
+		setSelected3(v);
+		return this;
+	}
 	final static public String SELECTED3 = "selected3";
 	public BindingEndpoint<Boolean> selected3$() {
 		return BindingEndpoint.of(this, SELECTED3, exceptionHandler);

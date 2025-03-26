@@ -109,7 +109,7 @@ public class SMigPanel extends SPanelExtendable<SMigPanel> implements
      * @param labelComponent
      * @param fieldComponent
      * @param additionalComponents
-     * @return CC of field component
+     * @return CC of field component (not of the last additionalComponents, so e.g. span works, but wrap probably causes an unexpected layout).
      */
     public CC addLabelAndField(JComponent labelComponent, JComponent fieldComponent, JComponent... additionalComponents) {
     	CC labelCC = addLabel(labelComponent);
@@ -147,7 +147,7 @@ public class SMigPanel extends SPanelExtendable<SMigPanel> implements
      * @param label
      * @param fieldComponent
      * @param additionalFieldComponents
-     * @return CC of field component
+     * @return CC of field component (not of the last additionalComponents, so e.g. span works, but wrap probably causes an unexpected layout).
      */
     public CC addLabelAndField(String label, JComponent fieldComponent, JComponent... additionalFieldComponents) {
     	return addLabelAndField(new SLabel(label), fieldComponent, additionalFieldComponents);
@@ -287,6 +287,13 @@ public class SMigPanel extends SPanelExtendable<SMigPanel> implements
 
     public SMigPanel west(JComponent component) {
         super.add(component, new CC().dockWest());
+        return this;
+    }
+
+    public SMigPanel skip(int numberOfColumns) {
+        if (numberOfColumns > 0) {
+            addLabel("").skip(numberOfColumns - 1);
+        }
         return this;
     }
 }

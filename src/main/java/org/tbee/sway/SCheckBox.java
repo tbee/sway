@@ -58,6 +58,11 @@ public class SCheckBox extends JCheckBox implements
     // ==================================================
     // PROPERTIES
 
+    public SCheckBox selected(boolean v) {
+        setSelected(v);
+        return this;
+    }
+
     @Override
     protected void fireStateChanged() {
         super.fireStateChanged();
