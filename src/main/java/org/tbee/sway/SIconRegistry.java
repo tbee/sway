@@ -25,6 +25,7 @@ import static org.tbee.sway.SIconRegistry.SwayInternallyUsedIcon.MENU_CUT;
 import static org.tbee.sway.SIconRegistry.SwayInternallyUsedIcon.MENU_FILTER;
 import static org.tbee.sway.SIconRegistry.SwayInternallyUsedIcon.MENU_PASTE;
 import static org.tbee.sway.SIconRegistry.SwayInternallyUsedIcon.MENU_SELECTION;
+import static org.tbee.sway.SIconRegistry.SwayInternallyUsedIcon.OVERLAY_BUSY;
 import static org.tbee.sway.SIconRegistry.SwayInternallyUsedIcon.OVERLAY_LOADING;
 import static org.tbee.sway.SIconRegistry.SwayInternallyUsedIcon.TEXTFIELD_POPUP;
 import static org.tbee.sway.SIconRegistry.SwayInternallyUsedIcon.TIMEPICKER_CLEAR;
@@ -87,6 +88,7 @@ public class SIconRegistry {
         MENU_FILTER("filter@menu", 16), //
         MENU_SELECTION("selection@menu", 16), //
 
+        OVERLAY_BUSY("busy@overlay", 48),
         OVERLAY_LOADING("loading@overlay", 48),
 
         TEXTFIELD_POPUP("popup@textfield", 16),
@@ -154,6 +156,7 @@ public class SIconRegistry {
         register(MENU_PASTE, createIcon(MaterialDesignC.CONTENT_PASTE, MENU_PASTE.typicalSize()));
         register(MENU_FILTER, createIcon(MaterialDesignF.FILTER, MENU_FILTER.typicalSize()));
         register(MENU_SELECTION, createIcon(MaterialDesignS.SELECTION, MENU_SELECTION.typicalSize()));
+        register(OVERLAY_BUSY, createIcon(MaterialDesignP.PROGRESS_CLOCK, OVERLAY_BUSY.typicalSize()));
         register(OVERLAY_LOADING, createIcon(MaterialDesignR.REFRESH, OVERLAY_LOADING.typicalSize()));
         register(TEXTFIELD_POPUP, createIcon(MaterialDesignM.MENU, TEXTFIELD_POPUP.typicalSize()));
 
