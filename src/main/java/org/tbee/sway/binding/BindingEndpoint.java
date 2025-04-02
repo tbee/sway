@@ -38,16 +38,16 @@ public class BindingEndpoint<PropertyClass> {
     // OF
 
     static public <PropertyClass> BindingEndpoint<PropertyClass> of(Object bean, String propertyName, ExceptionHandler exceptionHandler) {
-        return new BindingEndpoint<PropertyClass>(bean, null, propertyName, exceptionHandler);
+        return new BindingEndpoint<>(bean, null, propertyName, exceptionHandler);
     }
     static public <PropertyClass> BindingEndpoint<PropertyClass> of(Object bean, String propertyName) {
-        return new BindingEndpoint<PropertyClass>(bean, null, propertyName, null);
+        return new BindingEndpoint<>(bean, null, propertyName, null);
     }
     static public <PropertyClass> BindingEndpoint<PropertyClass> of(BeanBinder<?> beanBinder, String propertyName, ExceptionHandler exceptionHandler) {
-        return new BindingEndpoint<PropertyClass>(null, beanBinder, propertyName, exceptionHandler);
+        return new BindingEndpoint<>(beanBinder.get(), beanBinder, propertyName, exceptionHandler);
     }
     static public <PropertyClass> BindingEndpoint<PropertyClass> of(BeanBinder<?> beanBinder, String propertyName) {
-        return new BindingEndpoint<PropertyClass>(null, beanBinder, propertyName, null);
+        return new BindingEndpoint<>(beanBinder.get(), beanBinder, propertyName, null);
     }
 
     // ==================================================
