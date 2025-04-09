@@ -1,5 +1,6 @@
 package org.tbee.sway.binding;
 
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiConsumer;
@@ -44,10 +45,10 @@ public class BindingEndpoint<PropertyClass> {
         return new BindingEndpoint<>(bean, null, propertyName, null);
     }
     static public <PropertyClass> BindingEndpoint<PropertyClass> of(BeanBinder<?> beanBinder, String propertyName, ExceptionHandler exceptionHandler) {
-        return new BindingEndpoint<>(beanBinder.get(), beanBinder, propertyName, exceptionHandler);
+        return new BindingEndpoint<>(null, beanBinder, propertyName, exceptionHandler);
     }
     static public <PropertyClass> BindingEndpoint<PropertyClass> of(BeanBinder<?> beanBinder, String propertyName) {
-        return new BindingEndpoint<>(beanBinder.get(), beanBinder, propertyName, null);
+        return new BindingEndpoint<>(null, beanBinder, propertyName, null);
     }
 
     // ==================================================
@@ -55,9 +56,9 @@ public class BindingEndpoint<PropertyClass> {
 
     public Binding bindTo(BindingEndpoint<PropertyClass> bindingEndpoint) {
         if (bindingEndpoint.beanBinder != null) {
-            return BindUtil.bind(this.bean, this.propertyName, bindingEndpoint.beanBinder, bindingEndpoint.propertyName, exceptionHandler != null ? exceptionHandler : bindingEndpoint.exceptionHandler, chain);
+            return BindUtil.bind(this.bean, this.propertyName, bindingEndpoint.beanBinder, bindingEndpoint.propertyName, exceptionHandler != null ? exceptionHandler : bindingEndpoint.exceptionHandler);
         }
-        return BindUtil.bind(this.bean, this.propertyName, bindingEndpoint.bean, bindingEndpoint.propertyName, exceptionHandler != null? exceptionHandler : bindingEndpoint.exceptionHandler, chain);
+        return BindUtil.bind(this.bean, this.propertyName, bindingEndpoint.bean, bindingEndpoint.propertyName, exceptionHandler != null? exceptionHandler : bindingEndpoint.exceptionHandler);
     }
 
     public Binding bindTo(BeanBinder<?> beanBinder, String propertyName) {
@@ -74,7 +75,12 @@ public class BindingEndpoint<PropertyClass> {
      * @param <T>
      */
     public <T> BindingEndpoint<PropertyClass> onChange(BiConsumer<T, T> biconsumer) {
-        BindUtil.onChange(this.bean, this.propertyName, biconsumer);
+        if (this.beanBinder != null) {
+            BindUtil.onChange(this.beanBinder, this.propertyName, biconsumer);
+        }
+        else {
+            BindUtil.onChange(this.bean, this.propertyName, biconsumer);
+        }
         return this;
     }
 
@@ -85,16 +91,21 @@ public class BindingEndpoint<PropertyClass> {
      * @param <T>
      */
     public <T> BindingEndpoint<PropertyClass> onChange(Consumer<T> consumer) {
-        BindUtil.onChange(this.bean, this.propertyName, consumer);
+        if (this.beanBinder != null) {
+            BindUtil.onChange(this.beanBinder, this.propertyName, consumer);
+        }
+        else {
+            BindUtil.onChange(this.bean, this.propertyName, consumer);
+        }
         return this;
     }
 
 
-    // ==================================================
-    // CHAIN
-    final private List<BindChainNode> chain = new ArrayList<>();
-
 // TBEERNOT need to think about this a bit more
+//    // ==================================================
+//    // CHAIN
+//    final private List<BindChainNode> chain = new ArrayList<>();
+//
 //    public BindingEndpoint<PropertyClass> and(BindChainNode<?,?> bindChainNode) {
 //        chain.add(bindChainNode);
 //        return this;

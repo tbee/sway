@@ -1,8 +1,12 @@
 package org.tbee.sway.binding;
 
+import com.jgoodies.binding.beans.BeanAdapter;
+import com.jgoodies.binding.beans.BeanUtils;
+import com.jgoodies.binding.beans.PropertyAccessors;
 import com.jgoodies.binding.beans.PropertyConnector;
 
 import javax.swing.JComponent;
+import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.List;
 import java.util.function.BiConsumer;
@@ -67,32 +71,21 @@ public class BindUtil {
      * @param exceptionHandler
      * @return
      */
-    static public Binding bind(Object bean1, String propertyName1, BeanBinder beanBinder, String propertyName, ExceptionHandler exceptionHandler) {
-        return bind(bean1, propertyName1, beanBinder.getBeanAdapter().getValueModel(propertyName), BeanBinder.VALUE, exceptionHandler);
-    }
-    static public Binding bind(Object bean1, String propertyName1, BeanBinder beanBinder, String propertyName, ExceptionHandler exceptionHandler, List<BindChainNode> chain) {
-        return bind(bean1, propertyName1, beanBinder.getBeanAdapter().getValueModel(propertyName), BeanBinder.VALUE, exceptionHandler, chain);
-    }
-
-    /**
-     * Bind to a bean wrapper's property.
-     * This will allow the swap the bean (in the BeanBinder) without having to rebind.
-     * @param bean1
-     * @param propertyName1
-     * @param beanBinder
-     * @param propertyName
-     * @return
-     */
-    static public Binding bind(Object bean1, String propertyName1, BeanBinder beanBinder, String propertyName) {
-        return bind(bean1, propertyName1, beanBinder.getBeanAdapter().getValueModel(propertyName), BeanBinder.VALUE, loggingExceptionHandler);
-    }
-    static public Binding bind(Object bean1, String propertyName1, BeanBinder beanBinder, String propertyName, List<BindChainNode> chain) {
-        return bind(bean1, propertyName1, beanBinder.getBeanAdapter().getValueModel(propertyName), BeanBinder.VALUE, loggingExceptionHandler, chain);
+    static public Binding bind(Object bean1, String propertyName1, BeanBinder<?> beanBinder, String propertyName, ExceptionHandler exceptionHandler) {
+        PropertyConnector propertyConnector = PropertyConnector.connect(beanBinder.getBeanAdapter().getValueModel(propertyName), "value", new ExceptionCatcher(bean1, propertyName1, exceptionHandler), ExceptionCatcher.VALUE);
+        propertyConnector.updateProperty2();
+        return Binding.of(propertyConnector);
     }
 
     /**
      * Bind to a property change and accept the old and new values
+     * This does not trigger when the bean is replaced.
      */
+    static public <T> OnChange onChange(BeanBinder<?> beanBinder, String propertyName1, BiConsumer<T, T> biconsumer) {
+        PropertyChangeListener propertyChangeListener = pce -> biconsumer.accept((T) pce.getOldValue(), (T) pce.getNewValue());
+        beanBinder.getBeanAdapter().addBeanPropertyChangeListener(propertyName1, propertyChangeListener);
+        return new OnChangeRecord(propertyChangeListener);
+    }
     static public <T> OnChange onChange(Object bean1, String propertyName1, BiConsumer<T, T> biconsumer) {
         PropertyChangeListener propertyChangeListener = pce -> biconsumer.accept((T) pce.getOldValue(), (T) pce.getNewValue());
         com.jgoodies.binding.beans.BeanUtils.addPropertyChangeListener(bean1, propertyName1, propertyChangeListener);
@@ -101,7 +94,13 @@ public class BindUtil {
 
     /**
      * Bind to a property change and accept the new values
+     * This does not trigger when the bean is replaced.
      */
+    static public <T> OnChange onChange(BeanBinder<?> beanBinder, String propertyName1, Consumer<T> consumer) {
+        PropertyChangeListener propertyChangeListener = pce -> consumer.accept((T) pce.getNewValue());
+        beanBinder.getBeanAdapter().addBeanPropertyChangeListener(propertyName1, propertyChangeListener);
+        return new OnChangeRecord(propertyChangeListener);
+    }
     static public <T> OnChange onChange(Object bean1, String propertyName1, Consumer<T> consumer) {
         PropertyChangeListener propertyChangeListener = pce -> consumer.accept((T) pce.getNewValue());
         com.jgoodies.binding.beans.BeanUtils.addPropertyChangeListener(bean1, propertyName1, propertyChangeListener);
