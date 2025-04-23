@@ -142,6 +142,10 @@ public class SOverlayPane extends JPanel implements
             scanner.removeComponentListener(componentListener);
             scanner = scanner.getParent();
         }
+
+        if (overlayPane.getComponentCount() == 0) {
+            overlayPane.setVisible(false);
+        }
     }
 
     static OverlayProvider findOverlayProvider(Component component) {
