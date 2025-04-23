@@ -165,6 +165,11 @@ public class SOverlayPane extends JPanel implements
 
     static void overlay(final Component originalComponent, final Component overlayComponent, OverlayProvider overlayProvider) {
 
+        // If the component to be overlaid is not on screen, then don't overlay.
+        if (!originalComponent.isShowing()) {
+            return;
+        }
+
         // Determine the location of the overlayPane
         SOverlayPane overlayPane = overlayProvider.getOverlayPane();
         Point overlayLocation = overlayPane.getLocationOnScreen();
