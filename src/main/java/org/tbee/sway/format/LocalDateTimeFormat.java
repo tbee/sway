@@ -1,5 +1,6 @@
 package org.tbee.sway.format;
 
+import org.tbee.sway.SConfirmDialog;
 import org.tbee.sway.SDialog;
 import org.tbee.sway.SLocalDateTimePicker;
 import org.tbee.sway.support.HAlign;
@@ -80,7 +81,8 @@ public class LocalDateTimeFormat implements Format<LocalDateTime> {
     public Editor<LocalDateTime> editor() {
         return (owner, value, callback) -> {
             SLocalDateTimePicker dateTimePicker =  new SLocalDateTimePicker().margin(0, 5, 10, 5).value(value);
-            SDialog.ofOkCancel(owner, "", dateTimePicker)
+            SConfirmDialog.of(owner, "", dateTimePicker)
+                    .onCancelJustClose()
                     .onOk(() -> callback.accept(dateTimePicker.getValue()))
                     .showAndWait();
         };

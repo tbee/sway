@@ -1,5 +1,6 @@
 package org.tbee.sway.format;
 
+import org.tbee.sway.SConfirmDialog;
 import org.tbee.sway.SDialog;
 import org.tbee.sway.SOffsetDateTimePicker;
 import org.tbee.sway.support.HAlign;
@@ -52,7 +53,8 @@ public class OffsetDateTimeFormat implements Format<OffsetDateTime> {
     public Editor<OffsetDateTime> editor() {
         return (owner, value, callback) -> {
             SOffsetDateTimePicker offsetDateTimePicker =  new SOffsetDateTimePicker().margin(0, 5, 10, 5).value(value);
-            SDialog.ofOkCancel(owner, "", offsetDateTimePicker)
+            SConfirmDialog.of(owner, "", offsetDateTimePicker)
+                    .onCancelJustClose()
                     .onOk(() -> callback.accept(offsetDateTimePicker.getValue()))
                     .showAndWait();
         };

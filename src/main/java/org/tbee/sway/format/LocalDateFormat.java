@@ -1,5 +1,6 @@
 package org.tbee.sway.format;
 
+import org.tbee.sway.SConfirmDialog;
 import org.tbee.sway.SDialog;
 import org.tbee.sway.SLocalDatePicker;
 import org.tbee.sway.support.HAlign;
@@ -83,7 +84,7 @@ public class LocalDateFormat implements Format<LocalDate> {
                     .value(value)
                     .displayedLocalDate(value != null ? value : LocalDate.now());
 
-            SDialog sDialog = SDialog.of(owner, "", datePicker);
+            SConfirmDialog sDialog = SConfirmDialog.of(owner, "", datePicker);
 
             datePicker.value$().onChange((LocalDate ld) -> {
                 callback.accept(ld);

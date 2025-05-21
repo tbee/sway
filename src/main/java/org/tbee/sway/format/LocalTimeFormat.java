@@ -1,6 +1,7 @@
 package org.tbee.sway.format;
 
 import net.miginfocom.layout.AlignX;
+import org.tbee.sway.SConfirmDialog;
 import org.tbee.sway.SDialog;
 import org.tbee.sway.SLocalTimePicker;
 import org.tbee.sway.SMigPanel;
@@ -84,7 +85,8 @@ public class LocalTimeFormat implements Format<LocalTime> {
             SLocalTimePicker timePicker =  new SLocalTimePicker().value(value);
             SMigPanel migPanel = SMigPanel.of().fill();
             migPanel.addComponent(timePicker).alignX(AlignX.CENTER); // otherwise the time picker is aligned left in the dialog
-            SDialog.ofOkCancel(owner, "", migPanel)
+            SConfirmDialog.of(owner, "", migPanel)
+                    .onCancelJustClose()
                     .onOk(() -> callback.accept(timePicker.getValue()))
                     .showAndWait();
         };
