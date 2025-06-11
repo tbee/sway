@@ -12,10 +12,10 @@ import javax.swing.Icon;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
 import java.awt.Component;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ForkJoinPool;
 import java.util.function.BiConsumer;
@@ -64,7 +64,8 @@ public class STabbedPane<T> extends JTabbedPane implements
     private final Map<Component, Function<T, Object>> onLoadCallbacks = new HashMap<>();
     private final Map<Component, BiConsumer<Object, Component>> onSuccessCallbacks = new HashMap<>();
     private final Map<Component, BiConsumer<Throwable, Component>> onFailureCallbacks = new HashMap<>();
-    private final List<Component> performedCallbacks = new ArrayList<>();
+    private final Set<Component> performedCallbackForComponents = new HashSet<>();
+    private final Set<Component> alwaysReloadComponents = new HashSet<>();
     private final Map<Component, OverlayData> overlayDatas = new HashMap<>();
 
     private record OverlayData(SLoadingOverlay overlay, int count){}
@@ -145,7 +146,7 @@ public class STabbedPane<T> extends JTabbedPane implements
     /**
      * Add sync-updated tab
      */
-    public <C extends Component> STabbedPane<T> tab(String title, Icon icon, Component component, String tip, BiConsumer<T, C> onActiveCallback) {
+    public <C extends Component> STabbedPane<T> tab(String title, Icon icon, C component, String tip, BiConsumer<T, C> onActiveCallback) {
         onActiveCallbacks.put(component, (BiConsumer<T, Component>) onActiveCallback);
         super.addTab(title, icon, component, tip);
         return this;
@@ -154,7 +155,7 @@ public class STabbedPane<T> extends JTabbedPane implements
     /**
      * Add async-updated tab
      */
-    public <R, C extends Component> STabbedPane<T> tab(String title, Icon icon, Component component, String tip, Function<T, R> onLoadCallback, BiConsumer<R, C> onSuccessCallback, BiConsumer<Throwable, C> onFailureCallback) {
+    public <R, C extends Component> STabbedPane<T> tab(String title, Icon icon, C component, String tip, Function<T, R> onLoadCallback, BiConsumer<R, C> onSuccessCallback, BiConsumer<Throwable, C> onFailureCallback) {
         onLoadCallbacks.put(component, (Function<T, Object>) onLoadCallback);
         onSuccessCallbacks.put(component, (BiConsumer<Object, Component>)onSuccessCallback);
         onFailureCallbacks.put(component, (BiConsumer<Throwable, Component>)onFailureCallback);
@@ -165,7 +166,7 @@ public class STabbedPane<T> extends JTabbedPane implements
     /**
      * Add async-updated tab
      */
-    public <R, C extends Component> STabbedPane<T> tab(String title, Icon icon, Component component, String tip, Function<T, R> onLoadCallback, BiConsumer<R, C> onSuccessCallback) {
+    public <R, C extends Component> STabbedPane<T> tab(String title, Icon icon, C component, String tip, Function<T, R> onLoadCallback, BiConsumer<R, C> onSuccessCallback) {
         onLoadCallbacks.put(component, (Function<T, Object>) onLoadCallback);
         onSuccessCallbacks.put(component, (BiConsumer<Object, Component>)onSuccessCallback);
         onFailureCallbacks.put(component, (t, c) -> handleException(t));
@@ -173,10 +174,10 @@ public class STabbedPane<T> extends JTabbedPane implements
         return this;
     }
 
-    public <C extends Component> STabbedPane<T> tab(String title, Icon icon, Component component, BiConsumer<T, C> onActiveCallback) {
+    public <C extends Component> STabbedPane<T> tab(String title, Icon icon, C component, BiConsumer<T, C> onActiveCallback) {
         return tab(title, icon, component, null, onActiveCallback);
     }
-    public <R, C extends Component> STabbedPane<T> tab(String title, Icon icon, Component component, Function<T, R> onLoadCallback, BiConsumer<R, C> onSuccessCallback, BiConsumer<Throwable, C> onFailureCallback) {
+    public <R, C extends Component> STabbedPane<T> tab(String title, Icon icon, C component, Function<T, R> onLoadCallback, BiConsumer<R, C> onSuccessCallback, BiConsumer<Throwable, C> onFailureCallback) {
         return tab(title, icon, component, null, onLoadCallback, onSuccessCallback, onFailureCallback);
     }
 
@@ -206,6 +207,7 @@ public class STabbedPane<T> extends JTabbedPane implements
         onLoadCallbacks.remove(component);
         onSuccessCallbacks.remove(component);
         onFailureCallbacks.remove(component);
+        alwaysReloadComponents.remove(component);
     }
 
     @Override
@@ -218,7 +220,8 @@ public class STabbedPane<T> extends JTabbedPane implements
      * Immediately reloads the visible tab, and other tabs when they become visible.
      */
     public void reload() {
-        performedCallbacks.clear();
+        performedCallbackForComponents.clear();
+        alwaysReloadComponents.forEach(this::loadIfNeeded);
         loadVisibleTabIfNeeded();
     }
 
@@ -226,18 +229,20 @@ public class STabbedPane<T> extends JTabbedPane implements
      * Immediately reloads the visible tab only.
      */
     public void reloadVisibleTab() {
-        performedCallbacks.remove(getSelectedComponent());
+        performedCallbackForComponents.remove(getSelectedComponent());
         loadVisibleTabIfNeeded();
     }
 
     protected boolean loadVisibleTabIfNeeded() {
+        return loadIfNeeded(getSelectedComponent());
+    }
 
+    private boolean loadIfNeeded(Component component) {
         // If already loaded, bail out
-        Component component = getSelectedComponent();
-        if (component == null || performedCallbacks.contains(component)) {
+        if (component == null || performedCallbackForComponents.contains(component)) {
             return false;
         }
-        performedCallbacks.add(component);
+        performedCallbackForComponents.add(component);
 
         // Synchronous loading
         BiConsumer<T, Component> onActiveCallback = onActiveCallbacks.get(component);
@@ -270,6 +275,14 @@ public class STabbedPane<T> extends JTabbedPane implements
             });
         }
         return true;
+    }
+
+    public STabbedPane<T> alwaysReload(int tabIndex) {
+        return alwaysReload(getComponentAt(tabIndex));
+    }
+    public STabbedPane<T> alwaysReload(Component component) {
+        alwaysReloadComponents.add(component);
+        return this;
     }
 
     private void showOverlay(Component component) {

@@ -92,7 +92,7 @@ public class SConfirmDialog extends JDialog implements
 		});
 	}
 	public SConfirmDialog onOkJustClose() {
-		return onCancel(() -> {});
+		return onOk(() -> {});
 	}
 
 	public CloseReason showAndWait() {
