@@ -22,7 +22,7 @@ public class SConfirmDialog extends JDialog implements
 		WindowMixin<SConfirmDialog>,
 		ComponentMixin<SConfirmDialog> {
 
-    private final JComponent content;
+    private JComponent content;
 	private String cancelText = "Cancel";
     private Supplier<Boolean> onCancelCallback = null;
 	private String okText = "OK";
@@ -146,6 +146,11 @@ public class SConfirmDialog extends JDialog implements
 
 	// =======================================================================================================
 	// FLUENT API
+
+	public SConfirmDialog content(JComponent v) {
+		this.content = v;
+		return this;
+	}
 
 	public SConfirmDialog size(int w, int h) {
 		setSize(w, h);
