@@ -345,7 +345,7 @@ public class STextField<T> extends javax.swing.JTextField implements
         setEditable(v);
         return this;
     }
-    String EDITABLE = "editable";
+    public static final String EDITABLE = "editable";
     public BindingEndpoint<Boolean> editable$() {
         return BindingEndpoint.of(this, EDITABLE);
     }
