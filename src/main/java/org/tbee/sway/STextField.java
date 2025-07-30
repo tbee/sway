@@ -146,6 +146,8 @@ public class STextField<T> extends javax.swing.JTextField implements
     private Border border;
     private Icon icon;
     private Icon backIcon;
+    private boolean showIcon = true;
+    private boolean showBackIcon = true;
     private Consumer<MouseEvent> onIconClick = null;
     private Consumer<MouseEvent> onBackIconClick = null;
 
@@ -214,24 +216,56 @@ public class STextField<T> extends javax.swing.JTextField implements
         return this;
     }
 
+    public boolean getShowIcon() {
+        return this.showIcon;
+    }
+    public void setShowIcon(boolean v) {
+        firePropertyChange(SHOWICON, this.showIcon, this.showIcon = v);
+        setBorder(border);
+    }
+    public STextField<T> showIcon(boolean v) {
+        setShowIcon(v);
+        return this;
+    }
+    public static final String SHOWICON = "showIcon";
+    public BindingEndpoint<Boolean> showIcon() {
+        return BindingEndpoint.of(this, SHOWICON);
+    }
+
     public Icon getBackIcon() {
         return this.backIcon;
     }
-    public void setBackIcon(Icon icon) {
-        firePropertyChange(BACKICON, this.backIcon, this.backIcon = icon);
+    public void setBackIcon(Icon v) {
+        firePropertyChange(BACKICON, this.backIcon, this.backIcon = v);
         setBorder(border);
     }
     public STextField<T> backIcon(Icon v) {
         setBackIcon(v);
         return this;
     }
-    String BACKICON = "backIcon";
+    public static final String BACKICON = "backIcon";
     public BindingEndpoint<String> backIcon$() {
         return BindingEndpoint.of(this, BACKICON);
     }
     public STextField<T> onBackIconClick(Consumer<MouseEvent> onIconClick) {
         this.onBackIconClick = onIconClick;
         return this;
+    }
+
+    public boolean getShowBackIcon() {
+        return this.showBackIcon;
+    }
+    public void setShowBackIcon(boolean v) {
+        firePropertyChange(SHOWBACKICON, this.showBackIcon, this.showBackIcon = v);
+        setBorder(border);
+    }
+    public STextField<T> showBackIcon(boolean v) {
+        setShowBackIcon(v);
+        return this;
+    }
+    public static final String SHOWBACKICON = "showBackIcon";
+    public BindingEndpoint<Boolean> showBackIcon() {
+        return BindingEndpoint.of(this, SHOWBACKICON);
     }
 
     @Override
@@ -253,11 +287,11 @@ public class STextField<T> extends javax.swing.JTextField implements
     protected void paintComponent(Graphics graphics) {
         super.paintComponent(graphics);
 
-        if (icon != null && isEnabled() &&  isEditable()) {
+        if (icon != null && isEnabled() &&  isEditable() && showIcon) {
             Insets iconInsets = border == null ? ZERO_INSETS : border.getBorderInsets(this);
             icon.paintIcon(this, graphics, iconInsets.left - ICON_SPACING, iconInsets.top);
         }
-        if (backIcon != null && isEnabled() && isEditable()) {
+        if (backIcon != null && isEnabled() && isEditable() && showBackIcon) {
             Insets iconInsets = border == null ? ZERO_INSETS : border.getBorderInsets(this);
             backIcon.paintIcon(this, graphics, this.getWidth() - backIcon.getIconWidth() - iconInsets.right, iconInsets.top);
         }
