@@ -16,6 +16,7 @@ import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import java.awt.Component;
 import java.util.Collection;
+import java.util.function.Consumer;
 
 public class SMigPanel extends SPanelExtendable<SMigPanel> implements
         JComponentMixin<SMigPanel> {
@@ -53,14 +54,33 @@ public class SMigPanel extends SPanelExtendable<SMigPanel> implements
 
     /**
      * Add a component using no default layout, but returning the CC.
-     * If you do not like it, just add the component normally, with your own CC.
      * @param component
-     * @return
+     * Use it like:
+     *   sMigPanel.addComponent(new STextField()).growX().wrap()
+     *   sMigPanel.addComponent(new STextField())
+     * @return this
      */
     public CC addComponent(JComponent component) {
         CC cc = new CC();
         add(component, cc);
         return cc;
+    }
+
+    /**
+     * Add a component using no default layout, but providing the CC to the provided consumer.
+     * In this way multiple addComponent calls can be chained (fluent API).
+     * Use it like:
+     *   sMigPanel.addComponent(new STextField(), cc -> cc.growX().wrap())
+     *            .addComponent(new STextField(), cc -> {})
+     * @param component
+     * @param consumer
+     * @return this
+     */
+    public SMigPanel addComponent(JComponent component, Consumer<CC> consumer) {
+        CC cc = new CC();
+        add(component, cc);
+        consumer.accept(cc);
+        return this;
     }
 
     /**
@@ -89,6 +109,18 @@ public class SMigPanel extends SPanelExtendable<SMigPanel> implements
     }
 
     /**
+     * Add a component using the default label layout (align baseline right).
+     * If you do not like it, just add the component normally, with your own CC.
+     * @param component
+     * @param consumer
+     * @return
+     */
+    public SMigPanel addLabel(JComponent component, Consumer<CC> consumer) {
+        consumer.accept(addLabel(component));
+        return this;
+    }
+
+    /**
      * Add a component using the default field layout (align top left).
      * If you do not like it, just add the component normally, with your own CC.
      * @param component
@@ -100,6 +132,18 @@ public class SMigPanel extends SPanelExtendable<SMigPanel> implements
                 .alignY(AlignY.TOP);
         add(component, cc);
         return cc;
+    }
+
+    /**
+     * Add a component using the default field layout (align top left).
+     * If you do not like it, just add the component normally, with your own CC.
+     * @param component
+     * @param consumer
+     * @return
+     */
+    public SMigPanel addField(JComponent component, Consumer<CC> consumer) {
+        consumer.accept(addField(component));
+        return this;
     }
 
     /**
@@ -154,6 +198,36 @@ public class SMigPanel extends SPanelExtendable<SMigPanel> implements
     }
 
     /**
+     * Add both a label and field side by side, using the default layouts.
+     * The additional fields will be placed into the same cell as the field, by using split on the CC of the field.
+     * Additional fields can for example be a qualifier SLabel, e.g. "length: [field] meter"
+     * @param label
+     * @param fieldComponent
+     * @param consumer CC of field component (not of the last additionalComponents, so e.g. span works, but wrap probably causes an unexpected layout).
+     * @param additionalComponents
+     * @return this
+     */
+    public SMigPanel addLabelAndField(String label, JComponent fieldComponent, Consumer<CC> consumer, JComponent... additionalComponents) {
+        consumer.accept(addLabelAndField(label, fieldComponent, additionalComponents));
+        return this;
+    }
+
+    /**
+     * Add both a label and field side by side, using the default layouts.
+     * The additional fields will be placed into the same cell as the field, by using split on the CC of the field.
+     * Additional fields can for example be a qualifier SLabel, e.g. "length: [field] meter"
+     * @param labelComponent
+     * @param fieldComponent
+     * @param consumer CC of field component (not of the last additionalComponents, so e.g. span works, but wrap probably causes an unexpected layout).
+     * @param additionalComponents
+     * @return this
+     */
+    public SMigPanel addLabelAndField(JComponent labelComponent, JComponent fieldComponent, Consumer<CC> consumer, JComponent... additionalComponents) {
+        consumer.accept(addLabelAndField(labelComponent, fieldComponent, additionalComponents));
+        return this;
+    }
+
+    /**
      * Just changing the CC values does not effectuate them, setCCFor needs to be called.
      * @param component
      * @return
@@ -167,6 +241,11 @@ public class SMigPanel extends SPanelExtendable<SMigPanel> implements
     }
     public void setCCFor(Component component, CC cc) {
         migLayout.setComponentConstraints(component, cc);
+    }
+    public void updateCCFor(Component component, Consumer<CC> consumer) {
+        CC cc = getCCFor(component);
+        consumer.accept(cc);
+        setCCFor(component, cc);
     }
 
     // =========================================================================
@@ -238,8 +317,7 @@ public class SMigPanel extends SPanelExtendable<SMigPanel> implements
      */
     public SMigPanel wrap() {
         Component component = getComponent(getComponentCount() - 1);
-        CC cc = getCCFor(component);
-        setCCFor(component, cc.wrap()); // reapply
+        updateCCFor(component, cc -> cc.wrap());
         return this;
     }
 
