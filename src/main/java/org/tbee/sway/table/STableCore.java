@@ -8,7 +8,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.prefs.BackingStoreException;
@@ -531,7 +533,7 @@ public class STableCore<TableType> extends javax.swing.JTable {
 
     	// we check all table model columns to see if they exist in the column model
     	// first construct a list of all columns
-    	List<Integer> hiddenColumns = new ArrayList<Integer>();
+    	Set<Integer> hiddenColumns = new HashSet<>();
 		for (int i = 0; i < getModel().getColumnCount(); i++) {
 			hiddenColumns.add(i);
 		}
@@ -543,11 +545,11 @@ public class STableCore<TableType> extends javax.swing.JTable {
 		if (logger.isDebugEnabled()) logger.debug("Hidden columns=" + hiddenColumns);
 
 		// store which model indexes are hidden
-		for (int i = 0; i < hiddenColumns.size(); i++) {
-			String key = getNameForPreferences() + COLUMN_HIDDEN_ID + hiddenColumns.get(i);
+        hiddenColumns.forEach(i -> {
+			String key = getNameForPreferences() + COLUMN_HIDDEN_ID + i;
 			if (logger.isDebugEnabled()) logger.debug(key + " = hidden");
 			preferences.put(key, "hidden" );
-		}
+		});
     }
 
     /**
