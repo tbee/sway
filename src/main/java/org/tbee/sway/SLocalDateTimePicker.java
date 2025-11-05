@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class SLocalDateTimePicker extends JPanel implements
         ValueMixin<SLocalDateTimePicker, LocalDateTime>,
@@ -96,7 +97,11 @@ public class SLocalDateTimePicker extends JPanel implements
         return value;
     }
     public void setValue(LocalDateTime v) {
+        if (settingValue) {
+            return;
+        }
         try {
+            settingValue = true;
             boolean changed = !Objects.equals(this.value, v);
 
             fireVetoableChange(VALUE, this.value, v);
@@ -104,14 +109,21 @@ public class SLocalDateTimePicker extends JPanel implements
 
             if (changed) {
                 datePicker.setValue(v == null ? null : v.toLocalDate());
+                if (v != null) {
+                    datePicker.displayedLocalDate(v.toLocalDate());
+                }
                 timePicker.setValue(v == null ? null : v.toLocalTime());
             }
         }
         catch (PropertyVetoException e) {
             throw new IllegalArgumentException(e);
         }
+        finally {
+            settingValue = false;
+        }
     }
     private LocalDateTime value = null;
+    private boolean settingValue = false;
 
 
     /**
