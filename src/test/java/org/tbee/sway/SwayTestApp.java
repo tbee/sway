@@ -161,7 +161,8 @@ public class SwayTestApp {
                 .backIcon(SIconRegistry.find(SIconRegistry.SwayInternallyUsedIcon.MENU_COPY))
                 .onIconClick(evt -> SOptionPane.ofInfo(migPanel, "Icon clicked", "Icon clicked"))
         ).wrap();
-        migPanel.addLabelAndField("Icon city", STextField.of(new CityFormat(cities)).value(amsterdam)).wrap();
+        migPanel.addLabelAndField("Icon city", STextField.of(new CityFormat(cities)).value(amsterdam)
+        ).wrap();
 
         migPanel.addLabelAndField("File", STextField.of(File.class)).wrap();
 

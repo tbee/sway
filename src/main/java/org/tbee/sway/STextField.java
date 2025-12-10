@@ -146,6 +146,7 @@ public class STextField<T> extends javax.swing.JTextField implements
     private Border border;
     private Icon icon;
     private Icon backIcon;
+    private Icon formatIcon;
     private boolean showIcon = true;
     private boolean showBackIcon = true;
     private Consumer<MouseEvent> onIconClick = null;
@@ -271,8 +272,9 @@ public class STextField<T> extends javax.swing.JTextField implements
     @Override
     public void setBorder(Border border) {
         this.border = border;
+        Icon actualIcon = (icon != null ? icon : formatIcon);
         Border borderForIcon = BorderFactory.createMatteBorder(0
-                , (icon == null ? 0 : icon.getIconWidth() + ICON_SPACING)
+                , (actualIcon == null ? 0 : actualIcon.getIconWidth() + ICON_SPACING)
                 , 0
                 , (backIcon == null ? 0 : backIcon.getIconWidth() + ICON_SPACING)
                 , TRANSPARENT_COLOR);
@@ -286,7 +288,6 @@ public class STextField<T> extends javax.swing.JTextField implements
     @Override
     protected void paintComponent(Graphics graphics) {
         super.paintComponent(graphics);
-
         if (icon != null && isEnabled() &&  isEditable() && showIcon) {
             Insets iconInsets = border == null ? ZERO_INSETS : border.getBorderInsets(this);
             icon.paintIcon(this, graphics, iconInsets.left - ICON_SPACING, iconInsets.top);
@@ -545,9 +546,11 @@ public class STextField<T> extends javax.swing.JTextField implements
     /** Value (through Format) */
     public void setValue(T v) {
         setTextFromValue(v);
-        setIcon(format.toIcon(v));
         try {
             firePropertyChange(VALUE, this.value, this.value = v);
+
+            formatIcon = (format == null ? null : format.toIcon(value));
+            setBorder(border);
         }
         catch (RuntimeException e) {
             handleException(e);
