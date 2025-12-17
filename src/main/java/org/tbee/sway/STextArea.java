@@ -140,4 +140,9 @@ public class STextArea extends JPanel implements
         super.setName(v);
         jTextArea.setName(v + ".jTextArea"); // For tests we need to address the actual list
     }
+
+    public STextArea caretPosition(int position) {
+        jTextArea.setCaretPosition(position);
+        return this;
+    }
 }

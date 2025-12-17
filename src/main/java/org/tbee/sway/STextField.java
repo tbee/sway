@@ -610,4 +610,9 @@ public class STextField<T> extends javax.swing.JTextField implements
         setFocusable(v);
         return this;
     }
+
+    public STextField<T> caretPosition(int position) {
+        this.setCaretPosition(position);
+        return this;
+    }
 }
