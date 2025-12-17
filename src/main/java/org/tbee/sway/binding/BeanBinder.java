@@ -10,8 +10,6 @@ import java.util.function.Consumer;
 
 public class BeanBinder<T> {
 
-    static String VALUE = "value";
-
     final private BeanAdapter<T> beanAdapter = new BeanAdapter<>(null, true);
     final private List<Consumer<T>> onChangeListeners = new ArrayList<>();
 
@@ -38,5 +36,9 @@ public class BeanBinder<T> {
      */
     public BeanAdapter<T> getBeanAdapter() {
         return beanAdapter;
+    }
+
+    public synchronized void addBeanPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
+        beanAdapter.addBeanPropertyChangeListener(propertyName, listener);
     }
 }

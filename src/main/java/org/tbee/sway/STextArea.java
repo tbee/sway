@@ -88,6 +88,14 @@ public class STextArea extends JPanel implements
         return jTextArea.isEditable();
     }
 
+    ///  Enabled
+    public void setEnabled(boolean b) {
+        jTextArea.setEnabled(b);
+    }
+    public boolean isEnabled() {
+        return jTextArea.isEditable();
+    }
+
     /**
      * maxLength
      */
