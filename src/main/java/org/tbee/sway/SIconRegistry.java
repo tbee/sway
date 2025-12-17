@@ -4,6 +4,7 @@ import org.kordamp.ikonli.material2.Material2AL;
 import org.kordamp.ikonli.materialdesign2.MaterialDesignC;
 import org.kordamp.ikonli.materialdesign2.MaterialDesignF;
 import org.kordamp.ikonli.materialdesign2.MaterialDesignM;
+import org.kordamp.ikonli.materialdesign2.MaterialDesignN;
 import org.kordamp.ikonli.materialdesign2.MaterialDesignP;
 import org.kordamp.ikonli.materialdesign2.MaterialDesignR;
 import org.kordamp.ikonli.materialdesign2.MaterialDesignS;
@@ -27,6 +28,7 @@ import static org.tbee.sway.SIconRegistry.SwayInternallyUsedIcon.MENU_PASTE;
 import static org.tbee.sway.SIconRegistry.SwayInternallyUsedIcon.MENU_SELECTION;
 import static org.tbee.sway.SIconRegistry.SwayInternallyUsedIcon.OVERLAY_BUSY;
 import static org.tbee.sway.SIconRegistry.SwayInternallyUsedIcon.OVERLAY_LOADING;
+import static org.tbee.sway.SIconRegistry.SwayInternallyUsedIcon.FORMAT_NULL;
 import static org.tbee.sway.SIconRegistry.SwayInternallyUsedIcon.TEXTFIELD_POPUP;
 import static org.tbee.sway.SIconRegistry.SwayInternallyUsedIcon.TIMEPICKER_CLEAR;
 import static org.tbee.sway.SIconRegistry.SwayInternallyUsedIcon.TIMEPICKER_NEXTHOUR;
@@ -52,7 +54,6 @@ public class SIconRegistry {
         // Register default icons for those that are required visually
         // https://kordamp.org/ikonli/cheat-sheet-materialdesign2.html
         // https://kordamp.org/ikonli/cheat-sheet-material2.html
-
         register(TEXTFIELD_POPUP, createIcon(MaterialDesignM.MENU, TEXTFIELD_POPUP.typicalSize()));
 
         register(DATEPICKER_NEXTMONTH, createIcon(Material2AL.KEYBOARD_ARROW_RIGHT, DATEPICKER_NEXTMONTH.typicalSize() - 2));
@@ -81,6 +82,8 @@ public class SIconRegistry {
     	CHECKBOX_SELECTED("selected@checkbox", 16), //
     	CHECKBOX_UNSELECTED("unselected@checkbox", 16), //
     	CHECKBOX_UNDETERMINED("undetermined@checkbox", 16),
+
+        FORMAT_NULL("null@format", 8),
 
         MENU_COPY("copy@menu", 16), //
         MENU_CUT("cut@menu", 16), //
@@ -158,7 +161,7 @@ public class SIconRegistry {
         register(MENU_SELECTION, createIcon(MaterialDesignS.SELECTION, MENU_SELECTION.typicalSize()));
         register(OVERLAY_BUSY, createIcon(MaterialDesignP.PROGRESS_CLOCK, OVERLAY_BUSY.typicalSize()));
         register(OVERLAY_LOADING, createIcon(MaterialDesignR.REFRESH, OVERLAY_LOADING.typicalSize()));
-        register(TEXTFIELD_POPUP, createIcon(MaterialDesignM.MENU, TEXTFIELD_POPUP.typicalSize()));
+        register(FORMAT_NULL, createIcon(MaterialDesignN.NULL, FORMAT_NULL.typicalSize()));
 
         registerCheckboxIcons();
     }

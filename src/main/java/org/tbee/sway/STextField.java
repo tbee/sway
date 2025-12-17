@@ -272,11 +272,10 @@ public class STextField<T> extends javax.swing.JTextField implements
     @Override
     public void setBorder(Border border) {
         this.border = border;
-        Icon actualIcon = (icon != null ? icon : formatIcon);
         Border borderForIcon = BorderFactory.createMatteBorder(0
-                , (actualIcon == null ? 0 : actualIcon.getIconWidth() + ICON_SPACING)
+                , (icon == null ? 0 : icon.getIconWidth() + ICON_SPACING)
                 , 0
-                , (backIcon == null ? 0 : backIcon.getIconWidth() + ICON_SPACING)
+                , (formatIcon == null ? 0 : formatIcon.getIconWidth() + ICON_SPACING) + (backIcon == null ? 0 : backIcon.getIconWidth() + ICON_SPACING)
                 , TRANSPARENT_COLOR);
         super.setBorder(BorderFactory.createCompoundBorder(border, borderForIcon));
     }
@@ -288,9 +287,13 @@ public class STextField<T> extends javax.swing.JTextField implements
     @Override
     protected void paintComponent(Graphics graphics) {
         super.paintComponent(graphics);
-        if (icon != null && isEnabled() &&  isEditable() && showIcon) {
+        if (icon != null && isEnabled() && isEditable() && showIcon) {
             Insets iconInsets = border == null ? ZERO_INSETS : border.getBorderInsets(this);
             icon.paintIcon(this, graphics, iconInsets.left - ICON_SPACING, iconInsets.top);
+        }
+        if (formatIcon != null) {
+            Insets iconInsets = border == null ? ZERO_INSETS : border.getBorderInsets(this);
+            formatIcon.paintIcon(this, graphics, this.getWidth() - formatIcon.getIconWidth() - iconInsets.right - (backIcon == null ? 0 : backIcon.getIconWidth() + ICON_SPACING), iconInsets.top);
         }
         if (backIcon != null && isEnabled() && isEditable() && showBackIcon) {
             Insets iconInsets = border == null ? ZERO_INSETS : border.getBorderInsets(this);
@@ -425,8 +428,11 @@ public class STextField<T> extends javax.swing.JTextField implements
     static public STextField<String> ofString() {
         return of(String.class);
     }
-    static public STextField<String> ofStringWithNullString(String nullString) {
-        return new STextField<String>(new StringFormat(nullString));
+    static public STextField<String> ofStringWithNullIcon(Icon nullIcon) {
+        return new STextField<>(new StringFormat(nullIcon));
+    }
+    static public STextField<String> ofStringWithoutNullIcon() {
+        return ofStringWithNullIcon(null);
     }
     static public STextField<Integer> ofInteger() {
         return of(Integer.class);

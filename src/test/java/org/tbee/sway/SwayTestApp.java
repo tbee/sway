@@ -96,15 +96,16 @@ public class SwayTestApp {
         City paris = City.of("Paris", 575);
         var cities = List.of(amsterdam, berlin, rome, paris);
 
-        STextField.ofStringWithNullString("").value$().bindTo(City.name$(beanBinder)).unbind(); // test unbind
+        STextField.ofStringWithoutNullIcon().value$().bindTo(City.name$(beanBinder)).unbind(); // test unbind
 
         SMigPanel migPanel = SMigPanel.of();
 
         migPanel.addLabelAndField("String", STextField.ofString().value("abc")).wrap();
+        migPanel.addLabelAndField("String null", STextField.ofString().value(null).name("StringNull")).wrap();
 
         migPanel.addLabelAndField("String -> bean.name", STextField.ofString().bindTo(bean.name$())).wrap();
 
-        migPanel.addLabelAndField("StringBlankIsNull -> bean.name", STextField.ofStringWithNullString("").bindTo(City.name$(beanBinder))).wrap();
+        migPanel.addLabelAndField("StringBlankIsNull -> bean.name", STextField.ofStringWithoutNullIcon().bindTo(City.name$(beanBinder))).wrap();
 
         migPanel.addLabelAndField("Integer -> bean.distance", STextField.ofInteger().bindTo(bean.distance$())).wrap();
 
@@ -161,7 +162,11 @@ public class SwayTestApp {
                 .backIcon(SIconRegistry.find(SIconRegistry.SwayInternallyUsedIcon.MENU_COPY))
                 .onIconClick(evt -> SOptionPane.ofInfo(migPanel, "Icon clicked", "Icon clicked"))
         ).wrap();
-        migPanel.addLabelAndField("Icon city", STextField.of(new CityFormat(cities)).value(amsterdam)
+        migPanel.addLabelAndField("Icon format", STextField.of(new CityFormat(cities)).value(amsterdam)).wrap();
+        migPanel.addLabelAndField("Icon null", STextField.ofString().value(null)
+                .icon(SIconRegistry.find(SIconRegistry.SwayInternallyUsedIcon.MENU_PASTE))
+                .backIcon(SIconRegistry.find(SIconRegistry.SwayInternallyUsedIcon.MENU_COPY))
+                .onBackIconClick(evt -> SOptionPane.ofInfo(migPanel, "BackIcon clicked", "BackIcon clicked"))
         ).wrap();
 
         migPanel.addLabelAndField("File", STextField.of(File.class)).wrap();
