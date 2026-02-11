@@ -145,11 +145,11 @@ public class STableCore<TableType> extends javax.swing.JTable {
     // install a special focus listener, so we can catch the latest key pressed in the editor
     class LastKeypressFocusListener implements PropertyChangeListener, KeyListener {
 
-        public LastKeypressFocusListener(STableCore jtableForEdit) {
-            reference = new SoftReference(jtableForEdit); // hook up to me
+        public LastKeypressFocusListener(STableCore<TableType> sTableCore) {
+            reference = new SoftReference<>(sTableCore); // remember without locking down
             KeyboardFocusManager.getCurrentKeyboardFocusManager().addPropertyChangeListener("focusOwner", this);
         }
-        volatile private Reference<STableCore> reference = null;
+        volatile private Reference<STableCore<TableType>> reference = null;
 
         public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
             // get table
@@ -159,22 +159,20 @@ public class STableCore<TableType> extends javax.swing.JTable {
                 return;
             }
 
-            // we're only interested if we're editing
+            // (un)register our key listener
             Component previousFocusComponent = (Component)propertyChangeEvent.getOldValue();
             Component nextFocusComponent = (Component)propertyChangeEvent.getNewValue();
             if (previousFocusComponent != null) {
-                // remove us from the focus losing component
                 previousFocusComponent.removeKeyListener(this);
             }
-            if (nextFocusComponent != null) {
-                // add us to the focus gaining component, only if it is our child (editors are)
-                if (SwingUtilities.isDescendingFrom(nextFocusComponent, sTableCore)) {
-                    nextFocusComponent.addKeyListener(this);
-                }
+            if (nextFocusComponent != null && SwingUtilities.isDescendingFrom(nextFocusComponent, sTableCore)) {
+                nextFocusComponent.addKeyListener(this);
             }
+
+            // If the focus returns to this table and enter was pressed in the editor, jump to the next editable cell
             if (nextFocusComponent == STableCore.this && cellWhereEnterWasPressed != null) {
                 RowCol rowCol = cellWhereEnterWasPressed;
-                cellWhereEnterWasPressed = null;
+                cellWhereEnterWasPressed = null; // Make sure this is cleared before anything happens
                 if (rowCol.shiftDown) {
                     STableCore.this.editPreviousEditableCell(rowCol.row, rowCol.col);
                 }
