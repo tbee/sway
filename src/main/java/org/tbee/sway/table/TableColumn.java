@@ -224,6 +224,15 @@ public class TableColumn<TableType, ColumnType extends Object> {
     }
 
     /**
+     * getValueFunction and setValueFunction
+     */
+    public TableColumn<TableType, ColumnType> valueProvider(Function<TableType, ColumnType> supplier, BiConsumer<TableType, ColumnType> consumer) {
+        setValueSupplier(supplier);
+        setValueConsumer(consumer);
+        return this;
+    }
+
+    /**
      * bindToProperty
      */
     public void setMonitorProperty(String v) {

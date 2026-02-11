@@ -67,6 +67,7 @@ public class SVPanel extends SPanelExtendable<SVPanel> implements
         for (Component component : getComponents()) {
             CC cc = (CC)migLayout.getComponentConstraints(component);
             cc.grow(v ? 100 : 0);
+            cc.pushX();
         }
         return this;
     }

@@ -914,8 +914,19 @@ public class STable<TableType> extends JPanel implements
         setBeanFactory(v);
         return this;
     }
-    public BindingEndpoint<Supplier<TableType>> beanFactory$() {
-        return BindingEndpoint.of(this, CONFIRMDELETEROWS, exceptionHandler);
+
+    /** BeanDestructor */
+    public void setBeanDestructor(Consumer<TableType> v) {
+        firePropertyChange(BEANDESTRUCTOR, this.beanDestructor, this.beanDestructor = v);
+    }
+    public Consumer<TableType> getBeanDestructor() {
+        return beanDestructor;
+    }
+    private Consumer<TableType> beanDestructor = null;
+    final static public String BEANDESTRUCTOR = "beanDestructor";
+    public STable<TableType> beanDestructor(Consumer<TableType> v) {
+        setBeanDestructor(v);
+        return this;
     }
 
     /**
@@ -986,6 +997,9 @@ public class STable<TableType> extends JPanel implements
 			int rowIdx = data.indexOf(bean);
 			rowIdx = getSTableCore().convertRowIndexToView(rowIdx);
 			data.remove(bean);
+            if (beanDestructor != null) {
+                beanDestructor.accept(bean);
+            }
 			if (callback != null) {
 				callback.accept(bean, rowIdx);
 			}

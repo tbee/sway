@@ -4,9 +4,15 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.KeyboardFocusManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
-import java.util.ArrayList;
+import java.awt.event.KeyListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.lang.ref.Reference;
+import java.lang.ref.SoftReference;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
@@ -18,6 +24,7 @@ import java.util.prefs.Preferences;
 
 import javax.swing.AbstractAction;
 import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.TableColumnModelEvent;
@@ -26,7 +33,6 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableRowSorter;
 
 import org.tbee.sway.STable;
-import org.tbee.sway.preference.PreferenceHelper;
 import org.tbee.sway.support.FocusInterpreter;
 
 /**
@@ -43,7 +49,7 @@ public class STableCore<TableType> extends javax.swing.JTable {
     final private STable<TableType> sTable;
 
     public STableCore(STable<TableType> sTable) {
-        super(new TableModel<TableType>(sTable));
+        super(new TableModel<>(sTable));
         this.sTable = sTable;
 
         // TODO: somehow the setComparator is forgotten, so we override the relevant methods. But we should figure out why this is.
@@ -65,10 +71,6 @@ public class STableCore<TableType> extends javax.swing.JTable {
                 return super.useToString(column);
             }
         };
-        construct();
-    }
-
-    private void construct() {
 
         // the FocusInterpreterListener must be kept in an instance variable, otherwise it will be cleared by the WeakArrayList used in the FocusInterpreter
         focusInterpreterListener = evt -> {
@@ -77,6 +79,7 @@ public class STableCore<TableType> extends javax.swing.JTable {
             }
         };
         focusInterpreter.addFocusListener(focusInterpreterListener);
+        new LastKeypressFocusListener(this);
 
         // Sorting
         setRowSorter(tableRowSorter);
@@ -137,6 +140,120 @@ public class STableCore<TableType> extends javax.swing.JTable {
 				consumer.accept(e);
 			}
 		};
+    }
+
+    // install a special focus listener, so we can catch the latest key pressed in the editor
+    class LastKeypressFocusListener implements PropertyChangeListener, KeyListener {
+
+        public LastKeypressFocusListener(STableCore jtableForEdit) {
+            reference = new SoftReference(jtableForEdit); // hook up to me
+            KeyboardFocusManager.getCurrentKeyboardFocusManager().addPropertyChangeListener("focusOwner", this);
+        }
+        volatile private Reference<STableCore> reference = null;
+
+        public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+            // get table
+            STableCore<TableType> sTableCore = reference.get();
+            if (sTableCore == null) {
+                KeyboardFocusManager.getCurrentKeyboardFocusManager().removePropertyChangeListener(this);
+                return;
+            }
+
+            // we're only interested if we're editing
+            Component previousFocusComponent = (Component)propertyChangeEvent.getOldValue();
+            Component nextFocusComponent = (Component)propertyChangeEvent.getNewValue();
+            if (previousFocusComponent != null) {
+                // remove us from the focus losing component
+                previousFocusComponent.removeKeyListener(this);
+            }
+            if (nextFocusComponent != null) {
+                // add us to the focus gaining component, only if it is our child (editors are)
+                if (SwingUtilities.isDescendingFrom(nextFocusComponent, sTableCore)) {
+                    nextFocusComponent.addKeyListener(this);
+                }
+            }
+            if (nextFocusComponent == STableCore.this && cellWhereEnterWasPressed != null) {
+                RowCol rowCol = cellWhereEnterWasPressed;
+                cellWhereEnterWasPressed = null;
+                if (rowCol.shiftDown) {
+                    STableCore.this.editPreviousEditableCell(rowCol.row, rowCol.col);
+                }
+                else {
+                    STableCore.this.editNextEditableCell(rowCol.row, rowCol.col);
+                }
+            }
+        }
+        record RowCol(int row, int col, boolean shiftDown) {}
+        private RowCol cellWhereEnterWasPressed = null;
+
+        // ===========================
+        // keyListener
+
+        @Override
+        public void keyPressed(KeyEvent e) {
+            // There are those components that actually do something with keypresses.
+            // For example JComboBoxes processes the ENTER key as "accept value".
+            // That means the event is consumed (not propagated to the parent) and thus does not end up within this Table,
+            // which would then handle that as an edit next cell.
+            //
+            // So to handle these situations, whenever ENTER is pressed, we make a note that the edit must be accepted.
+            // If this didn't occur (for whatever reason) when the key is released, it is forced.
+            if (e.getKeyChar() == KeyEvent.VK_ENTER && isEditing() && getCellEditor() != null) {
+                cellWhereEnterWasPressed = new RowCol(getEditingRow(), getEditingColumn(), e.isShiftDown());
+            }
+        }
+
+        @Override
+        public void keyReleased(KeyEvent e) {
+        }
+
+        @Override
+        public void keyTyped(KeyEvent e) {
+        }
+    };
+
+    private void editPreviousEditableCell(int row, int col) {
+        // Find previous editable cell
+        do {
+            if (col > 0) {
+                col--;
+            }
+            else {
+                row--;
+                col = super.getColumnCount() - 1;
+            }
+
+            // If we went over the beginning of the table
+            if (row < 0) {
+                return;
+            }
+        } while (!super.isCellEditable(row, col));
+
+        // start editing here
+        editCellAt(row, col);
+        Arrays.asList(STableCore.this.getComponents()).forEach(component -> component.requestFocus());
+    }
+
+    private void editNextEditableCell(int row, int col) {
+        // Find next editable cell
+        do {
+            if (col < super.getColumnCount() - 1) {
+                col++;
+            }
+            else {
+                row++;
+                col = 0;
+            }
+
+            // If we went over the end of the table
+            if (row >= super.getRowCount()) {
+                return;
+            }
+        } while (!super.isCellEditable(row, col));
+
+        // start editing here
+        editCellAt(row, col);
+        Arrays.asList(STableCore.this.getComponents()).forEach(component -> component.requestFocus());
     }
 
     // =======================================================================
@@ -358,9 +475,6 @@ public class STableCore<TableType> extends javax.swing.JTable {
 
     final static private String COLUMN_WIDTH_ID = ".CW.";
 
-    /**
-     *
-     */
     public void saveColumnWidthPreferences() {
     	if (!getAutoSavePreferences() || restoringPreferences > 0) {
     		return;
@@ -393,9 +507,6 @@ public class STableCore<TableType> extends javax.swing.JTable {
 		}
     }
 
-    /**
-     *
-     */
     public void restoreColumnWidthPreferences() {
     	if (!getAutoSavePreferences()) {
     		return;
@@ -432,9 +543,6 @@ public class STableCore<TableType> extends javax.swing.JTable {
 
     final static private String COLUMN_ORDER_ID = ".CO.";
 
-	/**
-     *
-     */
     public void saveColumnOrderPreferences() {
     	if (!getAutoSavePreferences() || restoringPreferences > 0) {
     		return;
@@ -466,9 +574,6 @@ public class STableCore<TableType> extends javax.swing.JTable {
 		}
     }
 
-    /**
-     *
-     */
     public void restoreColumnOrderPreferences() {
     	if (!getAutoSavePreferences()) {
     		return;
