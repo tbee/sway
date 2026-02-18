@@ -12,18 +12,30 @@ public class BeanBinder<T> {
 
     final private BeanAdapter<T> beanAdapter = new BeanAdapter<>(null, true);
     final private List<Consumer<T>> onChangeListeners = new ArrayList<>();
+    private int setting = 0;
 
     public BeanBinder(T bean) {
         beanAdapter.addPropertyChangeListener("bean", evt -> onChangeListeners.forEach(onChangeListener -> onChangeListener.accept((T)evt.getNewValue())));
-        beanAdapter.setBean(bean);
+        set(bean);
     }
 
     public void set(T bean) {
-        beanAdapter.setBean(bean);
+        setting++;
+        try {
+            beanAdapter.setBean(bean);
+        }
+        finally {
+            setting--;
+        }
     }
 
     public T get() {
         return beanAdapter.getBean();
+    }
+
+    /// returns true if this bean binder is in the process of accepting a new value (true set)
+    public boolean isSetting() {
+        return setting > 0;
     }
 
     public BeanBinder<T> onChange(Consumer<T> onChangeListener) {
