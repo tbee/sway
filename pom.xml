@@ -9,8 +9,8 @@
     <version>master-SNAPSHOT</version>
 
     <properties>
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
+        <maven.compiler.source>25</maven.compiler.source>
+        <maven.compiler.target>25</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
@@ -150,8 +150,47 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>org.mvnsearch</groupId>
+                <artifactId>toolchains-maven-plugin</artifactId>
+                <version>4.5.0</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>toolchain</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <toolchains>
+                        <jdk>
+                            <version>${maven.compiler.target}</version>
+                        </jdk>
+                    </toolchains>
+                </configuration>
+            </plugin>
+
+            <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.10.1</version>
+                <version>3.15.0</version>
+                <executions>
+                    <!-- during test compile the compiler needs to scan for annotation processors on the classpath -->
+                    <execution>
+                        <id>default-testCompile</id>
+                        <phase>test-compile</phase>
+                        <goals>
+                            <goal>testCompile</goal>
+                        </goals>
+                        <configuration>
+                            <proc>full</proc>
+                            <!-- <verbose>true</verbose> -->
+                            <!-- <showWarnings>true</showWarnings> -->
+                            <compilerArgs>
+                                <arg>-processorpath</arg>
+                                <arg>${project.build.outputDirectory}</arg>
+                            </compilerArgs>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
 
             <plugin>

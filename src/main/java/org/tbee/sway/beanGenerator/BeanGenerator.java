@@ -42,7 +42,7 @@ import java.util.stream.Collectors;
  * this is why GUID are so well suited as ids for entities.
  */
 @SupportedAnnotationTypes("org.tbee.sway.beanGenerator.annotations.Bean")
-@SupportedSourceVersion(SourceVersion.RELEASE_17)
+@SupportedSourceVersion(SourceVersion.RELEASE_25)
 @AutoService(Processor.class)
 public class BeanGenerator extends AbstractProcessor {
 
