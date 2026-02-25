@@ -24,7 +24,11 @@ public class SVPanel extends SPanelExtendable<SVPanel> implements
 
     public SVPanel() {
         setLayout(migLayout);
-        //lc.debug();
+    }
+
+    public SVPanel debug() {
+        lc.debug();
+        return this;
     }
 
     protected void addImpl(Component comp, Object constraints, int index) {

@@ -21,7 +21,11 @@ public class SHPanel extends SPanelExtendable<SHPanel> implements
 
     public SHPanel() {
         setLayout(migLayout);
-        //lc.debug();
+    }
+
+    public SHPanel debug() {
+        lc.debug();
+        return this;
     }
 
     protected void addImpl(Component comp, Object constraints, int index) {
