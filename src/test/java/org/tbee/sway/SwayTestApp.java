@@ -102,6 +102,7 @@ public class SwayTestApp {
 
         migPanel.addLabelAndField("String", STextField.ofString().value("abc")).wrap();
         migPanel.addLabelAndField("String null", STextField.ofString().value(null).name("StringNull")).wrap();
+        migPanel.addLabelAndField("String error", STextField.ofString().value("abc").error("This is the error text")).wrap();
 
         migPanel.addLabelAndField("String -> bean.name", STextField.ofString().bindTo(bean.name$())).wrap();
 

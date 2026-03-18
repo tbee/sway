@@ -1,3 +1,3 @@
 call javac -version
-call mvnw exec:java
+call mvnw clean package -D skipTests exec:java
 pause

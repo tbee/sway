@@ -140,6 +140,7 @@ public class STextField<T> extends javax.swing.JTextField implements
     public static final Color TRANSPARENT_COLOR = new Color(1.0f, 0.0f, 0.0f, 0.0f);
     public static final Cursor TEXT_CURSOR = new Cursor(Cursor.TEXT_CURSOR);
     public static final Cursor ICON_CURSOR = new Cursor(Cursor.HAND_CURSOR);
+    public static final String ORIGINAL_BORDER = "originalBorder";
 
     final private Format<T> format;
 
@@ -152,10 +153,6 @@ public class STextField<T> extends javax.swing.JTextField implements
     private Consumer<MouseEvent> onIconClick = null;
     private Consumer<MouseEvent> onBackIconClick = null;
 
-    /**
-     *
-     * @param format
-     */
     public STextField(Format<T> format) {
         if (format == null) {
             throw new IllegalArgumentException("Null not allowed for format");
@@ -180,6 +177,8 @@ public class STextField<T> extends javax.swing.JTextField implements
             }
         };
         focusInterpreter.addFocusListener(focusInterpreterListener);
+
+        putClientProperty(ORIGINAL_BORDER, getBorder());
     }
     private FocusInterpreter.FocusInterpreterListener focusInterpreterListener = null;
     final private FocusInterpreter focusInterpreter = new FocusInterpreter(this);
@@ -598,6 +597,25 @@ public class STextField<T> extends javax.swing.JTextField implements
     final static public String MAXLENGTH = "maxLength";
 
 
+    public STextField<T> error(String v) {
+        Border border = (Border) getClientProperty(ORIGINAL_BORDER);
+        if (v == null || v.isBlank()) {
+            setBorder(border);
+            super.setToolTipText(toolTipText);
+            return this;
+        }
+
+        setBorder(BorderFactory.createCompoundBorder(BorderFactory.createDashedBorder(Color.RED), border));
+        super.setToolTipText(v);
+        return this;
+    }
+
+    @Override
+    public void setToolTipText(String text) {
+        this.toolTipText = text;
+    }
+    private String toolTipText = null;
+
     // ==============================================
     // FLUENT API
 
@@ -607,7 +625,9 @@ public class STextField<T> extends javax.swing.JTextField implements
     }
 
     public STextField<T> transparentAsLabel() {
-        setBorder(BorderFactory.createEmptyBorder());
+        Border border = BorderFactory.createEmptyBorder();
+        setBorder(border);
+        putClientProperty(ORIGINAL_BORDER, border);
         setBackground(null);
         return this;
     }
