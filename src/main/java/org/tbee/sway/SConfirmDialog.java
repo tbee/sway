@@ -12,6 +12,7 @@ import javax.swing.SwingUtilities;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Window;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.function.Supplier;
@@ -142,10 +143,7 @@ public class SConfirmDialog extends JDialog implements
 						close();
 					}
 				});
-		sButton.registerKeyboardAction(e -> sButton.doClick() //
-				, KeyStroke.getKeyStroke(text.toUpperCase().charAt(0), 0) //
-				, JButton.WHEN_IN_FOCUSED_WINDOW //
-		);
+		sButton.setMnemonic(Character.toUpperCase(text.charAt(0)));
 		getRootPane().setDefaultButton(sButton); // The last button is the default button
 		return sButton;
 	}
