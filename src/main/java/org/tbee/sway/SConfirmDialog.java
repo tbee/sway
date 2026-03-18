@@ -1,6 +1,5 @@
 package org.tbee.sway;
 
-import org.checkerframework.checker.units.qual.C;
 import org.tbee.sway.mixin.ComponentMixin;
 import org.tbee.sway.mixin.WindowMixin;
 
@@ -17,6 +16,26 @@ import java.util.ArrayList;
 import java.util.Objects;
 import java.util.function.Supplier;
 
+/// Examples:
+/// ```java
+///         SConfirmDialog.of(this, "Some title", SMigPanel.of()
+///                         .addComponent(SLabel.of("Blabla:"), cc -> cc.wrap())
+///                         .addComponent(..., cc -> cc.grow().push()))
+///                 .sizeToPreferred()
+///                 .centerOnScreen()
+///                 .showAndWait();
+/// ```
+///
+/// ```java
+///             SConfirmDialog.of(owner, "", dateTimePicker)
+///                     .onCancelJustClose()
+///                     .onOk(() -> callback.accept(dateTimePicker.getValue()))
+///                     .showAndWait();
+/// ```
+///
+/// ```java
+///  	SConfirmDialog.ofthis, "Info", SLabel.of("blablabla")).centerOnScreen().onOkJustClose().showAndWait();
+/// ```
 public class SConfirmDialog extends JDialog implements
 		SOverlayPane.OverlayProvider,
 		WindowMixin<SConfirmDialog>,
@@ -28,11 +47,6 @@ public class SConfirmDialog extends JDialog implements
 	private String okText = "OK";
 	private Supplier<Boolean> onOkCallback = null;
 
-	/**
-	 * @param owner
-	 * @param title
-	 * @param modalityType
-	 */
 	public SConfirmDialog(Window owner, String title, ModalityType modalityType, JComponent content) {
 		super(owner, title, modalityType);
         this.content = content;
