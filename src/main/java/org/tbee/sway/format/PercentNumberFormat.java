@@ -7,25 +7,30 @@ import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
+import java.util.Locale;
 
-public class BigDecimalNumberFormat implements Format<BigDecimal> {
+public class PercentNumberFormat implements Format<BigDecimal> {
 
     private final NumberFormat numberFormat;
 
-    public BigDecimalNumberFormat() {
-        this(NumberFormat.getInstance());
+    public PercentNumberFormat() {
+        this(NumberFormat.getPercentInstance());
     }
 
-    public BigDecimalNumberFormat(NumberFormat numberFormat) {
+    public PercentNumberFormat(Locale locale) {
+        this(NumberFormat.getPercentInstance(locale));
+    }
+
+    public PercentNumberFormat(NumberFormat numberFormat) {
         this.numberFormat = numberFormat;
     }
 
-    public BigDecimalNumberFormat minimumFractionDigits(int v) {
+    public PercentNumberFormat minimumFractionDigits(int v) {
         numberFormat.setMinimumFractionDigits(v);
         return this;
     }
 
-    public BigDecimalNumberFormat maximumFractionDigits(int v) {
+    public PercentNumberFormat maximumFractionDigits(int v) {
         numberFormat.setMinimumFractionDigits(v);
         return this;
     }
@@ -40,8 +45,8 @@ public class BigDecimalNumberFormat implements Format<BigDecimal> {
         try {
             ((DecimalFormat)this.numberFormat).setParseBigDecimal(true);
             BigDecimal bigDecimal = string.isBlank() ? null : (BigDecimal) numberFormat.parse(string);
-            int minimumFractionDigits = numberFormat.getMinimumFractionDigits();
-            int maximumFractionDigits = numberFormat.getMaximumFractionDigits();
+            int minimumFractionDigits = numberFormat.getMinimumFractionDigits() + 2; // Notation is in %, so * 100
+            int maximumFractionDigits = numberFormat.getMaximumFractionDigits() + 2; // Notation is in %, so * 100
             if (bigDecimal.scale() < minimumFractionDigits) {
                 bigDecimal = bigDecimal.setScale(minimumFractionDigits, RoundingMode.HALF_UP);
             }
@@ -65,7 +70,7 @@ public class BigDecimalNumberFormat implements Format<BigDecimal> {
         return HAlign.TRAILING;
     }
 
-    public static BigDecimalNumberFormat of() {
-        return new BigDecimalNumberFormat();
+    public static PercentNumberFormat of() {
+        return new PercentNumberFormat();
     }
 }
