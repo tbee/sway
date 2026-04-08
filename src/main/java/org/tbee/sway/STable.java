@@ -272,6 +272,11 @@ public class STable<TableType> extends JPanel implements
         return this;
     }
 
+    public STable<TableType> refresh() {
+        sTableCore.getTableModel().fireTableDataChanged();
+        return this;
+    }
+
     /**
      * Stop the edit by either accepting or cancelling
      */
@@ -554,9 +559,6 @@ public class STable<TableType> extends JPanel implements
     private BeanUtil.PropertyChangeConnector propertyChangeConnector = null;
     private boolean registerToAllBeans = false;
 
-    /**
-     *
-     */
     public void setMonitorBean(Class<TableType> v) {
 
         // unregister if already registered
@@ -582,6 +584,16 @@ public class STable<TableType> extends JPanel implements
         setMonitorBean(v);
         return this;
     }
+    public STable<TableType> monitorBean(Class<TableType> v, BeanChangeListener<TableType> beanChangeListener) {
+        setMonitorBean(v);
+        beanChangeListeners.add(beanChangeListener);
+        return this;
+    }
+    public interface BeanChangeListener<T> {
+        void onChange(BeanChange<T> beanChange);
+    }
+    public record BeanChange<T>(T bean, String propertyName, Object oldValue, Object newValue) {}
+    private final List<BeanChangeListener<TableType>> beanChangeListeners = new ArrayList<>();
 
     final private PropertyChangeListener beanPropertyChangeListener = evt -> {
         Object evtSource = evt.getSource();
@@ -611,6 +623,8 @@ public class STable<TableType> extends JPanel implements
                 }
             }
         }
+
+        beanChangeListeners.forEach(pcl -> pcl.onChange(new BeanChange<>((TableType)evt.getSource(), evt.getPropertyName(), evt.getOldValue(), evt.getNewValue())));
     };
 
     protected void registerToAllBeans() {

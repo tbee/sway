@@ -3,8 +3,10 @@ package org.tbee.sway;
 import org.tbee.sway.binding.BeanBinder;
 import org.tbee.sway.binding.BindingEndpoint;
 import org.tbee.sway.binding.ExceptionHandler;
+import org.tbee.sway.format.CurrencyNumberFormat;
 import org.tbee.sway.format.Format;
 import org.tbee.sway.format.JavaFormat;
+import org.tbee.sway.format.PercentNumberFormat;
 import org.tbee.sway.format.StringFormat;
 import org.tbee.sway.mixin.BindToMixin;
 import org.tbee.sway.mixin.EditableMixin;
@@ -448,22 +450,26 @@ public class STextField<T> extends javax.swing.JTextField implements
     static public STextField<BigDecimal> ofBigDecimal() {
         return of(BigDecimal.class);
     }
-    static public STextField<Number> ofPercent() {
-        return new STextField<>(new JavaFormat<>(NumberFormat.getPercentInstance(), ("" + Double.MIN_VALUE).length(), HAlign.TRAILING));
+    static public STextField<BigDecimal> ofPercent() {
+        return STextField.of(PercentNumberFormat.of());
     }
-    static public STextField<Number> ofPercent(Locale locale) {
+    static public STextField<BigDecimal> ofPercent(int minimumFractionDigits) {
+        return STextField.of(PercentNumberFormat.of().minimumFractionDigits(minimumFractionDigits));
+    }
+    static public STextField<BigDecimal> ofPercent(Locale locale) {
         return new STextField<>(new JavaFormat<>(NumberFormat.getPercentInstance(locale), ("" + Double.MIN_VALUE).length(), HAlign.TRAILING));
     }
-    static public STextField<Number> ofCurrency() {
-        return new STextField<>(new JavaFormat<>(NumberFormat.getCurrencyInstance(), ("" + Double.MIN_VALUE).length() + 1, HAlign.TRAILING));
+    static public STextField<BigDecimal> ofCurrency(Locale locale) {
+        return STextField.of(CurrencyNumberFormat.of(locale));
     }
-    static public STextField<Number> ofCurrency(Locale locale) {
-        return new STextField<>(new JavaFormat<>(NumberFormat.getCurrencyInstance(locale), ("" + Double.MIN_VALUE).length() + 4, HAlign.TRAILING));
+    static public STextField<BigDecimal> ofCurrency(Currency currency) {
+        return STextField.of(CurrencyNumberFormat.of().currency(currency));
     }
-    static public STextField<Number> ofCurrency(Currency currency) {
-        NumberFormat currencyInstance = NumberFormat.getCurrencyInstance();
-        currencyInstance.setCurrency(currency);
-        return new STextField<>(new JavaFormat<>(currencyInstance, ("" + Double.MIN_VALUE).length() + 4, HAlign.TRAILING));
+    static public STextField<BigDecimal> ofCurrency(Locale locale, int minimumFractionDigits) {
+        return STextField.of(CurrencyNumberFormat.of(locale).minimumFractionDigits(minimumFractionDigits));
+    }
+    static public STextField<BigDecimal> ofCurrency(Currency currency, int minimumFractionDigits) {
+        return STextField.of(CurrencyNumberFormat.of().currency(currency).minimumFractionDigits(minimumFractionDigits));
     }
     static public STextField<LocalDate> ofLocalDate() {
         return of(LocalDate.class);
@@ -490,6 +496,11 @@ public class STextField<T> extends javax.swing.JTextField implements
     protected void setTextFromValue(T value) {
         String text = format.toString(value);
         super.setText(text);
+    }
+
+    public STextField<T> refresh() {
+        setTextFromValue(this.value);
+        return this;
     }
 
     /**

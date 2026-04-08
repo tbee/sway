@@ -1,5 +1,6 @@
 package org.tbee.sway.format;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.tbee.sway.support.HAlign;
 
 import java.math.BigDecimal;
@@ -10,13 +11,13 @@ import java.text.ParseException;
 
 public class BigDecimalNumberFormat implements Format<BigDecimal> {
 
-    private final NumberFormat numberFormat;
+    protected final NumberFormat numberFormat;
 
     public BigDecimalNumberFormat() {
         this(NumberFormat.getInstance());
     }
 
-    public BigDecimalNumberFormat(NumberFormat numberFormat) {
+    BigDecimalNumberFormat(NumberFormat numberFormat) {
         this.numberFormat = numberFormat;
     }
 
@@ -37,22 +38,40 @@ public class BigDecimalNumberFormat implements Format<BigDecimal> {
 
     @Override
     public BigDecimal toValue(String string) {
-        try {
-            ((DecimalFormat)this.numberFormat).setParseBigDecimal(true);
-            BigDecimal bigDecimal = string.isBlank() ? null : (BigDecimal) numberFormat.parse(string);
-            int minimumFractionDigits = numberFormat.getMinimumFractionDigits();
-            int maximumFractionDigits = numberFormat.getMaximumFractionDigits();
-            if (bigDecimal.scale() < minimumFractionDigits) {
-                bigDecimal = bigDecimal.setScale(minimumFractionDigits, RoundingMode.HALF_UP);
+        return parse(string, this.numberFormat);
+    }
+
+    protected @NonNull BigDecimal parse(String string, NumberFormat... numberFormats) {
+        for (NumberFormat numberFormat : numberFormats) {
+            try {
+                ((DecimalFormat) numberFormat).setParseBigDecimal(true);
+                BigDecimal bigDecimal = string.isBlank() ? null : (BigDecimal) numberFormat.parse(string);
+                int minimumFractionDigits = determineMinimumFractionDigits();
+                int maximumFractionDigits = determineMaximumFractionDigits();
+                if (bigDecimal.scale() < minimumFractionDigits) {
+                    bigDecimal = bigDecimal.setScale(minimumFractionDigits, RoundingMode.HALF_UP);
+                }
+                if (bigDecimal.scale() > maximumFractionDigits) {
+                    bigDecimal = bigDecimal.setScale(maximumFractionDigits, RoundingMode.HALF_UP);
+                }
+                return bigDecimal;
             }
-            if (bigDecimal.scale() > maximumFractionDigits) {
-                bigDecimal = bigDecimal.setScale(maximumFractionDigits, RoundingMode.HALF_UP);
+            catch (ParseException e) {
+                // when the last one is attempted, throw the exception
+                if (numberFormat == numberFormats[numberFormats.length - 1]) {
+                    throw new RuntimeException("Error parsing text", e);
+                }
             }
-            return bigDecimal;
         }
-        catch (ParseException e) {
-            throw new RuntimeException("Error parsing text", e);
-        }
+        throw new RuntimeException("No NumberFormats");
+    }
+
+    protected int determineMaximumFractionDigits() {
+        return numberFormat.getMaximumFractionDigits();
+    }
+
+    protected int determineMinimumFractionDigits() {
+        return numberFormat.getMinimumFractionDigits();
     }
 
     @Override

@@ -30,6 +30,7 @@ import java.util.Currency;
 import java.util.List;
 import java.util.Locale;
 
+import static java.math.BigDecimal.valueOf;
 import static org.tbee.sway.format.FileFormat.AllowedType.DIR;
 import static org.tbee.sway.format.FileFormat.AllowedType.FILE;
 import static org.tbee.sway.support.IkonliUtil.createIcon;
@@ -121,17 +122,17 @@ public class SwayTestApp {
 //        integerSTextField.value$().add(2).bind(bean.distance$());
 //        migPanel.addField(integerSTextField).wrap();
 
-        migPanel.addLabelAndField("Long", STextField.ofLong().value(123l)).wrap();
+        migPanel.addLabelAndField("Long", STextField.ofLong().value(123L)).wrap();
 
         migPanel.addLabelAndField("Double", STextField.ofDouble().value(1.23)).wrap();
 
-        migPanel.addLabelAndField("Percent", STextField.ofPercent().value(1.23)).wrap();
+        migPanel.addLabelAndField("Percent", STextField.ofPercent().value(valueOf(1.23))).wrap();
 
-        migPanel.addLabelAndField("Currency", STextField.ofCurrency().value(1.23)).wrap();
+        migPanel.addLabelAndField("Currency", STextField.ofCurrency(Locale.getDefault()).value(valueOf(1.23))).wrap();
 
-        migPanel.addLabelAndField("Currency JAPAN", STextField.ofCurrency(Locale.JAPAN).value(1.23)).wrap();
+        migPanel.addLabelAndField("Currency JAPAN", STextField.ofCurrency(Locale.JAPAN).value(valueOf(1.23))).wrap();
 
-        migPanel.addLabelAndField("Currency EURO", STextField.ofCurrency(Currency.getInstance("EUR")).value(1.23)).wrap();
+        migPanel.addLabelAndField("Currency EURO", STextField.ofCurrency(Currency.getInstance("EUR")).value(valueOf(1.23))).wrap();
 
         migPanel.addLabelAndField("BigInteger", STextField.ofBigInteger().value(BigInteger.ONE)).wrap();
 
