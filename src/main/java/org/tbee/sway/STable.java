@@ -212,7 +212,7 @@ public class STable<TableType> extends JPanel implements
     public STable() {
 
         // Create components
-        sTableCore = new STableCore<TableType>(this);
+        sTableCore = new STableCore<>(this);
         JScrollPane scrollPane = new JScrollPane(sTableCore);
         STableNavigator tableNavigator = new STableNavigator(sTableCore);
 

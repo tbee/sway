@@ -11,9 +11,7 @@ import javax.swing.event.AncestorListener;
 import java.awt.Component;
 import java.awt.Graphics;
 
-/**
- * SSplitPane.of(components...).vertical()
- */
+/// SSplitPane.of(components...).vertical()
 public class SSplitPanel extends JSplitPane implements
         PreferencesMixin<SSplitPanel>,
         JComponentMixin<SSplitPanel> {
@@ -78,43 +76,43 @@ public class SSplitPanel extends JSplitPane implements
     // ========================================================
     // FLUENT API
 
-    /**
-     * The components are placed vertically, with a horizontal splitter
-     */
+    /// The components are placed vertically, with a horizontal splitter
     public SSplitPanel vertical() {
         setOrientation(JSplitPane.VERTICAL_SPLIT);
         return this;
     }
 
-    /**
-     * The components are placed horizontally, with a vertical splitter
-     */
+    /// The components are placed horizontally, with a vertical splitter
     public SSplitPanel horizontal() {
         setOrientation(JSplitPane.HORIZONTAL_SPLIT);
         return this;
     }
 
-    /**
-     * The first (aka left) component.
-     */
+    /// The first (aka left/top) component.
     public SSplitPanel first(Component component) {
         setLeftComponent(component);
         return this;
     }
 
-    /**
-     * The second (aka right) component.
-     */
+    /// The second (aka right/bottom) component.
     public SSplitPanel second(Component component) {
         setRightComponent(component);
         return this;
     }
 
+    /// Set the position of the divider as a factor of the size (0.0-1.0)
     public SSplitPanel dividerLocation(double proportionalLocation) {
         setDividerLocation(proportionalLocation);
         return this;
     }
 
+
+    /// 0.0 all extra space is going to the last component
+    /// 1.0 all extra space is going to the first component
+    public SSplitPanel resizeWeight(double v) {
+        setResizeWeight(v);
+        return this;
+    }
 
     // ========================================================
     // OF
