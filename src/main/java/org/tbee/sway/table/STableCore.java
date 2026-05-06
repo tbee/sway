@@ -358,6 +358,18 @@ public class STableCore<TableType> extends javax.swing.JTable {
     }
 
     /**
+     * When a JTextField-based editor is activated via keyboard, select all text so typing replaces it.
+     */
+    @Override
+    public Component prepareEditor(TableCellEditor editor, int row, int column) {
+        Component component = super.prepareEditor(editor, row, column);
+        if (component instanceof javax.swing.JTextField textField) {
+            SwingUtilities.invokeLater(textField::selectAll);
+        }
+        return component;
+    }
+
+    /**
      * Updated rendering
      */
     public Component prepareRenderer(TableCellRenderer renderer, int row, int col) {
