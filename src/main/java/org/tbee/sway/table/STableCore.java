@@ -15,7 +15,6 @@ import java.lang.ref.SoftReference;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -23,6 +22,8 @@ import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
 import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.JComponent;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
@@ -118,6 +119,8 @@ public class STableCore<TableType> extends javax.swing.JTable {
         addKeyShortcut("paste", KeyStroke.getKeyStroke(KeyEvent.VK_V, ActionEvent.CTRL_MASK, false), e -> sTable.paste());
         addKeyShortcut("cut", KeyStroke.getKeyStroke(KeyEvent.VK_X, ActionEvent.CTRL_MASK, false), e -> sTable.cut());
         addKeyShortcut("deleteSelectedRows", KeyStroke.getKeyStroke("DELETE"), e -> STableCore.this.sTable.deleteSelectedRows());
+        addKeyShortcutWhenEditing("editRowAbove", KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0), e -> navigateEditingVertically(-1));
+        addKeyShortcutWhenEditing("editRowBelow", KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0), e -> navigateEditingVertically(+1));
     }
     private FocusInterpreter.FocusInterpreterListener focusInterpreterListener = null;
     final private FocusInterpreter focusInterpreter = new FocusInterpreter(this);
@@ -140,6 +143,67 @@ public class STableCore<TableType> extends javax.swing.JTable {
 				consumer.accept(e);
 			}
 		};
+    }
+
+    /**
+     * Special behavior when a cell is being edited
+     */
+    public void addKeyShortcutWhenEditing(String id, KeyStroke keyStroke, Consumer<ActionEvent> consumer) {
+        var inputMap = getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+        Object originalActionKey = inputMap.get(keyStroke);
+        Action originalAction = (originalActionKey == null ? null : getActionMap().get(originalActionKey));
+
+        inputMap.put(keyStroke, id);
+        getActionMap().put(id, action(e -> {
+            if (!isEditing()) {
+                if (originalAction != null) {
+                    originalAction.actionPerformed(e);
+                }
+                return;
+            }
+            consumer.accept(e);
+        }));
+    }
+
+    private void navigateEditingVertically(int rowDelta) {
+        int row = getEditingRow();
+        int col = getEditingColumn();
+        if (row < 0 || col < 0) {
+            return;
+        }
+
+        var editor = getCellEditor();
+        if (editor == null) {
+            return;
+        }
+        if (!editor.stopCellEditing()) {
+            // Validation rejected commit; keep current editor active.
+            return;
+        }
+
+        int targetRow = findNextEditableRowInColumn(row + rowDelta, col, rowDelta);
+        if (targetRow < 0) {
+            // No editable row in that direction: keep editing current cell after commit.
+            targetRow = row;
+        }
+
+        changeSelection(targetRow, col, false, false);
+        if (editCellAt(targetRow, col)) {
+            Component editorComponent = getEditorComponent();
+            if (editorComponent != null) {
+                editorComponent.requestFocusInWindow();
+            }
+        }
+    }
+
+    private int findNextEditableRowInColumn(int row, int col, int rowDelta) {
+        while (row >= 0 && row < getRowCount()) {
+            if (isCellEditable(row, col)) {
+                return row;
+            }
+            row += rowDelta;
+        }
+        return -1;
     }
 
     // install a special focus listener, so we can catch the latest key pressed in the editor
@@ -695,3 +759,4 @@ public class STableCore<TableType> extends javax.swing.JTable {
     	}
     }
 }
+
