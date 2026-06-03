@@ -30,7 +30,7 @@ import java.util.function.Supplier;
 /// ```java
 ///             SConfirmDialog.of(owner, "", dateTimePicker)
 ///                     .onCancelJustClose()
-///                     .onOk(() -> callback.accept(dateTimePicker.getValue()))
+///                     .onOk(() -> callback.accept(dateTimePicker.getValue())) // This conditionally closes the SConfirmDialog
 ///                     .showAndWait();
 /// ```
 ///
@@ -75,15 +75,16 @@ public class SConfirmDialog extends JDialog implements
 		return this;
 	}
 	public SConfirmDialog onCancel(Supplier<Boolean> callback) {
-		Objects.requireNonNull(callback, "Callback cannot be null");
+		Objects.requireNonNull(callback);
 		onCancelCallback = callback;
 		return this;
 	}
+	/// If the callback returns false, the SConfirmDialog will not be closed.
 	public SConfirmDialog onCancel(Runnable callback) {
-		Objects.requireNonNull(callback, "Callback cannot be null");
+		Objects.requireNonNull(callback);
 		return onCancel(() -> {
 			callback.run();
-			return true;
+			return true; // per default close the SConfirmDialog
 		});
 	}
 	public SConfirmDialog onCancelJustClose() {
@@ -94,16 +95,17 @@ public class SConfirmDialog extends JDialog implements
 		okText = v;
 		return this;
 	}
+	/// If the callback returns false, the SConfirmDialog will not be closed.
 	public SConfirmDialog onOk(Supplier<Boolean> callback) {
-		Objects.requireNonNull(callback, "Callback cannot be null");
+		Objects.requireNonNull(callback);
 		onOkCallback = callback;
 		return this;
 	}
 	public SConfirmDialog onOk(Runnable callback) {
-		Objects.requireNonNull(callback, "Callback cannot be null");
+		Objects.requireNonNull(callback);
 		return onOk(() -> {
 			callback.run();
-			return true;
+			return true; // per default close the SConfirmDialog
 		});
 	}
 	public SConfirmDialog onOkJustClose() {
