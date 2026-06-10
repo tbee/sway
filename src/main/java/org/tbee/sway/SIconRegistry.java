@@ -5,6 +5,7 @@ import org.kordamp.ikonli.materialdesign2.MaterialDesignC;
 import org.kordamp.ikonli.materialdesign2.MaterialDesignF;
 import org.kordamp.ikonli.materialdesign2.MaterialDesignM;
 import org.kordamp.ikonli.materialdesign2.MaterialDesignN;
+import org.kordamp.ikonli.materialdesign2.MaterialDesignO;
 import org.kordamp.ikonli.materialdesign2.MaterialDesignP;
 import org.kordamp.ikonli.materialdesign2.MaterialDesignR;
 import org.kordamp.ikonli.materialdesign2.MaterialDesignS;
@@ -54,7 +55,7 @@ public class SIconRegistry {
         // Register default icons for those that are required visually
         // https://kordamp.org/ikonli/cheat-sheet-materialdesign2.html
         // https://kordamp.org/ikonli/cheat-sheet-material2.html
-        register(TEXTFIELD_POPUP, createIcon(MaterialDesignM.MENU, TEXTFIELD_POPUP.typicalSize()));
+        register(TEXTFIELD_POPUP, createIcon(MaterialDesignO.OPEN_IN_NEW, TEXTFIELD_POPUP.typicalSize()));
 
         register(DATEPICKER_NEXTMONTH, createIcon(Material2AL.KEYBOARD_ARROW_RIGHT, DATEPICKER_NEXTMONTH.typicalSize() - 2));
         register(DATEPICKER_PREVMONTH, createIcon(Material2AL.KEYBOARD_ARROW_LEFT, DATEPICKER_PREVMONTH.typicalSize() - 2));
