@@ -28,6 +28,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 import javax.swing.table.TableCellRenderer;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -206,6 +207,10 @@ public class STable<TableType> extends JPanel implements
         PreferencesMixin<STable<TableType>>,
         BindToMixin<STable<TableType>, List<TableType>> {
     static private org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(STable.class);
+
+    public static final String UIMANAGER_UNEDITABLE_CELLS_SHOW_AS_DISABLED = "STable.uneditableCellsShowAsDisabled";
+    public static final String UIMANAGER_UNEDITABLE_TABLE_SHOW_AS_DISABLED = "STable.uneditableTableShowsCellsAsDisabled";
+    public static final String UIMANAGER_DISABLED_TABLE_SHOWS_CELLS_AS_DISABLED = "STable.disabledTableShowsCellsAsDisabled";
 
     private final STableCore<TableType> sTableCore;
 
@@ -779,7 +784,7 @@ public class STable<TableType> extends JPanel implements
     public boolean getUneditableCellsShowAsDisabled() {
         return uneditableCellsShowAsDisabled;
     }
-    private boolean uneditableCellsShowAsDisabled = true;
+    private boolean uneditableCellsShowAsDisabled = (UIManager.get(UIMANAGER_UNEDITABLE_CELLS_SHOW_AS_DISABLED) == null ? true : UIManager.getBoolean(UIMANAGER_UNEDITABLE_CELLS_SHOW_AS_DISABLED));;
     final static public String UNEDITABLECELLSSHOWASDISABLED = "uneditableCellsShowAsDisabled";
     public STable<TableType> uneditableCellsShowAsDisabled(boolean v) {
         setUneditableCellsShowAsDisabled(v);
@@ -796,7 +801,7 @@ public class STable<TableType> extends JPanel implements
     public boolean getDisabledTableShowsCellsAsDisabled() {
         return disabledTableShowsCellsAsDisabled;
     }
-    private boolean disabledTableShowsCellsAsDisabled = true;
+    private boolean disabledTableShowsCellsAsDisabled = (UIManager.get(UIMANAGER_DISABLED_TABLE_SHOWS_CELLS_AS_DISABLED) == null ? true : UIManager.getBoolean(UIMANAGER_DISABLED_TABLE_SHOWS_CELLS_AS_DISABLED));;
     final static public String DISABLEDTABLESHOWSCELLSASDISABLED = "disabledTableShowsCellsAsDisabled";
     public STable<TableType> disabledTableShowsCellsAsDisabled(boolean v) {
         setDisabledTableShowsCellsAsDisabled(v);
@@ -827,7 +832,7 @@ public class STable<TableType> extends JPanel implements
     public boolean getUneditableTableShowsCellsAsDisabled() {
         return uneditableTableShowsCellsAsDisabled;
     }
-    private boolean uneditableTableShowsCellsAsDisabled = true;
+    private boolean uneditableTableShowsCellsAsDisabled = (UIManager.get(UIMANAGER_UNEDITABLE_TABLE_SHOW_AS_DISABLED) == null ? true : UIManager.getBoolean(UIMANAGER_UNEDITABLE_TABLE_SHOW_AS_DISABLED));
     final static public String UNEDITABLETABLESHOWSCELLSASDISABLED = "uneditableTableShowsCellsAsDisabled";
     public STable<TableType> uneditableTableShowsCellsAsDisabled(boolean v) {
         setUneditableTableShowsCellsAsDisabled(v);
