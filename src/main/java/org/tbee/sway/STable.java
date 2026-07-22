@@ -209,7 +209,7 @@ public class STable<TableType> extends JPanel implements
     static private org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(STable.class);
 
     public static final String UIMANAGER_UNEDITABLE_CELLS_SHOW_AS_DISABLED = "STable.uneditableCellsShowAsDisabled";
-    public static final String UIMANAGER_UNEDITABLE_TABLE_SHOW_AS_DISABLED = "STable.uneditableTableShowsCellsAsDisabled";
+    public static final String UIMANAGER_UNEDITABLE_TABLE_SHOW_CELLS_AS_DISABLED = "STable.uneditableTableShowsCellsAsDisabled";
     public static final String UIMANAGER_DISABLED_TABLE_SHOWS_CELLS_AS_DISABLED = "STable.disabledTableShowsCellsAsDisabled";
 
     private final STableCore<TableType> sTableCore;
@@ -832,7 +832,7 @@ public class STable<TableType> extends JPanel implements
     public boolean getUneditableTableShowsCellsAsDisabled() {
         return uneditableTableShowsCellsAsDisabled;
     }
-    private boolean uneditableTableShowsCellsAsDisabled = (UIManager.get(UIMANAGER_UNEDITABLE_TABLE_SHOW_AS_DISABLED) == null ? true : UIManager.getBoolean(UIMANAGER_UNEDITABLE_TABLE_SHOW_AS_DISABLED));
+    private boolean uneditableTableShowsCellsAsDisabled = (UIManager.get(UIMANAGER_UNEDITABLE_TABLE_SHOW_CELLS_AS_DISABLED) == null ? true : UIManager.getBoolean(UIMANAGER_UNEDITABLE_TABLE_SHOW_CELLS_AS_DISABLED));
     final static public String UNEDITABLETABLESHOWSCELLSASDISABLED = "uneditableTableShowsCellsAsDisabled";
     public STable<TableType> uneditableTableShowsCellsAsDisabled(boolean v) {
         setUneditableTableShowsCellsAsDisabled(v);
