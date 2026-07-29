@@ -267,7 +267,48 @@ public class STable<TableType> extends JPanel implements
         unregisterFromAllBeans();
         firePropertyChange(ITEMS, this.data, this.data = new ArrayList<>(v)); // We don't allow outside changes to the provided list
         registerToAllBeans();
+        fireTableDataChanged();
+    }
+
+    /**
+     * Fires a table-data-changed event on the model.
+     *
+     * When the filter header is enabled with adaptive choices (net.coderazzi's
+     * TableFilterHeader / AdaptiveChoicesHandler), the sorter's RowFilter is an
+     * AdaptiveChoicesSupport instance that keeps its own row-mirror (its 'rows'
+     * list) in sync via a TableModelListener. However, coderazzi installs that
+     * listener and (re)builds the AdaptiveChoicesSupport lazily / deferred (via
+     * invokeLater), triggered by its enableNotifications() bookkeeping. When
+     * items are set synchronously - e.g. from a screen constructor - before that
+     * deferred setup has run, the sorter already references a stale, empty
+     * AdaptiveChoicesSupport whose 'rows' list is never updated. The subsequent
+     * fireTableDataChanged() then makes the RowSorter re-sort and call
+     * RowFilter.include(row) for every (new) model row, which reads past the
+     * empty 'rows' list: IndexOutOfBoundsException in AdaptiveChoicesSupport.include.
+     *
+     * To make this robust regardless of coderazzi's deferred initialization we:
+     * 1. detach the sorter's RowFilter, so the sort triggered by the fire cannot
+     *    consult a stale AdaptiveChoicesSupport,
+     * 2. fire the data change (updating the JTable and STable listeners),
+     * 3. toggle the filter header enabled state, which makes coderazzi rebuild
+     *    its AdaptiveChoicesSupport synchronously against the now-current data
+     *    (re-attaching its model listener) and re-apply the RowFilter.
+     */
+    private void fireTableDataChanged() {
+        boolean filterHeaderActive = tableFilterHeader != null && tableFilterHeader.isEnabled();
+
+        javax.swing.DefaultRowSorter<?, ?> drs = (sTableCore.getRowSorter() instanceof javax.swing.DefaultRowSorter<?, ?> d) ? d : null;
+        if (drs != null && drs.getRowFilter() != null) {
+            drs.setRowFilter(null); // unfiltered sort during the fire cannot touch a stale adaptive-choices 'rows' list
+        }
+
         sTableCore.getTableModel().fireTableDataChanged();
+
+        if (filterHeaderActive) {
+            // force coderazzi to (re)build its AdaptiveChoicesSupport against the current data and re-apply the RowFilter
+            tableFilterHeader.setEnabled(false);
+            tableFilterHeader.setEnabled(true);
+        }
     }
     public List<TableType> getItems() {
         return Collections.unmodifiableList(this.data);
@@ -278,7 +319,7 @@ public class STable<TableType> extends JPanel implements
     }
 
     public STable<TableType> refresh() {
-        sTableCore.getTableModel().fireTableDataChanged();
+        fireTableDataChanged();
         return this;
     }
 
