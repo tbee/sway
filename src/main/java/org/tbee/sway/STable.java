@@ -380,6 +380,12 @@ public class STable<TableType> extends JPanel implements
         tableColumn.setsTable(this);
         this.tableColumns.add(tableColumn);
         sTableCore.getTableModel().fireTableStructureChanged();
+
+        // if the filter header was enabled before this column was added (e.g. filterHeaderEnabled() called
+        // before column()), the filter editor formats/renderers must be (re)configured now that the column exists
+        if (tableFilterHeader != null) {
+            setupFilterHeaderRenderers();
+        }
     }
 
     /**
