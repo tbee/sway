@@ -19,6 +19,7 @@ import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ForkJoinPool;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
@@ -183,6 +184,9 @@ public class STabbedPane<T> extends JTabbedPane implements
 
     public <C extends Component> STabbedPane<T> tab(String title, C component, BiConsumer<T, C> onActiveCallback) {
         return tab(title, null, component, null, onActiveCallback);
+    }
+    public <C extends Component> STabbedPane<T> tab(String title, C component, Consumer<T> onActiveCallback) {
+        return tab(title, null, component, null, (v, c) -> onActiveCallback.accept(v));
     }
     public <R, C extends Component> STabbedPane<T> tab(String title, C component, Function<T, R> onLoadCallback, BiConsumer<R, C> onSuccessCallback) {
         return tab(title, null, component, null, onLoadCallback, onSuccessCallback, null);

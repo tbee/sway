@@ -16,7 +16,7 @@ public class SSplitPanel extends JSplitPane implements
         PreferencesMixin<SSplitPanel>,
         JComponentMixin<SSplitPanel> {
 
-    private final PreferenceHelper preferenceHelper = new PreferenceHelper(this, () -> getNameForPreferences());
+    private final PreferenceHelper preferenceHelper = new PreferenceHelper(this, () -> getPreferencesId());
 
     public SSplitPanel() {
         addAncestorListener(new AncestorListener() {
@@ -45,7 +45,7 @@ public class SSplitPanel extends JSplitPane implements
         }
         firePropertyChange(PREFERENCESID, this.nameForPreferences, this.nameForPreferences = v);
     }
-    public String getNameForPreferences() {
+    public String getPreferencesId() {
         return nameForPreferences;
     }
     private String nameForPreferences = "";

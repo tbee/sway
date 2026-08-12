@@ -89,46 +89,26 @@ public class SMenuItem extends javax.swing.JMenuItem implements
 		return new SMenuItem();
 	}
 
-	/**
-	 * @param s
-	 */
 	static public SMenuItem of(String s) {
 		return of().text(s);
 	}
 
-	/**
-	 * @param icon
-	 */
 	static public SMenuItem of(Icon icon) {
 		return of().icon(icon);
 	}
 
-	/**
-	 * @param s
-	 * @param icon
-	 */
 	static public SMenuItem of(String s, Icon icon) {
 		return of().text(s).icon(icon);
 	}
 
-	/**
-	 * @param s
-	 */
 	static public SMenuItem of(String s, ActionListener actionListener) {
 		return of().text(s).onAction(actionListener);
 	}
 
-	/**
-	 * @param icon
-	 */
 	static public SMenuItem of(Icon icon, ActionListener actionListener) {
 		return of().icon(icon).onAction(actionListener);
 	}
 
-	/**
-	 * @param s
-	 * @param icon
-	 */
 	static public SMenuItem of(String s, Icon icon, ActionListener actionListener) {
 		return of().text(s).icon(icon).onAction(actionListener);
 	}
@@ -143,8 +123,13 @@ public class SMenuItem extends javax.swing.JMenuItem implements
         return this;
     }
 
-    public SMenuItem onAction(ActionListener v) {
-        super.addActionListener(v);
-        return this;
-    }
+	public SMenuItem onAction(ActionListener v) {
+		super.addActionListener(v);
+		return this;
+	}
+
+	public SMenuItem actionCommand(String v) {
+		super.setActionCommand(v);
+		return this;
+	}
 }
