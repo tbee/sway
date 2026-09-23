@@ -7,6 +7,7 @@ import javax.swing.border.Border;
 public interface JComponentMixin<T extends JComponent> extends
         ComponentMixin<T>,
         PropertyChangeListenerMixin<T>,
+        VeotableChangeListenerMixin<T>,
         KeyListenerMixin<T>,
         MouseListenerMixin<T>,
         OverlayMixin<T>,

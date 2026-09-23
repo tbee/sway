@@ -11,6 +11,7 @@ import org.tbee.sway.mixin.ToolTipMixin;
 import javax.swing.Action;
 import javax.swing.Icon;
 import javax.swing.JToggleButton;
+import javax.swing.event.ChangeListener;
 import java.awt.event.ActionListener;
 
 // TODO:
@@ -133,5 +134,10 @@ public class SToggleButton extends JToggleButton implements
     }
     static public SToggleButton of(String text, Icon icon, boolean selected, ActionListener actionListener) {
         return of().text(text).icon(icon).selected(selected).onAction(actionListener);
+    }
+
+    public SToggleButton onChange(ChangeListener l) {
+        addChangeListener(l);
+        return this;
     }
 }

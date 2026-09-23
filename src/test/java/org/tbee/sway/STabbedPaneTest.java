@@ -34,7 +34,7 @@ public class STabbedPaneTest extends TestBase {
             async2Textfield = STextField.ofString();
             sTabbedPane = STabbedPane.<String>of()
                     .name("sTabbedPane")
-                    .withPropertyChangeListener(STabbedPane.LOADED_COMPONENT, evt -> tabLoadedCount++)
+                    .onPropertyChange(STabbedPane.LOADED_COMPONENT, evt -> tabLoadedCount++)
                     .bindTo(masterSTextField.value$())
                     .tab("sync1", SHPanel.of(sync1Textfield), (v, c) -> sync1Textfield.setValue("sync1 " + v))
                     .tab("sync1a", SHPanel.of(sync1aTextfield), (v, c) -> sync1aTextfield.setValue("sync1a " + v))
@@ -44,7 +44,7 @@ public class STabbedPaneTest extends TestBase {
                             , (throwable, component) -> showExceptionInDialog(throwable, masterSTextField))
                     .pane("subtab", STabbedPane.<String>of() // nested tabbed pane
                             .name("subTabbedPane")
-                            .withPropertyChangeListener(STabbedPane.LOADED_COMPONENT, evt -> tabLoadedCount++)
+                            .onPropertyChange(STabbedPane.LOADED_COMPONENT, evt -> tabLoadedCount++)
                             .bindTo(masterSTextField.value$()) // or use: (v, c) -> c.setValue(v)
                             .tab("sync2", SHPanel.of(sync2Textfield), (v, c) -> sync2Textfield.setValue("sync2 " + v))
                             .tab("async2", SHPanel.of(async2Textfield)

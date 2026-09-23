@@ -18,14 +18,4 @@ public interface PropertyChangeListenerMixin<T> {
         addPropertyChangeListener(name, evt -> consumer.accept(evt));
         return (T)this;
     }
-
-
-    default T withPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
-        addPropertyChangeListener(propertyName, listener);
-        return (T)this;
-    }
-    default T withPropertyChangeListener(PropertyChangeListener listener) {
-        addPropertyChangeListener(listener);
-        return (T)this;
-    }
 }
