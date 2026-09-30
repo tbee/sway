@@ -9,6 +9,7 @@ import org.tbee.sway.mixin.JComponentMixin;
 import javax.swing.JComponent;
 import java.awt.Component;
 import java.util.Collection;
+import java.util.function.Consumer;
 
 public class SHPanel extends SPanelExtendable<SHPanel> implements
         JComponentMixin<SHPanel> {
@@ -68,6 +69,29 @@ public class SHPanel extends SPanelExtendable<SHPanel> implements
     public SHPanel margin(int top, int left, int bottom, int right) {
         lc.insets(top + "px", left + "px", bottom + "px", right + "px");
         migLayout.setLayoutConstraints(lc); // reapply
+        return this;
+    }
+
+
+    /**
+     * Just changing the CC values does not effectuate them, setCCFor needs to be called.
+     * @param component
+     * @return
+     */
+    private CC cc(Component component) {
+        CC cc = (CC)migLayout.getComponentConstraints(component);
+        if (cc == null) {
+            cc = new CC();
+        }
+        return cc;
+    }
+    private void cc(Component component, CC cc) {
+        migLayout.setComponentConstraints(component, cc);
+    }
+    public SHPanel cc(Component component, Consumer<CC> consumer) {
+        CC cc = cc(component);
+        consumer.accept(cc);
+        cc(component, cc);
         return this;
     }
 }

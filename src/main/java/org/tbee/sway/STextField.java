@@ -154,6 +154,7 @@ public class STextField<T> extends javax.swing.JTextField implements
     private boolean showBackIcon = true;
     private Consumer<MouseEvent> onIconClick = null;
     private Consumer<MouseEvent> onBackIconClick = null;
+    private Consumer<T> onValueChanged = null;
 
     public STextField(Format<T> format) {
         if (format == null) {
@@ -195,6 +196,10 @@ public class STextField<T> extends javax.swing.JTextField implements
     @Override
     public void firePropertyChange(String propertyName, Object oldValue, Object newValue) {
         super.firePropertyChange(propertyName, oldValue, newValue);
+
+        if (onValueChanged != null && VALUE.equals(propertyName)) {
+            onValueChanged.accept((T)newValue);
+        }
     }
 
     @Override
@@ -503,6 +508,11 @@ public class STextField<T> extends javax.swing.JTextField implements
         return this;
     }
 
+    public STextField<T> onValueChanged(Consumer<T> onValueChanged) {
+        this.onValueChanged = onValueChanged;
+        return this;
+    }
+
     /**
      * Parses the text into the value.
      * @return true is the value was set, false if there was an error
@@ -624,6 +634,7 @@ public class STextField<T> extends javax.swing.JTextField implements
     @Override
     public void setToolTipText(String text) {
         this.toolTipText = text;
+        super.setToolTipText(text);
     }
     private String toolTipText = null;
 

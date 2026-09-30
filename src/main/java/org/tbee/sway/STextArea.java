@@ -15,6 +15,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.text.AbstractDocument;
 import java.awt.BorderLayout;
+import java.util.function.Consumer;
 
 public class STextArea extends JPanel implements
         JComponentMixin<STextArea>,
@@ -28,7 +29,8 @@ public class STextArea extends JPanel implements
     final private JTextArea jTextArea;
 	final private FocusInterpreter focusInterpreter;
 	final private FocusInterpreter.FocusInterpreterListener focusInterpreterListener;
-	
+    private Consumer<String> onTextChanged = null;
+    
 	public STextArea() {
 		this(3, 20);
 	}
@@ -78,6 +80,11 @@ public class STextArea extends JPanel implements
     }
 	private String text = "";
 
+    public STextArea onTextChanged(Consumer<String> onTextChanged) {
+        this.onTextChanged = onTextChanged;
+        return this;
+    }
+
     /**
      * editable
      */
@@ -115,6 +122,16 @@ public class STextArea extends JPanel implements
     }
     volatile private int maxLength = -1;
     final static public String MAXLENGTH_PROPERTY_ID = "maxLength";
+
+
+    @Override
+    public void firePropertyChange(String propertyName, Object oldValue, Object newValue) {
+        super.firePropertyChange(propertyName, oldValue, newValue);
+
+        if (onTextChanged != null && TEXT.equals(propertyName)) {
+            onTextChanged.accept((String)newValue);
+        }
+    }
 
     // ========================================================
     // EXCEPTION HANDLER

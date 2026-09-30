@@ -91,4 +91,58 @@ public interface ComponentMixin<T extends Component> extends
         ((T)this).setSize(v, size.height);
         return (T) this;
     }
+
+    ///  Set preferred width, using the current preferred height
+    default T preferredSize(int width, int heihgt) {
+        ((T)this).setPreferredSize(new Dimension(width, heihgt));
+        return (T) this;
+    }
+
+    ///  Set preferred width, using the current preferred height
+    default T preferredWidth(int v) {
+        Dimension size = ((T) this).getPreferredSize();
+        return preferredSize(v, size.height);
+    }
+
+    ///  Set preferred height, using the current preferred width
+    default T preferredHeight(int v) {
+        Dimension size = ((T) this).getPreferredSize();
+        return preferredSize(size.width, v);
+    }
+
+    ///  Set min width, using the current min height
+    default T minSize(int width, int heihgt) {
+        ((T)this).setMinimumSize(new Dimension(width, heihgt));
+        return (T) this;
+    }
+
+    ///  Set min width, using the current min height
+    default T minWidth(int v) {
+        Dimension size = ((T) this).getMinimumSize();
+        return minSize(v, size.height);
+    }
+
+    ///  Set min height, using the current min width
+    default T minHeight(int v) {
+        Dimension size = ((T) this).getMinimumSize();
+        return minSize(size.width, v);
+    }
+
+    ///  Set mix width, using the current mix height
+    default T maxSize(int width, int heihgt) {
+        ((T)this).setMaximumSize(new Dimension(width, heihgt));
+        return (T) this;
+    }
+
+    ///  Set max width, using the current max height
+    default T maxWidth(int v) {
+        Dimension size = ((T) this).getMaximumSize();
+        return maxSize(v, size.height);
+    }
+
+    ///  Set max height, using the current max width
+    default T maxHeight(int v) {
+        Dimension size = ((T) this).getMaximumSize();
+        return maxSize(size.width, v);
+    }
 }

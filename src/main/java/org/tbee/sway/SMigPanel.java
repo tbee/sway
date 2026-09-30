@@ -243,9 +243,13 @@ public class SMigPanel extends SPanelExtendable<SMigPanel> implements
         migLayout.setComponentConstraints(component, cc);
     }
     public void updateCCFor(Component component, Consumer<CC> consumer) {
+        cc(component, consumer);
+    }
+    public SMigPanel cc(Component component, Consumer<CC> consumer) {
         CC cc = getCCFor(component);
         consumer.accept(cc);
         setCCFor(component, cc);
+        return this;
     }
 
     // =========================================================================
