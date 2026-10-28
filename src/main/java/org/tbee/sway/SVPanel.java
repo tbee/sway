@@ -9,6 +9,7 @@ import org.tbee.sway.mixin.JComponentMixin;
 import javax.swing.JComponent;
 import java.awt.Component;
 import java.util.Collection;
+import java.util.function.Consumer;
 
 /**
  * Vertical layout panel
@@ -57,6 +58,13 @@ public class SVPanel extends SPanelExtendable<SVPanel> implements
         return this;
     }
 
+    @Override
+    public SVPanel margin(int top, int left, int bottom, int right) {
+        lc.insets(top + "px", left + "px", bottom + "px", right + "px");
+        migLayout.setLayoutConstraints(lc); // reapply
+        return this;
+    }
+
     public enum Align {LEADING, LEFT, CENTER, RIGHT, TRAILING}
 
     public SVPanel align(Align v) {
@@ -69,17 +77,51 @@ public class SVPanel extends SPanelExtendable<SVPanel> implements
 
     public SVPanel fillWidth(boolean v) {
         for (Component component : getComponents()) {
-            CC cc = (CC)migLayout.getComponentConstraints(component);
-            cc.grow(v ? 100 : 0);
-            cc.pushX();
+            fillWidth(component, v);
         }
         return this;
     }
+    public SVPanel fillWidth(Component component, boolean v) {
+        CC cc = (CC)migLayout.getComponentConstraints(component);
+        cc.growX(v ? 100 : 0);
+        cc.pushX(v ? 100f : 0f);
+        return this;
+    }
+    public SVPanel fillWidth(int componentIndex, boolean v) {
+        return fillWidth(getComponent(componentIndex), v);
+    }
 
-    @Override
-    public SVPanel margin(int top, int left, int bottom, int right) {
-        lc.insets(top + "px", left + "px", bottom + "px", right + "px");
-        migLayout.setLayoutConstraints(lc); // reapply
+    public SVPanel fillHeight(boolean v) {
+        for (Component component : getComponents()) {
+            fillHeight(component, v);
+        }
+        return this;
+    }
+    public SVPanel fillHeight(Component component, boolean v) {
+        CC cc = (CC)migLayout.getComponentConstraints(component);
+        cc.growY(v ? 100 : 0);
+        cc.pushY(v ? 100f : 0f);
+        return this;
+    }
+    public SVPanel fillHeight(int componentIndex, boolean v) {
+        return fillHeight(getComponent(componentIndex), v);
+    }
+
+    // Just changing the CC values does not effectuate them, setComponentConstraints needs to be called.
+    private CC cc(Component component) {
+        CC cc = (CC)migLayout.getComponentConstraints(component);
+        if (cc == null) {
+            cc = new CC();
+        }
+        return cc;
+    }
+    private void cc(Component component, CC cc) {
+        migLayout.setComponentConstraints(component, cc);
+    }
+    public SVPanel cc(Component component, Consumer<CC> consumer) {
+        CC cc = cc(component);
+        consumer.accept(cc);
+        cc(component, cc);
         return this;
     }
 }

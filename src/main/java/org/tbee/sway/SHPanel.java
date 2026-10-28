@@ -72,12 +72,39 @@ public class SHPanel extends SPanelExtendable<SHPanel> implements
         return this;
     }
 
+    public SHPanel fillWidth(boolean v) {
+        for (Component component : getComponents()) {
+            fillWidth(component, v);
+        }
+        return this;
+    }
+    public SHPanel fillWidth(Component component, boolean v) {
+        CC cc = (CC)migLayout.getComponentConstraints(component);
+        cc.growX(v ? 100 : 0);
+        cc.pushX(v ? 100f : 0f);
+        return this;
+    }
+    public SHPanel fillWidth(int componentIndex, boolean v) {
+        return fillWidth(getComponent(componentIndex), v);
+    }
 
-    /**
-     * Just changing the CC values does not effectuate them, setCCFor needs to be called.
-     * @param component
-     * @return
-     */
+    public SHPanel fillHeight(boolean v) {
+        for (Component component : getComponents()) {
+            fillHeight(component, v);
+        }
+        return this;
+    }
+    public SHPanel fillHeight(Component component, boolean v) {
+        CC cc = (CC)migLayout.getComponentConstraints(component);
+        cc.growY(v ? 100 : 0);
+        cc.pushY(v ? 100f : 0f);
+        return this;
+    }
+    public SHPanel fillHeight(int componentIndex, boolean v) {
+        return fillHeight(getComponent(componentIndex), v);
+    }
+
+    // Just changing the CC values does not effectuate them, setComponentConstraints needs to be called.
     private CC cc(Component component) {
         CC cc = (CC)migLayout.getComponentConstraints(component);
         if (cc == null) {
